@@ -1,0 +1,20 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", serif;
+}
+
+/* Common style Start */
+
+:root {
+  --client-primary-color: #e10064;
+  --client-secondary-color: #f2f4f5;
+  --client-teritary-color: #000;
+  --client-text-color: #fff;
+  --client-fonts-color: #5c5f6a;
+  --client-top-primary-color: #2f3336;
+  --client-top-secondary-color: #676868;
+  --client-boxshadow-color: #00000040;
+  --client-border-color: #e4e7e9;
+}

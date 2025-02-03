@@ -1,34 +1,55 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
+import "./styles/common.css";
+import "./styles/custom.css";
+import Admin from "./layouts/Admin";
+import Auth from "./layouts/Auth";
 
 function App() {
-  const [count, setCount] = useState(0)
+   const [schoolCMS_isAdminAuthenticated, setschoolCMS_isAdminAuthenticated] =
+     useState(false);
+
+      const loginAsAdmin = () => {
+    localStorage.setItem("schoolCMS_isAdminAuthenticated", true);
+    setschoolCMS_isAdminAuthenticated(true);
+  };
+
+    const logout = async () => {
+    try {
+      toast.success("Logged out successfully");
+      setschoolCMS_isAdminAuthenticated(false);
+      localStorage.removeItem("schoolCMS_isAdminAuthenticated");
+    } catch (e) {
+      toast.error("Logout unsuccessful", e?.response?.data?.message);
+    }
+  };
+
+   useEffect(() => {
+    const isAdminAuthFromStorage = localStorage.getItem(
+      "schoolCMS_isAdminAuthenticated"
+    );
+  
+    if (isAdminAuthFromStorage === "true") {
+      setschoolCMS_isAdminAuthenticated(true);
+    } 
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+        <div>
+      <Toaster
+        toastOptions={{
+          style: {
+            background: "rgb(51 65 85)",
+            color: "#fff",
+          },
+        }}
+      />
+      {schoolCMS_isAdminAuthenticated ? (
+        <Admin handleLogout={logout} />
+      ) : (
+        <Auth loginAsAdmin={loginAsAdmin} />
+      )}
+    </div>
   )
 }
 
