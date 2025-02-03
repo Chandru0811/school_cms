@@ -1,79 +1,100 @@
+import { useState } from "react";
 import { useFormik } from "formik";
+import { Form, Button } from "react-bootstrap"; // Import Bootstrap Form and Button
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import * as Yup from "yup";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom"; // Import Link
+import headerlogo from "../../assets/images/logo.webp";
 
 const Login = ({ loginAsAdmin }) => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [loadIndicator, setLoadIndicator] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
+
+  const validationSchema = Yup.object({
+    email: Yup.string()
+      .email("Invalid email format")
+      .required("Email is required"),
+    password: Yup.string()
+      .min(6, "Password must be at least 6 characters")
+      .required("Password is required"),
+  });
+
   const formik = useFormik({
     initialValues: { email: "", password: "" },
-    validationSchema: Yup.object({
-      email: Yup.string()
-        .email("Invalid email format")
-        .required("Email is required"),
-      password: Yup.string()
-        .min(6, "Password must be at least 6 characters")
-        .required("Password is required"),
-    }),
+    validationSchema: validationSchema,
     onSubmit: (values) => {
+      setLoadIndicator(true);
       console.log(values);
       loginAsAdmin();
+      setTimeout(() => setLoadIndicator(false), 2000); 
     },
   });
 
   return (
-    <div
-      className="container vh-100"
-      style={{ minHeight: "100vh", backgroundColor: "#f2f2f2" }}
-    >
-      <div className="card bg-secondary col-md-6 offset-md-3 mt-5 p-3">
-        <div style={{ marginTop: "100px" }}>
-          <h2 className="text-center">Login</h2>
-          <form onSubmit={formik.handleSubmit}>
-            <div className="form-group mb-4">
-              <label htmlFor="email">Email</label>
-              <input
+    <div className="container-fluid m-0 vh-100" style={{ minHeight: "100vh", backgroundColor: "#f2f2f2" }}>
+      <div className="d-flex justify-content-center align-items-center m-0 pt-5" style={{ backgroundColor: "rgb(242, 242, 242)" }}>
+        <img src={headerlogo} className="img-fluid" alt="Logo" />
+      </div>
+      <div className="d-flex justify-content-center align-items-center mt-5">
+        <div className="card shadow-lg p-3 mb-5 mt-0 rounded" style={{ width: "100%", maxWidth: "400px" }}>
+          <div className="d-flex justify-content-around">
+            <h3 className="cursor-pointer py-2" style={{ borderBottom: "2px solid #1555ff", paddingBottom: "5px", width: "100%", textAlign: "center", color: "#1555ff" }}>Login</h3>
+          </div>
+          <Form onSubmit={formik.handleSubmit}>
+            <Form.Group controlId="formEmail" className="mb-3 pt-4">
+              <Form.Label>Email Address</Form.Label>
+              <Form.Control
                 type="email"
-                name="email"
-                className={`form-control ${
-                  formik.touched.email && formik.errors.email
-                    ? "is-invalid"
-                    : ""
-                }`}
-                value={formik.values.email}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
+                placeholder="Enter email"
+                {...formik.getFieldProps("email")}
+                isInvalid={formik.touched.email && formik.errors.email}
               />
-              {formik.touched.email && formik.errors.email && (
-                <div className="invalid-feedback">{formik.errors.email}</div>
-              )}
+              <Form.Control.Feedback type="invalid">{formik.errors.email}</Form.Control.Feedback>
+            </Form.Group>
+
+            <div className="d-flex justify-content-between align-items-center py-2">
+              <Form.Label>Password</Form.Label>
+              <Link to="/forgot" className="ml-auto" style={{ fontSize: "0.9em", textDecoration: "none", color: "#1555ff" }}>Forgot Password?</Link>
             </div>
-            <div className="form-group mb-4">
-              <label htmlFor="password">Password</label>
-              <input
-                type="password"
-                name="password"
-                className={`form-control ${
-                  formik.touched.password && formik.errors.password
-                    ? "is-invalid"
-                    : ""
-                }`}
-                value={formik.values.password}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-              />
-              {formik.touched.password && formik.errors.password && (
-                <div className="invalid-feedback">{formik.errors.password}</div>
-              )}
+            <Form.Group controlId="formPassword" className="mb-3">
+              <div style={{ position: "relative" }}>
+                <Form.Control
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter password"
+                  {...formik.getFieldProps("password")}
+                  isInvalid={formik.touched.password && formik.errors.password}
+                />
+                {formik.values.password && (
+                  <span
+                    onClick={togglePasswordVisibility}
+                    style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", cursor: "pointer" }}
+                  >
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  </span>
+                )}
+                <Form.Control.Feedback type="invalid">{formik.errors.password}</Form.Control.Feedback>
+              </div>
+            </Form.Group>
+
+            <Button type="submit" className="w-100 mt-4 common-button" disabled={loadIndicator}>
+              {loadIndicator && <span className="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>}
+              Login
+            </Button>
+
+            <div className="text-center mt-4">
+              <p className="mb-3">or</p>
+              <Link to="/register">
+                <Button variant="light" className="border shadow-none" style={{ width: "100%" }}>
+                  Register
+                </Button>
+              </Link>
             </div>
-            <div className="my-3 d-flex justify-content-between">
-              <a href="/register">Register</a>
-              <a href="/forgot-password">Forgot Password</a>
-            </div>
-            <div className="text-center">
-              <button type="submit" className="btn btn-primary mt-3 w-100">
-                Login
-              </button>
-            </div>
-          </form>
+          </Form>
         </div>
       </div>
     </div>

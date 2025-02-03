@@ -8,7 +8,7 @@
 /* Common style Start */
 
 :root {
-  --client-primary-color: #e10064;
+  --client-primary-color: #1555ff;
   --client-secondary-color: #f2f4f5;
   --client-teritary-color: #000;
   --client-text-color: #fff;
@@ -17,4 +17,34 @@
   --client-top-secondary-color: #676868;
   --client-boxshadow-color: #00000040;
   --client-border-color: #e4e7e9;
+}
+
+
+.wellcome-btn {
+  background-color: var(--client-primary-color);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.sidebar-logo {
+  max-width: 120px;
+}
+
+@media screen and (max-width:992px) {
+  .logo_ats {
+    position: none;
+    min-width: 18.1%;
+    right: 0;
+    font-size: 15px;
+  }
+
+  .sidebar-logo {
+    width: 50px !important;
+    height: auto !important;
+    padding: 0 !important;
+  }
 }
