@@ -1,15 +1,17 @@
 import PropTypes from "prop-types";
-import Home from "../pages/client/Home";
+// import Home from "../pages/client/Home";
 import Login from "../components/auth/Login";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 function Auth({ loginAsAdmin }) {
   return (
     <div>
-      {/* <button className="btn btn-primary" onClick={loginAsAdmin}>
-        Login
-      </button> */}
-      <Login />
-      {/* <Home /> */}
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Login loginAsAdmin={loginAsAdmin} />} />
+          <Route path="*" element={<Login loginAsAdmin={loginAsAdmin} />} />
+        </Routes>
+      </BrowserRouter>
     </div>
   );
 }
