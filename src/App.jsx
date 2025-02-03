@@ -6,15 +6,15 @@ import Admin from "./layouts/Admin";
 import Auth from "./layouts/Auth";
 
 function App() {
-   const [schoolCMS_isAdminAuthenticated, setschoolCMS_isAdminAuthenticated] =
-     useState(false);
+  const [schoolCMS_isAdminAuthenticated, setschoolCMS_isAdminAuthenticated] =
+    useState(false);
 
-      const loginAsAdmin = () => {
+  const loginAsAdmin = () => {
     localStorage.setItem("schoolCMS_isAdminAuthenticated", true);
     setschoolCMS_isAdminAuthenticated(true);
   };
 
-    const logout = async () => {
+  const logout = async () => {
     try {
       toast.success("Logged out successfully");
       setschoolCMS_isAdminAuthenticated(false);
@@ -24,18 +24,18 @@ function App() {
     }
   };
 
-   useEffect(() => {
+  useEffect(() => {
     const isAdminAuthFromStorage = localStorage.getItem(
       "schoolCMS_isAdminAuthenticated"
     );
-  
+
     if (isAdminAuthFromStorage === "true") {
       setschoolCMS_isAdminAuthenticated(true);
-    } 
+    }
   }, []);
 
   return (
-        <div>
+    <div>
       <Toaster
         toastOptions={{
           style: {
@@ -50,7 +50,7 @@ function App() {
         <Auth loginAsAdmin={loginAsAdmin} />
       )}
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
