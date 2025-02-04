@@ -1,5 +1,4 @@
 import PropTypes from "prop-types";
-// import Home from "../pages/client/Home";
 import Login from "../components/auth/Login";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Register from "../components/auth/Register";

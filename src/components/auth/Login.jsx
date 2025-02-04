@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useFormik } from "formik";
-import { Form, Button } from "react-bootstrap"; // Import Bootstrap Form and Button
+import { Form, Button } from "react-bootstrap";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import * as Yup from "yup";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom"; // Import Link
+import { Link } from "react-router-dom"; 
 import headerlogo from "../../assets/images/logo.webp";
 
 const Login = ({ loginAsAdmin }) => {
