@@ -2,25 +2,25 @@ import { Dialog, DialogActions, DialogTitle, DialogContent } from "@mui/material
 import Button from "react-bootstrap/Button";
 
 
-function GradeView({ show, setShow }) {
+function AnswerView({ show, setShow }) {
     const handleClose = () => {
       setShow(false);
     };
   
     return (
      <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
-       <DialogTitle>View Grade</DialogTitle>
+       <DialogTitle>View Answer</DialogTitle>
        <hr className="m-0"></hr>
        <DialogContent>
         <div className="row">
           <div className="col-md-6 col-12 mb-3">
-            <strong>School:</strong> Boys Hrs Sec School
+            <strong>Question ID:</strong> 1
           </div>
           <div className="col-md-6 col-12 mb-3">
-            <strong>Name:</strong> Sumaiya
+            <strong>Answer Type:</strong> 2
           </div>
           <div className="col-md-6 col-12 mb-3">
-            <strong>Description:</strong> Dummy
+            <strong>Answer:</strong> Dummy Answer
           </div>
         </div>
       </DialogContent>
@@ -34,5 +34,5 @@ function GradeView({ show, setShow }) {
     );
   }
   
-  export default GradeView;
+  export default AnswerView;
   

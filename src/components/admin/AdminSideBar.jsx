@@ -1,18 +1,21 @@
-import PropTypes from "prop-types";
 import { useState } from "react";
-import { NavLink } from "react-bootstrap";
-import { useNavigate } from "react-router-dom";
-import headerlogo from "../../assets/images/logo.webp";
-import { BiLogOut } from "react-icons/bi";
-import { BsBarChartFill } from "react-icons/bs";
+import { NavLink } from "react-router-dom";
+import helperlogo from "../../assets/images/logo.webp";
+import { BsBarChart } from "react-icons/bs";
+import PropTypes from "prop-types";
+import { IoSchoolOutline } from "react-icons/io5";
+import { AiOutlineAppstore } from "react-icons/ai";
+import { FaQuestionCircle, FaRegCommentDots, FaBook,  FaRegStar, FaBookOpen} from "react-icons/fa";
 
 
-function AdminSideBar({ handleLogout }) {
-  const navigate = useNavigate();
-  const handelLogOutClick = () => {
-    handleLogout();
-    navigate("/");
-  };
+
+function AdminSidebar() {
+  // const navigate = useNavigate();
+
+  // const handelLogOutClick = () => {
+  //   handleLogout();
+  //   navigate("/");
+  // };
 
   const [leadMenuOpen] = useState(false);
 
@@ -24,7 +27,7 @@ function AdminSideBar({ handleLogout }) {
       id="navbarVertical"
     >
       <div className="container-fluid">
-      <button
+        <button
           className="navbar-toggler mx-2 p-1"
           type="button"
           data-bs-toggle="collapse"
@@ -40,37 +43,123 @@ function AdminSideBar({ handleLogout }) {
             leadMenuOpen || activeSubmenu ? "active" : ""
           }`}
           to="/"
-          // style={{position:"fixed",top:"0", minWidth:'18.1%'}}
         >
           <img
-            src={headerlogo}
+            src={helperlogo}
             alt="deals"
             className="img-fluid sidebar-logo"
             style={{
               background: "#fff",
+              borderRadius: "5px",
             }}
           />
         </NavLink>
-        <div
-          className="collapse navbar-collapse"
-          id="sidebarCollapse"
-          // style={{ marginTop: "5rem" }}
-        >
+        <div className="collapse navbar-collapse" id="sidebarCollapse">
           <ul className="navbar-nav">
-            <li className="nav-item">
-              <NavLink className="nav-link" to="/dashboard">
-              <BsBarChartFill />  Dashboard
+            <li className="nav-item px-3">
+              <NavLink
+                className="nav-link"
+                style={{ borderRadius: "5px" }}
+                to="/dashboard"
+              >
+                <BsBarChart className="sidebar_icon" />
+                Dashboard
               </NavLink>
             </li>
-          </ul>
-          <ul className="navbar-nav">
-            <li className="nav-item">
-              <NavLink className="nav-link" href="/topic">
+            <li className="nav-item px-3">
+              <NavLink
+                className="nav-link"
+                style={{ borderRadius: "5px" }}
+                to="/center"
+              >
+                <AiOutlineAppstore  className="sidebar_icon" />
+                Center
+              </NavLink>
+            </li>
+            <li className="nav-item px-3">
+              <NavLink
+                className="nav-link"
+                style={{ borderRadius: "5px" }}
+                to="/grade"
+              >
+                <FaRegStar className="sidebar_icon" />
+                Grade
+              </NavLink>
+            </li>
+            <li className="nav-item px-3">
+              <NavLink
+                className="nav-link"
+                style={{ borderRadius: "5px" }}
+                to="/student"
+              >
+                <IoSchoolOutline className="sidebar_icon" />
+                Student
+              </NavLink>
+            </li>
+            <li className="nav-item px-3">
+              <NavLink
+                className="nav-link"
+                style={{ borderRadius: "5px" }}
+                to="/subject"
+              >
+                <FaBook   className="sidebar_icon" />
+                Subject
+              </NavLink>
+            </li>
+            <li className="nav-item px-3">
+              <NavLink
+                className="nav-link"
+                style={{ borderRadius: "5px" }}
+                to="/topic"
+              >
+                <FaBookOpen  className="sidebar_icon" />
                 Topic
               </NavLink>
             </li>
+            <li className="nav-item px-3">
+              <NavLink
+                className="nav-link"
+                style={{ borderRadius: "5px" }}
+                to="/question"
+              >
+                <FaQuestionCircle  className="sidebar_icon" />
+                Question
+              </NavLink>
+            </li>
+            <li className="nav-item px-3">
+              <NavLink
+                className="nav-link"
+                style={{ borderRadius: "5px" }}
+                to="/answer"
+              >
+                <FaRegCommentDots  className="sidebar_icon" />
+                Answer
+              </NavLink>
+            </li>
+
+            <li className="nav-item px-3">
+              <NavLink
+                className="nav-link"
+                style={{ borderRadius: "5px" }}
+                to="/school"
+              >
+                <IoSchoolOutline className="sidebar_icon" />
+                School
+              </NavLink>
+            </li>
+            <li className="nav-item px-3">
+              <NavLink
+                className="nav-link"
+                style={{ borderRadius: "5px" }}
+                to="/role"
+              >
+                <IoSchoolOutline className="sidebar_icon" />
+                Role
+              </NavLink>
+            </li>
+
           </ul>
-          <div className="ps-4 mt-auto w-100 mb-4">
+          {/* <div className="ps-4 mt-auto w-100 mb-4">
             <div className="navbar-nav">
               <div className="nav-item">
                 <button
@@ -84,14 +173,14 @@ function AdminSideBar({ handleLogout }) {
                 </button>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </nav>
   );
 }
-AdminSideBar.propTypes = {
+
+AdminSidebar.propTypes = {
   handleLogout: PropTypes.func.isRequired,
 };
-
-export default AdminSideBar;
+export default AdminSidebar;

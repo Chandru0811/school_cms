@@ -9,7 +9,7 @@ import {
   DialogContent,
 } from "@mui/material";
 
-function GradeAdd() {
+function SubjectAdd() {
   const [show, setShow] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
 
@@ -23,14 +23,14 @@ function GradeAdd() {
   };
 
   const validationSchema = yup.object().shape({
-    school: yup.string().required("*Select a school"),
+    grade_id: yup.string().required("*Select a grade id"),
     name: yup.string().required("*Name is required"),
     description: yup.string().required("*Description is required"),
   });
 
   const formik = useFormik({
     initialValues: {
-      school:"",
+      grade_id:"",
       name: "",
       description: "",
     },
@@ -43,14 +43,10 @@ function GradeAdd() {
 
   return (
     <>
-       <button
-              type="button"
-              className="btn btn-button btn-sm me-2"
-              style={{ fontWeight: "600px !important" }}
-              onClick={handleShow}
-            >
-              &nbsp; Add &nbsp;&nbsp; <i className="bi bi-plus-lg"></i>
-            </button>
+      <button
+        className="btn btn-primary" onClick={handleShow}>
+        Add Subject
+      </button>
 
       <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
         <form
@@ -62,34 +58,35 @@ function GradeAdd() {
           }}
         >
           <DialogTitle>
-            <p className="headColor">Add Grade</p>
+            <p className="headColor">Add Subject</p>
           </DialogTitle>
           <hr className="m-0"></hr>
           <DialogContent>
             <div className="row">
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
-                  School<span className="text-danger">*</span>
+                  Grade ID<span className="text-danger">*</span>
                 </label>
                 <select
                   className={`form-select form-select-sm ${
-                    formik.touched.school && formik.errors.school
+                    formik.touched.grade_id && formik.errors.grade_id
                       ? "is-invalid"
                       : ""
                   }`}
-                  {...formik.getFieldProps("school")}
+                  {...formik.getFieldProps("grade_id")}
                 >
-                  <option value="">Select School</option>
-                  <option value="School A">School A</option>
-                  <option value="School B">School B</option>
-                  <option value="School C">School C</option>
+                  <option value="">Select Grade ID</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
                 </select>
-                {formik.touched.school && formik.errors.school && (
+                {formik.touched.grade_id && formik.errors.grade_id && (
                   <div className="invalid-feedback">
-                    {formik.errors.school}
+                    {formik.errors.grade_id}
                   </div>
                 )}
               </div>
+
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
                   Name<span className="text-danger">*</span>
@@ -108,23 +105,25 @@ function GradeAdd() {
                   <div className="invalid-feedback">{formik.errors.name}</div>
                 )}
               </div>
+
               <div className="col-md-6 col-12 mb-3">
-                  <label className="form-label">
-                    Description<span className="text-danger">*</span>
-                  </label>
-                  <textarea
-                    className={`form-control form-control-sm ${
-                      formik.touched.description && formik.errors.description
-                        ? "is-invalid"
-                        : ""
-                    }`}
-                    rows="4" // Adjust the rows for better visibility
-                    {...formik.getFieldProps("description")}
-                  />
-                  {formik.touched.description && formik.errors.description && (
-                    <div className="invalid-feedback">{formik.errors.description}</div>
-                  )}
+                <label className="form-label">
+                  Description<span className="text-danger">*</span>
+                </label>
+                <textarea
+                  className={`form-control form-control-sm ${
+                    formik.touched.description && formik.errors.description
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  rows="4" // Adjust the rows for better visibility
+                  {...formik.getFieldProps("description")}
+                />
+                {formik.touched.description && formik.errors.description && (
+                  <div className="invalid-feedback">{formik.errors.description}</div>
+                )}
               </div>
+
             </div>
           </DialogContent>
           <hr className="m-0"></hr>
@@ -155,4 +154,4 @@ function GradeAdd() {
   );
 }
 
-export default GradeAdd;
+export default SubjectAdd;

@@ -4,7 +4,30 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AdminSideBar from "../components/admin/AdminSideBar";
 import AdminHeader from "../components/admin/AdminHeader";
 import AdminFooter from "../components/admin/AdminFooter";
+import School from "../pages/admin/School/School";
+import Center from "../pages/admin/Center/Center";
+import Role from "../pages/admin/Role/Role";
+import Student from "../pages/admin/Student/Student";
+import StudentAdd from "../pages/admin/Student/StudentAdd";
+import StudentEdit from "../pages/admin/Student/StudentEdit";
+import StudentView from "../pages/admin/Student/StudentView";
+import Grade from "../pages/admin/Grade/Grade";
+import GradeAdd from "../pages/admin/Grade/GradeAdd";
+import GradeEdit from "../pages/admin/Grade/GradeEdit";
+import GradeView from "../pages/admin/Grade/GradeView";
+import Subject from "../pages/admin/Subject/Subject";
+import SubjectAdd from "../pages/admin/Subject/SubjectAdd";
+import SubjectEdit from "../pages/admin/Subject/SubjectEdit";
+import SubjectView from "../pages/admin/Subject/SubjectView";
 import Topic from "../pages/admin/Topic/Topic";
+import TopicAdd from "../pages/admin/Topic/TopicAdd";
+import TopicEdit from "../pages/admin/Topic/TopicEdit";
+import TopicView from "../pages/admin/Topic/TopicView";
+import Question from "../pages/admin/Question/Question";
+import QuestionAdd from "../pages/admin/Question/QuestionAdd";
+import QuestionEdit from "../pages/admin/Question/QuestionEdit";
+import QuestionView from "../pages/admin/Question/QuestionView";
+import Answer from "../pages/admin/Answer/Answer";
 
 function Admin({ handleLogout }) {
   return (
@@ -22,8 +45,46 @@ function Admin({ handleLogout }) {
                     <Route path="/" element={<AdminDashboard />} />
                     <Route path="*" element={<AdminDashboard />} />
 
+                     {/* Center  */}
+                     <Route path="/center" element={<Center />} />
+
+                      {/* Grade */}
+                    <Route path="/grade" element={<Grade />} />
+                    <Route path="/gradeAdd" element={<GradeAdd />} />
+                    <Route path="/gradeEdit" element={<GradeEdit />} />
+                    <Route path="/gradeView" element={<GradeView />} />
+
+                    {/* Student */}
+                    <Route path="/student" element={<Student />} />
+                    <Route path="/studentAdd" element={<StudentAdd />} />
+                    <Route path="/studentEdit" element={<StudentEdit />} />
+                    <Route path="/studentView" element={<StudentView />} />
+
+                    {/* Subject */}
+                    <Route path="/subject" element={<Subject />} />
+                    <Route path="/subjectAdd" element={<SubjectAdd />} />
+                    <Route path="/subjectEdit" element={<SubjectEdit />} />
+                    <Route path="/subjectView" element={<SubjectView />} />
+
                     {/* Topic  */}
                     <Route path="/topic" element={<Topic />} />
+                    <Route path="/topicAdd" element={<TopicAdd />} />
+                    <Route path="/topicEdit" element={<TopicEdit />} />
+                    <Route path="/topicView" element={<TopicView />} />
+
+                    {/* Question  */}
+                    <Route path="/question" element={<Question />} />
+                    <Route path="/question/add" element={<QuestionAdd />} />
+                    <Route path="/question/edit" element={<QuestionEdit />} />
+                    <Route path="/question/view" element={<QuestionView />} />
+
+                    {/* Answer  */}
+                    <Route path="/answer" element={<Answer />} />
+
+                      {/* School  */}
+                      <Route path="/school" element={<School />} />
+                      {/* Roll  */}
+                      <Route path="/role" element={<Role />} />
                   </Routes>
                 </div>
                 <AdminFooter />
