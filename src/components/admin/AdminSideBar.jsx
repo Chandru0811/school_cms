@@ -63,6 +63,13 @@ function AdminSideBar({ handleLogout }) {
               </NavLink>
             </li>
           </ul>
+          <ul className="navbar-nav">
+            <li className="nav-item">
+              <NavLink className="nav-link" href="/topic">
+                Topic
+              </NavLink>
+            </li>
+          </ul>
           <div className="ps-4 mt-auto w-100 mb-4">
             <div className="navbar-nav">
               <div className="nav-item">

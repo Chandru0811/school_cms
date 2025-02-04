@@ -4,6 +4,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AdminSideBar from "../components/admin/AdminSideBar";
 import AdminHeader from "../components/admin/AdminHeader";
 import AdminFooter from "../components/admin/AdminFooter";
+import Topic from "../pages/admin/Topic/Topic";
 
 function Admin({ handleLogout }) {
   return (
@@ -20,6 +21,9 @@ function Admin({ handleLogout }) {
                   <Routes>
                     <Route path="/" element={<AdminDashboard />} />
                     <Route path="*" element={<AdminDashboard />} />
+
+                    {/* Topic  */}
+                    <Route path="/topic" element={<Topic />} />
                   </Routes>
                 </div>
                 <AdminFooter />
