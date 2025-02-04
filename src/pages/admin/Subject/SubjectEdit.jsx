@@ -4,7 +4,7 @@ import * as yup from "yup";
 import { useFormik } from "formik";
 import { Dialog, DialogActions, DialogTitle, DialogContent } from "@mui/material";
 
-function GradeEdit({ show, setShow,}) {
+function SubjectEdit({ show, setShow,}) {
   const [loadIndicator, setLoadIndicator] = useState(false);
 //   const [selectedSchool, setSelectedSchool] = useState(null);
 
@@ -22,15 +22,15 @@ function GradeEdit({ show, setShow,}) {
   };
 
   const validationSchema = yup.object().shape({
-    school: yup.string().required("*Selected a school"),
+    grade_id: yup.string().required("*Selected a grade id"),
     name: yup.string().required("*Name is required"),
     description: yup.string().required("*Description is required"),
   });
 
   const formik = useFormik({
     initialValues: {
-      school:"School C",
-      name:  "Demo Grade",
+      grade_id:"3",
+      name:  "Demo Subject",
       description: "MINT",
     },
     enableReinitialize: true,
@@ -61,24 +61,24 @@ function GradeEdit({ show, setShow,}) {
           <div className="row">
             <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
-                  School<span className="text-danger">*</span>
+                  Grade ID<span className="text-danger">*</span>
                 </label>
                 <select
                   className={`form-select form-select-sm ${
-                    formik.touched.school && formik.errors.school
+                    formik.touched.grade_id && formik.errors.grade_id
                       ? "is-invalid"
                       : ""
                   }`}
-                  {...formik.getFieldProps("school")}
+                  {...formik.getFieldProps("grade_id")}
                 >
                   <option value="">Select School</option>
-                  <option value="School A">School A</option>
-                  <option value="School B">School B</option>
-                  <option value="School C" selected>School C</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3" selected>3</option>
                 </select>
-                {formik.touched.school && formik.errors.school && (
+                {formik.touched.grade_id && formik.errors.grade_id && (
                   <div className="invalid-feedback">
-                    {formik.errors.school}
+                    {formik.errors.grade_id}
                   </div>
                 )}
             </div>
@@ -147,4 +147,4 @@ function GradeEdit({ show, setShow,}) {
   );
 }
 
-export default GradeEdit;
+export default SubjectEdit;

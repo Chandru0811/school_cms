@@ -9,7 +9,7 @@ import {
   DialogContent,
 } from "@mui/material";
 
-function GradeAdd() {
+function AnswerAdd() {
   const [show, setShow] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
 
@@ -23,16 +23,16 @@ function GradeAdd() {
   };
 
   const validationSchema = yup.object().shape({
-    school: yup.string().required("*Select a school"),
-    name: yup.string().required("*Name is required"),
-    description: yup.string().required("*Description is required"),
+    question_id: yup.string().required("*Select a question id"),
+    answer_type: yup.string().required("*Selected a answer type"),
+    answer: yup.string().required("*Answer is required"),
   });
 
   const formik = useFormik({
     initialValues: {
-      school:"",
-      name: "",
-      description: "",
+      question_id:"",
+      answer_type: "",
+      answer: "",
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -43,7 +43,7 @@ function GradeAdd() {
 
   return (
     <>
-       <button
+      <button
               type="button"
               className="btn btn-button btn-sm me-2"
               style={{ fontWeight: "600px !important" }}
@@ -62,68 +62,74 @@ function GradeAdd() {
           }}
         >
           <DialogTitle>
-            <p className="headColor">Add Grade</p>
+            <p className="headColor">Add Answer</p>
           </DialogTitle>
           <hr className="m-0"></hr>
           <DialogContent>
             <div className="row">
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
-                  School<span className="text-danger">*</span>
+                Question ID<span className="text-danger">*</span>
                 </label>
                 <select
                   className={`form-select form-select-sm ${
-                    formik.touched.school && formik.errors.school
+                    formik.touched.question_id && formik.errors.question_id
                       ? "is-invalid"
                       : ""
                   }`}
-                  {...formik.getFieldProps("school")}
+                  {...formik.getFieldProps("question_id")}
                 >
-                  <option value="">Select School</option>
-                  <option value="School A">School A</option>
-                  <option value="School B">School B</option>
-                  <option value="School C">School C</option>
+                  <option value="">Select a Question ID</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
                 </select>
-                {formik.touched.school && formik.errors.school && (
+                {formik.touched.question_id && formik.errors.question_id && (
                   <div className="invalid-feedback">
-                    {formik.errors.school}
+                    {formik.errors.question_id}
                   </div>
                 )}
               </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
-                  Name<span className="text-danger">*</span>
+                Answer Type<span className="text-danger">*</span>
+                </label>
+                <select
+                  className={`form-select form-select-sm ${
+                    formik.touched.answer_type && formik.errors.answer_type
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("answer_type")}
+                >
+                  <option value="">Select a Answer Type</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                </select>
+                {formik.touched.answer_type && formik.errors.answer_type && (
+                  <div className="invalid-feedback">
+                    {formik.errors.answer_type}
+                  </div>
+                )}
+              </div>
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Answer<span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
                   onKeyDown={(e) => e.stopPropagation()}
                   className={`form-control form-control-sm ${
-                    formik.touched.name && formik.errors.name
+                    formik.touched.answer && formik.errors.answer
                       ? "is-invalid"
                       : ""
                   }`}
-                  {...formik.getFieldProps("name")}
+                  {...formik.getFieldProps("answer")}
                 />
-                {formik.touched.name && formik.errors.name && (
-                  <div className="invalid-feedback">{formik.errors.name}</div>
+                {formik.touched.answer && formik.errors.answer && (
+                  <div className="invalid-feedback">{formik.errors.answer}</div>
                 )}
-              </div>
-              <div className="col-md-6 col-12 mb-3">
-                  <label className="form-label">
-                    Description<span className="text-danger">*</span>
-                  </label>
-                  <textarea
-                    className={`form-control form-control-sm ${
-                      formik.touched.description && formik.errors.description
-                        ? "is-invalid"
-                        : ""
-                    }`}
-                    rows="4" // Adjust the rows for better visibility
-                    {...formik.getFieldProps("description")}
-                  />
-                  {formik.touched.description && formik.errors.description && (
-                    <div className="invalid-feedback">{formik.errors.description}</div>
-                  )}
               </div>
             </div>
           </DialogContent>
@@ -155,4 +161,4 @@ function GradeAdd() {
   );
 }
 
-export default GradeAdd;
+export default AnswerAdd;

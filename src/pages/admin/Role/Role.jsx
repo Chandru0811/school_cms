@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link,  } from "react-router-dom";
 import { MaterialReactTable } from "material-react-table";
 import {
   ThemeProvider,
@@ -11,12 +11,11 @@ import {
 import Delete from "../../../components/common/Delete";
 import PropTypes from "prop-types";
 import { MoreVert as MoreVertIcon } from "@mui/icons-material";
-import GradeAdd from "./GradeAdd";
-import GradeEdit from "./GradeEdit";
-import GradeView from "./GradeView";
+import RoleAdd from "./RoleAdd";
+import RoleEdit from "./RoleEdit";
+import RoleView from "./RoleView";
 
-
-function Grade() {
+function Role() {
   const [menuAnchor, setMenuAnchor] = useState(null);
   // const navigate = useNavigate();
   const [showEdit, setShowEdit] = useState(false);
@@ -24,18 +23,10 @@ function Grade() {
   const [selectedData, setSelectedData] = useState(null); // Store selected row data
 
   const data = [
-    {
-      id: 1,
-      school: "Girl Hr Sec School",
-      name:"Sumaiya",
-      description: "Test",
-    },
-    {
-      id: 2,
-      school: "Boys Hr Sec School",
-      name:"Abu",
-      description: "Test 2",
-    },
+    { id: 1,school_id: "1",center_id: "1", name: "GMTTV Hrs Sec School", description: "English" },
+    { id: 2,school_id: "2",center_id: "2", name: "ST. Thomas Girls Hrs School", description: "Tamil" },
+    { id: 3,school_id: "3",center_id: "3", name: "Govt Boys Hrs School", description: "Maths" },
+    { id: 4,school_id: "4",center_id: "4", name: "New School", description: "Science" },
   ];
 
   const columns = useMemo(
@@ -67,18 +58,10 @@ function Grade() {
           </IconButton>
         ),
       },
-      {
-        accessorKey: "school",
-        header: "School",
-      },
-      {
-        accessorKey: "name",
-        header: "Name",
-      },
-      {
-        accessorKey: "description",
-        header: "Description",
-      },
+      { accessorKey: "school_id", header: "School ID" },
+      { accessorKey: "center_id", header: "Center ID" },
+      { accessorKey: "name", header: "Name" },
+      { accessorKey: "description", header: "Description" },
       { accessorKey: "created_by", header: "Created By" },
       {
         accessorKey: "created_at",
@@ -157,7 +140,7 @@ function Grade() {
           <span className="breadcrumb-separator"> &gt; </span>
         </li>
         <li className="breadcrumb-item active" aria-current="page">
-          &nbsp;Grade
+          &nbsp;Role
         </li>
       </ol>
       <div className="card">
@@ -168,12 +151,12 @@ function Grade() {
             </div>
             <span className="me-2 text-muted">
               This database shows the list of&nbsp;
-              <span className="database_name">Grade</span>
+              <span className="database_name">Role</span>
             </span>
           </div>
         </div>
         <div className="mb-3 d-flex justify-content-end">
-        <GradeAdd/>
+          <RoleAdd />
         </div>
         <>
           <ThemeProvider theme={theme}>
@@ -222,17 +205,17 @@ function Grade() {
               <Delete path={`admin/company/delete`} onOpen={handleMenuClose} />
             </MenuItem>
           </Menu>
-          <GradeEdit show={showEdit} setShow={setShowEdit} />
-          <GradeView show={showView} setShow={setShowView} data={selectedData} />
+          <RoleEdit show={showEdit} setShow={setShowEdit} />
+          <RoleView show={showView} setShow={setShowView} data={selectedData} />
         </>
       </div>
     </div>
   );
 }
 
-Grade.propTypes = {
+Role.propTypes = {
   row: PropTypes.func.isRequired,
   cell: PropTypes.func.isRequired,
 };
 
-export default Grade;
+export default Role;

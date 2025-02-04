@@ -4,7 +4,7 @@ import * as yup from "yup";
 import { useFormik } from "formik";
 import { Dialog, DialogActions, DialogTitle, DialogContent } from "@mui/material";
 
-function GradeEdit({ show, setShow,}) {
+function RoleEdit({ show, setShow,}) {
   const [loadIndicator, setLoadIndicator] = useState(false);
 //   const [selectedSchool, setSelectedSchool] = useState(null);
 
@@ -22,15 +22,17 @@ function GradeEdit({ show, setShow,}) {
   };
 
   const validationSchema = yup.object().shape({
-    school: yup.string().required("*Selected a school"),
+    school_id: yup.string().required("*Selected a school id"),
+    center_id: yup.string().required("*Selected a center id"),
     name: yup.string().required("*Name is required"),
     description: yup.string().required("*Description is required"),
   });
 
   const formik = useFormik({
     initialValues: {
-      school:"School C",
-      name:  "Demo Grade",
+      school_id:"School C",
+      center_id:"Center A",
+      name:  "DEMO Roll",
       description: "MINT",
     },
     enableReinitialize: true,
@@ -55,30 +57,53 @@ function GradeEdit({ show, setShow,}) {
           }
         }}
       >
-        <DialogTitle>Edit Grade</DialogTitle>
+        <DialogTitle>Edit School</DialogTitle>
         <hr className="m-0"></hr>
         <DialogContent>
           <div className="row">
             <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
-                  School<span className="text-danger">*</span>
+                  School ID<span className="text-danger">*</span>
                 </label>
                 <select
                   className={`form-select form-select-sm ${
-                    formik.touched.school && formik.errors.school
+                    formik.touched.school_id && formik.errors.school_id
                       ? "is-invalid"
                       : ""
                   }`}
-                  {...formik.getFieldProps("school")}
+                  {...formik.getFieldProps("school_id")}
                 >
                   <option value="">Select School</option>
                   <option value="School A">School A</option>
                   <option value="School B">School B</option>
                   <option value="School C" selected>School C</option>
                 </select>
-                {formik.touched.school && formik.errors.school && (
+                {formik.touched.school_id && formik.errors.school_id && (
                   <div className="invalid-feedback">
-                    {formik.errors.school}
+                    {formik.errors.school_id}
+                  </div>
+                )}
+            </div>
+            <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Center ID<span className="text-danger">*</span>
+                </label>
+                <select
+                  className={`form-select form-select-sm ${
+                    formik.touched.center_id && formik.errors.center_id
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("center_id")}
+                >
+                  <option value="">Select School</option>
+                  <option value="Center A" selected>Center A</option>
+                  <option value="Center B">Center B</option>
+                  <option value="Center C">Center C</option>
+                </select>
+                {formik.touched.center_id && formik.errors.center_id && (
+                  <div className="invalid-feedback">
+                    {formik.errors.center_id}
                   </div>
                 )}
             </div>
@@ -103,21 +128,22 @@ function GradeEdit({ show, setShow,}) {
             </div>
             <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
-                  Description<span className="text-danger">*</span>
+                    Description<span className="text-danger">*</span>
                 </label>
                 <textarea
-                  className={`form-control form-control-sm ${
+                    className={`form-control form-control-sm ${
                     formik.touched.description && formik.errors.description
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  rows="4" // Adjust the rows for better visibility
-                  {...formik.getFieldProps("description")}
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    rows="4" // Adjust the rows for better visibility
+                    {...formik.getFieldProps("description")}
                 />
                 {formik.touched.description && formik.errors.description && (
-                  <div className="invalid-feedback">{formik.errors.description}</div>
+                    <div className="invalid-feedback">{formik.errors.description}</div>
                 )}
-              </div>
+            </div>
+
           </div>
         </DialogContent>
         <hr className="m-0"></hr>
@@ -147,4 +173,4 @@ function GradeEdit({ show, setShow,}) {
   );
 }
 
-export default GradeEdit;
+export default RoleEdit;

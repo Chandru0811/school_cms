@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link,  } from "react-router-dom";
 import { MaterialReactTable } from "material-react-table";
 import {
   ThemeProvider,
@@ -11,12 +11,11 @@ import {
 import Delete from "../../../components/common/Delete";
 import PropTypes from "prop-types";
 import { MoreVert as MoreVertIcon } from "@mui/icons-material";
-import GradeAdd from "./GradeAdd";
-import GradeEdit from "./GradeEdit";
-import GradeView from "./GradeView";
+import AnswerAdd from "./AnswerAdd";
+import AnswerEdit from "./AnswerEdit";
+import AnswerView from "./AnswerView";
 
-
-function Grade() {
+function Answer() {
   const [menuAnchor, setMenuAnchor] = useState(null);
   // const navigate = useNavigate();
   const [showEdit, setShowEdit] = useState(false);
@@ -24,18 +23,9 @@ function Grade() {
   const [selectedData, setSelectedData] = useState(null); // Store selected row data
 
   const data = [
-    {
-      id: 1,
-      school: "Girl Hr Sec School",
-      name:"Sumaiya",
-      description: "Test",
-    },
-    {
-      id: 2,
-      school: "Boys Hr Sec School",
-      name:"Abu",
-      description: "Test 2",
-    },
+    { id: 1, question_id: "1", answer_type: "closed", answer: "yes", },
+    { id: 2, question_id: "2", answer_type: "closed", answer: "no", },
+    { id: 3, question_id: "3", answer_type: "closed", answer: "yes", },
   ];
 
   const columns = useMemo(
@@ -67,18 +57,9 @@ function Grade() {
           </IconButton>
         ),
       },
-      {
-        accessorKey: "school",
-        header: "School",
-      },
-      {
-        accessorKey: "name",
-        header: "Name",
-      },
-      {
-        accessorKey: "description",
-        header: "Description",
-      },
+      { accessorKey: "question_id", header: "Question ID" },
+      { accessorKey: "answer_type", header: "Answer Type" },
+      { accessorKey: "answer", header: "Answer" },
       { accessorKey: "created_by", header: "Created By" },
       {
         accessorKey: "created_at",
@@ -157,7 +138,7 @@ function Grade() {
           <span className="breadcrumb-separator"> &gt; </span>
         </li>
         <li className="breadcrumb-item active" aria-current="page">
-          &nbsp;Grade
+          &nbsp;Answer
         </li>
       </ol>
       <div className="card">
@@ -168,12 +149,12 @@ function Grade() {
             </div>
             <span className="me-2 text-muted">
               This database shows the list of&nbsp;
-              <span className="database_name">Grade</span>
+              <span className="database_name">Answer</span>
             </span>
           </div>
         </div>
         <div className="mb-3 d-flex justify-content-end">
-        <GradeAdd/>
+          <AnswerAdd />
         </div>
         <>
           <ThemeProvider theme={theme}>
@@ -222,17 +203,17 @@ function Grade() {
               <Delete path={`admin/company/delete`} onOpen={handleMenuClose} />
             </MenuItem>
           </Menu>
-          <GradeEdit show={showEdit} setShow={setShowEdit} />
-          <GradeView show={showView} setShow={setShowView} data={selectedData} />
+          <AnswerEdit show={showEdit} setShow={setShowEdit} />
+          <AnswerView show={showView} setShow={setShowView} data={selectedData} />
         </>
       </div>
     </div>
   );
 }
 
-Grade.propTypes = {
+Answer.propTypes = {
   row: PropTypes.func.isRequired,
   cell: PropTypes.func.isRequired,
 };
 
-export default Grade;
+export default Answer;

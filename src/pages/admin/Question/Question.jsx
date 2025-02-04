@@ -11,31 +11,16 @@ import {
 import Delete from "../../../components/common/Delete";
 import PropTypes from "prop-types";
 import { MoreVert as MoreVertIcon } from "@mui/icons-material";
-import GradeAdd from "./GradeAdd";
-import GradeEdit from "./GradeEdit";
-import GradeView from "./GradeView";
 
-
-function Grade() {
+function Question() {
   const [menuAnchor, setMenuAnchor] = useState(null);
-  // const navigate = useNavigate();
-  const [showEdit, setShowEdit] = useState(false);
-  const [showView, setShowView] = useState(false);
-  const [selectedData, setSelectedData] = useState(null); // Store selected row data
+  const navigate = useNavigate();
 
   const data = [
-    {
-      id: 1,
-      school: "Girl Hr Sec School",
-      name:"Sumaiya",
-      description: "Test",
-    },
-    {
-      id: 2,
-      school: "Boys Hr Sec School",
-      name:"Abu",
-      description: "Test 2",
-    },
+    { id: 1, topic_id: "1", question: "Is the equation 2x = 6 solved when x = 2?", difficult_level: "Medium" },
+    { id: 2, topic_id: "2", question: "Is the equation 3x = 9 solved when x = 3?", difficult_level: "Hard" },
+    { id: 3, topic_id: "3", question: "Is the equation 4x = 12 solved when x = 4?", difficult_level: "Medium" },
+    { id: 4, topic_id: "4", question: "Is the equation 5x = 25 solved when x = 5?", difficult_level: "Easy" },
   ];
 
   const columns = useMemo(
@@ -56,7 +41,7 @@ function Grade() {
         enableHiding: false,
         enableSorting: false,
         size: 20,
-        Cell: ({ row }) => (
+        Cell: () => (
           <IconButton
             onClick={(e) => {
               e.stopPropagation();
@@ -66,19 +51,9 @@ function Grade() {
             <MoreVertIcon />
           </IconButton>
         ),
-      },
-      {
-        accessorKey: "school",
-        header: "School",
-      },
-      {
-        accessorKey: "name",
-        header: "Name",
-      },
-      {
-        accessorKey: "description",
-        header: "Description",
-      },
+      },{ accessorKey: "topic_id", header: "Topic ID" },
+      { accessorKey: "question", header: "Question" },
+      { accessorKey: "difficult_level", header: "Difficult Level" },
       { accessorKey: "created_by", header: "Created By" },
       {
         accessorKey: "created_at",
@@ -157,7 +132,7 @@ function Grade() {
           <span className="breadcrumb-separator"> &gt; </span>
         </li>
         <li className="breadcrumb-item active" aria-current="page">
-          &nbsp;Grade
+          &nbsp;Question
         </li>
       </ol>
       <div className="card">
@@ -168,12 +143,20 @@ function Grade() {
             </div>
             <span className="me-2 text-muted">
               This database shows the list of&nbsp;
-              <span className="database_name">Grade</span>
+              <span className="database_name">Question</span>
             </span>
           </div>
         </div>
         <div className="mb-3 d-flex justify-content-end">
-        <GradeAdd/>
+          <Link to="/question/add">
+            <button
+              type="button"
+              className="btn btn-button btn-sm me-2"
+              style={{ fontWeight: "600px !important" }}
+            >
+              &nbsp; Add &nbsp;&nbsp; <i className="bi bi-plus-lg"></i>
+            </button>
+          </Link>
         </div>
         <>
           <ThemeProvider theme={theme}>
@@ -195,12 +178,9 @@ function Grade() {
                   updated_at: false,
                 },
               }}
-              muiTableBodyRowProps={({ row }) => ({
+              muiTableBodyRowProps={() => ({
+                onClick: () => navigate(`/question/view`),
                 style: { cursor: "pointer" },
-                onClick: () => {
-                  setSelectedData(row.original);
-                  setShowView(true);
-                },
               })}
             />
           </ThemeProvider>
@@ -210,29 +190,20 @@ function Grade() {
             open={Boolean(menuAnchor)}
             onClose={handleMenuClose}
           >
-            <MenuItem
-              onClick={() => {
-                setShowEdit(true);
-                handleMenuClose();
-              }}
-            >
-              Edit
-            </MenuItem>
+            <MenuItem onClick={() => navigate(`/question/edit`)}>Edit</MenuItem>
             <MenuItem>
               <Delete path={`admin/company/delete`} onOpen={handleMenuClose} />
             </MenuItem>
           </Menu>
-          <GradeEdit show={showEdit} setShow={setShowEdit} />
-          <GradeView show={showView} setShow={setShowView} data={selectedData} />
         </>
       </div>
     </div>
   );
 }
 
-Grade.propTypes = {
+Question.propTypes = {
   row: PropTypes.func.isRequired,
   cell: PropTypes.func.isRequired,
 };
 
-export default Grade;
+export default Question;

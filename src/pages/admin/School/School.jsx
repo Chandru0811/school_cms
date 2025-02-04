@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link,  } from "react-router-dom";
 import { MaterialReactTable } from "material-react-table";
 import {
   ThemeProvider,
@@ -11,12 +11,12 @@ import {
 import Delete from "../../../components/common/Delete";
 import PropTypes from "prop-types";
 import { MoreVert as MoreVertIcon } from "@mui/icons-material";
-import GradeAdd from "./GradeAdd";
-import GradeEdit from "./GradeEdit";
-import GradeView from "./GradeView";
+import SchoolAdd from "./SchoolAdd";
+import SchoolEdit from "./SchoolEdit";
+import SchoolView from "./SchoolView";
 
 
-function Grade() {
+function School() {
   const [menuAnchor, setMenuAnchor] = useState(null);
   // const navigate = useNavigate();
   const [showEdit, setShowEdit] = useState(false);
@@ -24,18 +24,8 @@ function Grade() {
   const [selectedData, setSelectedData] = useState(null); // Store selected row data
 
   const data = [
-    {
-      id: 1,
-      school: "Girl Hr Sec School",
-      name:"Sumaiya",
-      description: "Test",
-    },
-    {
-      id: 2,
-      school: "Boys Hr Sec School",
-      name:"Abu",
-      description: "Test 2",
-    },
+    { id: 1, name: "GMTTV Hrs Sec School", location: "Mint" },
+        { id: 2, name: "ST. Thomas Girls Hrs School", location: "Chennai" },
   ];
 
   const columns = useMemo(
@@ -67,18 +57,8 @@ function Grade() {
           </IconButton>
         ),
       },
-      {
-        accessorKey: "school",
-        header: "School",
-      },
-      {
-        accessorKey: "name",
-        header: "Name",
-      },
-      {
-        accessorKey: "description",
-        header: "Description",
-      },
+      { accessorKey: "name", header: "School Name" },
+      { accessorKey: "location", header: "Location" },
       { accessorKey: "created_by", header: "Created By" },
       {
         accessorKey: "created_at",
@@ -157,7 +137,7 @@ function Grade() {
           <span className="breadcrumb-separator"> &gt; </span>
         </li>
         <li className="breadcrumb-item active" aria-current="page">
-          &nbsp;Grade
+          &nbsp;Answer
         </li>
       </ol>
       <div className="card">
@@ -168,12 +148,12 @@ function Grade() {
             </div>
             <span className="me-2 text-muted">
               This database shows the list of&nbsp;
-              <span className="database_name">Grade</span>
+              <span className="database_name">Answer</span>
             </span>
           </div>
         </div>
         <div className="mb-3 d-flex justify-content-end">
-        <GradeAdd/>
+        <SchoolAdd  />
         </div>
         <>
           <ThemeProvider theme={theme}>
@@ -222,17 +202,17 @@ function Grade() {
               <Delete path={`admin/company/delete`} onOpen={handleMenuClose} />
             </MenuItem>
           </Menu>
-          <GradeEdit show={showEdit} setShow={setShowEdit} />
-          <GradeView show={showView} setShow={setShowView} data={selectedData} />
+          <SchoolEdit show={showEdit} setShow={setShowEdit} />
+          <SchoolView show={showView} setShow={setShowView} data={selectedData} />
         </>
       </div>
     </div>
   );
 }
 
-Grade.propTypes = {
+School.propTypes = {
   row: PropTypes.func.isRequired,
   cell: PropTypes.func.isRequired,
 };
 
-export default Grade;
+export default School;
