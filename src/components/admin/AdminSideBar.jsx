@@ -50,7 +50,6 @@ function AdminSideBar({ handleLogout }) {
               background: "#fff",
             }}
           />
-          <p className="text-white">School CMS</p>
         </NavLink>
         <div
           className="collapse navbar-collapse"

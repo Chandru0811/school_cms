@@ -41,7 +41,7 @@ const Register = () => {
   });
 
   return (
-    <div className="container-fluid m-0 vh-100" style={{ minHeight: "100vh", backgroundColor: "#f2f2f2" }}>
+    <div className="container-fluid m-0" style={{ minHeight: "100vh", backgroundColor: "#f2f2f2" }}>
       <div className="d-flex justify-content-center align-items-center pt-5" style={{ backgroundColor: "#f2f2f2" }}>
         <img src={headerlogo} className="img-fluid" alt="img" />
       </div>
