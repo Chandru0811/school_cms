@@ -4,10 +4,11 @@ import { Form, Button } from "react-bootstrap";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import * as Yup from "yup";
 import PropTypes from "prop-types";
-import { Link } from "react-router-dom"; 
+import { Link, useNavigate } from "react-router-dom"; 
 import headerlogo from "../../assets/images/logo.webp";
 
-const Login = ({ loginAsAdmin }) => {
+const Login = ({ loginAsAdmin, loginAsSuperAdmin }) => {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
 
@@ -29,16 +30,24 @@ const Login = ({ loginAsAdmin }) => {
     validationSchema: validationSchema,
     onSubmit: (values) => {
       setLoadIndicator(true);
-      console.log(values);
-      loginAsAdmin();
-      setTimeout(() => setLoadIndicator(false), 2000); 
+  
+      if (values.email === "admin@gmail.com") {
+        loginAsAdmin();
+      } else if (values.email === "superadmin@gmail.com") {
+        navigate("/");
+        loginAsSuperAdmin();
+      } else {
+        alert("Invalid email! Please use admin@gmail.com or superadmin@gmail.com");
+      }
+  
+      setTimeout(() => setLoadIndicator(false), 2000);
     },
   });
 
   return (
     <div className="container-fluid m-0 vh-100" style={{ minHeight: "100vh", backgroundColor: "#f2f2f2" }}>
       <div className="d-flex justify-content-center align-items-center m-0 pt-5" style={{ backgroundColor: "rgb(242, 242, 242)" }}>
-        <img src={headerlogo} className="img-fluid" alt="Logo" />
+        <img src={headerlogo} className="img-fluid" alt="school" />
       </div>
       <div className="d-flex justify-content-center align-items-center mt-5">
         <div className="card shadow-lg p-3 mb-5 mt-0 rounded" style={{ width: "100%", maxWidth: "400px" }}>
@@ -103,6 +112,7 @@ const Login = ({ loginAsAdmin }) => {
 
 Login.propTypes = {
   loginAsAdmin: PropTypes.func.isRequired,
+  loginAsSuperAdmin: PropTypes.func.isRequired,
 };
 
 export default Login;

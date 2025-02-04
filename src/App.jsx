@@ -4,14 +4,24 @@ import "./styles/common.css";
 import "./styles/custom.css";
 import Admin from "./layouts/Admin";
 import Auth from "./layouts/Auth";
+import SuperAdmin from "./layouts/SuperAdmin";
 
 function App() {
   const [schoolCMS_isAdminAuthenticated, setschoolCMS_isAdminAuthenticated] =
     useState(false);
+  const [
+    schoolCMS_isSuperAdminAuthenticated,
+    setschoolCMS_isSuperAdminAuthenticated,
+  ] = useState(false);
 
   const loginAsAdmin = () => {
     localStorage.setItem("schoolCMS_isAdminAuthenticated", true);
     setschoolCMS_isAdminAuthenticated(true);
+  };
+
+  const loginAsSuperAdmin = () => {
+    localStorage.setItem("schoolCMS_isSurperAdminAuthenticated", true);
+    setschoolCMS_isSuperAdminAuthenticated(true);
   };
 
   const logout = async () => {
@@ -46,8 +56,13 @@ function App() {
       />
       {schoolCMS_isAdminAuthenticated ? (
         <Admin handleLogout={logout} />
+      ) : schoolCMS_isSuperAdminAuthenticated ? (
+        <SuperAdmin handleLogout={logout} />
       ) : (
-        <Auth loginAsAdmin={loginAsAdmin} />
+        <Auth
+          loginAsAdmin={loginAsAdmin}
+          loginAsSuperAdmin={loginAsSuperAdmin}
+        />
       )}
     </div>
   );
