@@ -1,6 +1,7 @@
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { useNavigate } from "react-router-dom";
+import { Link, } from "react-router-dom";
+
 function StudentAdd() {
   const validationSchema = yup.object().shape({
     center_name: yup.string().required("*Center Name is required"),
@@ -38,24 +39,64 @@ function StudentAdd() {
     },
   });
 
-  const navigate = useNavigate();
-
-  const handleBackClick = () => {
-    navigate('/student');
-  };
 
   return (
-    <div className="container px-3">
-      <form
-        onSubmit={formik.handleSubmit}
+    <div className="container p-3">
+      <form  onSubmit={formik.handleSubmit}
         onKeyDown={(e) => {
           if (e.key === "Enter" && !formik.isSubmitting) {
             e.preventDefault();
           }
-        }}
-      >
-        <div className="row gx-3">
-          <div className="col-md-6 col-12 mb-2">
+        }}>
+          <ol
+              className="breadcrumb my-3"
+              style={{ listStyle: "none", padding: 0, margin: 0 }}
+            >
+              <li>
+                <Link to="/" className="custom-breadcrumb">
+                  Home
+                </Link>
+                <span className="breadcrumb-separator"> &gt; </span>
+              </li>
+              <li className="breadcrumb-item active" aria-current="page">
+              <Link to="/student" className="custom-breadcrumb">
+                &nbsp;Student
+                </Link>
+              </li>
+              <span className="breadcrumb-separator"> &gt; </span>
+              <li className="breadcrumb-item active" aria-current="page">
+                &nbsp;Student Add
+              </li>
+            </ol>
+            <div className="d-flex justify-content-between align-items-center card_header p-2">
+          <div className="d-flex align-items-center">
+            <div className="d-flex">
+              <div className="dot active"></div>
+            </div>
+            <span className="me-2 text-muted">&nbsp;
+              <span className="database_name">Add Student</span>
+            </span>
+          </div>
+          <div className="mb-3 d-flex justify-content-end">
+          <Link to="/student" className="custom-breadcrumb">
+          <button
+              type="button"
+              className="btn btn-sm btn-back me-2"
+              style={{ fontWeight: "600px !important" }} >
+               Back
+            </button>
+            </Link>
+            <button
+              type="submit"
+              className="btn btn-button btn-sm me-2"
+              style={{ fontWeight: "600px !important" }}
+            >Save
+            </button>
+        </div>
+        </div>
+      <div className="card p-3">
+        <div className="row gx-3 p-3">
+          <div className="col-md-6 col-12 mb-3">
             <label className="form-label">
               Center Name<span className="text-danger">*</span>
             </label>
@@ -78,8 +119,7 @@ function StudentAdd() {
               </div>
             )}
           </div>
-
-          <div className="col-md-6 col-12 mb-2">
+          <div className="col-md-6 col-12 mb-3">
             <label className="form-label">
               Student First Name<span className="text-danger">*</span>
             </label>
@@ -101,8 +141,7 @@ function StudentAdd() {
                 </div>
               )}
           </div>
-
-          <div className="col-md-6 col-12 mb-2">
+          <div className="col-md-6 col-12 mb-3">
             <label className="form-label">
               Student Middle Name
             </label>
@@ -124,8 +163,7 @@ function StudentAdd() {
                 </div>
               )} */}
           </div>
-
-          <div className="col-md-6 col-12 mb-2">
+          <div className="col-md-6 col-12 mb-3">
             <label className="form-label">
               Student Last Name
             </label>
@@ -147,8 +185,7 @@ function StudentAdd() {
                 </div>
               )} */}
           </div>
-
-          <div className="col-md-6 col-12 mb-2">
+          <div className="col-md-6 col-12 mb-3">
             <label className="form-label">
               Student Email<span className="text-danger">*</span>
             </label>
@@ -168,8 +205,7 @@ function StudentAdd() {
               </div>
             )}
           </div>
-
-          <div className="col-md-6 col-12 mb-2">
+          <div className="col-md-6 col-12 mb-3">
             <label className="form-label">
               Student Mobile<span className="text-danger">*</span>
             </label>
@@ -189,8 +225,7 @@ function StudentAdd() {
               </div>
             )}
           </div>
-
-          <div className="col-md-6 col-12 mb-2">
+          <div className="col-md-6 col-12 mb-3">
             <label className="form-label">
               Parent Name<span className="text-danger">*</span>
             </label>
@@ -210,8 +245,7 @@ function StudentAdd() {
               </div>
             )}
           </div>
-
-          <div className="col-md-6 col-12 mb-2">
+          <div className="col-md-6 col-12 mb-3">
             <label className="form-label">
               Parent Email<span className="text-danger">*</span>
             </label>
@@ -231,8 +265,7 @@ function StudentAdd() {
               </div>
             )}
           </div>
-
-          <div className="col-md-6 col-12 mb-2">
+          <div className="col-md-6 col-12 mb-3">
             <label className="form-label">
               Parent Mobile Number<span className="text-danger">*</span>
             </label>
@@ -252,8 +285,7 @@ function StudentAdd() {
               </div>
             )}
           </div>
-
-          <div className="col-md-6 col-12 mb-2">
+          <div className="col-md-6 col-12 mb-3">
             <label className="form-label">
               Grader List<span className="text-danger">*</span>
             </label>
@@ -276,8 +308,7 @@ function StudentAdd() {
               </div>
             )}
           </div>
-
-          <div className="col-md-6 col-12 mb-2">
+          <div className="col-md-6 col-12 mb-3">
             <label className="form-label">
               Roll Number<span className="text-danger">*</span>
             </label>
@@ -295,8 +326,7 @@ function StudentAdd() {
               <div className="invalid-feedback">{formik.errors.roll_no}</div>
             )}
           </div>
-
-          <div className="col-md-6 col-12 mb-2">
+          <div className="col-md-6 col-12 mb-3">
             <label className="form-label">
               Admission Number<span className="text-danger">*</span>
             </label>
@@ -316,8 +346,7 @@ function StudentAdd() {
               </div>
             )}
           </div>
-
-          <div className="col-md-6 col-12 mb-2">
+          <div className="col-md-6 col-12 mb-3">
             <label className="form-label">
               Admission Date
             </label>
@@ -337,16 +366,8 @@ function StudentAdd() {
               </div>
             )} */}
           </div>
-
-          <div className="d-flex justify-content-end mt-3 gap-2">
-          <button type="button" className="btn btn-secondary" onClick={handleBackClick}>
-      Back
-    </button>
-          <button type="submit" className="btn btn-primary" >
-            Submit
-          </button>
         </div>
-        </div>
+      </div>
       </form>
     </div>
   );

@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Button from "react-bootstrap/Button";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import {
@@ -135,13 +134,13 @@ function AnswerAdd() {
           </DialogContent>
           <hr className="m-0"></hr>
           <DialogActions className="mt-3">
-            <Button
+            <button
               className="btn btn-sm btn-border bg-light text-dark"
               onClick={handleClose}
             >
               Cancel
-            </Button>
-            <Button
+            </button>
+            <button
               type="submit"
               className="btn btn-button btn-sm"
               disabled={loadIndicator}
@@ -153,7 +152,7 @@ function AnswerAdd() {
                 ></span>
               )}
               Submit
-            </Button>
+            </button>
           </DialogActions>
         </form>
       </Dialog>

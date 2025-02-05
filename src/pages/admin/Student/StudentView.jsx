@@ -1,7 +1,48 @@
+import { Link,  } from "react-router-dom";
+
 function StudentView() {
   return (
-    <div className="container px-3">
-      <h2>Student Details</h2>
+    <div className="container card p-3">
+      <ol
+              className="breadcrumb my-3"
+              style={{ listStyle: "none", padding: 0, margin: 0 }}
+            >
+              <li>
+                <Link to="/" className="custom-breadcrumb">
+                  Home
+                </Link>
+                <span className="breadcrumb-separator"> &gt; </span>
+              </li>
+              <li className="breadcrumb-item active" aria-current="page">
+              <Link to="/student" className="custom-breadcrumb">
+                &nbsp;Student
+                </Link>
+              </li>
+              <span className="breadcrumb-separator"> &gt; </span>
+              <li className="breadcrumb-item active" aria-current="page">
+                &nbsp;Student View
+              </li>
+            </ol>
+            <div className="d-flex justify-content-between align-items-center card_header p-2">
+          <div className="d-flex align-items-center">
+            <div className="d-flex">
+              <div className="dot active"></div>
+            </div>
+            <span className="me-2 text-muted">&nbsp;
+              <span className="database_name">View Student</span>
+            </span>
+          </div>
+          <div className="mb-3 d-flex justify-content-end">
+          <Link to="/student" className="custom-breadcrumb">
+          <button
+              type="button"
+              className="btn btn-sm btn-back me-2"
+              style={{ fontWeight: "600px !important" }} >
+               Back
+            </button>
+            </Link>
+        </div>
+        </div>
       <div className="row gx-3">
         <div className="col-md-6 col-12">
           <div className="row mt-3  mb-2">

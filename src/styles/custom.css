@@ -157,3 +157,14 @@
   border-color: #7f55f4;
   color: #fff;
 }
+
+.btn-back{
+  border: 1px solid #adadad;
+  color: black;
+}
+
+.btn-back:hover{
+  border: 1px solid #adadad;
+  color: black;
+  background-color: #adadad;
+}
