@@ -93,21 +93,21 @@ function AdminHeader({ handleLogout }) {
                       <span>Home</span>
                     </Link>
                     <Link
-                      to="/school"
+                      to="/profile"
                       className="dropdown-item d-flex align-items-center"
                     >
                       <GoPencil className="me-2" />
                       <span>Profile</span>
                     </Link>
-                    <Link
+                    {/* <Link
                       to="/profile_card"
                       className="dropdown-item d-flex align-items-center"
                     >
                       <GoPencil className="me-2" />
-                      <span>Profile Card</span>
-                    </Link>
+                      <span>Profile</span>
+                    </Link> */}
                     <Link
-                      to="/role"
+                      to="/profile_card"
                       className="dropdown-item d-flex align-items-center"
                     >
                       <IoSettingsOutline className="me-2" />
