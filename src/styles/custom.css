@@ -169,3 +169,12 @@
   background-color: #cac8c8;
   border-radius: 5px;
 }
+
+.find_roll {
+  background-color: #7f55f4;
+  color: white;
+}
+.find_roll:hover {
+  background-color: #a080f8;
+  color: white;
+}

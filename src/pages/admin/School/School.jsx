@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import { Link,  } from "react-router-dom";
 import { MaterialReactTable } from "material-react-table";
 import {
   ThemeProvider,
@@ -15,7 +14,6 @@ import SchoolAdd from "./SchoolAdd";
 import SchoolEdit from "./SchoolEdit";
 import SchoolView from "./SchoolView";
 
-
 function School() {
   const [menuAnchor, setMenuAnchor] = useState(null);
   // const navigate = useNavigate();
@@ -25,7 +23,7 @@ function School() {
 
   const data = [
     { id: 1, name: "GMTTV Hrs Sec School", location: "Mint" },
-        { id: 2, name: "ST. Thomas Girls Hrs School", location: "Chennai" },
+    { id: 2, name: "ST. Thomas Girls Hrs School", location: "Chennai" },
   ];
 
   const columns = useMemo(
@@ -46,7 +44,7 @@ function School() {
         enableHiding: false,
         enableSorting: false,
         size: 20,
-        Cell: ({ row }) => (
+        Cell: () => (
           <IconButton
             onClick={(e) => {
               e.stopPropagation();
@@ -126,7 +124,7 @@ function School() {
 
   return (
     <div className="container-fluid mb-4 px-0">
-      <ol
+      {/* <ol
         className="breadcrumb my-3"
         style={{ listStyle: "none", padding: 0, margin: 0 }}
       >
@@ -139,7 +137,7 @@ function School() {
         <li className="breadcrumb-item active" aria-current="page">
           &nbsp;Answer
         </li>
-      </ol>
+      </ol> */}
       <div className="card">
         <div className="d-flex justify-content-between align-items-center card_header mb-3 p-1">
           <div className="d-flex align-items-center">
@@ -148,12 +146,12 @@ function School() {
             </div>
             <span className="me-2 text-muted">
               This database shows the list of&nbsp;
-              <span className="database_name">Answer</span>
+              <span className="database_name">School</span>
             </span>
           </div>
         </div>
         <div className="mb-3 d-flex justify-content-end">
-        <SchoolAdd  />
+          <SchoolAdd />
         </div>
         <>
           <ThemeProvider theme={theme}>
@@ -203,7 +201,11 @@ function School() {
             </MenuItem>
           </Menu>
           <SchoolEdit show={showEdit} setShow={setShowEdit} />
-          <SchoolView show={showView} setShow={setShowView} data={selectedData} />
+          <SchoolView
+            show={showView}
+            setShow={setShowView}
+            data={selectedData}
+          />
         </>
       </div>
     </div>
