@@ -123,17 +123,7 @@ function AdminSidebar() {
                 to="/question"
               >
                 <FaQuestionCircle  className="sidebar_icon" />
-                Question
-              </NavLink>
-            </li>
-            <li className="nav-item px-3">
-              <NavLink
-                className="nav-link"
-                style={{ borderRadius: "5px" }}
-                to="/answer"
-              >
-                <FaRegCommentDots  className="sidebar_icon" />
-                Answer
+                Question & Answer
               </NavLink>
             </li>
             <li className="nav-item px-3">
