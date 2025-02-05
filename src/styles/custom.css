@@ -158,13 +158,14 @@
   color: #fff;
 }
 
-.btn-back{
-  border: 1px solid #adadad;
-  color: black;
+.btn-back {
+  padding: 0.4rem 0.7rem;
+  border: 1px solid #424242;
+  border-radius: 5px;
 }
 
-.btn-back:hover{
-  border: 1px solid #adadad;
-  color: black;
-  background-color: #adadad;
+.btn-back:hover {
+  border: 1px solid #424242;
+  background-color: #cac8c8;
+  border-radius: 5px;
 }

@@ -92,13 +92,19 @@ function AdminHeader({ handleLogout }) {
                       <IoHomeOutline className="me-2" />
                       <span>Home</span>
                     </Link>
-
                     <Link
                       to="/school"
                       className="dropdown-item d-flex align-items-center"
                     >
                       <GoPencil className="me-2" />
                       <span>Profile</span>
+                    </Link>
+                    <Link
+                      to="/profile_card"
+                      className="dropdown-item d-flex align-items-center"
+                    >
+                      <GoPencil className="me-2" />
+                      <span>Profile Card</span>
                     </Link>
                     <Link
                       to="/role"
@@ -115,10 +121,7 @@ function AdminHeader({ handleLogout }) {
                       }}
                     >
                       <TbLogout2 className="me-2" />
-                      <span
-                      >
-                        Logout
-                      </span>
+                      <span>Logout</span>
                     </Link>
                   </div>
                 )}
