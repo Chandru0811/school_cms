@@ -2,13 +2,16 @@ import { Link } from "react-router-dom";
 
 function ChallengesView() {
   const data = {
+    subject_topic:"Science",
     type: "Math",
     title: "Solving for x",
     description: "Solve for x in the equation 3x - 4 = 11",
     level: "Medium",
     solution: "x = 5",
     hint: "First, add 4 to both sides, then divide by 3.",
-    time_limit: 20
+    time_limit: 20,
+    answer_type: "Filled",
+    challenges_diagram:"",
   };
 
   return (
@@ -52,10 +55,32 @@ function ChallengesView() {
         </div>
         <div className="container-fluid px-4">
           <div className="row pb-3">
+          <div className="col-md-6 col-12 my-2">
+              <div className="row">
+                <div className="col-6">
+                  <p className="fw-medium text-sm">Subject Topic</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">: {data.subject_topic}</p>
+                </div>
+              </div>
+            </div>
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Title</p>
+                  <p className="fw-medium text-sm">Level</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">
+                    : {data.level}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12 my-2">
+              <div className="row">
+                <div className="col-6">
+                  <p className="fw-medium text-sm">Challenge Title</p>
                 </div>
                 <div className="col-6">
                   <p className="text-muted text-sm">: {data.title}</p>
@@ -77,11 +102,11 @@ function ChallengesView() {
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Level</p>
+                  <p className="fw-medium text-sm">Answer Type</p>
                 </div>
                 <div className="col-6">
                   <p className="text-muted text-sm">
-                    : {data.level}
+                    : {data.answer_type}
                   </p>
                 </div>
               </div>
@@ -123,7 +148,19 @@ function ChallengesView() {
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Description</p>
+                  <p className="fw-medium text-sm">Challange Diagram</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm text-break ">
+                    : {data.challenges_diagram}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12 my-2">
+              <div className="row">
+                <div className="col-6">
+                  <p className="fw-medium text-sm">Challenge    Description</p>
                 </div>
                 <div className="col-6">
                   <p className="text-muted text-sm text-break ">

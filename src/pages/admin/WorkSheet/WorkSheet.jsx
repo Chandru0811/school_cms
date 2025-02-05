@@ -12,15 +12,15 @@ import Delete from "../../../components/common/Delete";
 import PropTypes from "prop-types";
 import { MoreVert as MoreVertIcon } from "@mui/icons-material";
 
-function Question() {
+function Worksheet() {
   const [menuAnchor, setMenuAnchor] = useState(null);
   const navigate = useNavigate();
 
   const data = [
-    { id: 1, topic_id: "Grammer", subject_id: "English", difficult_level: "Medium" },
-    { id: 4, topic_id: "Grammer", subject_id: "Tamil", difficult_level: "Hard" },
-    { id: 3, topic_id: "Formula", subject_id: "Maths", difficult_level: "Medium" },
-    { id: 2, topic_id: "Biology", subject_id: "Science", difficult_level: "Easy" },
+    { id: 1, name: "Algebra Worksheet 1", type: "Practiceh", target_score: "80",reward: "10" },
+    { id: 4, name: "Grammer Worksheet 1", type: "Theory", target_score: "50",reward: "20" },
+    { id: 3, name: "Formula Worksheet 1", type: "Theory", target_score: "25",reward: "30" },
+    { id: 2, name: "Biology Worksheet 1", type: "Practicee", target_score: "100",reward: "40" },
   ];
 
   const columns = useMemo(
@@ -51,9 +51,10 @@ function Question() {
             <MoreVertIcon />
           </IconButton>
         ),
-      },{ accessorKey: "topic_id", header: "Topic ID" },
-      { accessorKey: "subject_id", header: "Subject ID" },
-      { accessorKey: "difficult_level", header: "Difficult Level" },
+      },{ accessorKey: "name", header: "Topic" },
+      { accessorKey: "type", header: "Subject" },
+      { accessorKey: "target_score", header: "Difficult Level" },
+      { accessorKey: "reward", header: "Reward" },
       { accessorKey: "created_by", header: "Created By" },
       {
         accessorKey: "created_at",
@@ -132,7 +133,7 @@ function Question() {
           <span className="breadcrumb-separator"> &gt; </span>
         </li>
         <li className="breadcrumb-item active" aria-current="page">
-          &nbsp;Question
+          &nbsp;Work Sheet
         </li>
       </ol>
       <div className="card">
@@ -143,12 +144,12 @@ function Question() {
             </div>
             <span className="me-2 text-muted">
               This database shows the list of&nbsp;
-              <span className="database_name">Question</span>
+              <span className="database_name">Work Sheet</span>
             </span>
           </div>
         </div>
         <div className="mb-3 d-flex justify-content-end">
-          <Link to="/question/add">
+          <Link to="/worksheet/add">
             <button
               type="button"
               className="btn btn-button btn-sm me-2"
@@ -179,7 +180,7 @@ function Question() {
                 },
               }}
               muiTableBodyRowProps={() => ({
-                onClick: () => navigate(`/question/view`),
+                onClick: () => navigate(`/worksheet/view`),
                 style: { cursor: "pointer" },
               })}
             />
@@ -190,7 +191,7 @@ function Question() {
             open={Boolean(menuAnchor)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={() => navigate(`/question/edit`)}>Edit</MenuItem>
+            <MenuItem onClick={() => navigate(`/worksheet/edit`)}>Edit</MenuItem>
             <MenuItem>
               <Delete path={`admin/company/delete`} onOpen={handleMenuClose} />
             </MenuItem>
@@ -201,9 +202,9 @@ function Question() {
   );
 }
 
-Question.propTypes = {
+Worksheet.propTypes = {
   row: PropTypes.func.isRequired,
   cell: PropTypes.func.isRequired,
 };
 
-export default Question;
+export default Worksheet;

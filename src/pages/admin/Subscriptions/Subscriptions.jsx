@@ -12,15 +12,33 @@ import Delete from "../../../components/common/Delete";
 import PropTypes from "prop-types";
 import { MoreVert as MoreVertIcon } from "@mui/icons-material";
 
-function Question() {
+function Subscriptions() {
   const [menuAnchor, setMenuAnchor] = useState(null);
   const navigate = useNavigate();
 
   const data = [
-    { id: 1, topic_id: "Grammer", subject_id: "English", difficult_level: "Medium" },
-    { id: 4, topic_id: "Grammer", subject_id: "Tamil", difficult_level: "Hard" },
-    { id: 3, topic_id: "Formula", subject_id: "Maths", difficult_level: "Medium" },
-    { id: 2, topic_id: "Biology", subject_id: "Science", difficult_level: "Easy" },
+    {
+      id: 1,
+        name: "Premium Subscription",
+        description: "Unlock all premium features with priority support",
+        details: {
+            "start_date": "2024-01-01",
+            "end_date": "2024-03-31"
+        },
+        price: 49.99,
+        duration: 90
+    },
+    {
+        id: 2,
+        name: "Basic Subscription",
+        description: "Unlock all basic features",
+        details: {
+            "start_date": "2024-01-01",
+            "end_date": "2024-03-31"
+        },
+        price: 29.99,
+        duration: 90
+    },
   ];
 
   const columns = useMemo(
@@ -51,9 +69,28 @@ function Question() {
             <MoreVertIcon />
           </IconButton>
         ),
-      },{ accessorKey: "topic_id", header: "Topic ID" },
-      { accessorKey: "subject_id", header: "Subject ID" },
-      { accessorKey: "difficult_level", header: "Difficult Level" },
+      },
+      {
+        accessorKey: "name",
+        enableHiding: false,
+        header: "Name",
+      },
+      {
+        accessorKey: "description",
+        enableHiding: false,
+        header: "Description",
+      },
+      {
+        accessorKey: "price",
+        header: "Price",
+        enableHiding: false,
+        size: 40,
+      },      
+      {
+        accessorKey: "duration",
+        header: "Duration",
+        size: 40,
+      },
       { accessorKey: "created_by", header: "Created By" },
       {
         accessorKey: "created_at",
@@ -132,7 +169,7 @@ function Question() {
           <span className="breadcrumb-separator"> &gt; </span>
         </li>
         <li className="breadcrumb-item active" aria-current="page">
-          &nbsp;Question
+          &nbsp;Subscriptions
         </li>
       </ol>
       <div className="card">
@@ -143,12 +180,12 @@ function Question() {
             </div>
             <span className="me-2 text-muted">
               This database shows the list of&nbsp;
-              <span className="database_name">Question</span>
+              <span className="database_name">Subscriptions</span>
             </span>
           </div>
         </div>
         <div className="mb-3 d-flex justify-content-end">
-          <Link to="/question/add">
+          <Link to="/subscription/add">
             <button
               type="button"
               className="btn btn-button btn-sm me-2"
@@ -169,9 +206,6 @@ function Question() {
               enableFullScreenToggle={false}
               initialState={{
                 columnVisibility: {
-                  working_hrs: false,
-                  citizenship: false,
-                  nationality: false,
                   created_by: false,
                   created_at: false,
                   updated_by: false,
@@ -179,7 +213,7 @@ function Question() {
                 },
               }}
               muiTableBodyRowProps={() => ({
-                onClick: () => navigate(`/question/view`),
+                onClick: () => navigate(`/subscription/view`),
                 style: { cursor: "pointer" },
               })}
             />
@@ -190,9 +224,9 @@ function Question() {
             open={Boolean(menuAnchor)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={() => navigate(`/question/edit`)}>Edit</MenuItem>
+            <MenuItem onClick={() => navigate(`/subscription/edit`)}>Edit</MenuItem>
             <MenuItem>
-              <Delete path={`admin/company/delete`} onOpen={handleMenuClose} />
+              <Delete path={`admin/subscription/delete`} onOpen={handleMenuClose} />
             </MenuItem>
           </Menu>
         </>
@@ -201,9 +235,9 @@ function Question() {
   );
 }
 
-Question.propTypes = {
+Subscriptions.propTypes = {
   row: PropTypes.func.isRequired,
   cell: PropTypes.func.isRequired,
 };
 
-export default Question;
+export default Subscriptions;

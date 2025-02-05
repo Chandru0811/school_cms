@@ -32,6 +32,24 @@ import Challenges from "../pages/admin/Challenges/Challenges";
 import ChallengesAdd from "../pages/admin/Challenges/ChallengesAdd";
 import ChallengesEdit from "../pages/admin/Challenges/ChallengesEdit";
 import ChallengesView from "../pages/admin/Challenges/ChallengesView";
+import WorkSheet from "../pages/admin/WorkSheet/WorkSheet";
+import WorkSheetAdd from "../pages/admin/WorkSheet/WorkSheetAdd";
+import WorkSheetEdit from "../pages/admin/WorkSheet/WorkSheetEdit";
+import WorkSheetView from "../pages/admin/WorkSheet/WorkSheetView";
+import Homework from "../pages/admin/Homework/Homework";
+import HomeworkAdd from "../pages/admin/Homework/HomeworkAdd";
+import HomeworkEdit from "../pages/admin/Homework/HomeworkEdit";
+import HomeworkView from "../pages/admin/Homework/HomeworkView";
+import RewardAdd from "../pages/admin/Rewards/RewardAdd";
+import RewardEdit from "../pages/admin/Rewards/RewardEdit";
+import RewardView from "../pages/admin/Rewards/RewardView";
+import Rewards from "../pages/admin/Rewards/Rewards";
+import Subscriptions from "../pages/admin/Subscriptions/Subscriptions";
+import SubscriptionAdd from "../pages/admin/Subscriptions/SubscriptionAdd";
+import SubscriptionEdit from "../pages/admin/Subscriptions/SubscriptionEdit";
+import SubscriptionView from "../pages/admin/Subscriptions/SubscriptionView";
+import Settings from "../pages/admin/Settings/Settings";
+import RolePermission from "../pages/admin/Settings/RolePermission";
 
 function Admin({ handleLogout }) {
   return (
@@ -91,11 +109,41 @@ function Admin({ handleLogout }) {
                     {/* Roll  */}
                     <Route path="/role" element={<Role />} />
 
+                    {/* Work Sheet  */}
+                    <Route path="/worksheet" element={<WorkSheet />} />
+                    <Route path="/worksheet/add" element={<WorkSheetAdd />} />
+                    <Route path="/worksheet/edit" element={<WorkSheetEdit />} />
+                    <Route path="/worksheet/view" element={<WorkSheetView />} />
+
+                     {/* Home Work  */}
+                     <Route path="/homework" element={<Homework />} />
+                    <Route path="/homework/add" element={<HomeworkAdd />} />
+                    <Route path="/homework/edit" element={<HomeworkEdit />} />
+                    <Route path="/homework/view" element={<HomeworkView />} />
+
                     {/* Challenges  */}
                     <Route path="/challenges" element={<Challenges />} />
                     <Route path="/challenges/add" element={<ChallengesAdd />} />
                     <Route path="/challenges/edit" element={<ChallengesEdit />} />
                     <Route path="/challenges/view" element={<ChallengesView />} />
+
+                    {/*  rewards  */}
+                    <Route path="/rewards" element={<Rewards />} />
+                    <Route path="/reward/add" element={<RewardAdd />} />
+                    <Route path="/reward/edit" element={<RewardEdit />} />
+                    <Route path="/reward/view" element={<RewardView />} />
+
+
+                    {/* Subscriptions  */}
+                    <Route path="/subscriptions" element={<Subscriptions />} />
+                    <Route path="/subscription/add" element={<SubscriptionAdd />} />
+                    <Route path="/subscription/edit" element={<SubscriptionEdit />} />
+                    <Route path="/subscription/view" element={<SubscriptionView />} />
+
+                     {/* Profile   */}
+                    <Route path="/profile_card" element={<Settings />} />
+                    <Route path="/role_permission" element={<RolePermission />} />
+
                   </Routes>
                 </div>
                 <AdminFooter />

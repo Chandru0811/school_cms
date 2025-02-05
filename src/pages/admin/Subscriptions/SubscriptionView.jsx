@@ -1,14 +1,15 @@
 import { Link } from "react-router-dom";
 
-function QustionView() {
+function SubscriptionView() {
   const data = {
-    grade_id: "A",
-    subject_id: "Maths",
-    topic_id: "Problem",
-    difficult_level: "Easy",
-    upload_file: "",
-    ques_type: "Closed",
-    hint: "Jane Doe Dummy",
+    name: "Premium Subscription",
+    description: "Unlock all premium features with priority support",
+    details: {
+      start_date: "2024-01-01",
+      end_date: "2024-03-31",
+    },
+    price: 49.99,
+    duration: 90,
   };
 
   return (
@@ -24,13 +25,13 @@ function QustionView() {
           <span className="breadcrumb-separator"> &gt; </span>
         </li>
         <li>
-          <Link to="/question" className="custom-breadcrumb">
-            &nbsp;Question
+          <Link to="/subscriptions" className="custom-breadcrumb">
+            &nbsp;Subscriptions
           </Link>
           <span className="breadcrumb-separator"> &gt; </span>
         </li>
         <li className="breadcrumb-item active" aria-current="page">
-          &nbsp;Question View
+          &nbsp;Subscriptions View
         </li>
       </ol>
       <div className="card vh-100" style={{ border: "1px solid #dbd9d0" }}>
@@ -39,11 +40,11 @@ function QustionView() {
             <div className="d-flex">
               <div className="dot active"></div>
             </div>
-            <span className="me-2 text-muted">View Question</span>
+            <span className="me-2 text-muted">View Subscriptions</span>
           </div>
           <div className="my-2 pe-3 d-flex align-items-center">
-            <Link to="/question">
-              <button type="button " className="btn btn-sm btn-back">
+            <Link to="/subscriptions">
+              <button type="button" className="btn btn-sm btn-back">
                 Back
               </button>
             </Link>
@@ -55,79 +56,61 @@ function QustionView() {
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Grade</p>
+                  <p className="fw-medium text-sm">Name</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.grade_id}</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Subject</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">
-                    : {data.subject_id}
-                  </p>
+                  <p className="text-muted text-sm">: {data.name}</p>
                 </div>
               </div>
             </div>
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Topic</p>
+                  <p className="fw-medium text-sm">Price</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">
-                    : {data.topic_id}
-                  </p>
+                  <p className="text-muted text-sm">: {data.price}</p>
                 </div>
               </div>
             </div>
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Difficult Level</p>
+                  <p className="fw-medium text-sm">Start Date</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.difficult_level}</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Upload File</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm text-break ">
-                    : {data.upload_file}
-                  </p>
+                  <p className="text-muted text-sm">: {data.details.start_date}</p>
                 </div>
               </div>
             </div>
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Question Type</p>
+                  <p className="fw-medium text-sm">End Date</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm text-break ">
-                    : {data.ques_type}
-                  </p>
+                  <p className="text-muted text-sm">: {data.details.end_date}</p>
                 </div>
               </div>
             </div>
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Hint</p>
+                  <p className="fw-medium text-sm">Duration</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm text-break ">
-                    : {data.hint}
+                  <p className="text-muted text-sm">: {data.duration}</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-12 my-2">
+              <div className="row">
+                <div className="col-3">
+                  <p className="fw-medium text-sm">Description</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm text-break">
+                    : {data.description}
                   </p>
                 </div>
               </div>
@@ -139,4 +122,4 @@ function QustionView() {
   );
 }
 
-export default QustionView;
+export default SubscriptionView;

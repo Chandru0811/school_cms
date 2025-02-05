@@ -12,15 +12,25 @@ import Delete from "../../../components/common/Delete";
 import PropTypes from "prop-types";
 import { MoreVert as MoreVertIcon } from "@mui/icons-material";
 
-function Question() {
+function Rewards() {
   const [menuAnchor, setMenuAnchor] = useState(null);
   const navigate = useNavigate();
 
   const data = [
-    { id: 1, topic_id: "Grammer", subject_id: "English", difficult_level: "Medium" },
-    { id: 4, topic_id: "Grammer", subject_id: "Tamil", difficult_level: "Hard" },
-    { id: 3, topic_id: "Formula", subject_id: "Maths", difficult_level: "Medium" },
-    { id: 2, topic_id: "Biology", subject_id: "Science", difficult_level: "Easy" },
+    {
+      id: 1,
+      target_archieved: 1,
+      name: "Star of the Month",
+      description: "Reward for best performance",
+      reward_type: "Certificate",
+    },
+    {
+        id: 2,
+        target_archieved: 0,
+        name: "Star of the Month",
+        description: "Reward for best performance",
+        reward_type: "Medal",
+    },
   ];
 
   const columns = useMemo(
@@ -51,9 +61,29 @@ function Question() {
             <MoreVertIcon />
           </IconButton>
         ),
-      },{ accessorKey: "topic_id", header: "Topic ID" },
-      { accessorKey: "subject_id", header: "Subject ID" },
-      { accessorKey: "difficult_level", header: "Difficult Level" },
+      },
+      {
+        accessorKey: "name",
+        enableHiding: false,
+        header: "Name",
+      },
+      {
+        accessorKey: "description",
+        enableHiding: false,
+        header: "Description",
+      },
+      {
+        accessorKey: "target_archieved",
+        header: "Target Achieved",
+        enableHiding: false,
+        size: 40,
+        Cell: ({ row }) => (row.getValue("target_archieved") === 1 ? "True" : "False"),
+      },      
+      {
+        accessorKey: "reward_type",
+        header: "Reward Type",
+        size: 40,
+      },
       { accessorKey: "created_by", header: "Created By" },
       {
         accessorKey: "created_at",
@@ -132,7 +162,7 @@ function Question() {
           <span className="breadcrumb-separator"> &gt; </span>
         </li>
         <li className="breadcrumb-item active" aria-current="page">
-          &nbsp;Question
+          &nbsp;Rewards
         </li>
       </ol>
       <div className="card">
@@ -143,12 +173,12 @@ function Question() {
             </div>
             <span className="me-2 text-muted">
               This database shows the list of&nbsp;
-              <span className="database_name">Question</span>
+              <span className="database_name">Rewards</span>
             </span>
           </div>
         </div>
         <div className="mb-3 d-flex justify-content-end">
-          <Link to="/question/add">
+          <Link to="/reward/add">
             <button
               type="button"
               className="btn btn-button btn-sm me-2"
@@ -169,9 +199,6 @@ function Question() {
               enableFullScreenToggle={false}
               initialState={{
                 columnVisibility: {
-                  working_hrs: false,
-                  citizenship: false,
-                  nationality: false,
                   created_by: false,
                   created_at: false,
                   updated_by: false,
@@ -179,7 +206,7 @@ function Question() {
                 },
               }}
               muiTableBodyRowProps={() => ({
-                onClick: () => navigate(`/question/view`),
+                onClick: () => navigate(`/reward/view`),
                 style: { cursor: "pointer" },
               })}
             />
@@ -190,9 +217,9 @@ function Question() {
             open={Boolean(menuAnchor)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={() => navigate(`/question/edit`)}>Edit</MenuItem>
+            <MenuItem onClick={() => navigate(`/reward/edit`)}>Edit</MenuItem>
             <MenuItem>
-              <Delete path={`admin/company/delete`} onOpen={handleMenuClose} />
+              <Delete path={`admin/reward/delete`} onOpen={handleMenuClose} />
             </MenuItem>
           </Menu>
         </>
@@ -201,9 +228,9 @@ function Question() {
   );
 }
 
-Question.propTypes = {
+Rewards.propTypes = {
   row: PropTypes.func.isRequired,
   cell: PropTypes.func.isRequired,
 };
 
-export default Question;
+export default Rewards;
