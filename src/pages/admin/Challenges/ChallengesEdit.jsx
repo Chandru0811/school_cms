@@ -4,18 +4,24 @@ import * as Yup from "yup";
 
 function ChallengesEdit() {
   const validationSchema = Yup.object({
-    type: Yup.string().required("*Type is required"),
-    title: Yup.string().required("*Title is required"),
-    level: Yup.string().required("*Level is required"),
+    subject_topic: Yup.string().required("*Subject topic is required"),
+    type: Yup.string().required("*Select a type"),
+    answer_type: Yup.string().required("*Select a answer type"),
+    title: Yup.string().required("*Challenged title is required"),
+    level: Yup.string().required("*Select a level"),
     solution: Yup.string().required("*Solution is required"),
     time_limit: Yup.string().required("*Time limit is required"),
     description: Yup.string()
       .notRequired("*Description is a required field")
       .max(250, "*The maximum length is 250 characters"),
+    challenges_diagram: Yup.string().required(
+      "*Select a challenges diagram file"
+    ),
   });
 
   const formik = useFormik({
     initialValues: {
+      subject_topic: "",
       type: "",
       title: "",
       level: "",
@@ -23,6 +29,8 @@ function ChallengesEdit() {
       time_limit: "",
       hint: "",
       description: "",
+      answer_type: "",
+      challenges_diagram: "",
     },
     validationSchema: validationSchema,
     onSubmit: async () => {},
@@ -70,7 +78,7 @@ function ChallengesEdit() {
             </div>
             <div className="my-2 pe-3 d-flex align-items-center">
               <Link to="/challenges">
-                <button type="button " className="btn btn-sm btn-border">
+                <button type="button " className="btn btn-sm btn-back">
                   Back
                 </button>
               </Link>
@@ -84,42 +92,23 @@ function ChallengesEdit() {
             <div className="row py-4">
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
-                  Title<span className="text-danger">*</span>
+                  Subject Topic<span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
-                  className={`form-control ${
-                    formik.touched.title && formik.errors.title
+                  className={`form-control form-control-sm ${
+                    formik.touched.subject_topic && formik.errors.subject_topic
                       ? "is-invalid"
                       : ""
                   }`}
-                  {...formik.getFieldProps("title")}
+                  {...formik.getFieldProps("subject_topic")}
                 />
-                {formik.touched.title && formik.errors.title && (
-                  <div className="invalid-feedback">{formik.errors.title}</div>
-                )}
-              </div>
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
-                  Type<span className="text-danger">*</span>
-                </label>
-                <select
-                  aria-label="Default select example"
-                  className={`form-select ${
-                    formik.touched.type && formik.errors.type
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  {...formik.getFieldProps("type")}
-                >
-                  <option value=""></option>
-                  <option value="English">English</option>
-                  <option value="Tamil">Tamil</option>
-                  <option value="Maths">Maths</option>
-                </select>
-                {formik.touched.type && formik.errors.type && (
-                  <div className="invalid-feedback">{formik.errors.type}</div>
-                )}
+                {formik.touched.subject_topic &&
+                  formik.errors.subject_topic && (
+                    <div className="invalid-feedback">
+                      {formik.errors.subject_topic}
+                    </div>
+                  )}
               </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
@@ -127,7 +116,7 @@ function ChallengesEdit() {
                 </label>
                 <select
                   aria-label="Default select example"
-                  className={`form-select ${
+                  className={`form-select form-select-sm ${
                     formik.touched.level && formik.errors.level
                       ? "is-invalid"
                       : ""
@@ -145,7 +134,109 @@ function ChallengesEdit() {
               </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
-                Time Limit<span className="text-danger">*</span>
+                  Type<span className="text-danger">*</span>
+                </label>
+                <select
+                  aria-label="Default select example"
+                  className={`form-select form-select-sm ${
+                    formik.touched.type && formik.errors.type
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("type")}
+                >
+                  <option value=""></option>
+                  <option value="English">English</option>
+                  <option value="Tamil">Tamil</option>
+                  <option value="Maths">Maths</option>
+                </select>
+                {formik.touched.type && formik.errors.type && (
+                  <div className="invalid-feedback">{formik.errors.type}</div>
+                )}
+              </div>
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Challenges Title<span className="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  className={`form-control form-control-sm ${
+                    formik.touched.title && formik.errors.title
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("title")}
+                />
+                {formik.touched.title && formik.errors.title && (
+                  <div className="invalid-feedback">{formik.errors.title}</div>
+                )}
+              </div>
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">Challanges Description</label>
+                <textarea
+                  rows={5}
+                  className={`form-control ${
+                    formik.touched.description && formik.errors.description
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("description")}
+                  maxLength={825}
+                />
+                {formik.touched.description && formik.errors.description && (
+                  <div className="invalid-feedback">
+                    {formik.errors.description}
+                  </div>
+                )}
+              </div>
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Challenges Diagram<span className="text-danger">*</span>
+                </label>
+                <input
+                  type="file"
+                  className={`form-control form-control-sm ${
+                    formik.touched.Challenges_diagram &&
+                    formik.errors.Challenges_diagram
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("Challenges_diagram")}
+                />
+                {formik.touched.Challenges_diagram &&
+                  formik.errors.Challenges_diagram && (
+                    <div className="invalid-feedback">
+                      {formik.errors.Challenges_diagram}
+                    </div>
+                  )}
+              </div>
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Answer Type<span className="text-danger">*</span>
+                </label>
+                <select
+                  aria-label="Default select example"
+                  className={`form-select form-select-sm ${
+                    formik.touched.answer_type && formik.errors.answer_type
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("answer_type")}
+                >
+                  <option value=""></option>
+                  <option value="Easy">Easy</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Hard">Hard</option>
+                </select>
+                {formik.touched.answer_type && formik.errors.answer_type && (
+                  <div className="invalid-feedback">
+                    {formik.errors.answer_type}
+                  </div>
+                )}
+              </div>
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Time Limit<span className="text-danger">*</span>
                 </label>
                 <select
                   aria-label="Default select example"
@@ -162,13 +253,13 @@ function ChallengesEdit() {
                   <option value="45">45 mins</option>
                 </select>
                 {formik.touched.time_limit && formik.errors.time_limit && (
-                  <div className="invalid-feedback">{formik.errors.time_limit}</div>
+                  <div className="invalid-feedback">
+                    {formik.errors.time_limit}
+                  </div>
                 )}
               </div>
               <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
-                  Hint
-                </label>
+                <label className="form-label">Hint</label>
                 <input
                   type="text"
                   className={`form-control ${
@@ -198,26 +289,6 @@ function ChallengesEdit() {
                 {formik.touched.solution && formik.errors.solution && (
                   <div className="invalid-feedback">
                     {formik.errors.solution}
-                  </div>
-                )}
-              </div>
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
-                  Description
-                </label>
-                <textarea
-                  rows={5}
-                  className={`form-control ${
-                    formik.touched.description && formik.errors.description
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  {...formik.getFieldProps("description")}
-                  maxLength={825}
-                />
-                {formik.touched.description && formik.errors.description && (
-                  <div className="invalid-feedback">
-                    {formik.errors.description}
                   </div>
                 )}
               </div>

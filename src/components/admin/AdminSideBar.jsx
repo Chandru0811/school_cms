@@ -5,8 +5,7 @@ import { BsBarChart } from "react-icons/bs";
 import PropTypes from "prop-types";
 import { IoSchoolOutline } from "react-icons/io5";
 import { AiOutlineAppstore } from "react-icons/ai";
-import { FaQuestionCircle, FaRegCommentDots, FaBook,  FaRegStar, FaBookOpen} from "react-icons/fa";
-
+import { FaQuestionCircle, FaBook,  FaRegStar, FaBookOpen,FaFileAlt,FaBookReader, FaTrophy, FaGift,FaCreditCard } from "react-icons/fa";
 
 
 function AdminSidebar() {
@@ -130,10 +129,50 @@ function AdminSidebar() {
               <NavLink
                 className="nav-link"
                 style={{ borderRadius: "5px" }}
+                to="/worksheet"
+              >
+                <FaFileAlt  className="sidebar_icon" />
+                Work Sheet
+              </NavLink>
+            </li>
+            <li className="nav-item px-3">
+              <NavLink
+                className="nav-link"
+                style={{ borderRadius: "5px" }}
+                to="/homework"
+              >
+                <FaBookReader   className="sidebar_icon" />
+                Homework
+              </NavLink>
+            </li>
+            <li className="nav-item px-3">
+              <NavLink
+                className="nav-link"
+                style={{ borderRadius: "5px" }}
                 to="/challenges"
               >
-                <FaRegCommentDots  className="sidebar_icon" />
+                <FaTrophy  className="sidebar_icon" />
                 Challenges
+              </NavLink>
+            </li>
+            <li className="nav-item px-3">
+              <NavLink
+                className="nav-link"
+                style={{ borderRadius: "5px" }}
+                to="/rewards"
+              >
+                <FaGift  className="sidebar_icon" />
+                Rewards
+              </NavLink>
+            </li>
+            <li className="nav-item px-3">
+              <NavLink
+                className="nav-link"
+                style={{ borderRadius: "5px" }}
+                to="/subscriptions"
+              >
+                <FaCreditCard  className="sidebar_icon" />
+                subscriptions
               </NavLink>
             </li>
             {/* <li className="nav-item px-3">
