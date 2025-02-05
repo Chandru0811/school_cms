@@ -28,6 +28,10 @@ import QuestionAdd from "../pages/admin/Question/QuestionAdd";
 import QuestionEdit from "../pages/admin/Question/QuestionEdit";
 import QuestionView from "../pages/admin/Question/QuestionView";
 import Answer from "../pages/admin/Answer/Answer";
+import Challenges from "../pages/admin/Challenges/Challenges";
+import ChallengesAdd from "../pages/admin/Challenges/ChallengesAdd";
+import ChallengesEdit from "../pages/admin/Challenges/ChallengesEdit";
+import ChallengesView from "../pages/admin/Challenges/ChallengesView";
 
 function Admin({ handleLogout }) {
   return (
@@ -35,20 +39,20 @@ function Admin({ handleLogout }) {
       <div>
         <BrowserRouter>
           <div className="d-flex flex-column flex-lg-row bg-surface-secondary ">
-            <AdminSideBar handleLogout={handleLogout} />
+            <AdminSideBar />
 
             <div className="flex-grow-1 h-screen overflow-y-lg-auto">
-              <AdminHeader />
+              <AdminHeader handleLogout={handleLogout}/>
               <main className="pt-2" style={{ backgroundColor: "#f2f2f2" }}>
                 <div style={{ minHeight: "90vh" }} className="px-2">
                   <Routes>
                     <Route path="/" element={<AdminDashboard />} />
                     <Route path="*" element={<AdminDashboard />} />
 
-                     {/* Center  */}
-                     <Route path="/center" element={<Center />} />
+                    {/* Center  */}
+                    <Route path="/center" element={<Center />} />
 
-                      {/* Grade */}
+                    {/* Grade */}
                     <Route path="/grade" element={<Grade />} />
                     <Route path="/gradeAdd" element={<GradeAdd />} />
                     <Route path="/gradeEdit" element={<GradeEdit />} />
@@ -81,10 +85,17 @@ function Admin({ handleLogout }) {
                     {/* Answer  */}
                     <Route path="/answer" element={<Answer />} />
 
-                      {/* School  */}
-                      <Route path="/school" element={<School />} />
-                      {/* Roll  */}
-                      <Route path="/role" element={<Role />} />
+                    {/* School  */}
+                    <Route path="/school" element={<School />} />
+
+                    {/* Roll  */}
+                    <Route path="/role" element={<Role />} />
+
+                    {/* Challenges  */}
+                    <Route path="/challenges" element={<Challenges />} />
+                    <Route path="/challenges/add" element={<ChallengesAdd />} />
+                    <Route path="/challenges/edit" element={<ChallengesEdit />} />
+                    <Route path="/challenges/view" element={<ChallengesView />} />
                   </Routes>
                 </div>
                 <AdminFooter />

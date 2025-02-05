@@ -85,8 +85,8 @@ function Challenges() {
         size: 40,
       },
       {
-        accessorKey: "solution",
-        header: "Solution",
+        accessorKey: "time_limit",
+        header: "Time Limit",
         size: 40,
       },
       { accessorKey: "created_by", header: "Created By" },
@@ -183,7 +183,7 @@ function Challenges() {
           </div>
         </div>
         <div className="mb-3 d-flex justify-content-end">
-          <Link to="/school/add">
+          <Link to="/challenges/add">
             <button
               type="button"
               className="btn btn-button btn-sm me-2"
@@ -214,7 +214,7 @@ function Challenges() {
                 },
               }}
               muiTableBodyRowProps={() => ({
-                onClick: () => navigate(`/school/view`),
+                onClick: () => navigate(`/challenges/view`),
                 style: { cursor: "pointer" },
               })}
             />

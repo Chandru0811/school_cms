@@ -136,8 +136,17 @@ function AdminSidebar() {
                 Answer
               </NavLink>
             </li>
-
             <li className="nav-item px-3">
+              <NavLink
+                className="nav-link"
+                style={{ borderRadius: "5px" }}
+                to="/challenges"
+              >
+                <FaRegCommentDots  className="sidebar_icon" />
+                Challenges
+              </NavLink>
+            </li>
+            {/* <li className="nav-item px-3">
               <NavLink
                 className="nav-link"
                 style={{ borderRadius: "5px" }}
@@ -156,8 +165,7 @@ function AdminSidebar() {
                 <IoSchoolOutline className="sidebar_icon" />
                 Role
               </NavLink>
-            </li>
-
+            </li> */}
           </ul>
           {/* <div className="ps-4 mt-auto w-100 mb-4">
             <div className="navbar-nav">
