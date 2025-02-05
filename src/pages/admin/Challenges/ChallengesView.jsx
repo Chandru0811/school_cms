@@ -43,7 +43,7 @@ function ChallengesView() {
           </div>
           <div className="my-2 pe-3 d-flex align-items-center">
             <Link to="/challenges">
-              <button type="button" className="btn btn-sm btn-border">
+              <button type="button" className="btn btn-sm btn-back">
                 Back
               </button>
             </Link>
