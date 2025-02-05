@@ -1,5 +1,4 @@
 import { Dialog, DialogActions, DialogTitle, DialogContent } from "@mui/material";
-import Button from "react-bootstrap/Button";
 
 
 function SubjectView({ show, setShow }) {
@@ -13,22 +12,43 @@ function SubjectView({ show, setShow }) {
        <hr className="m-0"></hr>
        <DialogContent>
         <div className="row">
-          <div className="col-md-6 col-12 mb-3">
-            <strong>Grade ID:</strong> 4
+        <div className="col-md-6 col-12">
+          <div className="row mt-3  mb-2">
+            <div className="col-6 ">
+              <p className="">Grade ID</p>
+            </div>
+            <div className="col-6">
+              <p className="text-muted text-sm">:</p>
+            </div>
           </div>
-          <div className="col-md-6 col-12 mb-3">
-            <strong>Name:</strong> Sumaiya
+        </div>
+        <div className="col-md-6 col-12">
+          <div className="row mt-3  mb-2">
+            <div className="col-6 ">
+              <p className="">Name</p>
+            </div>
+            <div className="col-6">
+              <p className="text-muted text-sm">:</p>
+            </div>
           </div>
-          <div className="col-md-6 col-12 mb-3">
-            <strong>Description:</strong> Dummy Description
+        </div>
+        <div className="col-md-6 col-12">
+          <div className="row mt-3  mb-2">
+            <div className="col-6 ">
+              <p className="">Description</p>
+            </div>
+            <div className="col-6">
+              <p className="text-muted text-sm">:</p>
+            </div>
           </div>
+        </div>
         </div>
       </DialogContent>
       <hr className="m-0"></hr>
       <DialogActions className="mt-3">
-        <Button className="btn btn-sm btn-border bg-light text-dark" onClick={handleClose}>
+        <button className="btn btn-sm btn-border bg-light text-dark" onClick={handleClose}>
           Back
-        </Button>
+        </button>
       </DialogActions>
         </Dialog>
     );

@@ -1,5 +1,4 @@
 import { Dialog, DialogActions, DialogTitle, DialogContent } from "@mui/material";
-import Button from "react-bootstrap/Button";
 
 
 function AnswerView({ show, setShow }) {
@@ -13,22 +12,43 @@ function AnswerView({ show, setShow }) {
        <hr className="m-0"></hr>
        <DialogContent>
         <div className="row">
-          <div className="col-md-6 col-12 mb-3">
-            <strong>Question ID:</strong> 1
+        <div className="col-md-6 col-12">
+          <div className="row mt-3  mb-2">
+            <div className="col-6 ">
+              <p className="">Question ID</p>
+            </div>
+            <div className="col-6">
+              <p className="text-muted text-sm">:</p>
+            </div>
           </div>
-          <div className="col-md-6 col-12 mb-3">
-            <strong>Answer Type:</strong> 2
+        </div>
+        <div className="col-md-6 col-12">
+          <div className="row mt-3  mb-2">
+            <div className="col-6 ">
+              <p className="">Answer Type</p>
+            </div>
+            <div className="col-6">
+              <p className="text-muted text-sm">:</p>
+            </div>
           </div>
-          <div className="col-md-6 col-12 mb-3">
-            <strong>Answer:</strong> Dummy Answer
+        </div>
+        <div className="col-md-6 col-12">
+          <div className="row mt-3  mb-2">
+            <div className="col-6 ">
+              <p className="">Answer</p>
+            </div>
+            <div className="col-6">
+              <p className="text-muted text-sm">:</p>
+            </div>
           </div>
+        </div>
         </div>
       </DialogContent>
       <hr className="m-0"></hr>
       <DialogActions className="mt-3">
-        <Button className="btn btn-sm btn-border bg-light text-dark" onClick={handleClose}>
+        <button className="btn btn-sm btn-border bg-light text-dark" onClick={handleClose}>
           Back
-        </Button>
+        </button>
       </DialogActions>
         </Dialog>
     );

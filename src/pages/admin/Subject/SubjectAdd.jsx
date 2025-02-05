@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Button from "react-bootstrap/Button";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import {
@@ -44,9 +43,13 @@ function SubjectAdd() {
   return (
     <>
       <button
-        className="btn btn-primary" onClick={handleShow}>
-        Add Subject
-      </button>
+              type="button"
+              className="btn btn-button btn-sm me-2"
+              style={{ fontWeight: "600px !important" }}
+              onClick={handleShow}
+            >
+              &nbsp; Add &nbsp;&nbsp; <i className="bi bi-plus-lg"></i>
+            </button>
 
       <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
         <form
@@ -128,13 +131,13 @@ function SubjectAdd() {
           </DialogContent>
           <hr className="m-0"></hr>
           <DialogActions className="mt-3">
-            <Button
+            <button
               className="btn btn-sm btn-border bg-light text-dark"
               onClick={handleClose}
             >
               Cancel
-            </Button>
-            <Button
+            </button>
+            <button
               type="submit"
               className="btn btn-button btn-sm"
               disabled={loadIndicator}
@@ -146,7 +149,7 @@ function SubjectAdd() {
                 ></span>
               )}
               Submit
-            </Button>
+            </button>
           </DialogActions>
         </form>
       </Dialog>
