@@ -54,27 +54,27 @@ function Admin({ handleLogout }) {
 
                     {/* Grade */}
                     <Route path="/grade" element={<Grade />} />
-                    <Route path="/gradeAdd" element={<GradeAdd />} />
-                    <Route path="/gradeEdit" element={<GradeEdit />} />
-                    <Route path="/gradeView" element={<GradeView />} />
+                    <Route path="/grade/add" element={<GradeAdd />} />
+                    <Route path="/grade/edit" element={<GradeEdit />} />
+                    <Route path="/grade/view" element={<GradeView />} />
 
                     {/* Student */}
                     <Route path="/student" element={<Student />} />
-                    <Route path="/studentAdd" element={<StudentAdd />} />
-                    <Route path="/studentEdit" element={<StudentEdit />} />
-                    <Route path="/studentView" element={<StudentView />} />
+                    <Route path="/student/add" element={<StudentAdd />} />
+                    <Route path="/student/edit" element={<StudentEdit />} />
+                    <Route path="/student/view" element={<StudentView />} />
 
                     {/* Subject */}
                     <Route path="/subject" element={<Subject />} />
-                    <Route path="/subjectAdd" element={<SubjectAdd />} />
-                    <Route path="/subjectEdit" element={<SubjectEdit />} />
-                    <Route path="/subjectView" element={<SubjectView />} />
+                    <Route path="/subject/add" element={<SubjectAdd />} />
+                    <Route path="/subject/edit" element={<SubjectEdit />} />
+                    <Route path="/subject/view" element={<SubjectView />} />
 
                     {/* Topic  */}
                     <Route path="/topic" element={<Topic />} />
-                    <Route path="/topicAdd" element={<TopicAdd />} />
-                    <Route path="/topicEdit" element={<TopicEdit />} />
-                    <Route path="/topicView" element={<TopicView />} />
+                    <Route path="/topic/add" element={<TopicAdd />} />
+                    <Route path="/topic/edit" element={<TopicEdit />} />
+                    <Route path="/topic/view" element={<TopicView />} />
 
                     {/* Question  */}
                     <Route path="/question" element={<Question />} />

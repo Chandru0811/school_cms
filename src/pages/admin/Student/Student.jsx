@@ -23,7 +23,7 @@ function Student() {
       student_first_name: "Sumaiya",
       student_last_name: "Bee",
       email: "sumaiya@gmail.com",
-      admission_no : 12,
+      admission_no: 12,
       createdBy: "Admin",
       createdAt: "2024-01-01",
       updatedAt: "2024-02-01",
@@ -35,12 +35,13 @@ function Student() {
       student_first_name: "Sumaiya",
       student_last_name: "Bee",
       email: "sumaiya@gmail.com",
-      admission_no : 12,
+      admission_no: 12,
       createdBy: "Admin",
       createdAt: "2024-01-01",
       updatedAt: "2024-02-01",
       updatedBy: "Moderator",
-    }, ];
+    },
+  ];
 
   const columns = useMemo(
     () => [
@@ -185,7 +186,7 @@ function Student() {
           </div>
         </div>
         <div className="mb-3 d-flex justify-content-end">
-          <Link to="/studentAdd">
+          <Link to="/student/Add">
             <button
               type="button"
               className="btn btn-button btn-sm me-2"
@@ -216,7 +217,7 @@ function Student() {
                 },
               }}
               muiTableBodyRowProps={() => ({
-                onClick: () => navigate(`/studentView`),
+                onClick: () => navigate(`/student/View`),
                 style: { cursor: "pointer" },
               })}
             />
@@ -227,7 +228,7 @@ function Student() {
             open={Boolean(menuAnchor)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={() => navigate(`/studentEdit`)}>Edit</MenuItem>
+            <MenuItem onClick={() => navigate(`/student/Edit`)}>Edit</MenuItem>
             <MenuItem>
               <Delete path={`admin/company/delete`} onOpen={handleMenuClose} />
             </MenuItem>

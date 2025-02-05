@@ -1,4 +1,5 @@
 import { Dialog, DialogActions, DialogTitle, DialogContent } from "@mui/material";
+import PropTypes from "prop-types";
 
 
 function SubjectView({ show, setShow }) {
@@ -53,6 +54,11 @@ function SubjectView({ show, setShow }) {
         </Dialog>
     );
   }
+
+  SubjectView.propTypes = {
+    show: PropTypes.func.isRequired,
+    setShow: PropTypes.func.isRequired,
+  };
   
   export default SubjectView;
   
