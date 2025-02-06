@@ -46,7 +46,7 @@ function TopicView({ show, setShow }) {
       </DialogContent>
       <hr className="m-0"></hr>
       <DialogActions className="mt-3">
-        <button className="btn btn-sm btn-back bg-light text-dark" onClick={handleClose}>
+        <button className="btn btn-sm btn-back" onClick={handleClose}>
           Back
         </button>
       </DialogActions>

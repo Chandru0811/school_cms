@@ -21,7 +21,7 @@ function CenterEdit({ show, setShow,}) {
   };
 
   const validationSchema = yup.object().shape({
-    school_id: yup.string().required("*Selected a school id"),
+    school_id: yup.string().required("*Selected a school"),
     name: yup.string().required("*Name is required"),
     location: yup.string().required("*Location is required"),
   });
@@ -60,7 +60,7 @@ function CenterEdit({ show, setShow,}) {
           <div className="row">
             <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
-                  School ID<span className="text-danger">*</span>
+                  School<span className="text-danger">*</span>
                 </label>
                 <select
                   className={`form-select form-select-sm ${
@@ -122,7 +122,7 @@ function CenterEdit({ show, setShow,}) {
         <hr className="m-0"></hr>
         <DialogActions className="mt-3">
           <button
-            className="btn btn-sm btn-back bg-light text-dark"
+            className="btn btn-sm btn-back"
             onClick={handleClose}
           >
             Cancel
