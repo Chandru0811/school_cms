@@ -50,6 +50,10 @@ import SubscriptionEdit from "../pages/admin/Subscriptions/SubscriptionEdit";
 import SubscriptionView from "../pages/admin/Subscriptions/SubscriptionView";
 import Settings from "../pages/admin/Settings/Settings";
 import RolePermission from "../pages/admin/Settings/RolePermission";
+import Employee from "../pages/admin/Employee/Employee";
+import EmployeeAdd from "../pages/admin/Employee/EmployeeAdd";
+import EmployeeEdit from "../pages/admin/Employee/EmployeeEdit";
+import EmployeeView from "../pages/admin/Employee/EmployeeView";
 
 function Admin({ handleLogout }) {
   return (
@@ -75,6 +79,12 @@ function Admin({ handleLogout }) {
                     <Route path="/grade/add" element={<GradeAdd />} />
                     <Route path="/grade/edit" element={<GradeEdit />} />
                     <Route path="/grade/view" element={<GradeView />} />
+
+                    {/* Employee */}
+                    <Route path="/employee" element={<Employee />} />
+                    <Route path="/employee/Add" element={<EmployeeAdd />} />
+                    <Route path="/employee/Edit" element={<EmployeeEdit />} />
+                    <Route path="/employee/View" element={<EmployeeView />} />
 
                     {/* Student */}
                     <Route path="/student" element={<Student />} />

@@ -7,32 +7,30 @@ function ChallengesView() {
     title: "Solving for x",
     description: "Solve for x in the equation 3x - 4 = 11",
     level: "Medium",
-    solution: "x = 5",
     hint: "First, add 4 to both sides, then divide by 3.",
     time_limit: 20,
-    answer_type: "Filled",
-    challenges_diagram:"",
+    ques_type: "Filled",
   };
 
   return (
     <div className="container-fluid px-0">
       <ol
-        className="breadcrumb my-2 px-2"
+        className="breadcrumb my-2 px-2 d-flex align-items-center"
         style={{ listStyle: "none", padding: 0, margin: 0 }}
       >
         <li>
-          <Link to="/" className="custom-breadcrumb">
+          <Link to="/" className="custom-breadcrumb text-sm">
             Home
           </Link>
           <span className="breadcrumb-separator"> &gt; </span>
         </li>
         <li>
-          <Link to="/challenges" className="custom-breadcrumb">
+          <Link to="/challenges" className="custom-breadcrumb text-sm">
             &nbsp;Challenges
           </Link>
           <span className="breadcrumb-separator"> &gt; </span>
         </li>
-        <li className="breadcrumb-item active" aria-current="page">
+        <li className="breadcrumb-item active text-sm" aria-current="page">
           &nbsp;Challenges View
         </li>
       </ol>
@@ -42,7 +40,7 @@ function ChallengesView() {
             <div className="d-flex">
               <div className="dot active"></div>
             </div>
-            <span className="me-2 text-muted">View Challenges</span>
+            <span className="me-2 text-muted text-sm">View Challenges</span>
           </div>
           <div className="my-2 pe-3 d-flex align-items-center">
             <Link to="/challenges">
@@ -102,11 +100,11 @@ function ChallengesView() {
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Answer Type</p>
+                  <p className="fw-medium text-sm">Question Type</p>
                 </div>
                 <div className="col-6">
                   <p className="text-muted text-sm">
-                    : {data.answer_type}
+                    : {data.ques_type}
                   </p>
                 </div>
               </div>
@@ -129,30 +127,6 @@ function ChallengesView() {
                 <div className="col-6">
                   <p className="text-muted text-sm text-break ">
                     : {data.hint}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Solution</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm text-break ">
-                    : {data.solution}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Challange Diagram</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm text-break ">
-                    : {data.challenges_diagram}
                   </p>
                 </div>
               </div>

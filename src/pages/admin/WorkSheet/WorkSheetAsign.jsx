@@ -28,7 +28,7 @@ function WorkSheetAsign() {
 
   const formik = useFormik({
     initialValues: {
-      student_id:"",
+      student_id: "",
       grade_id: "",
     },
     validationSchema: validationSchema,
@@ -40,14 +40,14 @@ function WorkSheetAsign() {
 
   return (
     <>
-
-            <button
-              type="button"
-              className="btn btn-button btn-sm me-2"
-              style={{ fontWeight: "600px !important" }}
-              onClick={handleShow}
-               >Assign
-            </button>
+      <button
+        type="button"
+        className="btn btn-button btn-sm me-2"
+        style={{ fontWeight: "600px !important" }}
+        onClick={handleShow}
+      >
+        Assign
+      </button>
 
       <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
         <form
@@ -59,7 +59,7 @@ function WorkSheetAsign() {
           }}
         >
           <DialogTitle>
-            <p className="headColor">Asign Work Sheet</p>
+            <p className="headColor">Asign Worksheet</p>
           </DialogTitle>
           <hr className="m-0"></hr>
           <DialogContent>
@@ -114,10 +114,7 @@ function WorkSheetAsign() {
           </DialogContent>
           <hr className="m-0"></hr>
           <DialogActions className="mt-3">
-            <button
-              className="btn btn-sm btn-back"
-              onClick={handleClose}
-            >
+            <button className="btn btn-sm btn-back" onClick={handleClose}>
               Cancel
             </button>
             <button

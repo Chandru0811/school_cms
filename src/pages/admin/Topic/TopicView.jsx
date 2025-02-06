@@ -1,7 +1,15 @@
 import { Dialog, DialogActions, DialogTitle, DialogContent } from "@mui/material";
+import PropTypes from "prop-types";
 
 
 function TopicView({ show, setShow }) {
+
+  const data = {
+    grade_id:"School",
+    name:"Dummy School",
+    description:"Mint",
+  }
+
     const handleClose = () => {
       setShow(false);
     };
@@ -15,10 +23,10 @@ function TopicView({ show, setShow }) {
         <div className="col-md-6 col-12">
           <div className="row mt-3  mb-2">
             <div className="col-6 ">
-              <p className="">Subject ID</p>
+              <p className="">Grade ID</p>
             </div>
             <div className="col-6">
-              <p className="text-muted text-sm">:</p>
+              <p className="text-muted text-sm">: {data.grade_id}</p>
             </div>
           </div>
         </div>
@@ -28,7 +36,7 @@ function TopicView({ show, setShow }) {
               <p className="">Name</p>
             </div>
             <div className="col-6">
-              <p className="text-muted text-sm">:</p>
+              <p className="text-muted text-sm">: {data.name}</p>
             </div>
           </div>
         </div>
@@ -38,7 +46,7 @@ function TopicView({ show, setShow }) {
               <p className="">Description</p>
             </div>
             <div className="col-6">
-              <p className="text-muted text-sm">:</p>
+              <p className="text-muted text-sm">: {data.description}</p>
             </div>
           </div>
         </div>
@@ -53,6 +61,11 @@ function TopicView({ show, setShow }) {
         </Dialog>
     );
   }
+
+  TopicView.propTypes = {
+    show: PropTypes.func.isRequired,
+    setShow: PropTypes.func.isRequired,
+  };
   
   export default TopicView;
   

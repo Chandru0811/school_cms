@@ -1,35 +1,35 @@
 import { Link } from "react-router-dom";
 
-function RewardView() {
+function EmployeeView() {
   const data = {
-    target_archieved: 1,
-    name: "Star of the Month",
-    description: "Reward for best performance",
-    reward_type: ["Gift Card", "Cash"],
-    reward_value: "1000",
-    image: null,
+    center_id: "School A",
+    role_id: "Junior Developer",
+    name: "Sumaiya",
+    email: "sumaiya@gmail.com",
+    password: "12345678",
+    mobile: "9043878105",
   };
 
   return (
     <div className="container-fluid px-0">
       <ol
-        className="breadcrumb my-2 px-2 d-flex align-items-center"
+        className="breadcrumb my-2 px-2"
         style={{ listStyle: "none", padding: 0, margin: 0 }}
       >
         <li>
           <Link to="/" className="custom-breadcrumb text-sm">
             Home
           </Link>
-          <span className="breadcrumb-separator text-sm"> &gt; </span>
+          <span className="breadcrumb-separator"> &gt; </span>
         </li>
         <li>
-          <Link to="/reward" className="custom-breadcrumb text-sm">
-            &nbsp;Rewards
+          <Link to="/employee" className="custom-breadcrumb text-sm">
+            &nbsp;Employee
           </Link>
-          <span className="breadcrumb-separator text-sm"> &gt; </span>
+          <span className="breadcrumb-separator"> &gt; </span>
         </li>
         <li className="breadcrumb-item active text-sm" aria-current="page">
-          &nbsp;Reward View
+          &nbsp;Employee View
         </li>
       </ol>
       <div className="card vh-100" style={{ border: "1px solid #dbd9d0" }}>
@@ -38,11 +38,11 @@ function RewardView() {
             <div className="d-flex">
               <div className="dot active"></div>
             </div>
-            <span className="me-2 text-muted text-sm">View Reward</span>
+            <span className="me-2 text-muted">View Employee</span>
           </div>
           <div className="my-2 pe-3 d-flex align-items-center">
-            <Link to="/reward">
-              <button type="button" className="btn btn-sm btn-back">
+            <Link to="/employee">
+              <button type="button " className="btn btn-sm btn-back">
                 Back
               </button>
             </Link>
@@ -54,7 +54,27 @@ function RewardView() {
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Name</p>
+                  <p className="fw-medium text-sm">Centre Name</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">: {data.center_id}</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12 my-2">
+              <div className="row">
+                <div className="col-6">
+                  <p className="fw-medium text-sm">Role Name</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">: {data.role_id}</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12 my-2">
+              <div className="row">
+                <div className="col-6">
+                  <p className="fw-medium text-sm">Employee Name</p>
                 </div>
                 <div className="col-6">
                   <p className="text-muted text-sm">: {data.name}</p>
@@ -64,60 +84,32 @@ function RewardView() {
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Target Achieved</p>
+                  <p className="fw-medium text-sm">Employee Email</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">
-                    : {data.target_archieved}
-                  </p>
+                  <p className="text-muted text-sm">: {data.email}</p>
                 </div>
               </div>
             </div>
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Reward Type</p>
+                  <p className="fw-medium text-sm">Employee Email</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">
-                    : {data.reward_type.join(", ")}
-                  </p>
+                  <p className="text-muted text-sm">: {data.email}</p>
                 </div>
               </div>
             </div>
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Reward Value</p>
+                  <p className="fw-medium text-sm">Employee Password</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.reward_value}</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Description</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm text-break">
-                    : {data.description}
+                  <p className="text-muted text-sm text-break ">
+                    : {data.password}
                   </p>
-                </div>
-              </div>
-            </div>
-            <div className="col-12 my-2">
-              <div className="row">
-                <div className="col-3">
-                  <p className="fw-medium text-sm">Image</p>
-                </div>
-                <div className="col-3">
-                  <img
-                    src={data.image ? URL.createObjectURL(data.image) : ""}
-                    alt="Reward"
-                    style={{ maxWidth: "100%", height: "auto" }}
-                  />
                 </div>
               </div>
             </div>
@@ -128,4 +120,4 @@ function RewardView() {
   );
 }
 
-export default RewardView;
+export default EmployeeView;

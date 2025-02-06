@@ -9,27 +9,28 @@ function QustionView() {
     upload_file: "",
     ques_type: "Closed",
     hint: "Jane Doe Dummy",
+    question: "Dummy",
   };
 
   return (
     <div className="container-fluid px-0">
       <ol
-        className="breadcrumb my-2 px-2"
+        className="breadcrumb my-2 px-2 d-flex align-items-center"
         style={{ listStyle: "none", padding: 0, margin: 0 }}
       >
         <li>
-          <Link to="/" className="custom-breadcrumb">
+          <Link to="/" className="custom-breadcrumb text-sm">
             Home
           </Link>
           <span className="breadcrumb-separator"> &gt; </span>
         </li>
         <li>
-          <Link to="/question" className="custom-breadcrumb">
+          <Link to="/question" className="custom-breadcrumb text-sm">
             &nbsp;Question
           </Link>
           <span className="breadcrumb-separator"> &gt; </span>
         </li>
-        <li className="breadcrumb-item active" aria-current="page">
+        <li className="breadcrumb-item active text-sm" aria-current="page">
           &nbsp;Question View
         </li>
       </ol>
@@ -39,7 +40,7 @@ function QustionView() {
             <div className="d-flex">
               <div className="dot active"></div>
             </div>
-            <span className="me-2 text-muted">View Question</span>
+            <span className="me-2 text-muted text-sm">View Question</span>
           </div>
           <div className="my-2 pe-3 d-flex align-items-center">
             <Link to="/question">
@@ -99,12 +100,10 @@ function QustionView() {
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Upload File</p>
+                  <p className="fw-medium text-sm">Question</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm text-break ">
-                    : {data.upload_file}
-                  </p>
+                  <p className="text-muted text-sm">: {data.question}</p>
                 </div>
               </div>
             </div>
@@ -116,6 +115,18 @@ function QustionView() {
                 <div className="col-6">
                   <p className="text-muted text-sm text-break ">
                     : {data.ques_type}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12 my-2">
+              <div className="row">
+                <div className="col-6">
+                  <p className="fw-medium text-sm">Upload File</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm text-break ">
+                    : {data.upload_file}
                   </p>
                 </div>
               </div>

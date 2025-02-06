@@ -3,6 +3,13 @@ import PropTypes from "prop-types";
 
 
 function SubjectView({ show, setShow }) {
+
+  const data = {
+    grade_id:"School",
+    name:"Dummy School",
+    description:"Mint",
+  }
+
     const handleClose = () => {
       setShow(false);
     };
@@ -19,7 +26,7 @@ function SubjectView({ show, setShow }) {
               <p className="">Grade ID</p>
             </div>
             <div className="col-6">
-              <p className="text-muted text-sm">:</p>
+              <p className="text-muted text-sm">: {data.grade_id}</p>
             </div>
           </div>
         </div>
@@ -29,7 +36,7 @@ function SubjectView({ show, setShow }) {
               <p className="">Name</p>
             </div>
             <div className="col-6">
-              <p className="text-muted text-sm">:</p>
+              <p className="text-muted text-sm">: {data.name}</p>
             </div>
           </div>
         </div>
@@ -39,7 +46,7 @@ function SubjectView({ show, setShow }) {
               <p className="">Description</p>
             </div>
             <div className="col-6">
-              <p className="text-muted text-sm">:</p>
+              <p className="text-muted text-sm">: {data.description}</p>
             </div>
           </div>
         </div>

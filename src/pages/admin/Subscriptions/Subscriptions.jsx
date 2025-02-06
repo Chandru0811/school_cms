@@ -19,25 +19,25 @@ function Subscriptions() {
   const data = [
     {
       id: 1,
-        name: "Premium Subscription",
-        description: "Unlock all premium features with priority support",
-        details: {
-            "start_date": "2024-01-01",
-            "end_date": "2024-03-31"
-        },
-        price: 49.99,
-        duration: 90
+      name: "Premium Subscription",
+      description: "Unlock all premium features with priority support",
+      details: {
+        start_date: "2024-01-01",
+        end_date: "2024-03-31",
+      },
+      price: 49.99,
+      duration: 90,
     },
     {
-        id: 2,
-        name: "Basic Subscription",
-        description: "Unlock all basic features",
-        details: {
-            "start_date": "2024-01-01",
-            "end_date": "2024-03-31"
-        },
-        price: 29.99,
-        duration: 90
+      id: 2,
+      name: "Basic Subscription",
+      description: "Unlock all basic features",
+      details: {
+        start_date: "2024-01-01",
+        end_date: "2024-03-31",
+      },
+      price: 29.99,
+      duration: 90,
     },
   ];
 
@@ -85,7 +85,7 @@ function Subscriptions() {
         header: "Price",
         enableHiding: false,
         size: 40,
-      },      
+      },
       {
         accessorKey: "duration",
         header: "Duration",
@@ -159,32 +159,30 @@ function Subscriptions() {
   return (
     <div className="container-fluid mb-4 px-0">
       <ol
-        className="breadcrumb my-3"
+        className="breadcrumb my-3 d-flex align-items-center"
         style={{ listStyle: "none", padding: 0, margin: 0 }}
       >
         <li>
-          <Link to="/" className="custom-breadcrumb">
+          <Link to="/" className="custom-breadcrumb text-sm">
             Home
           </Link>
-          <span className="breadcrumb-separator"> &gt; </span>
+          <span className="breadcrumb-separator text-sm"> &gt; </span>
         </li>
-        <li className="breadcrumb-item active" aria-current="page">
+        <li className="breadcrumb-item active text-sm" aria-current="page">
           &nbsp;Subscriptions
         </li>
       </ol>
       <div className="card">
-        <div className="d-flex justify-content-between align-items-center card_header mb-3 p-1">
+        <div className="d-flex justify-content-between align-items-center card_header p-2">
           <div className="d-flex align-items-center">
             <div className="d-flex">
               <div className="dot active"></div>
             </div>
-            <span className="me-2 text-muted">
+            <span className="me-2 text-muted text-sm">
               This database shows the list of&nbsp;
               <span className="database_name">Subscriptions</span>
             </span>
           </div>
-        </div>
-        <div className="mb-3 d-flex justify-content-end">
           <Link to="/subscription/add">
             <button
               type="button"
@@ -224,9 +222,14 @@ function Subscriptions() {
             open={Boolean(menuAnchor)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={() => navigate(`/subscription/edit`)}>Edit</MenuItem>
+            <MenuItem onClick={() => navigate(`/subscription/edit`)}>
+              Edit
+            </MenuItem>
             <MenuItem>
-              <Delete path={`admin/subscription/delete`} onOpen={handleMenuClose} />
+              <Delete
+                path={`admin/subscription/delete`}
+                onOpen={handleMenuClose}
+              />
             </MenuItem>
           </Menu>
         </>

@@ -17,10 +17,34 @@ function Worksheet() {
   const navigate = useNavigate();
 
   const data = [
-    { id: 1, name: "Algebra Worksheet 1", type: "Practiceh", target_score: "80",reward: "10" },
-    { id: 4, name: "Grammer Worksheet 1", type: "Theory", target_score: "50",reward: "20" },
-    { id: 3, name: "Formula Worksheet 1", type: "Theory", target_score: "25",reward: "30" },
-    { id: 2, name: "Biology Worksheet 1", type: "Practicee", target_score: "100",reward: "40" },
+    {
+      id: 1,
+      name: "Algebra Worksheet 1",
+      type: "Practiceh",
+      target_score: "80",
+      reward: "10",
+    },
+    {
+      id: 4,
+      name: "Grammer Worksheet 1",
+      type: "Theory",
+      target_score: "50",
+      reward: "20",
+    },
+    {
+      id: 3,
+      name: "Formula Worksheet 1",
+      type: "Theory",
+      target_score: "25",
+      reward: "30",
+    },
+    {
+      id: 2,
+      name: "Biology Worksheet 1",
+      type: "Practicee",
+      target_score: "100",
+      reward: "40",
+    },
   ];
 
   const columns = useMemo(
@@ -51,7 +75,8 @@ function Worksheet() {
             <MoreVertIcon />
           </IconButton>
         ),
-      },{ accessorKey: "name", header: "Topic" },
+      },
+      { accessorKey: "name", header: "Topic" },
       { accessorKey: "type", header: "Subject" },
       { accessorKey: "target_score", header: "Difficult Level" },
       { accessorKey: "reward", header: "Reward" },
@@ -123,32 +148,30 @@ function Worksheet() {
   return (
     <div className="container-fluid mb-4 px-0">
       <ol
-        className="breadcrumb my-3"
+        className="breadcrumb my-3 d-flex align-items-center"
         style={{ listStyle: "none", padding: 0, margin: 0 }}
       >
         <li>
-          <Link to="/" className="custom-breadcrumb">
+          <Link to="/" className="custom-breadcrumb text-sm">
             Home
           </Link>
-          <span className="breadcrumb-separator"> &gt; </span>
+          <span className="breadcrumb-separator text-sm"> &gt; </span>
         </li>
-        <li className="breadcrumb-item active" aria-current="page">
-          &nbsp;Work Sheet
+        <li className="breadcrumb-item active text-sm" aria-current="page">
+          &nbsp;Worksheet
         </li>
       </ol>
       <div className="card">
-        <div className="d-flex justify-content-between align-items-center card_header mb-3 p-1">
+        <div className="d-flex justify-content-between align-items-center card_header p-2">
           <div className="d-flex align-items-center">
             <div className="d-flex">
               <div className="dot active"></div>
             </div>
-            <span className="me-2 text-muted">
+            <span className="me-2 text-muted text-sm">
               This database shows the list of&nbsp;
-              <span className="database_name">Work Sheet</span>
+              <span className="database_name">Worksheet</span>
             </span>
           </div>
-        </div>
-        <div className="mb-3 d-flex justify-content-end">
           <Link to="/worksheet/add">
             <button
               type="button"
@@ -191,7 +214,9 @@ function Worksheet() {
             open={Boolean(menuAnchor)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={() => navigate(`/worksheet/edit`)}>Edit</MenuItem>
+            <MenuItem onClick={() => navigate(`/worksheet/edit`)}>
+              Edit
+            </MenuItem>
             <MenuItem>
               <Delete path={`admin/company/delete`} onOpen={handleMenuClose} />
             </MenuItem>
