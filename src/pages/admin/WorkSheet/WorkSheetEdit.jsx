@@ -1,17 +1,18 @@
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { Link } from "react-router-dom";
+import { MultiSelect } from "react-multi-select-component";
 import { useState } from "react";
 
 function WorkSheetEdit() {
-  const options = [
-    { value: "1", label: "All" },
-    { value: "2", label: "One" },
-    { value: "3", label: "Two" },
-    { value: "4", label: "Three" },
-    { value: "5", label: "Four" },
+  const [selectedServices, setSelectedServices] = useState([]);
+  const serviceOption = [
+    { value: "1", label: "Multi Choice" },
+    { value: "2", label: "Filled" },
+    { value: "3", label: "Closed" },
+    { value: "4", label: "Short Answer" },
+    { value: "5", label: "Upload" },
   ];
-  const [isOpen, setIsOpen] = useState(false);
 
   const validationSchema = yup.object().shape({
     name: yup.string().required("*Title is required"),
@@ -48,23 +49,9 @@ function WorkSheetEdit() {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      // setLoadIndicator(true);
       console.log("Form values:", values);
     },
   });
-
-  const handleCheckboxChange = (event) => {
-    const { value, checked } = event.target;
-    let selectedValues = [...formik.values.question];
-
-    if (checked) {
-      selectedValues.push(value);
-    } else {
-      selectedValues = selectedValues.filter((item) => item !== value);
-    }
-
-    formik.setFieldValue("question", selectedValues);
-  };
 
   return (
     <div className="container p-3">
@@ -254,55 +241,34 @@ function WorkSheetEdit() {
                 </div>
               )}
             </div>
-            <div className="col-md-6 col-12 mb-3">
-              <div>
+            <div className="col-md-6 col-12 mb-4">
               <label className="form-label">
-                Question
+                Service Id<span className="text-danger">*</span>
               </label>
-              </div>
-              <div className="dropdown question-dropdown">
-                <button
-                  type="button"
-                  className={`form-control form-control-sm dropdown-toggle ${
-                    formik.touched.question && formik.errors.question
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  onClick={() => setIsOpen(!isOpen)}
-                >
-                  {formik.values.question.length > 0
-                    ? options
-                        .filter((opt) =>
-                          formik.values.question.includes(opt.value)
-                        )
-                        .map((opt) => opt.label)
-                        .join(", ")
-                    : "Select options"}
-                </button>
-
-                {isOpen && (
-                  <ul className="dropdown-menu show">
-                    {options.map((option) => (
-                      <li key={option.value} className="dropdown-item">
-                        <input
-                          type="checkbox"
-                          value={option.value}
-                          checked={formik.values.question.includes(
-                            option.value
-                          )}
-                          onChange={handleCheckboxChange}
-                          className="form-check-input me-2"
-                        />
-                        {option.label}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-
-              {formik.touched.question && formik.errors.question && (
-                <div className="invalid-feedback d-block">
-                  {formik.errors.question}
+              <MultiSelect
+                options={serviceOption}
+                value={selectedServices}
+                onChange={(selected) => {
+                  setSelectedServices(selected);
+                  formik.setFieldValue(
+                    "service_id",
+                    selected.map((option) => option.value)
+                  );
+                }}
+                labelledBy="Select Service"
+                className={`form-multi-select ${
+                  formik.touched.service_id && formik.errors.service_id
+                    ? "is-invalid"
+                    : ""
+                }`}
+                style={{
+                  height: "37.6px !important",
+                  minHeight: "37.6px",
+                }}
+              />
+              {formik.touched.service_id && formik.errors.service_id && (
+                <div className="invalid-feedback">
+                  {formik.errors.service_id}
                 </div>
               )}
             </div>

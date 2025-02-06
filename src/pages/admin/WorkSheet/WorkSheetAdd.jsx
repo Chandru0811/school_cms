@@ -1,9 +1,19 @@
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { Link } from "react-router-dom";
+import { MultiSelect } from "react-multi-select-component";
 import { useState } from "react";
 
 function WorkSheetAdd() {
+  const [selectedServices, setSelectedServices] = useState([]);
+
+  const serviceOption = [
+    { value: "1", label: "Multi Choice" },
+    { value: "2", label: "Filled" },
+    { value: "3", label: "Closed" },
+    { value: "4", label: "Short Answer" },
+    { value: "5", label: "Upload" },
+  ];
 
   const validationSchema = yup.object().shape({
     name: yup.string().required("*Title is required"),
@@ -19,7 +29,6 @@ function WorkSheetAdd() {
       .required("*Target Score field is required")
       .positive("*Target Score must be a positive number")
       .integer("*Target Score must be an integer"),
-
     reward: yup
       .number()
       .typeError("*Reward must be a number")
@@ -43,46 +52,10 @@ function WorkSheetAdd() {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      // setLoadIndicator(true);
       console.log("Form values:", values);
     },
   });
-
-  const options = [
-    { value: "1", label: "All" },
-    { value: "2", label: "Multi Choice" },
-    { value: "3", label: "Filled" },
-    { value: "4", label: "Closed" },
-    { value: "5", label: "Short Answer" },
-    { value: "6", label: "Upload" },
-  ];
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleCheckboxChange = (event) => {
-    const { value, checked } = event.target;
   
-    if (value === "1") {
-      formik.setFieldValue(
-        "question",
-        checked ? options.map((opt) => opt.value) : []
-      );
-    } else {
-      let selectedValues = [...formik.values.question];
-      if (checked) {
-        selectedValues.push(value);
-      } else {
-        selectedValues = selectedValues.filter((item) => item !== value);
-      }  
-      if (selectedValues.length === options.length - 1) {
-        selectedValues.push("0");
-      }  
-      if (selectedValues.includes("1") && selectedValues.length < options.length) {
-        selectedValues = selectedValues.filter((item) => item !== "0");
-      }
-      formik.setFieldValue("question", selectedValues);
-    }
-  };
-
   return (
     <div className="container p-3">
       <form
@@ -158,7 +131,7 @@ function WorkSheetAdd() {
                     }`}
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    checked={formik.values.questionType === "Challenge"} // Default checked
+                    checked={formik.values.questionType === "Challenge"}
                   />
                   <label className="form-check-label">Challenge</label>
                 </div>
@@ -271,55 +244,32 @@ function WorkSheetAdd() {
                 </div>
               )}
             </div>
-            <div className="col-md-6 col-12 mb-3">
-              <div>
-              <label className="form-label">
-                Question
-              </label>
-              </div>
-              <div className="dropdown question-dropdown">
-                <button
-                  type="button"
-                  className={`form-control form-control-sm dropdown-toggle ${
-                    formik.touched.question && formik.errors.question
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  onClick={() => setIsOpen(!isOpen)}
-                >
-                  {formik.values.question.length > 0
-                    ? options
-                        .filter((opt) =>
-                          formik.values.question.includes(opt.value)
-                        )
-                        .map((opt) => opt.label)
-                        .join(", ")
-                    : "Select options"}
-                </button>
-
-                {isOpen && (
-                  <ul className="dropdown-menu show">
-                    {options.map((option) => (
-                      <li key={option.value} className="dropdown-item">
-                        <input
-                          type="checkbox"
-                          value={option.value}
-                          checked={formik.values.question.includes(
-                            option.value
-                          )}
-                          onChange={handleCheckboxChange}
-                          className="form-check-input me-2"
-                        />
-                        {option.label}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-
-              {formik.touched.question && formik.errors.question && (
-                <div className="invalid-feedback d-block">
-                  {formik.errors.question}
+            <div className="col-md-6 col-12 mb-4">
+              <label className="form-label">Question</label>
+              <MultiSelect
+                options={serviceOption}
+                value={selectedServices}
+                onChange={(selected) => {
+                  setSelectedServices(selected);
+                  formik.setFieldValue(
+                    "service_id",
+                    selected.map((option) => option.value)
+                  );
+                }}
+                labelledBy="Select Service"
+                className={`form-multi-select ${
+                  formik.touched.service_id && formik.errors.service_id
+                    ? "is-invalid"
+                    : ""
+                }`}
+                style={{
+                  height: "37.6px !important",
+                  minHeight: "37.6px",
+                }}
+              />
+              {formik.touched.service_id && formik.errors.service_id && (
+                <div className="invalid-feedback">
+                  {formik.errors.service_id}
                 </div>
               )}
             </div>
