@@ -19,6 +19,7 @@ function SubjectAdd() {
 
   const handleShow = () => {
     setShow(true);
+    formik.resetForm();
   };
 
   const validationSchema = yup.object().shape({
@@ -29,7 +30,7 @@ function SubjectAdd() {
 
   const formik = useFormik({
     initialValues: {
-      grade_id:"",
+      grade_id: "",
       name: "",
       description: "",
     },
@@ -43,13 +44,13 @@ function SubjectAdd() {
   return (
     <>
       <button
-              type="button"
-              className="btn btn-button btn-sm me-2"
-              style={{ fontWeight: "600px !important" }}
-              onClick={handleShow}
-            >
-              &nbsp; Add &nbsp;&nbsp; <i className="bi bi-plus-lg"></i>
-            </button>
+        type="button"
+        className="btn btn-button btn-sm me-2"
+        style={{ fontWeight: "600px !important" }}
+        onClick={handleShow}
+      >
+        &nbsp; Add &nbsp;&nbsp; <i className="bi bi-plus-lg"></i>
+      </button>
 
       <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
         <form
@@ -60,9 +61,7 @@ function SubjectAdd() {
             }
           }}
         >
-          <DialogTitle>
-            <p className="headColor">Add Subject</p>
-          </DialogTitle>
+          <DialogTitle>Add Subject</DialogTitle>
           <hr className="m-0"></hr>
           <DialogContent>
             <div className="row">
@@ -114,7 +113,7 @@ function SubjectAdd() {
                   Description<span className="text-danger">*</span>
                 </label>
                 <textarea
-                  className={`form-control form-control-sm ${
+                  className={`form-control ${
                     formik.touched.description && formik.errors.description
                       ? "is-invalid"
                       : ""
@@ -123,18 +122,16 @@ function SubjectAdd() {
                   {...formik.getFieldProps("description")}
                 />
                 {formik.touched.description && formik.errors.description && (
-                  <div className="invalid-feedback">{formik.errors.description}</div>
+                  <div className="invalid-feedback">
+                    {formik.errors.description}
+                  </div>
                 )}
               </div>
-
             </div>
           </DialogContent>
           <hr className="m-0"></hr>
           <DialogActions className="mt-3">
-            <button
-              className="btn btn-sm btn-back"
-              onClick={handleClose}
-            >
+            <button className="btn btn-sm btn-back" onClick={handleClose}>
               Cancel
             </button>
             <button

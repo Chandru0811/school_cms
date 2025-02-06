@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Link,  } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { MaterialReactTable } from "material-react-table";
 import {
   ThemeProvider,
@@ -15,7 +15,6 @@ import TopicAdd from "./TopicAdd";
 import TopicEdit from "./TopicEdit";
 import TopicView from "./TopicView";
 
-
 function Topic() {
   const [menuAnchor, setMenuAnchor] = useState(null);
   // const navigate = useNavigate();
@@ -26,14 +25,12 @@ function Topic() {
   const data = [
     {
       id: 1,
-      subject_id: "1",
-      name:"Algebra Basics",
+      name: "Algebra Basics",
       description: "Test",
     },
     {
       id: 2,
-      subject_id: "2",
-      name:"Basics Maths",
+      name: "Basics Maths",
       description: "Test 2",
     },
   ];
@@ -56,7 +53,7 @@ function Topic() {
         enableHiding: false,
         enableSorting: false,
         size: 20,
-        Cell: ({ row }) => (
+        Cell: () => (
           <IconButton
             onClick={(e) => {
               e.stopPropagation();
@@ -66,10 +63,6 @@ function Topic() {
             <MoreVertIcon />
           </IconButton>
         ),
-      },
-      {
-        accessorKey: "subject_id",
-        header: "Subject ID",
       },
       {
         accessorKey: "name",
@@ -147,34 +140,33 @@ function Topic() {
   return (
     <div className="container-fluid mb-4 px-0">
       <ol
-        className="breadcrumb my-3"
+        className="breadcrumb my-3 d-flex align-items-center"
         style={{ listStyle: "none", padding: 0, margin: 0 }}
       >
         <li>
-          <Link to="/" className="custom-breadcrumb">
+          <Link to="/" className="custom-breadcrumb text-sm">
             Home
           </Link>
           <span className="breadcrumb-separator"> &gt; </span>
         </li>
-        <li className="breadcrumb-item active" aria-current="page">
+        <li className="breadcrumb-item active text-sm" aria-current="page">
           &nbsp;Topic
         </li>
       </ol>
       <div className="card">
-        <div className="d-flex justify-content-between align-items-center card_header mb-3 p-1">
+        <div className="d-flex justify-content-between align-items-center card_header p-2">
           <div className="d-flex align-items-center">
             <div className="d-flex">
               <div className="dot active"></div>
             </div>
-            <span className="me-2 text-muted">
+            <span className="me-2 text-muted text-sm">
               This database shows the list of&nbsp;
               <span className="database_name">Topic</span>
             </span>
           </div>
-        </div>
-        <div className="mb-3 d-flex justify-content-end">
           <TopicAdd />
         </div>
+
         <>
           <ThemeProvider theme={theme}>
             <MaterialReactTable
@@ -223,7 +215,11 @@ function Topic() {
             </MenuItem>
           </Menu>
           <TopicEdit show={showEdit} setShow={setShowEdit} />
-          <TopicView show={showView} setShow={setShowView} data={selectedData} />
+          <TopicView
+            show={showView}
+            setShow={setShowView}
+            data={selectedData}
+          />
         </>
       </div>
     </div>

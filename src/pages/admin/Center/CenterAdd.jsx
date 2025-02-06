@@ -19,6 +19,7 @@ function CenterAdd() {
 
   const handleShow = () => {
     setShow(true);
+    formik.resetForm();
   };
 
   const validationSchema = yup.object().shape({
@@ -29,7 +30,7 @@ function CenterAdd() {
 
   const formik = useFormik({
     initialValues: {
-      school_id:"",
+      school_id: "",
       name: "",
       location: "",
     },
@@ -42,15 +43,14 @@ function CenterAdd() {
 
   return (
     <>
-
-            <button
-              type="button"
-              className="btn btn-button btn-sm me-2"
-              style={{ fontWeight: "600px !important" }}
-              onClick={handleShow}
-               >
-              &nbsp; Add &nbsp;&nbsp; <i className="bi bi-plus-lg"></i>
-            </button>
+      <button
+        type="button"
+        className="btn btn-button btn-sm me-2"
+        style={{ fontWeight: "600px !important" }}
+        onClick={handleShow}
+      >
+        &nbsp; Add &nbsp;&nbsp; <i className="bi bi-plus-lg"></i>
+      </button>
 
       <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
         <form
@@ -61,36 +61,10 @@ function CenterAdd() {
             }
           }}
         >
-          <DialogTitle>
-            <p className="headColor">Add Center</p>
-          </DialogTitle>
+          <DialogTitle>Add Center</DialogTitle>
           <hr className="m-0"></hr>
           <DialogContent>
             <div className="row">
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
-                  School<span className="text-danger">*</span>
-                </label>
-                <select
-                  className={`form-select form-select-sm ${
-                    formik.touched.school_id && formik.errors.school_id
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  {...formik.getFieldProps("school_id")}
-                >
-                  <option value="">Select School</option>
-                  <option value="School A">School A</option>
-                  <option value="School B">School B</option>
-                  <option value="School C">School C</option>
-                </select>
-                {formik.touched.school_id && formik.errors.school_id && (
-                  <div className="invalid-feedback">
-                    {formik.errors.school_id}
-                  </div>
-                )}
-              </div>
-
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
                   Name<span className="text-danger">*</span>
@@ -109,12 +83,11 @@ function CenterAdd() {
                   <div className="invalid-feedback">{formik.errors.name}</div>
                 )}
               </div>
-
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
                   Location<span className="text-danger">*</span>
                 </label>
-                <input
+                <textarea
                   type="text"
                   onKeyDown={(e) => e.stopPropagation()}
                   className={`form-control form-control-sm ${
@@ -122,20 +95,20 @@ function CenterAdd() {
                       ? "is-invalid"
                       : ""
                   }`}
+                  rows={3}
                   {...formik.getFieldProps("location")}
                 />
                 {formik.touched.location && formik.errors.location && (
-                  <div className="invalid-feedback">{formik.errors.location}</div>
+                  <div className="invalid-feedback">
+                    {formik.errors.location}
+                  </div>
                 )}
               </div>
             </div>
           </DialogContent>
           <hr className="m-0"></hr>
           <DialogActions className="mt-3">
-            <button
-              className="btn btn-sm btn-back"
-              onClick={handleClose}
-            >
+            <button className="btn btn-sm btn-back" onClick={handleClose}>
               Cancel
             </button>
             <button

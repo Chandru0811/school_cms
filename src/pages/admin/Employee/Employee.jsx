@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Link,  } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MaterialReactTable } from "material-react-table";
 import {
   ThemeProvider,
@@ -11,22 +11,34 @@ import {
 import Delete from "../../../components/common/Delete";
 import PropTypes from "prop-types";
 import { MoreVert as MoreVertIcon } from "@mui/icons-material";
-import SubjectAdd from "./SubjectAdd";
-import SubjectEdit from "./SubjectEdit";
-import SubjectView from "./SubjectView";
 
-
-function Subject() {
+function Employee() {
   const [menuAnchor, setMenuAnchor] = useState(null);
-  // const navigate = useNavigate();
-  const [showEdit, setShowEdit] = useState(false);
-  const [showView, setShowView] = useState(false);
-  const [selectedData, setSelectedData] = useState(null); // Store selected row data
+  const navigate = useNavigate();
 
   const data = [
-    { id: 1,grade_id: "1", name: "GMTTV Hrs Sec School", description: "Mint" },
-    { id: 2,grade_id: "2", name: "ST. Thomas Girls Hrs School", description: "Chennai" },
-    { id: 3,grade_id: "3", name: "Govt Boys Hrs School", description: "Dubai" },
+    {
+      id: 1,
+      center_id: "SUB001",
+      role_id: "SUB001",
+      name: "Sumaiya",
+      email: "mailto:sumaiya@gmail.com",
+      createdBy: "Admin",
+      createdAt: "2024-01-01",
+      updatedAt: "2024-02-01",
+      updatedBy: "Moderator",
+    },
+    {
+      id: 2,
+      center_id: "SUB001",
+      role_id: "SUB001",
+      name: "Sumaiya",
+      email: "mailto:sumaiya@gmail.com",
+      createdBy: "Admin",
+      createdAt: "2024-01-01",
+      updatedAt: "2024-02-01",
+      updatedBy: "Moderator",
+    },
   ];
 
   const columns = useMemo(
@@ -58,9 +70,22 @@ function Subject() {
           </IconButton>
         ),
       },
-      { accessorKey: "grade_id", header: "Grade ID" },
-      { accessorKey: "name", header: "Name" },
-      { accessorKey: "description", header: "Description" },
+      {
+        accessorKey: "center_id",
+        header: "Center Name",
+      },
+      {
+        accessorKey: "role_id",
+        header: "Role Name",
+      },
+      {
+        accessorKey: "name",
+        header: "Employee Name",
+      },
+      {
+        accessorKey: "email",
+        header: "Email",
+      },
       { accessorKey: "created_by", header: "Created By" },
       {
         accessorKey: "created_at",
@@ -138,8 +163,8 @@ function Subject() {
           </Link>
           <span className="breadcrumb-separator"> &gt; </span>
         </li>
-        <li className="breadcrumb-item active text-sm" aria-current="page">
-          &nbsp;Subject
+        <li className="breadcrumb-item active  text-sm" aria-current="page">
+          &nbsp;Employee
         </li>
       </ol>
       <div className="card">
@@ -148,14 +173,21 @@ function Subject() {
             <div className="d-flex">
               <div className="dot active"></div>
             </div>
-            <span className="me-2 text-muted text-sm">
+            <span className="me-2 text-muted  text-sm">
               This database shows the list of&nbsp;
-              <span className="database_name">Subject</span>
+              <span className="database_name">Employee</span>
             </span>
           </div>
-          <SubjectAdd />
+          <Link to="/employee/Add">
+            <button
+              type="button"
+              className="btn btn-button btn-sm me-2"
+              style={{ fontWeight: "600px !important" }}
+            >
+              &nbsp; Add &nbsp;&nbsp; <i className="bi bi-plus-lg"></i>
+            </button>
+          </Link>
         </div>
-        
         <>
           <ThemeProvider theme={theme}>
             <MaterialReactTable
@@ -176,12 +208,9 @@ function Subject() {
                   updated_at: false,
                 },
               }}
-              muiTableBodyRowProps={({ row }) => ({
+              muiTableBodyRowProps={() => ({
+                onClick: () => navigate(`/employee/View`),
                 style: { cursor: "pointer" },
-                onClick: () => {
-                  setSelectedData(row.original);
-                  setShowView(true);
-                },
               })}
             />
           </ThemeProvider>
@@ -191,29 +220,20 @@ function Subject() {
             open={Boolean(menuAnchor)}
             onClose={handleMenuClose}
           >
-            <MenuItem
-              onClick={() => {
-                setShowEdit(true);
-                handleMenuClose();
-              }}
-            >
-              Edit
-            </MenuItem>
+            <MenuItem onClick={() => navigate(`/employee/Edit`)}>Edit</MenuItem>
             <MenuItem>
               <Delete path={`admin/company/delete`} onOpen={handleMenuClose} />
             </MenuItem>
           </Menu>
-          <SubjectEdit show={showEdit} setShow={setShowEdit} />
-          <SubjectView show={showView} setShow={setShowView} data={selectedData} />
         </>
       </div>
     </div>
   );
 }
 
-Subject.propTypes = {
+Employee.propTypes = {
   row: PropTypes.func.isRequired,
   cell: PropTypes.func.isRequired,
 };
 
-export default Subject;
+export default Employee;

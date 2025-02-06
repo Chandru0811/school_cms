@@ -2,6 +2,7 @@ import { useState, } from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { Dialog, DialogActions, DialogTitle, DialogContent } from "@mui/material";
+import PropTypes from "prop-types";
 
 function SubjectEdit({ show, setShow,}) {
   const [loadIndicator, setLoadIndicator] = useState(false);
@@ -54,7 +55,7 @@ function SubjectEdit({ show, setShow,}) {
           }
         }}
       >
-        <DialogTitle>Edit Grade</DialogTitle>
+        <DialogTitle>Edit Subject</DialogTitle>
         <hr className="m-0"></hr>
         <DialogContent>
           <div className="row">
@@ -105,7 +106,7 @@ function SubjectEdit({ show, setShow,}) {
                   Description<span className="text-danger">*</span>
                 </label>
                 <textarea
-                  className={`form-control form-control-sm ${
+                  className={`form-control ${
                     formik.touched.description && formik.errors.description
                       ? "is-invalid"
                       : ""
@@ -145,5 +146,10 @@ function SubjectEdit({ show, setShow,}) {
     </Dialog>
   );
 }
+
+SubjectEdit.propTypes = {
+  show: PropTypes.func.isRequired,
+  setShow: PropTypes.func.isRequired,
+};
 
 export default SubjectEdit;

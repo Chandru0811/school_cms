@@ -1,21 +1,19 @@
 import { Link } from "react-router-dom";
 
-function ChallengesView() {
+function EmployeeView() {
   const data = {
-    subject_topic:"Science",
-    type: "Math",
-    title: "Solving for x",
-    description: "Solve for x in the equation 3x - 4 = 11",
-    level: "Medium",
-    hint: "First, add 4 to both sides, then divide by 3.",
-    time_limit: 20,
-    ques_type: "Filled",
+    center_id: "School A",
+    role_id: "Junior Developer",
+    name: "Sumaiya",
+    email: "sumaiya@gmail.com",
+    password: "12345678",
+    mobile: "9043878105",
   };
 
   return (
     <div className="container-fluid px-0">
       <ol
-        className="breadcrumb my-2 px-2 d-flex align-items-center"
+        className="breadcrumb my-2 px-2"
         style={{ listStyle: "none", padding: 0, margin: 0 }}
       >
         <li>
@@ -25,13 +23,13 @@ function ChallengesView() {
           <span className="breadcrumb-separator"> &gt; </span>
         </li>
         <li>
-          <Link to="/challenges" className="custom-breadcrumb text-sm">
-            &nbsp;Challenges
+          <Link to="/employee" className="custom-breadcrumb text-sm">
+            &nbsp;Employee
           </Link>
           <span className="breadcrumb-separator"> &gt; </span>
         </li>
         <li className="breadcrumb-item active text-sm" aria-current="page">
-          &nbsp;Challenges View
+          &nbsp;Employee View
         </li>
       </ol>
       <div className="card vh-100" style={{ border: "1px solid #dbd9d0" }}>
@@ -40,11 +38,11 @@ function ChallengesView() {
             <div className="d-flex">
               <div className="dot active"></div>
             </div>
-            <span className="me-2 text-muted text-sm">View Challenges</span>
+            <span className="me-2 text-muted">View Employee</span>
           </div>
           <div className="my-2 pe-3 d-flex align-items-center">
-            <Link to="/challenges">
-              <button type="button" className="btn btn-sm btn-back">
+            <Link to="/employee">
+              <button type="button " className="btn btn-sm btn-back">
                 Back
               </button>
             </Link>
@@ -53,92 +51,64 @@ function ChallengesView() {
         </div>
         <div className="container-fluid px-4">
           <div className="row pb-3">
-          <div className="col-md-6 col-12 my-2">
+            <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Subject Topic</p>
+                  <p className="fw-medium text-sm">Centre Name</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.subject_topic}</p>
+                  <p className="text-muted text-sm">: {data.center_id}</p>
                 </div>
               </div>
             </div>
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Level</p>
+                  <p className="fw-medium text-sm">Role Name</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">
-                    : {data.level}
-                  </p>
+                  <p className="text-muted text-sm">: {data.role_id}</p>
                 </div>
               </div>
             </div>
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Challenge Title</p>
+                  <p className="fw-medium text-sm">Employee Name</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.title}</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Type</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">
-                    : {data.type}
-                  </p>
+                  <p className="text-muted text-sm">: {data.name}</p>
                 </div>
               </div>
             </div>
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Question Type</p>
+                  <p className="fw-medium text-sm">Employee Email</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">
-                    : {data.ques_type}
-                  </p>
+                  <p className="text-muted text-sm">: {data.email}</p>
                 </div>
               </div>
             </div>
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Time Limit</p>
+                  <p className="fw-medium text-sm">Employee Email</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.time_limit}</p>
+                  <p className="text-muted text-sm">: {data.email}</p>
                 </div>
               </div>
             </div>
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Hint</p>
+                  <p className="fw-medium text-sm">Employee Password</p>
                 </div>
                 <div className="col-6">
                   <p className="text-muted text-sm text-break ">
-                    : {data.hint}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Challenge    Description</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm text-break ">
-                    : {data.description}
+                    : {data.password}
                   </p>
                 </div>
               </div>
@@ -150,4 +120,4 @@ function ChallengesView() {
   );
 }
 
-export default ChallengesView;
+export default EmployeeView;

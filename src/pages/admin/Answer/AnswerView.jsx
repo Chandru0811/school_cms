@@ -1,4 +1,5 @@
 import { Dialog, DialogActions, DialogTitle, DialogContent } from "@mui/material";
+import PropTypes from "prop-types";
 
 
 function AnswerView({ show, setShow }) {
@@ -53,6 +54,10 @@ function AnswerView({ show, setShow }) {
         </Dialog>
     );
   }
+  AnswerView.propTypes = {
+    show: PropTypes.func.isRequired,
+    setShow: PropTypes.func.isRequired,
+  };
   
   export default AnswerView;
   

@@ -19,17 +19,18 @@ function TopicAdd() {
 
   const handleShow = () => {
     setShow(true);
+    formik.resetForm();
   };
 
   const validationSchema = yup.object().shape({
-    subject_id: yup.string().required("*Select a subject id"),
+    subject_id: yup.string().required("*Select a grade id"),
     name: yup.string().required("*Name is required"),
     description: yup.string().required("*Description is required"),
   });
 
   const formik = useFormik({
     initialValues: {
-      subject_id:"",
+      subject_id: "",
       name: "",
       description: "",
     },
@@ -42,14 +43,14 @@ function TopicAdd() {
 
   return (
     <>
-     <button
-              type="button"
-              className="btn btn-button btn-sm me-2"
-              style={{ fontWeight: "600px !important" }}
-              onClick={handleShow}
-            >
-              &nbsp; Add &nbsp;&nbsp; <i className="bi bi-plus-lg"></i>
-            </button>
+      <button
+        type="button"
+        className="btn btn-button btn-sm me-2"
+        style={{ fontWeight: "600px !important" }}
+        onClick={handleShow}
+      >
+        &nbsp; Add &nbsp;&nbsp; <i className="bi bi-plus-lg"></i>
+      </button>
       <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
         <form
           onSubmit={formik.handleSubmit}
@@ -59,9 +60,7 @@ function TopicAdd() {
             }
           }}
         >
-          <DialogTitle>
-            <p className="headColor">Add Subject</p>
-          </DialogTitle>
+          <DialogTitle>Add Topic</DialogTitle>
           <hr className="m-0"></hr>
           <DialogContent>
             <div className="row">
@@ -77,7 +76,7 @@ function TopicAdd() {
                   }`}
                   {...formik.getFieldProps("subject_id")}
                 >
-                  <option value="">Select Subject ID</option>
+                  <option value="">Select Grade ID</option>
                   <option value="1">1</option>
                   <option value="2">2</option>
                   <option value="3">3</option>
@@ -113,7 +112,7 @@ function TopicAdd() {
                   Description<span className="text-danger">*</span>
                 </label>
                 <textarea
-                  className={`form-control form-control-sm ${
+                  className={`form-control ${
                     formik.touched.description && formik.errors.description
                       ? "is-invalid"
                       : ""
@@ -122,18 +121,16 @@ function TopicAdd() {
                   {...formik.getFieldProps("description")}
                 />
                 {formik.touched.description && formik.errors.description && (
-                  <div className="invalid-feedback">{formik.errors.description}</div>
+                  <div className="invalid-feedback">
+                    {formik.errors.description}
+                  </div>
                 )}
               </div>
-
             </div>
           </DialogContent>
           <hr className="m-0"></hr>
           <DialogActions className="mt-3">
-            <button
-              className="btn btn-sm btn-back"
-              onClick={handleClose}
-            >
+            <button className="btn btn-sm btn-back" onClick={handleClose}>
               Cancel
             </button>
             <button

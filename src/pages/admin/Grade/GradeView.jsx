@@ -1,7 +1,12 @@
 import { Dialog, DialogActions, DialogTitle, DialogContent } from "@mui/material";
-
+import PropTypes from "prop-types";
 
 function GradeView({ show, setShow }) {
+
+  const data = {
+    name:"Dummy School",
+    description:"Mint",
+  }
     const handleClose = () => {
       setShow(false);
     };
@@ -12,23 +17,13 @@ function GradeView({ show, setShow }) {
        <hr className="m-0"></hr>
        <DialogContent>
         <div className="row">
-          <div className="col-md-6 col-12">
-          <div className="row mt-3  mb-2">
-            <div className="col-6 ">
-              <p className="">School</p>
-            </div>
-            <div className="col-6">
-              <p className="text-muted text-sm">:</p>
-            </div>
-          </div>
-        </div>
         <div className="col-md-6 col-12">
           <div className="row mt-3  mb-2">
             <div className="col-6 ">
               <p className="">Name</p>
             </div>
             <div className="col-6">
-              <p className="text-muted text-sm">:</p>
+              <p className="text-muted text-sm">:{data.name}</p>
             </div>
           </div>
         </div>
@@ -38,7 +33,7 @@ function GradeView({ show, setShow }) {
               <p className="">Description</p>
             </div>
             <div className="col-6">
-              <p className="text-muted text-sm">:</p>
+              <p className="text-muted text-sm">:{data.description}</p>
             </div>
           </div>
         </div>
@@ -53,6 +48,11 @@ function GradeView({ show, setShow }) {
         </Dialog>
     );
   }
+
+  GradeView.propTypes = {
+    show: PropTypes.func.isRequired,
+    setShow: PropTypes.func.isRequired,
+  };
   
   export default GradeView;
   

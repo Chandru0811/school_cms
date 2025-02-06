@@ -17,10 +17,10 @@ function Question() {
   const navigate = useNavigate();
 
   const data = [
-    { id: 1, topic_id: "Grammer", subject_id: "English", difficult_level: "Medium" },
-    { id: 4, topic_id: "Grammer", subject_id: "Tamil", difficult_level: "Hard" },
-    { id: 3, topic_id: "Formula", subject_id: "Maths", difficult_level: "Medium" },
-    { id: 2, topic_id: "Biology", subject_id: "Science", difficult_level: "Easy" },
+    { id: 1, topic_id: "Grammer", difficult_level: "Medium" },
+    { id: 4, topic_id: "Grammer", difficult_level: "Hard" },
+    { id: 3, topic_id: "Formula", difficult_level: "Medium" },
+    { id: 2, topic_id: "Biology", difficult_level: "Easy" },
   ];
 
   const columns = useMemo(
@@ -51,8 +51,8 @@ function Question() {
             <MoreVertIcon />
           </IconButton>
         ),
-      },{ accessorKey: "topic_id", header: "Topic ID" },
-      { accessorKey: "subject_id", header: "Subject ID" },
+      },
+      { accessorKey: "topic_id", header: "Topic" },
       { accessorKey: "difficult_level", header: "Difficult Level" },
       { accessorKey: "created_by", header: "Created By" },
       {
@@ -122,32 +122,30 @@ function Question() {
   return (
     <div className="container-fluid mb-4 px-0">
       <ol
-        className="breadcrumb my-3"
+        className="breadcrumb my-3 d-flex align-items-center"
         style={{ listStyle: "none", padding: 0, margin: 0 }}
       >
         <li>
-          <Link to="/" className="custom-breadcrumb">
+          <Link to="/" className="custom-breadcrumb text-sm">
             Home
           </Link>
           <span className="breadcrumb-separator"> &gt; </span>
         </li>
-        <li className="breadcrumb-item active" aria-current="page">
+        <li className="breadcrumb-item active text-sm" aria-current="page">
           &nbsp;Question
         </li>
       </ol>
       <div className="card">
-        <div className="d-flex justify-content-between align-items-center card_header mb-3 p-1">
+        <div className="d-flex justify-content-between align-items-center card_header p-2">
           <div className="d-flex align-items-center">
             <div className="d-flex">
               <div className="dot active"></div>
             </div>
-            <span className="me-2 text-muted">
+            <span className="me-2 text-muted text-sm">
               This database shows the list of&nbsp;
               <span className="database_name">Question</span>
             </span>
           </div>
-        </div>
-        <div className="mb-3 d-flex justify-content-end">
           <Link to="/question/add">
             <button
               type="button"

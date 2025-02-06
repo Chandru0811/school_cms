@@ -2,6 +2,7 @@ import { useState, } from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { Dialog, DialogActions, DialogTitle, DialogContent } from "@mui/material";
+import PropTypes from "prop-types";
 
 function CenterEdit({ show, setShow,}) {
   const [loadIndicator, setLoadIndicator] = useState(false);
@@ -21,14 +22,12 @@ function CenterEdit({ show, setShow,}) {
   };
 
   const validationSchema = yup.object().shape({
-    school_id: yup.string().required("*Selected a school"),
     name: yup.string().required("*Name is required"),
     location: yup.string().required("*Location is required"),
   });
 
   const formik = useFormik({
     initialValues: {
-      school_id:"School C",
       name:  "DEMO Center",
       location: "MINT",
     },
@@ -54,33 +53,10 @@ function CenterEdit({ show, setShow,}) {
           }
         }}
       >
-        <DialogTitle>Edit School</DialogTitle>
+        <DialogTitle>Edit Center</DialogTitle>
         <hr className="m-0"></hr>
         <DialogContent>
           <div className="row">
-            <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
-                  School<span className="text-danger">*</span>
-                </label>
-                <select
-                  className={`form-select form-select-sm ${
-                    formik.touched.school_id && formik.errors.school_id
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  {...formik.getFieldProps("school_id")}
-                >
-                  <option value="">Select School</option>
-                  <option value="School A">School A</option>
-                  <option value="School B">School B</option>
-                  <option value="School C" selected>School C</option>
-                </select>
-                {formik.touched.school_id && formik.errors.school_id && (
-                  <div className="invalid-feedback">
-                    {formik.errors.school_id}
-                  </div>
-                )}
-            </div>
             <div className="col-md-6 col-12 mb-3">
               <label className="form-label">
                 Name<span className="text-danger">*</span>
@@ -104,13 +80,14 @@ function CenterEdit({ show, setShow,}) {
               <label className="form-label">
                 Location<span className="text-danger">*</span>
               </label>
-              <input
+              <textarea
                 type="text"
                 className={`form-control form-control-sm ${
                   formik.touched.location && formik.errors.location
                     ? "is-invalid"
                     : ""
                 }`}
+                rows={4}
                 {...formik.getFieldProps("location")}
               />
               {formik.touched.location && formik.errors.location && (
@@ -138,12 +115,16 @@ function CenterEdit({ show, setShow,}) {
                 aria-hidden="true"
               ></span>
             )}
-            Submit
+            Update
           </button>
         </DialogActions>
       </form>
     </Dialog>
   );
 }
+  CenterEdit.propTypes = {
+      show: PropTypes.func.isRequired,
+      setShow: PropTypes.func.isRequired,
+    };
 
 export default CenterEdit;

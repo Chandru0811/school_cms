@@ -2,7 +2,26 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import helperlogo from "../../assets/images/logo.webp";
 import PropTypes from "prop-types";
-import { FaQuestionCircle,FaStar, FaUserGraduate , FaBook, FaThLarge , FaChartBar , FaBookOpen,FaFileAlt,FaBookReader, FaTrophy, FaGift,FaCreditCard } from "react-icons/fa";
+import { 
+  IoHelpCircleOutline,        
+  IoGridOutline,       
+  IoBarChart,                       
+  IoTrophyOutline ,           
+  IoGiftOutline ,             
+  IoCardOutline,
+  IoLibraryOutline,
+      
+} from "react-icons/io5"
+import { PiStudentLight } from "react-icons/pi";
+import { FaRegFileAlt } from "react-icons/fa";
+import { LiaAwardSolid } from "react-icons/lia";
+import { PiNotePencilDuotone } from "react-icons/pi";
+import { SlBookOpen } from "react-icons/sl";
+import { BsPerson } from "react-icons/bs";
+
+
+
+
 
 
 function AdminSidebar() {
@@ -58,7 +77,7 @@ function AdminSidebar() {
                 style={{ borderRadius: "5px" }}
                 to="/dashboard"
               >
-                <FaChartBar  className="sidebar_icon" />
+                <IoBarChart  className="sidebar_icon" />
                 Dashboard
               </NavLink>
             </li>
@@ -68,8 +87,18 @@ function AdminSidebar() {
                 style={{ borderRadius: "5px" }}
                 to="/center"
               >
-                <FaThLarge   className="sidebar_icon" />
+                <IoGridOutline   className="sidebar_icon" />
                 Center
+              </NavLink>
+            </li>
+            <li className="nav-item px-3">
+              <NavLink
+                className="nav-link"
+                style={{ borderRadius: "5px" }}
+                to="/employee"
+              >
+                <BsPerson   className="sidebar_icon" />
+                Employee
               </NavLink>
             </li>
             <li className="nav-item px-3">
@@ -78,7 +107,7 @@ function AdminSidebar() {
                 style={{ borderRadius: "5px" }}
                 to="/grade"
               >
-                <FaStar className="sidebar_icon" />
+                <LiaAwardSolid className="sidebar_icon" />
                 Grade
               </NavLink>
             </li>
@@ -88,7 +117,7 @@ function AdminSidebar() {
                 style={{ borderRadius: "5px" }}
                 to="/student"
               >
-                <FaUserGraduate  className="sidebar_icon" />
+                <PiStudentLight  className="sidebar_icon" />
                 Student
               </NavLink>
             </li>
@@ -98,7 +127,7 @@ function AdminSidebar() {
                 style={{ borderRadius: "5px" }}
                 to="/subject"
               >
-                <FaBook   className="sidebar_icon" />
+                <SlBookOpen    className="sidebar_icon" />
                 Subject
               </NavLink>
             </li>
@@ -108,7 +137,7 @@ function AdminSidebar() {
                 style={{ borderRadius: "5px" }}
                 to="/topic"
               >
-                <FaBookOpen  className="sidebar_icon" />
+                <PiNotePencilDuotone  className="sidebar_icon" />
                 Topic
               </NavLink>
             </li>
@@ -118,7 +147,7 @@ function AdminSidebar() {
                 style={{ borderRadius: "5px" }}
                 to="/question"
               >
-                <FaQuestionCircle  className="sidebar_icon" />
+                <IoHelpCircleOutline   className="sidebar_icon" />
                 Question & Answer
               </NavLink>
             </li>
@@ -128,8 +157,8 @@ function AdminSidebar() {
                 style={{ borderRadius: "5px" }}
                 to="/worksheet"
               >
-                <FaFileAlt  className="sidebar_icon" />
-                Work Sheet
+                <FaRegFileAlt  className="sidebar_icon" />
+                Worksheet
               </NavLink>
             </li>
             <li className="nav-item px-3">
@@ -138,7 +167,7 @@ function AdminSidebar() {
                 style={{ borderRadius: "5px" }}
                 to="/homework"
               >
-                <FaBookReader   className="sidebar_icon" />
+                <IoLibraryOutline   className="sidebar_icon" />
                 Homework
               </NavLink>
             </li>
@@ -148,7 +177,7 @@ function AdminSidebar() {
                 style={{ borderRadius: "5px" }}
                 to="/challenges"
               >
-                <FaTrophy  className="sidebar_icon" />
+                <IoTrophyOutline   className="sidebar_icon" />
                 Challenges
               </NavLink>
             </li>
@@ -158,7 +187,7 @@ function AdminSidebar() {
                 style={{ borderRadius: "5px" }}
                 to="/rewards"
               >
-                <FaGift  className="sidebar_icon" />
+                <IoGiftOutline   className="sidebar_icon" />
                 Rewards
               </NavLink>
             </li>
@@ -168,7 +197,7 @@ function AdminSidebar() {
                 style={{ borderRadius: "5px" }}
                 to="/subscriptions"
               >
-                <FaCreditCard  className="sidebar_icon" />
+                <IoCardOutline  className="sidebar_icon" />
                 subscriptions
               </NavLink>
             </li>
