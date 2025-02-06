@@ -1,17 +1,22 @@
-import { Dialog, DialogActions, DialogTitle, DialogContent } from "@mui/material";
+import {
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  DialogContent,
+} from "@mui/material";
+import PropTypes from "prop-types";
 import Button from "react-bootstrap/Button";
 
-
 function SchoolView({ show, setShow }) {
-    const handleClose = () => {
-      setShow(false);
-    };
-  
-    return (
-     <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
-       <DialogTitle>View School</DialogTitle>
-       <hr className="m-0"></hr>
-       <DialogContent>
+  const handleClose = () => {
+    setShow(false);
+  };
+
+  return (
+    <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
+      <DialogTitle>View School</DialogTitle>
+      <hr className="m-0"></hr>
+      <DialogContent>
         <div className="row">
           <div className="col-md-6 col-12 mb-3">
             <strong>School Name:</strong> Girls Hrs Sec School
@@ -27,9 +32,13 @@ function SchoolView({ show, setShow }) {
           Back
         </Button>
       </DialogActions>
-        </Dialog>
-    );
-  }
-  
-  export default SchoolView;
-  
+    </Dialog>
+  );
+}
+
+SchoolView.propTypes = {
+  show: PropTypes.func.isRequired,
+  setShow: PropTypes.func.isRequired,
+};
+
+export default SchoolView;

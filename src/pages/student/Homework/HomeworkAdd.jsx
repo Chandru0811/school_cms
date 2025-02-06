@@ -4,6 +4,8 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 
 function HomeworkAdd() {
+  const [isOpen, setIsOpen] = useState(false);
+
   const options = [
     { value: "1", label: "All" },
     { value: "2", label: "One" },
@@ -11,7 +13,6 @@ function HomeworkAdd() {
     { value: "4", label: "Three" },
     { value: "5", label: "Four" },
   ];
-  const [isOpen, setIsOpen] = useState(false);
 
   const validationSchema = yup.object().shape({
     student_id: yup.string().required("*Student id is required"),
@@ -38,6 +39,7 @@ function HomeworkAdd() {
       difficult_level: "",
       question: "",
       ques_type: "",
+
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {

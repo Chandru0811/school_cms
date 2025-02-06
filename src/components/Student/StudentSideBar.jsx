@@ -1,18 +1,16 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import helperlogo from "../../assets/images/logo.webp";
-import { BsBarChart } from "react-icons/bs";
 import PropTypes from "prop-types";
-import { IoSchoolOutline } from "react-icons/io5";
+import {
+  FaChartBar,
+  FaFileAlt,
+  FaBookReader,
+  FaTrophy,
+  FaGift,
+} from "react-icons/fa";
 
-function SuperAdminSidebar() {
-  // const navigate = useNavigate();
-
-  // const handelLogOutClick = () => {
-  //   handleLogout();
-  //   navigate("/");
-  // };
-
+function StudentSideBar() {
   const [leadMenuOpen] = useState(false);
 
   const [activeSubmenu] = useState(null);
@@ -58,7 +56,7 @@ function SuperAdminSidebar() {
                 style={{ borderRadius: "5px" }}
                 to="/dashboard"
               >
-                <BsBarChart className="sidebar_icon" />
+                <FaChartBar className="sidebar_icon" />
                 Dashboard
               </NavLink>
             </li>
@@ -66,35 +64,50 @@ function SuperAdminSidebar() {
               <NavLink
                 className="nav-link"
                 style={{ borderRadius: "5px" }}
-                to="/school"
+                to="/worksheet"
               >
-                <IoSchoolOutline className="sidebar_icon" />
-                Schools
+                <FaFileAlt className="sidebar_icon" />
+                Worksheet
+              </NavLink>
+            </li>
+            <li className="nav-item px-3">
+              <NavLink
+                className="nav-link"
+                style={{ borderRadius: "5px" }}
+                to="/homework"
+              >
+                <FaBookReader className="sidebar_icon" />
+                Homework
+              </NavLink>
+            </li>
+            <li className="nav-item px-3">
+              <NavLink
+                className="nav-link"
+                style={{ borderRadius: "5px" }}
+                to="/challenges"
+              >
+                <FaTrophy className="sidebar_icon" />
+                Challenges
+              </NavLink>
+            </li>
+            <li className="nav-item px-3">
+              <NavLink
+                className="nav-link"
+                style={{ borderRadius: "5px" }}
+                to="/rewards"
+              >
+                <FaGift className="sidebar_icon" />
+                Rewards
               </NavLink>
             </li>
           </ul>
-          {/* <div className="ps-4 mt-auto w-100 mb-4">
-            <div className="navbar-nav">
-              <div className="nav-item">
-                <button
-                  to={"#"}
-                  style={{ width: "100%" }}
-                  className="nav-link ps-6 logout_button"
-                  onClick={handelLogOutClick}
-                >
-                  <BiLogOut />
-                  &nbsp;&nbsp; Logout
-                </button>
-              </div>
-            </div>
-          </div> */}
         </div>
       </div>
     </nav>
   );
 }
 
-SuperAdminSidebar.propTypes = {
+StudentSideBar.propTypes = {
   handleLogout: PropTypes.func.isRequired,
 };
-export default SuperAdminSidebar;
+export default StudentSideBar;

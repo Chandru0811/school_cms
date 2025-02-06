@@ -1,7 +1,7 @@
 function SuperAdminDashboard() {
   return (
-    <section className="d-flex vh-100 justify-content-center align-items-center">
-      <p>Coming soon...</p>
+    <section className="d-flex justify-content-center align-items-center" style={{minHeight: "80vh"}}>
+      <b>Coming soon...</b>
     </section>
   );
 }

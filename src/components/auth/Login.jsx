@@ -4,10 +4,10 @@ import { Form, Button } from "react-bootstrap";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import * as Yup from "yup";
 import PropTypes from "prop-types";
-import { Link, useNavigate } from "react-router-dom"; 
+import { Link, useNavigate } from "react-router-dom";
 import headerlogo from "../../assets/images/logo.webp";
 
-const Login = ({ loginAsAdmin, loginAsSuperAdmin }) => {
+const Login = ({ loginAsAdmin, loginAsSuperAdmin, loginAsStudent }) => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
@@ -30,29 +30,54 @@ const Login = ({ loginAsAdmin, loginAsSuperAdmin }) => {
     validationSchema: validationSchema,
     onSubmit: (values) => {
       setLoadIndicator(true);
-  
+
       if (values.email === "admin@gmail.com") {
         loginAsAdmin();
       } else if (values.email === "superadmin@gmail.com") {
         navigate("/");
         loginAsSuperAdmin();
+      } else if (values.email === "student@gmail.com") {
+        navigate("/");
+        loginAsStudent();
       } else {
-        alert("Invalid email! Please use admin@gmail.com or superadmin@gmail.com");
+        alert(
+          "Invalid email! Please use admin@gmail.com or superadmin@gmail.com"
+        );
       }
-  
+
       setTimeout(() => setLoadIndicator(false), 2000);
     },
   });
 
   return (
-    <div className="container-fluid m-0 vh-100" style={{ minHeight: "100vh", backgroundColor: "#f2f2f2" }}>
-      <div className="d-flex justify-content-center align-items-center m-0 pt-5" style={{ backgroundColor: "rgb(242, 242, 242)" }}>
+    <div
+      className="container-fluid m-0 vh-100"
+      style={{ minHeight: "100vh", backgroundColor: "#f2f2f2" }}
+    >
+      <div
+        className="d-flex justify-content-center align-items-center m-0 pt-5"
+        style={{ backgroundColor: "rgb(242, 242, 242)" }}
+      >
         <img src={headerlogo} className="img-fluid" alt="school" />
       </div>
       <div className="d-flex justify-content-center align-items-center mt-5">
-        <div className="card shadow-lg p-3 mb-5 mt-0 rounded" style={{ width: "100%", maxWidth: "400px" }}>
+        <div
+          className="card shadow-lg p-3 mb-5 mt-0 rounded"
+          style={{ width: "100%", maxWidth: "400px" }}
+        >
           <div className="d-flex justify-content-around">
-            <h3 className="cursor-pointer py-2" style={{ borderBottom: "2px solid #1555ff", paddingBottom: "5px", width: "100%", textAlign: "center", color: "#1555ff" }}>Login</h3>
+            <h3
+              className="cursor-pointer py-2"
+              style={{
+                borderBottom: "2px solid #1555ff",
+                paddingBottom: "5px",
+                width: "100%",
+                textAlign: "center",
+                color: "#1555ff",
+              }}
+            >
+              Login
+            </h3>
           </div>
           <Form onSubmit={formik.handleSubmit}>
             <Form.Group controlId="formEmail" className="mb-3 pt-4">
@@ -63,14 +88,26 @@ const Login = ({ loginAsAdmin, loginAsSuperAdmin }) => {
                 {...formik.getFieldProps("email")}
                 isInvalid={formik.touched.email && formik.errors.email}
               />
-              <Form.Control.Feedback type="invalid">{formik.errors.email}</Form.Control.Feedback>
+              <Form.Control.Feedback type="invalid">
+                {formik.errors.email}
+              </Form.Control.Feedback>
             </Form.Group>
 
             <div className="d-flex justify-content-between align-items-center py-2">
               <Form.Label>Password</Form.Label>
-              <Link to="/forgot" className="ml-auto" style={{ fontSize: "0.9em", textDecoration: "none", color: "#1555ff" }}>Forgot Password?</Link>
+              <Link
+                to="/forgot"
+                className="ml-auto"
+                style={{
+                  fontSize: "0.9em",
+                  textDecoration: "none",
+                  color: "#1555ff",
+                }}
+              >
+                Forgot Password?
+              </Link>
             </div>
-            <Form.Group controlId="formPassword" className="mb-3">
+            {/* <Form.Group controlId="formPassword" className="mb-3">
               <div style={{ position: "relative" }}>
                 <Form.Control
                   type={showPassword ? "text" : "password"}
@@ -81,24 +118,83 @@ const Login = ({ loginAsAdmin, loginAsSuperAdmin }) => {
                 {formik.values.password && (
                   <span
                     onClick={togglePasswordVisibility}
-                    style={{ position: "absolute", right: "10px", top: "50%", transform: "translateY(-50%)", cursor: "pointer" }}
+                    style={{
+                      position: "absolute",
+                      right: "10px",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      cursor: "pointer",
+                    }}
                   >
                     {showPassword ? <FaEyeSlash /> : <FaEye />}
                   </span>
                 )}
-                <Form.Control.Feedback type="invalid">{formik.errors.password}</Form.Control.Feedback>
+                <Form.Control.Feedback type="invalid">
+                  {formik.errors.password}
+                </Form.Control.Feedback>
               </div>
-            </Form.Group>
+            </Form.Group> */}
 
-            <Button type="submit" className="w-100 mt-4 common-button" disabled={loadIndicator}>
-              {loadIndicator && <span className="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>}
+            <div className="mb-3">
+              <div
+                className={`input-group mb-3`}
+                style={{ outline: "none", boxShadow: "none" }}
+              >
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter password"
+                  className={`form-control ${
+                    formik.touched.password && formik.errors.password
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  style={{
+                    borderRadius: "3px",
+                    borderRight: "none",
+                    borderTopRightRadius: "0px",
+                    borderBottomRightRadius: "0px",
+                  }}
+                  name="password"
+                  {...formik.getFieldProps("password")}
+                />
+                <span
+                  className={`input-group-text iconInputBackground`}
+                  id="basic-addon1"
+                  onClick={togglePasswordVisibility}
+                  style={{ cursor: "pointer", borderRadius: "3px" }}
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </span>
+                {formik.touched.password && formik.errors.password && (
+                  <div className="invalid-feedback">
+                    {formik.errors.password}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <Button
+              type="submit"
+              className="w-100 mt-4 common-button"
+              disabled={loadIndicator}
+            >
+              {loadIndicator && (
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  aria-hidden="true"
+                ></span>
+              )}
               Login
             </Button>
 
             <div className="text-center mt-4">
               <p className="mb-3">or</p>
               <Link to="/register">
-                <Button variant="light" className="border shadow-none" style={{ width: "100%" }}>
+                <Button
+                  variant="light"
+                  className="border shadow-none"
+                  style={{ width: "100%" }}
+                >
                   Register
                 </Button>
               </Link>
@@ -113,6 +209,7 @@ const Login = ({ loginAsAdmin, loginAsSuperAdmin }) => {
 Login.propTypes = {
   loginAsAdmin: PropTypes.func.isRequired,
   loginAsSuperAdmin: PropTypes.func.isRequired,
+  loginAsStudent: PropTypes.func.isRequired,
 };
 
 export default Login;

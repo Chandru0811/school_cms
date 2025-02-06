@@ -16,12 +16,12 @@ function SuperAdmin({ handleLogout }) {
       <div>
         <BrowserRouter>
           <div className="d-flex flex-column flex-lg-row bg-surface-secondary ">
-            <SuperAdminSideBar handleLogout={handleLogout} />
+            <SuperAdminSideBar />
 
             <div className="flex-grow-1 h-screen overflow-y-lg-auto">
-              <SuperAdminHeader />
+              <SuperAdminHeader handleLogout={handleLogout} />
               <main className="pt-2 bg-surface-secondary">
-                <div className="px-2" style={{ minHeight: "90vh" }}>
+                <div className="px-2" style={{ minHeight: "80vh" }}>
                   <Routes>
                     <Route path="/" element={<SuperAdminDashboard />} />
                     <Route path="*" element={<SuperAdminDashboard />} />

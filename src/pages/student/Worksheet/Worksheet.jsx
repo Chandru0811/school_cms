@@ -12,29 +12,15 @@ import Delete from "../../../components/common/Delete";
 import PropTypes from "prop-types";
 import { MoreVert as MoreVertIcon } from "@mui/icons-material";
 
-function School() {
+function Worksheet() {
   const [menuAnchor, setMenuAnchor] = useState(null);
   const navigate = useNavigate();
 
   const data = [
-    {
-      id: 1,
-      school_name: "SRDK",
-      school_location: "Thiruvottuyur",
-      admin_name: "Suriya",
-      admin_email: "suriya@gmail.com",
-      admin_password: "12345678",
-      admin_cpassword: "12345678",
-    },
-    {
-      id: 2,
-      school_name: "KVM",
-      school_location: "Royapuram",
-      admin_name: "Suriya",
-      admin_email: "suriya@gmail.com",
-      admin_password: "12345678",
-      admin_cpassword: "12345678",
-    },
+    { id: 1, name: "Algebra Worksheet 1", type: "Practiceh", target_score: "80",reward: "10" },
+    { id: 4, name: "Grammer Worksheet 1", type: "Theory", target_score: "50",reward: "20" },
+    { id: 3, name: "Formula Worksheet 1", type: "Theory", target_score: "25",reward: "30" },
+    { id: 2, name: "Biology Worksheet 1", type: "Practicee", target_score: "100",reward: "40" },
   ];
 
   const columns = useMemo(
@@ -65,38 +51,10 @@ function School() {
             <MoreVertIcon />
           </IconButton>
         ),
-      },
-      {
-        accessorKey: "school_name",
-        enableHiding: false,
-        header: "School Name",
-      },
-      {
-        accessorKey: "admin_name",
-        enableHiding: false,
-        header: "Admin Name",
-      },
-      {
-        accessorKey: "admin_email",
-        header: "Admin Email",
-        enableHiding: false,
-        size: 40,
-      },
-      {
-        accessorKey: "working_hrs",
-        header: "Working Hours",
-        size: 40,
-      },
-      {
-        accessorKey: "citizenship",
-        header: "Nation",
-        size: 40,
-      },
-      {
-        accessorKey: "nationality",
-        header: "Nationality",
-        size: 40,
-      },
+      },{ accessorKey: "name", header: "Topic" },
+      { accessorKey: "type", header: "Subject" },
+      { accessorKey: "target_score", header: "Difficult Level" },
+      { accessorKey: "reward", header: "Reward" },
       { accessorKey: "created_by", header: "Created By" },
       {
         accessorKey: "created_at",
@@ -175,7 +133,7 @@ function School() {
           <span className="breadcrumb-separator"> &gt; </span>
         </li>
         <li className="breadcrumb-item active" aria-current="page">
-          &nbsp;Schools
+          &nbsp;Work Sheet
         </li>
       </ol>
       <div className="card">
@@ -186,12 +144,12 @@ function School() {
             </div>
             <span className="me-2 text-muted">
               This database shows the list of&nbsp;
-              <span className="database_name">Schools</span>
+              <span className="database_name">Work Sheet</span>
             </span>
           </div>
         </div>
         <div className="mb-3 d-flex justify-content-end">
-          <Link to="/school/add">
+          <Link to="/worksheet/add">
             <button
               type="button"
               className="btn btn-button btn-sm me-2"
@@ -222,7 +180,7 @@ function School() {
                 },
               }}
               muiTableBodyRowProps={() => ({
-                onClick: () => navigate(`/school/view`),
+                onClick: () => navigate(`/worksheet/view`),
                 style: { cursor: "pointer" },
               })}
             />
@@ -233,9 +191,9 @@ function School() {
             open={Boolean(menuAnchor)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={() => navigate(`/school/edit`)}>Edit</MenuItem>
+            <MenuItem onClick={() => navigate(`/worksheet/edit`)}>Edit</MenuItem>
             <MenuItem>
-              <Delete path={`admin/school/delete`} onOpen={handleMenuClose} />
+              <Delete path={`admin/company/delete`} onOpen={handleMenuClose} />
             </MenuItem>
           </Menu>
         </>
@@ -244,9 +202,9 @@ function School() {
   );
 }
 
-School.propTypes = {
+Worksheet.propTypes = {
   row: PropTypes.func.isRequired,
   cell: PropTypes.func.isRequired,
 };
 
-export default School;
+export default Worksheet;

@@ -3,7 +3,7 @@ import { useFormik } from "formik";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
-function HomeworkAdd() {
+function HomeworkEdit() {
   const options = [
     { value: "1", label: "All" },
     { value: "2", label: "One" },
@@ -19,7 +19,6 @@ function HomeworkAdd() {
     grade_id: yup.string().required("*Select a grade id"),
     due_date: yup.string().required("*Due date is required"),
     ques_type: yup.string().required("*Select a question type"),
-   
     target_score: yup
       .number()
       .typeError("*Target Score must be a number")
@@ -30,14 +29,14 @@ function HomeworkAdd() {
 
   const formik = useFormik({
     initialValues: {
-      student_id: "",
-      difficult_type: "",
-      grade_id: "",
-      due_date:"",
-      target_score: "",
-      difficult_level: "",
-      question: "",
-      ques_type: "",
+      student_id: "Suriya",
+      difficult_type: "Easy",
+      grade_id: "A",
+      due_date:"2025-02-06",
+      target_score: "75",
+      question: "4",
+      ques_type: "multiChoice",
+
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -86,7 +85,7 @@ function HomeworkAdd() {
           </li>
           <span className="breadcrumb-separator"> &gt; </span>
           <li className="breadcrumb-item active" aria-current="page">
-            &nbsp;Homework Add
+            &nbsp;Homework Edit
           </li>
         </ol>
         <div className="d-flex justify-content-between align-items-center card_header p-2">
@@ -96,7 +95,7 @@ function HomeworkAdd() {
             </div>
             <span className="me-2 text-muted">
               &nbsp;
-              <span className="database_name">Add Homework</span>
+              <span className="database_name">Edit Homework</span>
             </span>
           </div>
           <div className="mb-3 d-flex justify-content-end">
@@ -298,4 +297,4 @@ function HomeworkAdd() {
   );
 }
 
-export default HomeworkAdd;
+export default HomeworkEdit;

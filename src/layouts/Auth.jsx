@@ -5,7 +5,7 @@ import Register from "../components/auth/Register";
 import Forgot from "../components/auth/Forgot";
 import Reset from "../components/auth/Reset";
 
-function Auth({ loginAsAdmin, loginAsSuperAdmin }) {
+function Auth({ loginAsAdmin, loginAsSuperAdmin, loginAsStudent  }) {
   return (
     <div>
       <BrowserRouter>
@@ -16,6 +16,7 @@ function Auth({ loginAsAdmin, loginAsSuperAdmin }) {
               <Login
                 loginAsSuperAdmin={loginAsSuperAdmin}
                 loginAsAdmin={loginAsAdmin}
+                loginAsStudent={loginAsStudent}
               />
             }
           />
@@ -25,6 +26,7 @@ function Auth({ loginAsAdmin, loginAsSuperAdmin }) {
               <Login
                 loginAsSuperAdmin={loginAsSuperAdmin}
                 loginAsAdmin={loginAsAdmin}
+                loginAsStudent={loginAsStudent}
               />
             }
           />
@@ -40,6 +42,7 @@ function Auth({ loginAsAdmin, loginAsSuperAdmin }) {
 Auth.propTypes = {
   loginAsAdmin: PropTypes.func.isRequired,
   loginAsSuperAdmin: PropTypes.func.isRequired,
+  loginAsStudent: PropTypes.func.isRequired,
 };
 
 export default Auth;

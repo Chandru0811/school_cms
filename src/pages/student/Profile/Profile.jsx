@@ -1,12 +1,9 @@
 import { useState } from "react";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
-import School from "../School/School";
-import Role from "../Role/Role";
-import RolePermission from "./RolePermission";
 import { Link } from "react-router-dom";
 
-function Settings() {
+function Profile() {
   const [key, setKey] = useState("school");
 
   return (
@@ -45,13 +42,24 @@ function Settings() {
             className="mb-3 ms-2"
           >
             <Tab eventKey="school" title="School">
-              <School />
+              {/* <School /> */}
+              Test
             </Tab>
-            <Tab eventKey="role" title="Role">
-              <Role />
+            <Tab eventKey="center" title="Center">
+              {/* <Role /> */}
+              Test
             </Tab>
-            <Tab eventKey="role_permission" title="Role Permission">
-              <RolePermission />
+            <Tab eventKey="grade" title="Grade">
+              {/* <RolePermission /> */}
+              Test
+            </Tab>
+            <Tab eventKey="subject" title="Subject">
+              {/* <RolePermission /> */}
+              Test
+            </Tab>
+            <Tab eventKey="topics" title="Topics">
+              {/* <RolePermission /> */}
+              Test
             </Tab>
           </Tabs>
         </div>
@@ -60,4 +68,4 @@ function Settings() {
   );
 }
 
-export default Settings;
+export default Profile;

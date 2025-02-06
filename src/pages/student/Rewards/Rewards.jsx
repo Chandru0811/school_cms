@@ -12,28 +12,24 @@ import Delete from "../../../components/common/Delete";
 import PropTypes from "prop-types";
 import { MoreVert as MoreVertIcon } from "@mui/icons-material";
 
-function School() {
+function Rewards() {
   const [menuAnchor, setMenuAnchor] = useState(null);
   const navigate = useNavigate();
 
   const data = [
     {
       id: 1,
-      school_name: "SRDK",
-      school_location: "Thiruvottuyur",
-      admin_name: "Suriya",
-      admin_email: "suriya@gmail.com",
-      admin_password: "12345678",
-      admin_cpassword: "12345678",
+      target_archieved: 1,
+      name: "Star of the Month",
+      description: "Reward for best performance",
+      reward_type: "Certificate",
     },
     {
-      id: 2,
-      school_name: "KVM",
-      school_location: "Royapuram",
-      admin_name: "Suriya",
-      admin_email: "suriya@gmail.com",
-      admin_password: "12345678",
-      admin_cpassword: "12345678",
+        id: 2,
+        target_archieved: 0,
+        name: "Star of the Month",
+        description: "Reward for best performance",
+        reward_type: "Medal",
     },
   ];
 
@@ -67,34 +63,25 @@ function School() {
         ),
       },
       {
-        accessorKey: "school_name",
+        accessorKey: "name",
         enableHiding: false,
-        header: "School Name",
+        header: "Name",
       },
       {
-        accessorKey: "admin_name",
+        accessorKey: "description",
         enableHiding: false,
-        header: "Admin Name",
+        header: "Description",
       },
       {
-        accessorKey: "admin_email",
-        header: "Admin Email",
+        accessorKey: "target_archieved",
+        header: "Target Achieved",
         enableHiding: false,
         size: 40,
-      },
+        Cell: ({ row }) => (row.getValue("target_archieved") === 1 ? "True" : "False"),
+      },      
       {
-        accessorKey: "working_hrs",
-        header: "Working Hours",
-        size: 40,
-      },
-      {
-        accessorKey: "citizenship",
-        header: "Nation",
-        size: 40,
-      },
-      {
-        accessorKey: "nationality",
-        header: "Nationality",
+        accessorKey: "reward_type",
+        header: "Reward Type",
         size: 40,
       },
       { accessorKey: "created_by", header: "Created By" },
@@ -175,7 +162,7 @@ function School() {
           <span className="breadcrumb-separator"> &gt; </span>
         </li>
         <li className="breadcrumb-item active" aria-current="page">
-          &nbsp;Schools
+          &nbsp;Rewards
         </li>
       </ol>
       <div className="card">
@@ -186,12 +173,12 @@ function School() {
             </div>
             <span className="me-2 text-muted">
               This database shows the list of&nbsp;
-              <span className="database_name">Schools</span>
+              <span className="database_name">Rewards</span>
             </span>
           </div>
         </div>
         <div className="mb-3 d-flex justify-content-end">
-          <Link to="/school/add">
+          <Link to="/reward/add">
             <button
               type="button"
               className="btn btn-button btn-sm me-2"
@@ -212,9 +199,6 @@ function School() {
               enableFullScreenToggle={false}
               initialState={{
                 columnVisibility: {
-                  working_hrs: false,
-                  citizenship: false,
-                  nationality: false,
                   created_by: false,
                   created_at: false,
                   updated_by: false,
@@ -222,7 +206,7 @@ function School() {
                 },
               }}
               muiTableBodyRowProps={() => ({
-                onClick: () => navigate(`/school/view`),
+                onClick: () => navigate(`/reward/view`),
                 style: { cursor: "pointer" },
               })}
             />
@@ -233,9 +217,9 @@ function School() {
             open={Boolean(menuAnchor)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={() => navigate(`/school/edit`)}>Edit</MenuItem>
+            <MenuItem onClick={() => navigate(`/reward/edit`)}>Edit</MenuItem>
             <MenuItem>
-              <Delete path={`admin/school/delete`} onOpen={handleMenuClose} />
+              <Delete path={`admin/reward/delete`} onOpen={handleMenuClose} />
             </MenuItem>
           </Menu>
         </>
@@ -244,9 +228,9 @@ function School() {
   );
 }
 
-School.propTypes = {
+Rewards.propTypes = {
   row: PropTypes.func.isRequired,
   cell: PropTypes.func.isRequired,
 };
 
-export default School;
+export default Rewards;
