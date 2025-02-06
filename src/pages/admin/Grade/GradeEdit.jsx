@@ -2,6 +2,7 @@ import { useState, } from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { Dialog, DialogActions, DialogTitle, DialogContent } from "@mui/material";
+import PropTypes from "prop-types";
 
 function GradeEdit({ show, setShow,}) {
   const [loadIndicator, setLoadIndicator] = useState(false);
@@ -21,14 +22,12 @@ function GradeEdit({ show, setShow,}) {
   };
 
   const validationSchema = yup.object().shape({
-    school: yup.string().required("*Selected a school"),
     name: yup.string().required("*Name is required"),
     description: yup.string().required("*Description is required"),
   });
 
   const formik = useFormik({
     initialValues: {
-      school:"School C",
       name:  "Demo Grade",
       description: "MINT",
     },
@@ -58,29 +57,6 @@ function GradeEdit({ show, setShow,}) {
         <hr className="m-0"></hr>
         <DialogContent>
           <div className="row">
-            <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
-                  School<span className="text-danger">*</span>
-                </label>
-                <select
-                  className={`form-select form-select-sm ${
-                    formik.touched.school && formik.errors.school
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  {...formik.getFieldProps("school")}
-                >
-                  <option value="">Select School</option>
-                  <option value="School A">School A</option>
-                  <option value="School B">School B</option>
-                  <option value="School C" selected>School C</option>
-                </select>
-                {formik.touched.school && formik.errors.school && (
-                  <div className="invalid-feedback">
-                    {formik.errors.school}
-                  </div>
-                )}
-            </div>
             <div className="col-md-6 col-12 mb-3">
               <label className="form-label">
                 Name<span className="text-danger">*</span>
@@ -145,5 +121,9 @@ function GradeEdit({ show, setShow,}) {
     </Dialog>
   );
 }
+GradeEdit.propTypes = {
+  show: PropTypes.func.isRequired,
+  setShow: PropTypes.func.isRequired,
+};
 
 export default GradeEdit;

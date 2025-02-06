@@ -2,6 +2,7 @@ import { useState, } from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { Dialog, DialogActions, DialogTitle, DialogContent } from "@mui/material";
+import PropTypes from "prop-types";
 
 function AnswerEdit({ show, setShow,}) {
   const [loadIndicator, setLoadIndicator] = useState(false);
@@ -151,5 +152,10 @@ function AnswerEdit({ show, setShow,}) {
     </Dialog>
   );
 }
+
+AnswerEdit.propTypes = {
+  show: PropTypes.func.isRequired,
+  setShow: PropTypes.func.isRequired,
+};
 
 export default AnswerEdit;

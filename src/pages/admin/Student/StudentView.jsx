@@ -24,18 +24,18 @@ function StudentView() {
         style={{ listStyle: "none", padding: 0, margin: 0 }}
       >
         <li>
-          <Link to="/" className="custom-breadcrumb">
+          <Link to="/" className="custom-breadcrumb text-sm">
             Home
           </Link>
           <span className="breadcrumb-separator"> &gt; </span>
         </li>
         <li>
-          <Link to="/student" className="custom-breadcrumb">
+          <Link to="/student" className="custom-breadcrumb text-sm">
             &nbsp;Student
           </Link>
           <span className="breadcrumb-separator"> &gt; </span>
         </li>
-        <li className="breadcrumb-item active" aria-current="page">
+        <li className="breadcrumb-item active text-sm" aria-current="page">
           &nbsp;Student View
         </li>
       </ol>

@@ -46,7 +46,7 @@ function Answer() {
         enableHiding: false,
         enableSorting: false,
         size: 20,
-        Cell: ({ row }) => (
+        Cell: () => (
           <IconButton
             onClick={(e) => {
               e.stopPropagation();

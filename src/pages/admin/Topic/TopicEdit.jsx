@@ -2,6 +2,7 @@ import { useState, } from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { Dialog, DialogActions, DialogTitle, DialogContent } from "@mui/material";
+import PropTypes from "prop-types";
 
 function TopicEdit({ show, setShow,}) {
   const [loadIndicator, setLoadIndicator] = useState(false);
@@ -105,7 +106,7 @@ function TopicEdit({ show, setShow,}) {
                   Description<span className="text-danger">*</span>
                 </label>
                 <textarea
-                  className={`form-control form-control-sm ${
+                  className={`form-control ${
                     formik.touched.description && formik.errors.description
                       ? "is-invalid"
                       : ""
@@ -145,5 +146,10 @@ function TopicEdit({ show, setShow,}) {
     </Dialog>
   );
 }
+
+TopicEdit.propTypes = {
+  show: PropTypes.func.isRequired,
+  setShow: PropTypes.func.isRequired,
+};
 
 export default TopicEdit;
