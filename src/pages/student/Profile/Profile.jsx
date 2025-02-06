@@ -2,6 +2,9 @@ import { useState } from "react";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 import { Link } from "react-router-dom";
+import School from "./School";
+import Center from "./Center";
+import Grade from "./Grade/Grade";
 
 function Profile() {
   const [key, setKey] = useState("school");
@@ -42,19 +45,17 @@ function Profile() {
             className="mb-3 ms-2"
           >
             <Tab eventKey="school" title="School">
-              {/* <School /> */}
-              Test
+              <School />
             </Tab>
             <Tab eventKey="center" title="Center">
-              {/* <Role /> */}
-              Test
+              <Center />
             </Tab>
             <Tab eventKey="grade" title="Grade">
-              {/* <RolePermission /> */}
-              Test
+              <Grade />
+              {/* Test */}
             </Tab>
             <Tab eventKey="subject" title="Subject">
-              {/* <RolePermission /> */}
+              {/* <Subject /> */}
               Test
             </Tab>
             <Tab eventKey="topics" title="Topics">

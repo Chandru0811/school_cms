@@ -4,11 +4,9 @@ import helperlogo from "../../assets/images/logo.webp";
 import PropTypes from "prop-types";
 import {
   FaChartBar,
-  FaFileAlt,
-  FaBookReader,
-  FaTrophy,
-  FaGift,
+  FaRegFileAlt,
 } from "react-icons/fa";
+import { IoGiftOutline, IoLibraryOutline, IoTrophyOutline } from "react-icons/io5";
 
 function StudentSideBar() {
   const [leadMenuOpen] = useState(false);
@@ -66,7 +64,7 @@ function StudentSideBar() {
                 style={{ borderRadius: "5px" }}
                 to="/worksheet"
               >
-                <FaFileAlt className="sidebar_icon" />
+                <FaRegFileAlt className="sidebar_icon" />
                 Worksheet
               </NavLink>
             </li>
@@ -76,7 +74,7 @@ function StudentSideBar() {
                 style={{ borderRadius: "5px" }}
                 to="/homework"
               >
-                <FaBookReader className="sidebar_icon" />
+                <IoLibraryOutline className="sidebar_icon" />
                 Homework
               </NavLink>
             </li>
@@ -86,7 +84,7 @@ function StudentSideBar() {
                 style={{ borderRadius: "5px" }}
                 to="/challenges"
               >
-                <FaTrophy className="sidebar_icon" />
+                <IoTrophyOutline className="sidebar_icon" />
                 Challenges
               </NavLink>
             </li>
@@ -96,7 +94,7 @@ function StudentSideBar() {
                 style={{ borderRadius: "5px" }}
                 to="/rewards"
               >
-                <FaGift className="sidebar_icon" />
+                <IoGiftOutline className="sidebar_icon" />
                 Rewards
               </NavLink>
             </li>
