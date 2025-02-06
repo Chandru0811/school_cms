@@ -16,23 +16,23 @@ function WorkSheetView() {
   return (
     <div className="container-fluid px-0">
       <ol
-        className="breadcrumb my-2 px-2"
+        className="breadcrumb my-2 px-2 d-flex align-items-center"
         style={{ listStyle: "none", padding: 0, margin: 0 }}
       >
         <li>
-          <Link to="/" className="custom-breadcrumb">
+          <Link to="/" className="custom-breadcrumb text-sm">
             Home
           </Link>
-          <span className="breadcrumb-separator"> &gt; </span>
+          <span className="breadcrumb-separator text-sm"> &gt; </span>
         </li>
         <li>
-          <Link to="/worksheet" className="custom-breadcrumb">
-            &nbsp;Work Sheet
+          <Link to="/worksheet" className="custom-breadcrumb text-sm">
+            &nbsp;Worksheet
           </Link>
-          <span className="breadcrumb-separator"> &gt; </span>
+          <span className="breadcrumb-separator text-sm"> &gt; </span>
         </li>
-        <li className="breadcrumb-item active" aria-current="page">
-          &nbsp;Work Sheet View
+        <li className="breadcrumb-item active text-sm" aria-current="page">
+          &nbsp;Worksheet View
         </li>
       </ol>
       <div className="card vh-100" style={{ border: "1px solid #dbd9d0" }}>
@@ -41,7 +41,7 @@ function WorkSheetView() {
             <div className="d-flex">
               <div className="dot active"></div>
             </div>
-            <span className="me-2 text-muted">View Work Sheet</span>
+            <span className="me-2 text-muted text-sm">View Worksheet</span>
           </div>
           <div className="my-2 pe-3 d-flex align-items-center">
             <Link to="/worksheet">

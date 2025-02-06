@@ -4,32 +4,32 @@ function HomeworkView() {
   const data = {
     student_id: "Kishore",
     grade_id: "Problem",
-    diffuicult_type:"Easy",
-    due_date:"05-02-2025",
-    target_score:"80",
-    question:"Grammar",
-    quest_type:"English",
+    diffuicult_type: "Easy",
+    due_date: "05-02-2025",
+    target_score: "80",
+    question: "Grammar",
+    quest_type: "English",
   };
 
   return (
     <div className="container-fluid px-0">
       <ol
-        className="breadcrumb my-2 px-2"
+        className="breadcrumb my-2 px-2 d-flex align-items-center"
         style={{ listStyle: "none", padding: 0, margin: 0 }}
       >
         <li>
-          <Link to="/" className="custom-breadcrumb">
+          <Link to="/" className="custom-breadcrumb text-sm">
             Home
           </Link>
-          <span className="breadcrumb-separator"> &gt; </span>
+          <span className="breadcrumb-separator text-sm"> &gt; </span>
         </li>
         <li>
-          <Link to="/homework" className="custom-breadcrumb">
+          <Link to="/homework" className="custom-breadcrumb text-sm">
             &nbsp;Homework
           </Link>
-          <span className="breadcrumb-separator"> &gt; </span>
+          <span className="breadcrumb-separator text-sm"> &gt; </span>
         </li>
-        <li className="breadcrumb-item active" aria-current="page">
+        <li className="breadcrumb-item active text-sm" aria-current="page">
           &nbsp;Homework View
         </li>
       </ol>
@@ -39,7 +39,7 @@ function HomeworkView() {
             <div className="d-flex">
               <div className="dot active"></div>
             </div>
-            <span className="me-2 text-muted">View Homework</span>
+            <span className="me-2 text-muted text-sm">View Homework</span>
           </div>
           <div className="my-2 pe-3 d-flex align-items-center">
             <Link to="/homework">

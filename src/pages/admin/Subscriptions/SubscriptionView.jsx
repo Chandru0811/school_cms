@@ -15,22 +15,22 @@ function SubscriptionView() {
   return (
     <div className="container-fluid px-0">
       <ol
-        className="breadcrumb my-2 px-2"
+        className="breadcrumb my-2 px-2 d-flex align-items-center"
         style={{ listStyle: "none", padding: 0, margin: 0 }}
       >
         <li>
-          <Link to="/" className="custom-breadcrumb">
+          <Link to="/" className="custom-breadcrumb text-sm">
             Home
           </Link>
-          <span className="breadcrumb-separator"> &gt; </span>
+          <span className="breadcrumb-separator text-sm"> &gt; </span>
         </li>
         <li>
-          <Link to="/subscriptions" className="custom-breadcrumb">
+          <Link to="/subscriptions" className="custom-breadcrumb text-sm">
             &nbsp;Subscriptions
           </Link>
-          <span className="breadcrumb-separator"> &gt; </span>
+          <span className="breadcrumb-separator text-sm"> &gt; </span>
         </li>
-        <li className="breadcrumb-item active" aria-current="page">
+        <li className="breadcrumb-item active text-sm" aria-current="page">
           &nbsp;Subscriptions View
         </li>
       </ol>
@@ -40,7 +40,7 @@ function SubscriptionView() {
             <div className="d-flex">
               <div className="dot active"></div>
             </div>
-            <span className="me-2 text-muted">View Subscriptions</span>
+            <span className="me-2 text-muted text-sm">View Subscriptions</span>
           </div>
           <div className="my-2 pe-3 d-flex align-items-center">
             <Link to="/subscriptions">
@@ -79,7 +79,9 @@ function SubscriptionView() {
                   <p className="fw-medium text-sm">Start Date</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.details.start_date}</p>
+                  <p className="text-muted text-sm">
+                    : {data.details.start_date}
+                  </p>
                 </div>
               </div>
             </div>
@@ -89,7 +91,9 @@ function SubscriptionView() {
                   <p className="fw-medium text-sm">End Date</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.details.end_date}</p>
+                  <p className="text-muted text-sm">
+                    : {data.details.end_date}
+                  </p>
                 </div>
               </div>
             </div>

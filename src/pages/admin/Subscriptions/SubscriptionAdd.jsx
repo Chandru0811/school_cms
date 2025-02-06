@@ -28,32 +28,32 @@ function SubscriptionAdd() {
       description: "",
     },
     validationSchema: validationSchema,
-    onSubmit: async () => {},
+    onSubmit: async (values) => {
+      console.log("Form Values:", values);
+    },
     validateOnChange: false,
     validateOnBlur: true,
   });
 
-  console.log(formik.values);
-
   return (
     <div className="container-fluid px-0">
       <ol
-        className="breadcrumb my-3 px-2"
+        className="breadcrumb my-3 px-2 d-flex align-items-center"
         style={{ listStyle: "none", padding: 0, margin: 0 }}
       >
         <li>
-          <Link to="/" className="custom-breadcrumb">
+          <Link to="/" className="custom-breadcrumb text-sm">
             Home
           </Link>
-          <span className="breadcrumb-separator"> &gt; </span>
+          <span className="breadcrumb-separator text-sm"> &gt; </span>
         </li>
         <li>
-          <Link to="/subscriptions" className="custom-breadcrumb">
+          <Link to="/subscriptions" className="custom-breadcrumb text-sm">
             &nbsp;Subscriptions
           </Link>
-          <span className="breadcrumb-separator"> &gt; </span>
+          <span className="breadcrumb-separator text-sm"> &gt; </span>
         </li>
-        <li className="breadcrumb-item active" aria-current="page">
+        <li className="breadcrumb-item active text-sm" aria-current="page">
           &nbsp;Subscriptions Add
         </li>
       </ol>
@@ -71,7 +71,7 @@ function SubscriptionAdd() {
               <div className="d-flex">
                 <div className="dot active"></div>
               </div>
-              <span className="me-2 text-muted">Add Subscriptions</span>
+              <span className="me-2 text-muted text-sm">Add Subscriptions</span>
             </div>
             <div className="my-2 pe-3 d-flex align-items-center">
               <Link to="/subscriptions">
@@ -93,13 +93,13 @@ function SubscriptionAdd() {
                 </label>
                 <input
                   type="text"
-                  className={`form-control ${
+                  className={`form-control form-control-sm ${
                     formik.touched.name && formik.errors.name
                       ? "is-invalid"
                       : ""
                   }`}
                   {...formik.getFieldProps("name")}
-                  value={formik.values.name} 
+                  value={formik.values.name}
                 />
                 {formik.touched.name && formik.errors.name && (
                   <div className="invalid-feedback">{formik.errors.name}</div>
@@ -112,7 +112,7 @@ function SubscriptionAdd() {
                 </label>
                 <input
                   type="text"
-                  className={`form-control ${
+                  className={`form-control form-control-sm ${
                     formik.touched.price && formik.errors.price
                       ? "is-invalid"
                       : ""
@@ -130,7 +130,7 @@ function SubscriptionAdd() {
                 </label>
                 <input
                   type="date"
-                  className={`form-control ${
+                  className={`form-control form-control-sm ${
                     formik.touched.details?.start_date &&
                     formik.errors.details?.start_date
                       ? "is-invalid"
@@ -153,7 +153,7 @@ function SubscriptionAdd() {
                 </label>
                 <input
                   type="date"
-                  className={`form-control ${
+                  className={`form-control form-control-sm ${
                     formik.touched.details?.end_date &&
                     formik.errors.details?.end_date
                       ? "is-invalid"
@@ -176,7 +176,7 @@ function SubscriptionAdd() {
                 </label>
                 <input
                   type="text"
-                  className={`form-control ${
+                  className={`form-control form-control-sm ${
                     formik.touched.duration && formik.errors.duration
                       ? "is-invalid"
                       : ""
@@ -194,7 +194,7 @@ function SubscriptionAdd() {
               <div className="col-12 mb-3">
                 <label className="form-label">Description</label>
                 <textarea
-                  className={`form-control ${
+                  className={`form-control form-control-sm ${
                     formik.touched.description && formik.errors.description
                       ? "is-invalid"
                       : ""

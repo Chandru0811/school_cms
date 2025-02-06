@@ -13,22 +13,22 @@ function RewardView() {
   return (
     <div className="container-fluid px-0">
       <ol
-        className="breadcrumb my-2 px-2"
+        className="breadcrumb my-2 px-2 d-flex align-items-center"
         style={{ listStyle: "none", padding: 0, margin: 0 }}
       >
         <li>
-          <Link to="/" className="custom-breadcrumb">
+          <Link to="/" className="custom-breadcrumb text-sm">
             Home
           </Link>
-          <span className="breadcrumb-separator"> &gt; </span>
+          <span className="breadcrumb-separator text-sm"> &gt; </span>
         </li>
         <li>
-          <Link to="/reward" className="custom-breadcrumb">
+          <Link to="/reward" className="custom-breadcrumb text-sm">
             &nbsp;Rewards
           </Link>
-          <span className="breadcrumb-separator"> &gt; </span>
+          <span className="breadcrumb-separator text-sm"> &gt; </span>
         </li>
-        <li className="breadcrumb-item active" aria-current="page">
+        <li className="breadcrumb-item active text-sm" aria-current="page">
           &nbsp;Reward View
         </li>
       </ol>
@@ -38,7 +38,7 @@ function RewardView() {
             <div className="d-flex">
               <div className="dot active"></div>
             </div>
-            <span className="me-2 text-muted">View Reward</span>
+            <span className="me-2 text-muted text-sm">View Reward</span>
           </div>
           <div className="my-2 pe-3 d-flex align-items-center">
             <Link to="/reward">
@@ -67,7 +67,9 @@ function RewardView() {
                   <p className="fw-medium text-sm">Target Achieved</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.target_archieved}</p>
+                  <p className="text-muted text-sm">
+                    : {data.target_archieved}
+                  </p>
                 </div>
               </div>
             </div>
@@ -105,20 +107,20 @@ function RewardView() {
                 </div>
               </div>
             </div>
-              <div className="col-12 my-2">
-                <div className="row">
-                  <div className="col-3">
-                    <p className="fw-medium text-sm">Image</p>
-                  </div>
-                  <div className="col-3">
-                    <img
-                      src={data.image ? URL.createObjectURL(data.image) : ""}
-                      alt="Reward"
-                      style={{ maxWidth: "100%", height: "auto" }}
-                    />
-                  </div>
+            <div className="col-12 my-2">
+              <div className="row">
+                <div className="col-3">
+                  <p className="fw-medium text-sm">Image</p>
+                </div>
+                <div className="col-3">
+                  <img
+                    src={data.image ? URL.createObjectURL(data.image) : ""}
+                    alt="Reward"
+                    style={{ maxWidth: "100%", height: "auto" }}
+                  />
                 </div>
               </div>
+            </div>
           </div>
         </div>
       </div>
