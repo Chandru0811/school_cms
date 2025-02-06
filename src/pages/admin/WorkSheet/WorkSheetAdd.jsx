@@ -4,17 +4,9 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 
 function WorkSheetAdd() {
-  const options = [
-    { value: "1", label: "All" },
-    { value: "2", label: "One" },
-    { value: "3", label: "Two" },
-    { value: "4", label: "Three" },
-    { value: "5", label: "Four" },
-  ];
-  const [isOpen, setIsOpen] = useState(false);
 
   const validationSchema = yup.object().shape({
-    name: yup.string().required("*Select a title"),
+    name: yup.string().required("*Title is required"),
     subject_id: yup.string().required("*Select a subject"),
     type: yup.string().required("*Select a type"),
     ques_type: yup.string().required("*Select a question type"),
@@ -56,17 +48,39 @@ function WorkSheetAdd() {
     },
   });
 
+  const options = [
+    { value: "1", label: "All" },
+    { value: "2", label: "Multi Choice" },
+    { value: "3", label: "Filled" },
+    { value: "4", label: "Closed" },
+    { value: "5", label: "Short Answer" },
+    { value: "6", label: "Upload" },
+  ];
+  const [isOpen, setIsOpen] = useState(false);
+
   const handleCheckboxChange = (event) => {
     const { value, checked } = event.target;
-    let selectedValues = [...formik.values.question];
-
-    if (checked) {
-      selectedValues.push(value);
+  
+    if (value === "1") {
+      formik.setFieldValue(
+        "question",
+        checked ? options.map((opt) => opt.value) : []
+      );
     } else {
-      selectedValues = selectedValues.filter((item) => item !== value);
+      let selectedValues = [...formik.values.question];
+      if (checked) {
+        selectedValues.push(value);
+      } else {
+        selectedValues = selectedValues.filter((item) => item !== value);
+      }  
+      if (selectedValues.length === options.length - 1) {
+        selectedValues.push("0");
+      }  
+      if (selectedValues.includes("1") && selectedValues.length < options.length) {
+        selectedValues = selectedValues.filter((item) => item !== "0");
+      }
+      formik.setFieldValue("question", selectedValues);
     }
-
-    formik.setFieldValue("question", selectedValues);
   };
 
   return (
@@ -163,7 +177,6 @@ function WorkSheetAdd() {
                 </div>
               </div>
             </div>
-
             <div className="col-md-6 col-12 mb-3">
               {formik.values.questionType === "Challenge" ? (
                 <label className="form-label">
@@ -264,7 +277,7 @@ function WorkSheetAdd() {
                 Question
               </label>
               </div>
-              <div className="dropdown">
+              <div className="dropdown question-dropdown">
                 <button
                   type="button"
                   className={`form-control form-control-sm dropdown-toggle ${
@@ -310,7 +323,6 @@ function WorkSheetAdd() {
                 </div>
               )}
             </div>
-
             <div className="col-md-6 col-12 mb-3">
               <label className="form-label">Traget Score</label>
               <span className="text-danger">*</span>

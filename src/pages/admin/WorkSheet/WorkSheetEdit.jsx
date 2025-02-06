@@ -14,7 +14,7 @@ function WorkSheetEdit() {
   const [isOpen, setIsOpen] = useState(false);
 
   const validationSchema = yup.object().shape({
-    name: yup.string().required("*Select a title"),
+    name: yup.string().required("*Title is required"),
     subject_id: yup.string().required("*Select a subject"),
     type: yup.string().required("*Select a type"),
     ques_type: yup.string().required("*Select a question type"),
@@ -160,7 +160,6 @@ function WorkSheetEdit() {
                 </div>
               </div>
             </div>
-
             <div className="col-md-6 col-12 mb-3">
               {formik.values.questionType === "Challenge" ? (
                 <label className="form-label">
@@ -261,7 +260,7 @@ function WorkSheetEdit() {
                 Question
               </label>
               </div>
-              <div className="dropdown">
+              <div className="dropdown question-dropdown">
                 <button
                   type="button"
                   className={`form-control form-control-sm dropdown-toggle ${
@@ -307,7 +306,6 @@ function WorkSheetEdit() {
                 </div>
               )}
             </div>
-
             <div className="col-md-6 col-12 mb-3">
               <label className="form-label">Traget Score</label>
               <span className="text-danger">*</span>

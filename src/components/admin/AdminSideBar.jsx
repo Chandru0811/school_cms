@@ -1,11 +1,8 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import helperlogo from "../../assets/images/logo.webp";
-import { BsBarChart } from "react-icons/bs";
 import PropTypes from "prop-types";
-import { IoSchoolOutline } from "react-icons/io5";
-import { AiOutlineAppstore } from "react-icons/ai";
-import { FaQuestionCircle, FaBook,  FaRegStar, FaBookOpen,FaFileAlt,FaBookReader, FaTrophy, FaGift,FaCreditCard } from "react-icons/fa";
+import { FaQuestionCircle,FaStar, FaUserGraduate , FaBook, FaThLarge , FaChartBar , FaBookOpen,FaFileAlt,FaBookReader, FaTrophy, FaGift,FaCreditCard } from "react-icons/fa";
 
 
 function AdminSidebar() {
@@ -61,7 +58,7 @@ function AdminSidebar() {
                 style={{ borderRadius: "5px" }}
                 to="/dashboard"
               >
-                <BsBarChart className="sidebar_icon" />
+                <FaChartBar  className="sidebar_icon" />
                 Dashboard
               </NavLink>
             </li>
@@ -71,7 +68,7 @@ function AdminSidebar() {
                 style={{ borderRadius: "5px" }}
                 to="/center"
               >
-                <AiOutlineAppstore  className="sidebar_icon" />
+                <FaThLarge   className="sidebar_icon" />
                 Center
               </NavLink>
             </li>
@@ -81,7 +78,7 @@ function AdminSidebar() {
                 style={{ borderRadius: "5px" }}
                 to="/grade"
               >
-                <FaRegStar className="sidebar_icon" />
+                <FaStar className="sidebar_icon" />
                 Grade
               </NavLink>
             </li>
@@ -91,7 +88,7 @@ function AdminSidebar() {
                 style={{ borderRadius: "5px" }}
                 to="/student"
               >
-                <IoSchoolOutline className="sidebar_icon" />
+                <FaUserGraduate  className="sidebar_icon" />
                 Student
               </NavLink>
             </li>
