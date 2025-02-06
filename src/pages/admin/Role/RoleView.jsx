@@ -29,7 +29,7 @@ function RoleView({ show, setShow }) {
       </DialogContent>
       <hr className="m-0"></hr>
       <DialogActions className="mt-3">
-        <Button className="btn btn-sm btn-border bg-light text-dark" onClick={handleClose}>
+        <Button className="btn btn-sm btn-back bg-light text-dark" onClick={handleClose}>
           Back
         </Button>
       </DialogActions>

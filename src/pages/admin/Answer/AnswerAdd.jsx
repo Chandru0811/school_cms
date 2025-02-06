@@ -135,7 +135,7 @@ function AnswerAdd() {
           <hr className="m-0"></hr>
           <DialogActions className="mt-3">
             <button
-              className="btn btn-sm btn-border bg-light text-dark"
+              className="btn btn-sm btn-back bg-light text-dark"
               onClick={handleClose}
             >
               Cancel
