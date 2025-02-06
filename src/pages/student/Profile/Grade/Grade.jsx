@@ -4,17 +4,14 @@ import {
   ThemeProvider,
   createTheme,
   Menu,
-  MenuItem,
 } from "@mui/material";
 import PropTypes from "prop-types";
-import GradeEdit from "./GradeEdit";
 import GradeView from "./GradeView";
 
 
 function Grade() {
   const [menuAnchor, setMenuAnchor] = useState(null);
   // const navigate = useNavigate();
-  const [showEdit, setShowEdit] = useState(false);
   const [showView, setShowView] = useState(false);
   const [selectedData, setSelectedData] = useState(null); // Store selected row data
 
@@ -154,19 +151,19 @@ function Grade() {
             open={Boolean(menuAnchor)}
             onClose={handleMenuClose}
           >
-            <MenuItem
+            {/* <MenuItem
               onClick={() => {
                 setShowEdit(true);
                 handleMenuClose();
               }}
             >
               Edit
-            </MenuItem>
+            </MenuItem> */}
             {/* <MenuItem>
               <Delete path={`admin/company/delete`} onOpen={handleMenuClose} />
             </MenuItem> */}
           </Menu>
-          <GradeEdit show={showEdit} setShow={setShowEdit} />
+          {/* <GradeEdit show={showEdit} setShow={setShowEdit} /> */}
           <GradeView show={showView} setShow={setShowView} data={selectedData} />
         </>
       </div>

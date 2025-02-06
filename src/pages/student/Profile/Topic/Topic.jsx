@@ -1,24 +1,16 @@
 import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
 import { MaterialReactTable } from "material-react-table";
 import {
   ThemeProvider,
   createTheme,
   Menu,
-  MenuItem,
-  IconButton,
 } from "@mui/material";
-import Delete from "../../../components/common/Delete";
 import PropTypes from "prop-types";
-import { MoreVert as MoreVertIcon } from "@mui/icons-material";
-import TopicAdd from "./TopicAdd";
-import TopicEdit from "./TopicEdit";
 import TopicView from "./TopicView";
 
 function Topic() {
   const [menuAnchor, setMenuAnchor] = useState(null);
   // const navigate = useNavigate();
-  const [showEdit, setShowEdit] = useState(false);
   const [showView, setShowView] = useState(false);
   const [selectedData, setSelectedData] = useState(null); // Store selected row data
 
@@ -45,23 +37,6 @@ function Topic() {
         size: 40,
         cell: ({ cell }) => (
           <span style={{ textAlign: "center" }}>{cell.getValue()}</span>
-        ),
-      },
-      {
-        accessorKey: "id",
-        header: "",
-        enableHiding: false,
-        enableSorting: false,
-        size: 20,
-        Cell: () => (
-          <IconButton
-            onClick={(e) => {
-              e.stopPropagation();
-              setMenuAnchor(e.currentTarget);
-            }}
-          >
-            <MoreVertIcon />
-          </IconButton>
         ),
       },
       {
@@ -139,7 +114,7 @@ function Topic() {
 
   return (
     <div className="container-fluid mb-4 px-0">
-      <ol
+      {/* <ol
         className="breadcrumb my-3 d-flex align-items-center"
         style={{ listStyle: "none", padding: 0, margin: 0 }}
       >
@@ -152,9 +127,9 @@ function Topic() {
         <li className="breadcrumb-item active text-sm" aria-current="page">
           &nbsp;Topic
         </li>
-      </ol>
+      </ol> */}
       <div className="card">
-        <div className="d-flex justify-content-between align-items-center card_header p-2">
+        {/* <div className="d-flex justify-content-between align-items-center card_header p-2">
           <div className="d-flex align-items-center">
             <div className="d-flex">
               <div className="dot active"></div>
@@ -165,7 +140,7 @@ function Topic() {
             </span>
           </div>
           <TopicAdd />
-        </div>
+        </div> */}
 
         <>
           <ThemeProvider theme={theme}>
@@ -202,7 +177,7 @@ function Topic() {
             open={Boolean(menuAnchor)}
             onClose={handleMenuClose}
           >
-            <MenuItem
+            {/* <MenuItem
               onClick={() => {
                 setShowEdit(true);
                 handleMenuClose();
@@ -212,9 +187,9 @@ function Topic() {
             </MenuItem>
             <MenuItem>
               <Delete path={`admin/company/delete`} onOpen={handleMenuClose} />
-            </MenuItem>
+            </MenuItem> */}
           </Menu>
-          <TopicEdit show={showEdit} setShow={setShowEdit} />
+          {/* <TopicEdit show={showEdit} setShow={setShowEdit} /> */}
           <TopicView
             show={showView}
             setShow={setShowView}

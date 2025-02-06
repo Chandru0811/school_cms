@@ -960,7 +960,7 @@ function RolePermission() {
                     id="datatable"
                     style={{ maxHeight: "460px", overflowY: "auto" }}
                   >
-                    <table className="table table-light table-hover">
+                    <table className="table table-hover">
                       <thead style={{ position: "sticky", top: 0, zIndex: 1 }}>
                         <tr>
                           <th scope="col" className="cms-header">
@@ -985,9 +985,9 @@ function RolePermission() {
                       </thead>
                       <tbody>
                         {/* Course  */}
-                        <tr>
+                        {/* <tr>
                           <th>School Management</th>
-                        </tr>
+                        </tr> */}
                         <tr>
                           <td>
                             <p

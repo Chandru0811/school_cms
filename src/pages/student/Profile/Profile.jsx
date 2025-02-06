@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import School from "./School";
 import Center from "./Center";
 import Grade from "./Grade/Grade";
+import Subject from "./Subject/Subject";
+import Topic from "./Topic/Topic";
 
 function Profile() {
   const [key, setKey] = useState("school");
@@ -55,12 +57,11 @@ function Profile() {
               {/* Test */}
             </Tab>
             <Tab eventKey="subject" title="Subject">
-              {/* <Subject /> */}
-              Test
+              <Subject />
+              {/* Test */}
             </Tab>
             <Tab eventKey="topics" title="Topics">
-              {/* <RolePermission /> */}
-              Test
+              <Topic />
             </Tab>
           </Tabs>
         </div>
