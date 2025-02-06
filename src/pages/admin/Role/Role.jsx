@@ -143,7 +143,7 @@ function Role() {
         </li>
       </ol> */}
       <div className="card">
-        <div className="d-flex justify-content-between align-items-center card_header mb-3 p-1">
+        {/* <div className="d-flex justify-content-between align-items-center card_header mb-3 p-1">
           <div className="d-flex align-items-center">
             <div className="d-flex">
               <div className="dot active"></div>
@@ -153,7 +153,7 @@ function Role() {
               <span className="database_name">Role</span>
             </span>
           </div>
-        </div>
+        </div> */}
         <div className="mb-3 d-flex justify-content-end">
           <RoleAdd />
         </div>

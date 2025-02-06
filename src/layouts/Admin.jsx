@@ -141,9 +141,8 @@ function Admin({ handleLogout }) {
                     <Route path="/subscription/view" element={<SubscriptionView />} />
 
                      {/* Profile   */}
-                    <Route path="/profile_card" element={<Settings />} />
+                    <Route path="/settings" element={<Settings />} />
                     <Route path="/role_permission" element={<RolePermission />} />
-
                   </Routes>
                 </div>
                 <AdminFooter />

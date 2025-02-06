@@ -86,7 +86,7 @@ function AdminHeader({ handleLogout }) {
                       <span>{user_name}</span>
                     </div>
                     <Link
-                      to="/settings"
+                      to="/home"
                       className="dropdown-item d-flex align-items-center"
                     >
                       <IoHomeOutline className="me-2" />
@@ -107,7 +107,7 @@ function AdminHeader({ handleLogout }) {
                       <span>Profile</span>
                     </Link> */}
                     <Link
-                      to="/profile_card"
+                      to="/settings"
                       className="dropdown-item d-flex align-items-center"
                     >
                       <IoSettingsOutline className="me-2" />
