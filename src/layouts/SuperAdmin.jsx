@@ -14,7 +14,7 @@ function SuperAdmin({ handleLogout }) {
   return (
     <div>
       <div>
-        <BrowserRouter>
+        <BrowserRouter basename="/schoolCms">
           <div className="d-flex flex-column flex-lg-row bg-surface-secondary ">
             <SuperAdminSideBar />
 
@@ -31,7 +31,6 @@ function SuperAdmin({ handleLogout }) {
                     <Route path="/school/add" element={<SchoolAdd />} />
                     <Route path="/school/edit" element={<SchoolEdit />} />
                     <Route path="/school/view" element={<SchoolView />} />
-
                   </Routes>
                 </div>
                 <SuperAdminFooter />

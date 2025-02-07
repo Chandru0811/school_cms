@@ -26,7 +26,7 @@ function Student({ handleLogout }) {
   return (
     <div>
       <div>
-        <BrowserRouter>
+        <BrowserRouter basename="/schoolCms">
           <div className="d-flex flex-column flex-lg-row bg-surface-secondary ">
             <StudentSideBar />
 

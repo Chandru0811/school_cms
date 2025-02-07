@@ -1,6 +1,7 @@
 {
   "name": "school_cms",
   "private": true,
+  "homepage": "/schoolCms",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
