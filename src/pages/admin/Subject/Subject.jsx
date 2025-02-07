@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Link,  } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { MaterialReactTable } from "material-react-table";
 import {
   ThemeProvider,
@@ -15,18 +15,34 @@ import SubjectAdd from "./SubjectAdd";
 import SubjectEdit from "./SubjectEdit";
 import SubjectView from "./SubjectView";
 
-
 function Subject() {
   const [menuAnchor, setMenuAnchor] = useState(null);
-  // const navigate = useNavigate();
   const [showEdit, setShowEdit] = useState(false);
   const [showView, setShowView] = useState(false);
   const [selectedData, setSelectedData] = useState(null); // Store selected row data
 
   const data = [
-    { id: 1,grade_id: "1", name: "GMTTV Hrs Sec School", description: "Mint" },
-    { id: 2,grade_id: "2", name: "ST. Thomas Girls Hrs School", description: "Chennai" },
-    { id: 3,grade_id: "3", name: "Govt Boys Hrs School", description: "Dubai" },
+    {
+      id: 1,
+      center_id: "SRDK",
+      grade_id: "5 Grade",
+      name: "English",
+      description: "Mint",
+    },
+    {
+      id: 2,
+      center_id: "KVM",
+      grade_id: "8 Grade",
+      name: "Tamil",
+      description: "Chennai",
+    },
+    {
+      id: 3,
+      center_id: "KCS",
+      grade_id: "10 Grade",
+      name: "English",
+      description: "Dubai",
+    },
   ];
 
   const columns = useMemo(
@@ -58,9 +74,9 @@ function Subject() {
           </IconButton>
         ),
       },
-      { accessorKey: "grade_id", header: "Grade ID" },
+      { accessorKey: "center_id", header: "Centre Name" },
+      { accessorKey: "grade_id", header: "Grade" },
       { accessorKey: "name", header: "Name" },
-      { accessorKey: "description", header: "Description" },
       { accessorKey: "created_by", header: "Created By" },
       {
         accessorKey: "created_at",
@@ -155,7 +171,7 @@ function Subject() {
           </div>
           <SubjectAdd />
         </div>
-        
+
         <>
           <ThemeProvider theme={theme}>
             <MaterialReactTable
@@ -204,7 +220,11 @@ function Subject() {
             </MenuItem>
           </Menu>
           <SubjectEdit show={showEdit} setShow={setShowEdit} />
-          <SubjectView show={showView} setShow={setShowView} data={selectedData} />
+          <SubjectView
+            show={showView}
+            setShow={setShowView}
+            data={selectedData}
+          />
         </>
       </div>
     </div>

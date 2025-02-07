@@ -22,14 +22,14 @@ function TopicEdit({ show, setShow,}) {
   };
 
   const validationSchema = yup.object().shape({
-    subject_id: yup.string().required("*Selected a subject id"),
+    subject_id: yup.string().required("*Selected a subject"),
     name: yup.string().required("*Name is required"),
     description: yup.string().required("*Description is required"),
   });
 
   const formik = useFormik({
     initialValues: {
-      subject_id:"3",
+      subject_id:"1",
       name:  "Demo Subject",
       description: "MINT",
     },
@@ -61,7 +61,7 @@ function TopicEdit({ show, setShow,}) {
           <div className="row">
             <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
-                  Subject ID<span className="text-danger">*</span>
+                  Subject<span className="text-danger">*</span>
                 </label>
                 <select
                   className={`form-select form-select-sm ${
@@ -71,10 +71,10 @@ function TopicEdit({ show, setShow,}) {
                   }`}
                   {...formik.getFieldProps("subject_id")}
                 >
-                  <option value="">Select Subject ID</option>
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3" selected>3</option>
+                  <option value=""></option>
+                  <option value="1">English</option>
+                  <option value="2">Tamil</option>
+                  <option value="3">Maths</option>
                 </select>
                 {formik.touched.subject_id && formik.errors.subject_id && (
                   <div className="invalid-feedback">

@@ -2,10 +2,26 @@ import * as yup from "yup";
 import { useFormik } from "formik";
 import { Link } from "react-router-dom";
 import { FaTrash } from "react-icons/fa";
+import { useState } from "react";
+import { MultiSelect } from "react-multi-select-component";
 // import { useState } from "react";
 
 function QuestionEdit() {
+  const [selectedServices, setSelectedServices] = useState([]);
+
+  const serviceOption = [
+    { value: "1", label: "SRDK" },
+    { value: "2", label: "KVM" },
+    { value: "3", label: "KCS" },
+    { value: "4", label: "PAK" },
+  ];
+
   const validationSchema = yup.object().shape({
+    centre_id: yup
+      .array()
+      .of(yup.string().required("*Select at least one centre"))
+      .min(1, "*Select at least one centre")
+      .required("*Select a centre name"),
     grade_id: yup.string().required("*Select a grade"),
     subject_id: yup.string().required("*Select a subject"),
     topic_id: yup.string().required("*Select a topic"),
@@ -28,6 +44,7 @@ function QuestionEdit() {
 
   const formik = useFormik({
     initialValues: {
+      centre_id: "",
       grade_id: "",
       subject_id: "",
       topic_id: "",
@@ -123,7 +140,9 @@ function QuestionEdit() {
               <div className="d-flex">
                 <div className="dot active"></div>
               </div>
-              <span className="me-2 text-muted text-sm">Edit Question & Answer</span>
+              <span className="me-2 text-muted text-sm">
+                Edit Question & Answer
+              </span>
             </div>
             <div className="my-2 pe-3 d-flex align-items-center">
               <Link to="/question">
@@ -143,6 +162,33 @@ function QuestionEdit() {
           </div>
           <div className="container-fluid px-4">
             <div className="row">
+              <div className="col-md-6 col-12 mb-4">
+                <label className="form-label">
+                  Centre Name<span className="text-danger">*</span>
+                </label>
+                <MultiSelect
+                  options={serviceOption}
+                  value={selectedServices}
+                  onChange={(selected) => {
+                    setSelectedServices(selected);
+                    formik.setFieldValue(
+                      "centre_id",
+                      selected.map((option) => option.value)
+                    );
+                  }}
+                  labelledBy="Select Service"
+                  className={`form-multi-select form-multi-select-sm ${
+                    formik.touched.centre_id && formik.errors.centre_id
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                />
+                {formik.touched.centre_id && formik.errors.centre_id && (
+                  <div className="invalid-feedback">
+                    {formik.errors.centre_id}
+                  </div>
+                )}
+              </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
                   Grade<span className="text-danger">*</span>
@@ -387,11 +433,11 @@ function QuestionEdit() {
                       </div>
                     </div>
                     {formik.touched.closedOption &&
-                        formik.errors.closedOption && (
-                          <div className="invalid-feedback d-block">
-                            {formik.errors.closedOption}
-                          </div>
-                        )}
+                      formik.errors.closedOption && (
+                        <div className="invalid-feedback d-block">
+                          {formik.errors.closedOption}
+                        </div>
+                      )}
                   </div>
                 )}
                 {formik.values.ques_type.includes("multiCheckbox") && (

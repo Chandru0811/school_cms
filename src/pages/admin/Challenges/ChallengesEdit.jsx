@@ -2,9 +2,48 @@ import { useFormik } from "formik";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
 import { FaTrash } from "react-icons/fa";
+import { useState } from "react";
+import { MultiSelect } from "react-multi-select-component";
+import { useMemo } from "react";
+import { MaterialReactTable } from "material-react-table";
+import { ThemeProvider } from "react-bootstrap";
+import { createTheme } from "@mui/material";
 
 function ChallengesEdit() {
+  const [selectedServices, setSelectedServices] = useState([]);
+
+  const serviceOption = [
+    { value: "1", label: "SRDK" },
+    { value: "2", label: "KVM" },
+    { value: "3", label: "KCS" },
+    { value: "4", label: "PAK" },
+  ];
+
+  const data = [
+    {
+      id: 1,
+      question: "SRDK",
+    },
+    {
+      id: 4,
+      question: "SRDK",
+    },
+    {
+      id: 3,
+      question: "SRDK",
+    },
+    {
+      id: 2,
+      question: "SRDK",
+    },
+  ];
+
   const validationSchema = Yup.object({
+    centre_id: Yup.array()
+      .of(Yup.string().required("*Select at least one centre"))
+      .min(1, "*Select at least one centre")
+      .required("*Select a centre name"),
+    grade_id: Yup.string().required("*Select a grade"),
     subject_topic: Yup.string().required("*Subject topic is required"),
     type: Yup.string().required("*Select a type"),
     answer_type: Yup.string().required("*Select a answer type"),
@@ -30,6 +69,8 @@ function ChallengesEdit() {
 
   const formik = useFormik({
     initialValues: {
+      centre_id: "",
+      grade_id: "",
       subject_topic: "",
       type: "",
       title: "",
@@ -89,6 +130,81 @@ function ChallengesEdit() {
     formik.setFieldValue("multiChoices", updatedMultiChoices);
   };
 
+  const columns = useMemo(
+    () => [
+      {
+        accessorFn: (row, index) => index + 1,
+        header: "S.NO",
+        enableSorting: true,
+        enableHiding: false,
+        size: 40,
+        cell: ({ cell }) => (
+          <span style={{ textAlign: "center" }}>{cell.getValue()}</span>
+        ),
+      },
+      { accessorKey: "question", header: "Question" },
+      {
+        accessorKey: "created_at",
+        header: "Created At",
+        Cell: ({ cell }) => cell.getValue()?.substring(0, 10),
+      },
+      {
+        accessorKey: "updated_by",
+        header: "Updated By",
+        Cell: ({ cell }) => cell.getValue() || "",
+      },
+      {
+        accessorKey: "updated_at",
+        header: "Updated At",
+        Cell: ({ cell }) => cell.getValue()?.substring(0, 10) || "",
+      },
+    ],
+    []
+  );
+
+  const theme = createTheme({
+    components: {
+      MuiTableCell: {
+        styleOverrides: {
+          head: {
+            color: "#535454 !important",
+            backgroundColor: "#e6edf7 !important",
+            fontWeight: "400 !important",
+            fontSize: "13px !important",
+            textAlign: "center !important",
+          },
+        },
+      },
+      MuiSwitch: {
+        styleOverrides: {
+          root: {
+            "&.Mui-disabled .MuiSwitch-track": {
+              backgroundColor: "#f5e1d0",
+              opacity: 1,
+            },
+            "&.Mui-disabled .MuiSwitch-thumb": {
+              color: "#eb862a",
+            },
+          },
+          track: {
+            backgroundColor: "#e0e0e0",
+          },
+          thumb: {
+            color: "#eb862a",
+          },
+          switchBase: {
+            "&.Mui-checked": {
+              color: "#eb862a",
+            },
+            "&.Mui-checked + .MuiSwitch-track": {
+              backgroundColor: "#eb862a",
+            },
+          },
+        },
+      },
+    },
+  });
+
   return (
     <div className="container-fluid px-0">
       <ol
@@ -141,6 +257,56 @@ function ChallengesEdit() {
           </div>
           <div className="container-fluid px-4">
             <div className="row py-4">
+            <div className="col-md-6 col-12 mb-4">
+                <label className="form-label">
+                  Centre Name<span className="text-danger">*</span>
+                </label>
+                <MultiSelect
+                  options={serviceOption}
+                  value={selectedServices}
+                  onChange={(selected) => {
+                    setSelectedServices(selected);
+                    formik.setFieldValue(
+                      "centre_id",
+                      selected.map((option) => option.value)
+                    );
+                  }}
+                  labelledBy="Select Service"
+                  className={`form-multi-select form-multi-select-sm ${
+                    formik.touched.centre_id && formik.errors.centre_id
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                />
+                {formik.touched.centre_id && formik.errors.centre_id && (
+                  <div className="invalid-feedback">
+                    {formik.errors.centre_id}
+                  </div>
+                )}
+              </div>
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Grade<span className="text-danger">*</span>
+                </label>
+                <select
+                  className={`form-select form-select-sm ${
+                    formik.touched.grade_id && formik.errors.grade_id
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("grade_id")}
+                >
+                  <option value=""></option>
+                  <option value="1">9 Grade</option>
+                  <option value="2">10 Grade</option>
+                  <option value="3">11 Grade</option>
+                </select>
+                {formik.touched.grade_id && formik.errors.grade_id && (
+                  <div className="invalid-feedback">
+                    {formik.errors.grade_id}
+                  </div>
+                )}
+              </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
                   Subject Topic<span className="text-danger">*</span>
@@ -251,7 +417,7 @@ function ChallengesEdit() {
                       : ""
                   }`}
                   {...formik.getFieldProps("time_limit")}
-                     / >
+                />
                 {formik.touched.time_limit && formik.errors.time_limit && (
                   <div className="invalid-feedback">
                     {formik.errors.time_limit}
@@ -475,6 +641,28 @@ function ChallengesEdit() {
               </div>
             </div>
           </div>
+          <ThemeProvider theme={theme}>
+            <MaterialReactTable
+              columns={columns}
+              data={data}
+              enableColumnActions={false}
+              enableColumnFilters={false}
+              enableDensityToggle={false}
+              enableFullScreenToggle={false}
+              initialState={{
+                columnVisibility: {
+                  working_hrs: false,
+                  citizenship: false,
+                  nationality: false,
+                  created_by: false,
+                  created_at: false,
+                  updated_by: false,
+                  updated_at: false,
+                },
+              }}
+              enableRowSelection={true}
+            />
+          </ThemeProvider>
         </div>
       </form>
     </div>

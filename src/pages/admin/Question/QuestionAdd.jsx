@@ -2,10 +2,25 @@ import * as yup from "yup";
 import { useFormik } from "formik";
 import { Link } from "react-router-dom";
 import { FaTrash } from "react-icons/fa";
-// import { useState } from "react";
+import { MultiSelect } from "react-multi-select-component";
+import { useState } from "react";
 
 function QuestionAdd() {
+  const [selectedServices, setSelectedServices] = useState([]);
+
+  const serviceOption = [
+    { value: "1", label: "SRDK" },
+    { value: "2", label: "KVM" },
+    { value: "3", label: "KCS" },
+    { value: "4", label: "PAK" },
+  ];
+
   const validationSchema = yup.object().shape({
+    centre_id: yup
+      .array()
+      .of(yup.string().required("*Select at least one centre"))
+      .min(1, "*Select at least one centre")
+      .required("*Select a centre name"),
     grade_id: yup.string().required("*Select a grade"),
     subject_id: yup.string().required("*Select a subject"),
     topic_id: yup.string().required("*Select a topic"),
@@ -28,6 +43,7 @@ function QuestionAdd() {
 
   const formik = useFormik({
     initialValues: {
+      centre_id: "",
       grade_id: "",
       subject_id: "",
       topic_id: "",
@@ -47,7 +63,6 @@ function QuestionAdd() {
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      // setLoadIndicator(true);
       console.log("Form values:", values);
     },
   });
@@ -123,7 +138,9 @@ function QuestionAdd() {
               <div className="d-flex">
                 <div className="dot active"></div>
               </div>
-              <span className="me-2 text-muted text-sm">Add Question & Answer</span>
+              <span className="me-2 text-muted text-sm">
+                Add Question & Answer
+              </span>
             </div>
             <div className="my-2 pe-3 d-flex align-items-center">
               <Link to="/question">
@@ -143,6 +160,33 @@ function QuestionAdd() {
           </div>
           <div className="container-fluid px-4">
             <div className="row">
+              <div className="col-md-6 col-12 mb-4">
+                <label className="form-label">
+                  Centre Name<span className="text-danger">*</span>
+                </label>
+                <MultiSelect
+                  options={serviceOption}
+                  value={selectedServices}
+                  onChange={(selected) => {
+                    setSelectedServices(selected);
+                    formik.setFieldValue(
+                      "centre_id",
+                      selected.map((option) => option.value)
+                    );
+                  }}
+                  labelledBy="Select Service"
+                  className={`form-multi-select form-multi-select-sm ${
+                    formik.touched.centre_id && formik.errors.centre_id
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                />
+                {formik.touched.centre_id && formik.errors.centre_id && (
+                  <div className="invalid-feedback">
+                    {formik.errors.centre_id}
+                  </div>
+                )}
+              </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
                   Grade<span className="text-danger">*</span>
@@ -155,7 +199,7 @@ function QuestionAdd() {
                   }`}
                   {...formik.getFieldProps("grade_id")}
                 >
-                  <option value="">Select School</option>
+                  <option value=""></option>
                   <option value="A">A</option>
                   <option value="B">B</option>
                   <option value="C">C</option>
@@ -178,7 +222,7 @@ function QuestionAdd() {
                   }`}
                   {...formik.getFieldProps("subject_id")}
                 >
-                  <option value="">Select Subject</option>
+                  <option value=""></option>
                   <option value="math">Mathematics</option>
                   <option value="science">Science</option>
                   <option value="history">History</option>
@@ -387,18 +431,29 @@ function QuestionAdd() {
                       </div>
                     </div>
                     {formik.touched.closedOption &&
-                        formik.errors.closedOption && (
-                          <div className="invalid-feedback d-block">
-                            {formik.errors.closedOption}
-                          </div>
-                        )}
+                      formik.errors.closedOption && (
+                        <div className="invalid-feedback d-block">
+                          {formik.errors.closedOption}
+                        </div>
+                      )}
                   </div>
                 )}
                 {formik.values.ques_type.includes("multiCheckbox") && (
                   <div className="mt-2">
                     <label className="form-label">Select Multi Choice:</label>
                     {formik.values.multiChoices.map((multiChoice, index) => (
-                      <div key={multiChoice.id}>
+                      <div
+                        key={multiChoice.id}
+                        className="d-flex align-items-center justify-content-center"
+                      >
+                        <input
+                          type="checkbox"
+                          className="form-check-input mb-2"
+                          name="multiChoiseAnswer"
+                          id="multiChoiseAnswer"
+                          aria-label="Multi Choise"
+                        />{" "}
+                        &nbsp; &nbsp;
                         <div className="input-group mb-2">
                           <input
                             type="text"

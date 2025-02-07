@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import HomeworkAssign from "./HomeworkAssign";
 
 function HomeworkView() {
   const data = {
@@ -42,12 +43,13 @@ function HomeworkView() {
             <span className="me-2 text-muted text-sm">View Homework</span>
           </div>
           <div className="my-2 pe-3 d-flex align-items-center">
-            <Link to="/homework">
+            <Link to="/worksheet">
               <button type="button " className="btn btn-sm btn-back">
                 Back
               </button>
             </Link>
             &nbsp;&nbsp;
+            <HomeworkAssign />
           </div>
         </div>
         <div className="container-fluid px-4">

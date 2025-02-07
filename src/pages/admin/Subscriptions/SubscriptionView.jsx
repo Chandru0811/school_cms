@@ -2,7 +2,9 @@ import { Link } from "react-router-dom";
 
 function SubscriptionView() {
   const data = {
+    grade_id: "10 Grade",
     name: "Premium Subscription",
+    subject_id: "Problem",
     description: "Unlock all premium features with priority support",
     details: {
       start_date: "2024-01-01",
@@ -53,6 +55,16 @@ function SubscriptionView() {
         </div>
         <div className="container-fluid px-4">
           <div className="row pb-3">
+          <div className="col-md-6 col-12 my-2">
+              <div className="row">
+                <div className="col-6">
+                  <p className="fw-medium text-sm">Grade</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">: {data.grade_id}</p>
+                </div>
+              </div>
+            </div>
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
@@ -60,6 +72,16 @@ function SubscriptionView() {
                 </div>
                 <div className="col-6">
                   <p className="text-muted text-sm">: {data.name}</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12 my-2">
+              <div className="row">
+                <div className="col-6">
+                  <p className="fw-medium text-sm">Subject</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">: {data.subject_id}</p>
                 </div>
               </div>
             </div>

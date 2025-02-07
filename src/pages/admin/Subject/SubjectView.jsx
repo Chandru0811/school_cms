@@ -1,55 +1,69 @@
-import { Dialog, DialogActions, DialogTitle, DialogContent } from "@mui/material";
+import {
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  DialogContent,
+} from "@mui/material";
 import PropTypes from "prop-types";
 
-
 function SubjectView({ show, setShow }) {
-
   const data = {
-    grade_id:"School",
-    name:"Dummy School",
-    description:"Mint",
-  }
+    centre_id: "SRDK",
+    grade_id: "10 Grade",
+    name: "Maths",
+    description: "Test",
+  };
 
-    const handleClose = () => {
-      setShow(false);
-    };
-  
-    return (
-     <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
-       <DialogTitle>View Subject</DialogTitle>
-       <hr className="m-0"></hr>
-       <DialogContent>
+  const handleClose = () => {
+    setShow(false);
+  };
+
+  return (
+    <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
+      <DialogTitle>View Subject</DialogTitle>
+      <hr className="m-0"></hr>
+      <DialogContent>
         <div className="row">
-        <div className="col-md-6 col-12">
-          <div className="row mt-3  mb-2">
-            <div className="col-6 ">
-              <p className="">Grade ID</p>
-            </div>
-            <div className="col-6">
-              <p className="text-muted text-sm">: {data.grade_id}</p>
-            </div>
-          </div>
-        </div>
-        <div className="col-md-6 col-12">
-          <div className="row mt-3  mb-2">
-            <div className="col-6 ">
-              <p className="">Name</p>
-            </div>
-            <div className="col-6">
-              <p className="text-muted text-sm">: {data.name}</p>
+          <div className="col-md-6 col-12">
+            <div className="row mt-3  mb-2">
+              <div className="col-6 ">
+                <p className="">Centre Name</p>
+              </div>
+              <div className="col-6">
+                <p className="text-muted text-sm">: {data.centre_id}</p>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="col-md-6 col-12">
-          <div className="row mt-3  mb-2">
-            <div className="col-6 ">
-              <p className="">Description</p>
-            </div>
-            <div className="col-6">
-              <p className="text-muted text-sm">: {data.description}</p>
+          <div className="col-md-6 col-12">
+            <div className="row mt-3  mb-2">
+              <div className="col-6 ">
+                <p className="">Grade</p>
+              </div>
+              <div className="col-6">
+                <p className="text-muted text-sm">: {data.grade_id}</p>
+              </div>
             </div>
           </div>
-        </div>
+          <div className="col-md-6 col-12">
+            <div className="row mt-3  mb-2">
+              <div className="col-6 ">
+                <p className="">Name</p>
+              </div>
+              <div className="col-6">
+                <p className="text-muted text-sm">: {data.name}</p>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-6 col-12">
+            <div className="row mt-3  mb-2">
+              <div className="col-6 ">
+                <p className="">Description</p>
+              </div>
+              <div className="col-6">
+                <p className="text-muted text-sm">: {data.description}</p>
+              </div>
+            </div>
+          </div>
         </div>
       </DialogContent>
       <hr className="m-0"></hr>
@@ -58,14 +72,13 @@ function SubjectView({ show, setShow }) {
           Back
         </button>
       </DialogActions>
-        </Dialog>
-    );
-  }
+    </Dialog>
+  );
+}
 
-  SubjectView.propTypes = {
-    show: PropTypes.func.isRequired,
-    setShow: PropTypes.func.isRequired,
-  };
-  
-  export default SubjectView;
-  
+SubjectView.propTypes = {
+  show: PropTypes.func.isRequired,
+  setShow: PropTypes.func.isRequired,
+};
+
+export default SubjectView;

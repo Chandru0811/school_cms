@@ -1,9 +1,20 @@
 import { useFormik } from "formik";
+import { useState } from "react";
+import { MultiSelect } from "react-multi-select-component";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
 
 function SubscriptionEdit() {
+  const [selectedSubject, setSelectedSubject] = useState([]);
+
+  const subjectOption = [
+    { value: "1", label: "English" },
+    { value: "2", label: "Tamil" },
+    { value: "3", label: "Maths" },
+  ];
+
   const validationSchema = Yup.object({
+    grade_id: Yup.string().required("*Select a grade"),
     name: Yup.string().required("*Name is a required field"),
     description: Yup.string()
       .notRequired()
@@ -12,13 +23,19 @@ function SubscriptionEdit() {
       start_date: Yup.string().required("*Start Date is a required field"),
       end_date: Yup.string().required("*End Date is a required field"),
     }),
+    subject_id: Yup.array()
+      .of(Yup.string().required("*Select at least one subject"))
+      .min(1, "*Select at least one subject")
+      .required("*Select a subject name"),
     price: Yup.string().required("*Price is a required field"),
     duration: Yup.string().required("*Duration is a required field"),
   });
 
   const formik = useFormik({
     initialValues: {
+      grade_id: "",
       name: "",
+      subject_id: "",
       details: {
         start_date: "",
         end_date: "",
@@ -91,6 +108,29 @@ function SubscriptionEdit() {
             <div className="row py-4">
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
+                  Grade<span className="text-danger">*</span>
+                </label>
+                <select
+                  className={`form-select form-select-sm ${
+                    formik.touched.grade_id && formik.errors.grade_id
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("grade_id")}
+                >
+                  <option value=""></option>
+                  <option value="1">9 Grade</option>
+                  <option value="2">10 Grade</option>
+                  <option value="3">11 Grade</option>
+                </select>
+                {formik.touched.grade_id && formik.errors.grade_id && (
+                  <div className="invalid-feedback">
+                    {formik.errors.grade_id}
+                  </div>
+                )}
+              </div>
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
                   Name<span className="text-danger">*</span>
                 </label>
                 <input
@@ -107,7 +147,33 @@ function SubscriptionEdit() {
                   <div className="invalid-feedback">{formik.errors.name}</div>
                 )}
               </div>
-
+              <div className="col-md-6 col-12 mb-4">
+                <label className="form-label">
+                  Subject<span className="text-danger">*</span>
+                </label>
+                <MultiSelect
+                  options={subjectOption}
+                  value={selectedSubject}
+                  onChange={(selected) => {
+                    setSelectedSubject(selected);
+                    formik.setFieldValue(
+                      "subject_id",
+                      selected.map((option) => option.value)
+                    );
+                  }}
+                  labelledBy="Select Service"
+                  className={`form-multi-select form-multi-select-sm ${
+                    formik.touched.subject_id && formik.errors.subject_id
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                />
+                {formik.touched.subject_id && formik.errors.subject_id && (
+                  <div className="invalid-feedback">
+                    {formik.errors.subject_id}
+                  </div>
+                )}
+              </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
                   Price<span className="text-danger">*</span>

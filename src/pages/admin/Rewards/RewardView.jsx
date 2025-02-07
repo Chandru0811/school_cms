@@ -47,6 +47,13 @@ function RewardView() {
               </button>
             </Link>
             &nbsp;&nbsp;
+            <button
+              type="button"
+              className="btn btn-success btn-sm me-2"
+              style={{ fontWeight: "600px !important" }}
+            >
+              Activate
+            </button>
           </div>
         </div>
         <div className="container-fluid px-4">

@@ -19,6 +19,8 @@ function Worksheet() {
   const data = [
     {
       id: 1,
+      centre_id: "SRDK",
+      grade_id: "5 Grade",
       name: "Algebra Worksheet 1",
       type: "Practiceh",
       target_score: "80",
@@ -26,6 +28,8 @@ function Worksheet() {
     },
     {
       id: 4,
+      centre_id: "KVM",
+      grade_id: "5 Grade",
       name: "Grammer Worksheet 1",
       type: "Theory",
       target_score: "50",
@@ -33,6 +37,8 @@ function Worksheet() {
     },
     {
       id: 3,
+      centre_id: "KCS",
+      grade_id: "5 Grade",
       name: "Formula Worksheet 1",
       type: "Theory",
       target_score: "25",
@@ -40,6 +46,8 @@ function Worksheet() {
     },
     {
       id: 2,
+      centre_id: "PAK",
+      grade_id: "5 Grade",
       name: "Biology Worksheet 1",
       type: "Practicee",
       target_score: "100",
@@ -76,6 +84,8 @@ function Worksheet() {
           </IconButton>
         ),
       },
+      { accessorKey: "centre_id", header: "Centre name" },
+      { accessorKey: "grade_id", header: "Grade" },
       { accessorKey: "name", header: "Topic" },
       { accessorKey: "type", header: "Subject" },
       { accessorKey: "target_score", header: "Difficult Level" },

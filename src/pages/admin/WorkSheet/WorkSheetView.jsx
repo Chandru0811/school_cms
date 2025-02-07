@@ -3,6 +3,8 @@ import WorkSheetAsign from "./WorkSheetAsign";
 
 function WorkSheetView() {
   const data = {
+    centre_id: "SRDK",
+    grade_id: "10 Grade",
     name: "A",
     type: "Maths",
     subject_id: "Problem",
@@ -51,10 +53,37 @@ function WorkSheetView() {
             </Link>
             &nbsp;&nbsp;
             <WorkSheetAsign />
+            <button
+              type="button"
+              className="btn btn-success btn-sm me-2"
+              style={{ fontWeight: "600px !important" }}
+            >
+              Activate
+            </button>
           </div>
         </div>
         <div className="container-fluid px-4">
           <div className="row pb-3">
+          <div className="col-md-6 col-12 my-2">
+              <div className="row">
+                <div className="col-6">
+                  <p className="fw-medium text-sm">Centre Name</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">: {data.centre_id}</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12 my-2">
+              <div className="row">
+                <div className="col-6">
+                  <p className="fw-medium text-sm">Grade</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">: {data.grade_id}</p>
+                </div>
+              </div>
+            </div>
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">

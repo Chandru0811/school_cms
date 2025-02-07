@@ -1,8 +1,11 @@
 import { Link } from "react-router-dom";
+import ChallengesAssign from "./ChallengesAssign";
 
 function ChallengesView() {
   const data = {
-    subject_topic:"Science",
+    centre_id: "SRDK",
+    grade_id: "10 Grade",
+    subject_topic: "Science",
     type: "Math",
     title: "Solving for x",
     description: "Solve for x in the equation 3x - 4 = 11",
@@ -44,16 +47,44 @@ function ChallengesView() {
           </div>
           <div className="my-2 pe-3 d-flex align-items-center">
             <Link to="/challenges">
-              <button type="button" className="btn btn-sm btn-back">
+              <button type="button " className="btn btn-sm btn-back">
                 Back
               </button>
             </Link>
             &nbsp;&nbsp;
+            <ChallengesAssign />
+            <button
+              type="button"
+              className="btn btn-success btn-sm me-2"
+              style={{ fontWeight: "600px !important" }}
+            >
+              Activate
+            </button>
           </div>
         </div>
         <div className="container-fluid px-4">
           <div className="row pb-3">
-          <div className="col-md-6 col-12 my-2">
+            <div className="col-md-6 col-12">
+              <div className="row mt-3  mb-2">
+                <div className="col-6 ">
+                  <p className="">Centre Name</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">: {data.centre_id}</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="row mt-3  mb-2">
+                <div className="col-6 ">
+                  <p className="">Grade</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">: {data.grade_id}</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
                   <p className="fw-medium text-sm">Subject Topic</p>
@@ -69,9 +100,7 @@ function ChallengesView() {
                   <p className="fw-medium text-sm">Level</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">
-                    : {data.level}
-                  </p>
+                  <p className="text-muted text-sm">: {data.level}</p>
                 </div>
               </div>
             </div>
@@ -91,9 +120,7 @@ function ChallengesView() {
                   <p className="fw-medium text-sm">Type</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">
-                    : {data.type}
-                  </p>
+                  <p className="text-muted text-sm">: {data.type}</p>
                 </div>
               </div>
             </div>
@@ -103,9 +130,7 @@ function ChallengesView() {
                   <p className="fw-medium text-sm">Question Type</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">
-                    : {data.ques_type}
-                  </p>
+                  <p className="text-muted text-sm">: {data.ques_type}</p>
                 </div>
               </div>
             </div>
@@ -134,7 +159,7 @@ function ChallengesView() {
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Challenge    Description</p>
+                  <p className="fw-medium text-sm">Challenge Description</p>
                 </div>
                 <div className="col-6">
                   <p className="text-muted text-sm text-break ">

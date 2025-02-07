@@ -19,6 +19,8 @@ function Challenges() {
   const data = [
     {
       id: 1,
+      center_id: "SRDK",
+      grade_id: "8 Grade",
       type: "Math",
       title: "Solving for x",
       description: "Solve for x in the equation 3x - 4 = 11.",
@@ -28,14 +30,16 @@ function Challenges() {
       time_limit: 20,
     },
     {
-        id: 2,
-        type: "Math",
-        title: "Solving for x",
-        description: "Solve for x in the equation 3x - 4 = 11.",
-        level: "Medium",
-        solution: "x = 5",
-        hint: "First, add 4 to both sides, then divide by 3.",
-        time_limit: 15,
+      id: 2,
+      center_id: "KVM",
+      grade_id: "8 Grade",
+      type: "Math",
+      title: "Solving for x",
+      description: "Solve for x in the equation 3x - 4 = 11.",
+      level: "Medium",
+      solution: "x = 5",
+      hint: "First, add 4 to both sides, then divide by 3.",
+      time_limit: 15,
     },
   ];
 
@@ -68,6 +72,8 @@ function Challenges() {
           </IconButton>
         ),
       },
+      { accessorKey: "center_id", header: "Centre Name" },
+      { accessorKey: "grade_id", header: "Grade" },
       {
         accessorKey: "title",
         enableHiding: false,
@@ -223,9 +229,14 @@ function Challenges() {
             open={Boolean(menuAnchor)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={() => navigate(`/challenges/edit`)}>Edit</MenuItem>
+            <MenuItem onClick={() => navigate(`/challenges/edit`)}>
+              Edit
+            </MenuItem>
             <MenuItem>
-              <Delete path={`admin/challenges/delete`} onOpen={handleMenuClose} />
+              <Delete
+                path={`admin/challenges/delete`}
+                onOpen={handleMenuClose}
+              />
             </MenuItem>
           </Menu>
         </>

@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 function TopicView({ show, setShow }) {
 
   const data = {
-    grade_id:"School",
+    subject_id:"English",
     name:"Dummy School",
     description:"Mint",
   }
@@ -23,10 +23,10 @@ function TopicView({ show, setShow }) {
         <div className="col-md-6 col-12">
           <div className="row mt-3  mb-2">
             <div className="col-6 ">
-              <p className="">Grade ID</p>
+              <p className="">Subject</p>
             </div>
             <div className="col-6">
-              <p className="text-muted text-sm">: {data.grade_id}</p>
+              <p className="text-muted text-sm">: {data.subject_id}</p>
             </div>
           </div>
         </div>

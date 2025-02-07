@@ -8,7 +8,7 @@ import {
   DialogContent,
 } from "@mui/material";
 
-function TopicAdd() {
+function HomeworkAssign() {
   const [show, setShow] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
 
@@ -19,20 +19,17 @@ function TopicAdd() {
 
   const handleShow = () => {
     setShow(true);
-    formik.resetForm();
   };
 
   const validationSchema = yup.object().shape({
-    subject_id: yup.string().required("*Select a subject"),
-    name: yup.string().required("*Name is required"),
-    description: yup.string().required("*Description is required"),
+    student_id: yup.string().required("*Select a student id"),
+    grade_id: yup.string().required("*Select a grade id"),
   });
 
   const formik = useFormik({
     initialValues: {
-      subject_id: "",
-      name: "",
-      description: "",
+      student_id: "",
+      grade_id: "",
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -49,8 +46,9 @@ function TopicAdd() {
         style={{ fontWeight: "600px !important" }}
         onClick={handleShow}
       >
-        &nbsp; Add &nbsp;&nbsp; <i className="bi bi-plus-lg"></i>
+        Assign
       </button>
+
       <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
         <form
           onSubmit={formik.handleSubmit}
@@ -60,69 +58,55 @@ function TopicAdd() {
             }
           }}
         >
-          <DialogTitle>Add Topic</DialogTitle>
+          <DialogTitle>
+            <p className="headColor">Asign Homework</p>
+          </DialogTitle>
           <hr className="m-0"></hr>
           <DialogContent>
             <div className="row">
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
-                  Subject<span className="text-danger">*</span>
+                  Sutdent ID<span className="text-danger">*</span>
                 </label>
                 <select
                   className={`form-select form-select-sm ${
-                    formik.touched.subject_id && formik.errors.subject_id
+                    formik.touched.student_id && formik.errors.student_id
                       ? "is-invalid"
                       : ""
                   }`}
-                  {...formik.getFieldProps("subject_id")}
+                  {...formik.getFieldProps("student_id")}
                 >
-                  <option value=""></option>
-                  <option value="1">English</option>
-                  <option value="2">Tamil</option>
-                  <option value="3">Maths</option>
+                  <option value="">Select School</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
                 </select>
-                {formik.touched.subject_id && formik.errors.subject_id && (
+                {formik.touched.student_id && formik.errors.student_id && (
                   <div className="invalid-feedback">
-                    {formik.errors.subject_id}
+                    {formik.errors.student_id}
                   </div>
                 )}
               </div>
-
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
-                  Name<span className="text-danger">*</span>
+                  Grade ID<span className="text-danger">*</span>
                 </label>
-                <input
-                  type="text"
-                  onKeyDown={(e) => e.stopPropagation()}
-                  className={`form-control form-control-sm ${
-                    formik.touched.name && formik.errors.name
+                <select
+                  className={`form-select form-select-sm ${
+                    formik.touched.grade_id && formik.errors.grade_id
                       ? "is-invalid"
                       : ""
                   }`}
-                  {...formik.getFieldProps("name")}
-                />
-                {formik.touched.name && formik.errors.name && (
-                  <div className="invalid-feedback">{formik.errors.name}</div>
-                )}
-              </div>
-
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
-                  Description<span className="text-danger">*</span>
-                </label>
-                <textarea
-                  className={`form-control ${
-                    formik.touched.description && formik.errors.description
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  rows="4" // Adjust the rows for better visibility
-                  {...formik.getFieldProps("description")}
-                />
-                {formik.touched.description && formik.errors.description && (
+                  {...formik.getFieldProps("grade_id")}
+                >
+                  <option value="">Select Grade ID</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                </select>
+                {formik.touched.grade_id && formik.errors.grade_id && (
                   <div className="invalid-feedback">
-                    {formik.errors.description}
+                    {formik.errors.grade_id}
                   </div>
                 )}
               </div>
@@ -153,4 +137,4 @@ function TopicAdd() {
   );
 }
 
-export default TopicAdd;
+export default HomeworkAssign;

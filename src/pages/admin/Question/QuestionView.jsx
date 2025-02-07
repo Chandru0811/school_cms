@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 
 function QustionView() {
   const data = {
+    centre_id: "SRDK",
     grade_id: "A",
     subject_id: "Maths",
     topic_id: "Problem",
@@ -53,6 +54,16 @@ function QustionView() {
         </div>
         <div className="container-fluid px-4">
           <div className="row pb-3">
+          <div className="col-md-6 col-12 my-2">
+              <div className="row">
+                <div className="col-6">
+                  <p className="fw-medium text-sm">Centre Name</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">: {data.centre_id}</p>
+                </div>
+              </div>
+            </div>
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">

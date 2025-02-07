@@ -2,24 +2,75 @@ import * as yup from "yup";
 import { useFormik } from "formik";
 import { Link } from "react-router-dom";
 import { MultiSelect } from "react-multi-select-component";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { MaterialReactTable } from "material-react-table";
+import { ThemeProvider } from "react-bootstrap";
+import { createTheme } from "@mui/material";
 
 function WorkSheetAdd() {
   const [selectedServices, setSelectedServices] = useState([]);
+  const [selectedSubject, setSelectedSubject] = useState([]);
+  const [selectedQuestion, setSelectedQuestion] = useState([]);
 
   const serviceOption = [
-    { value: "1", label: "Multi Choice" },
-    { value: "2", label: "Filled" },
-    { value: "3", label: "Closed" },
+    { value: "1", label: "SRDK" },
+    { value: "2", label: "KVM" },
+    { value: "3", label: "KCS" },
+    { value: "4", label: "PAK" },
+  ];
+
+  const subjectOption = [
+    { value: "1", label: "English" },
+    { value: "2", label: "Tamil" },
+    { value: "3", label: "Maths" },
+  ];
+
+  const questionOption = [
+    { value: "1", label: "Filled" },
+    { value: "2", label: "Closed" },
+    { value: "3", label: "Multi Choice" },
     { value: "4", label: "Short Answer" },
     { value: "5", label: "Upload" },
   ];
 
+  const data = [
+    {
+      id: 1,
+      question: "SRDK",
+    },
+    {
+      id: 4,
+      question: "SRDK",
+    },
+    {
+      id: 3,
+      question: "SRDK",
+    },
+    {
+      id: 2,
+      question: "SRDK",
+    },
+  ];
+
   const validationSchema = yup.object().shape({
+    centre_id: yup
+      .array()
+      .of(yup.string().required("*Select at least one centre"))
+      .min(1, "*Select at least one centre")
+      .required("*Select a centre name"),
+    grade_id: yup.string().required("*Select a grade"),
     name: yup.string().required("*Title is required"),
-    subject_id: yup.string().required("*Select a subject"),
+    subject_id: yup
+      .array()
+      .of(yup.string().required("*Select at least one subject"))
+      .min(1, "*Select at least one subject")
+      .required("*Select a subject name"),
     type: yup.string().required("*Select a type"),
-    ques_type: yup.string().required("*Select a question type"),
+    ques_type: yup
+      .array()
+      .of(yup.string().required("*Select at least one question type"))
+      .min(1, "*Select at least one question type")
+      .required("*Select a question type name"),
     difficult_level: yup.string().required("*Select a difficult level"),
     questionType: yup.string().required("*Select a question type"),
     question: yup.string().required("*Select a question"),
@@ -43,6 +94,8 @@ function WorkSheetAdd() {
 
   const formik = useFormik({
     initialValues: {
+      centre_id: "",
+      grade_id: "",
       name: "",
       subject_id: "",
       type: "",
@@ -52,7 +105,7 @@ function WorkSheetAdd() {
       reward: "",
       question_id: "",
       question: "",
-      questionType: "",
+      questionType: "Challenge",
       service_id: [],
     },
     validationSchema: validationSchema,
@@ -61,6 +114,81 @@ function WorkSheetAdd() {
     },
     validateOnChange: false,
     validateOnBlur: true,
+  });
+
+  const columns = useMemo(
+    () => [
+      {
+        accessorFn: (row, index) => index + 1,
+        header: "S.NO",
+        enableSorting: true,
+        enableHiding: false,
+        size: 40,
+        cell: ({ cell }) => (
+          <span style={{ textAlign: "center" }}>{cell.getValue()}</span>
+        ),
+      },
+      { accessorKey: "question", header: "Question" },
+      {
+        accessorKey: "created_at",
+        header: "Created At",
+        Cell: ({ cell }) => cell.getValue()?.substring(0, 10),
+      },
+      {
+        accessorKey: "updated_by",
+        header: "Updated By",
+        Cell: ({ cell }) => cell.getValue() || "",
+      },
+      {
+        accessorKey: "updated_at",
+        header: "Updated At",
+        Cell: ({ cell }) => cell.getValue()?.substring(0, 10) || "",
+      },
+    ],
+    []
+  );
+
+  const theme = createTheme({
+    components: {
+      MuiTableCell: {
+        styleOverrides: {
+          head: {
+            color: "#535454 !important",
+            backgroundColor: "#e6edf7 !important",
+            fontWeight: "400 !important",
+            fontSize: "13px !important",
+            textAlign: "center !important",
+          },
+        },
+      },
+      MuiSwitch: {
+        styleOverrides: {
+          root: {
+            "&.Mui-disabled .MuiSwitch-track": {
+              backgroundColor: "#f5e1d0",
+              opacity: 1,
+            },
+            "&.Mui-disabled .MuiSwitch-thumb": {
+              color: "#eb862a",
+            },
+          },
+          track: {
+            backgroundColor: "#e0e0e0",
+          },
+          thumb: {
+            color: "#eb862a",
+          },
+          switchBase: {
+            "&.Mui-checked": {
+              color: "#eb862a",
+            },
+            "&.Mui-checked + .MuiSwitch-track": {
+              backgroundColor: "#eb862a",
+            },
+          },
+        },
+      },
+    },
   });
 
   return (
@@ -115,6 +243,56 @@ function WorkSheetAdd() {
           </div>
           <div className="container-fluid px-4">
             <div className="row py-4">
+              <div className="col-md-6 col-12 mb-4">
+                <label className="form-label">
+                  Centre Name<span className="text-danger">*</span>
+                </label>
+                <MultiSelect
+                  options={serviceOption}
+                  value={selectedServices}
+                  onChange={(selected) => {
+                    setSelectedServices(selected);
+                    formik.setFieldValue(
+                      "centre_id",
+                      selected.map((option) => option.value)
+                    );
+                  }}
+                  labelledBy="Select Service"
+                  className={`form-multi-select form-multi-select-sm ${
+                    formik.touched.centre_id && formik.errors.centre_id
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                />
+                {formik.touched.centre_id && formik.errors.centre_id && (
+                  <div className="invalid-feedback">
+                    {formik.errors.centre_id}
+                  </div>
+                )}
+              </div>
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Grade<span className="text-danger">*</span>
+                </label>
+                <select
+                  className={`form-select form-select-sm ${
+                    formik.touched.grade_id && formik.errors.grade_id
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("grade_id")}
+                >
+                  <option value=""></option>
+                  <option value="1">9 Grade</option>
+                  <option value="2">10 Grade</option>
+                  <option value="3">11 Grade</option>
+                </select>
+                {formik.touched.grade_id && formik.errors.grade_id && (
+                  <div className="invalid-feedback">
+                    {formik.errors.grade_id}
+                  </div>
+                )}
+              </div>
               <div className="col-md-6 col-12 mb-3">
                 <div className="d-flex gap-3">
                   <div className="form-check">
@@ -198,30 +376,34 @@ function WorkSheetAdd() {
                   <div className="invalid-feedback">{formik.errors.type}</div>
                 )}
               </div>
-              <div className="col-md-6 col-12 mb-3">
+              <div className="col-md-6 col-12 mb-4">
                 <label className="form-label">
                   Subject<span className="text-danger">*</span>
                 </label>
-                <select
-                  className={`form-select form-select-sm ${
+                <MultiSelect
+                  options={subjectOption}
+                  value={selectedSubject}
+                  onChange={(selected) => {
+                    setSelectedSubject(selected);
+                    formik.setFieldValue(
+                      "subject_id",
+                      selected.map((option) => option.value)
+                    );
+                  }}
+                  labelledBy="Select Service"
+                  className={`form-multi-select form-multi-select-sm ${
                     formik.touched.subject_id && formik.errors.subject_id
                       ? "is-invalid"
                       : ""
                   }`}
-                  {...formik.getFieldProps("subject_id")}
-                >
-                  <option value="">Select Subject</option>
-                  <option value="math">Mathematics</option>
-                  <option value="science">Science</option>
-                  <option value="history">History</option>
-                </select>
+                />
                 {formik.touched.subject_id && formik.errors.subject_id && (
                   <div className="invalid-feedback">
                     {formik.errors.subject_id}
                   </div>
                 )}
               </div>
-              <div className="col-md-6 col-12 mb-3">
+              {/* <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
                   Question Type<span className="text-danger">*</span>
                 </label>
@@ -233,7 +415,7 @@ function WorkSheetAdd() {
                   }`}
                   {...formik.getFieldProps("ques_type")}
                 >
-                  <option value="">Select Question Type</option>
+                  <option value=""></option>
                   <option value="All">All</option>
                   <option value="Filled">Filled</option>
                   <option value="Closed">Closed</option>
@@ -246,8 +428,35 @@ function WorkSheetAdd() {
                     {formik.errors.ques_type}
                   </div>
                 )}
-              </div>
+              </div> */}
               <div className="col-md-6 col-12 mb-4">
+                <label className="form-label">
+                  Question Type<span className="text-danger">*</span>
+                </label>
+                <MultiSelect
+                  options={questionOption}
+                  value={selectedQuestion}
+                  onChange={(selected) => {
+                    setSelectedQuestion(selected);
+                    formik.setFieldValue(
+                      "ques_type",
+                      selected.map((option) => option.value)
+                    );
+                  }}
+                  labelledBy="Select Service"
+                  className={`form-multi-select form-multi-select-sm ${
+                    formik.touched.ques_type && formik.errors.ques_type
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                />
+                {formik.touched.ques_type && formik.errors.ques_type && (
+                  <div className="invalid-feedback">
+                    {formik.errors.ques_type}
+                  </div>
+                )}
+              </div>
+              {/* <div className="col-md-6 col-12 mb-4">
                 <label className="form-label">Question</label>
                 <MultiSelect
                   options={serviceOption}
@@ -275,9 +484,9 @@ function WorkSheetAdd() {
                     {formik.errors.service_id}
                   </div>
                 )}
-              </div>
+              </div> */}
               <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">Traget Score</label>
+                <label className="form-label">Target Score</label>
                 <span className="text-danger">*</span>
                 <input
                   type="text"
@@ -312,6 +521,28 @@ function WorkSheetAdd() {
               </div>
             </div>
           </div>
+          <ThemeProvider theme={theme}>
+            <MaterialReactTable
+              columns={columns}
+              data={data}
+              enableColumnActions={false}
+              enableColumnFilters={false}
+              enableDensityToggle={false}
+              enableFullScreenToggle={false}
+              initialState={{
+                columnVisibility: {
+                  working_hrs: false,
+                  citizenship: false,
+                  nationality: false,
+                  created_by: false,
+                  created_at: false,
+                  updated_by: false,
+                  updated_at: false,
+                },
+              }}
+              enableRowSelection={true}
+            />
+          </ThemeProvider>
         </div>
       </form>
     </div>

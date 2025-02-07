@@ -1,7 +1,10 @@
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { MaterialReactTable } from "material-react-table";
+import { ThemeProvider } from "react-bootstrap";
+import { createTheme } from "@mui/material";
 import { MultiSelect } from "react-multi-select-component";
 
 function HomeworkEdit() {
@@ -13,6 +16,25 @@ function HomeworkEdit() {
     { value: "3", label: "Closed" },
     { value: "4", label: "Short Answer" },
     { value: "5", label: "Upload" },
+  ];
+
+  const data = [
+    {
+      id: 1,
+      question: "SRDK",
+    },
+    {
+      id: 4,
+      question: "SRDK",
+    },
+    {
+      id: 3,
+      question: "SRDK",
+    },
+    {
+      id: 2,
+      question: "SRDK",
+    },
   ];
 
   const validationSchema = yup.object().shape({
@@ -43,6 +65,81 @@ function HomeworkEdit() {
     onSubmit: async (values) => {
       // setLoadIndicator(true);
       console.log("Form values:", values);
+    },
+  });
+
+  const columns = useMemo(
+    () => [
+      {
+        accessorFn: (row, index) => index + 1,
+        header: "S.NO",
+        enableSorting: true,
+        enableHiding: false,
+        size: 40,
+        cell: ({ cell }) => (
+          <span style={{ textAlign: "center" }}>{cell.getValue()}</span>
+        ),
+      },
+      { accessorKey: "question", header: "Question" },
+      {
+        accessorKey: "created_at",
+        header: "Created At",
+        Cell: ({ cell }) => cell.getValue()?.substring(0, 10),
+      },
+      {
+        accessorKey: "updated_by",
+        header: "Updated By",
+        Cell: ({ cell }) => cell.getValue() || "",
+      },
+      {
+        accessorKey: "updated_at",
+        header: "Updated At",
+        Cell: ({ cell }) => cell.getValue()?.substring(0, 10) || "",
+      },
+    ],
+    []
+  );
+
+  const theme = createTheme({
+    components: {
+      MuiTableCell: {
+        styleOverrides: {
+          head: {
+            color: "#535454 !important",
+            backgroundColor: "#e6edf7 !important",
+            fontWeight: "400 !important",
+            fontSize: "13px !important",
+            textAlign: "center !important",
+          },
+        },
+      },
+      MuiSwitch: {
+        styleOverrides: {
+          root: {
+            "&.Mui-disabled .MuiSwitch-track": {
+              backgroundColor: "#f5e1d0",
+              opacity: 1,
+            },
+            "&.Mui-disabled .MuiSwitch-thumb": {
+              color: "#eb862a",
+            },
+          },
+          track: {
+            backgroundColor: "#e0e0e0",
+          },
+          thumb: {
+            color: "#eb862a",
+          },
+          switchBase: {
+            "&.Mui-checked": {
+              color: "#eb862a",
+            },
+            "&.Mui-checked + .MuiSwitch-track": {
+              backgroundColor: "#eb862a",
+            },
+          },
+        },
+      },
     },
   });
 
@@ -260,6 +357,28 @@ function HomeworkEdit() {
               </div>
             </div>
           </div>
+          <ThemeProvider theme={theme}>
+            <MaterialReactTable
+              columns={columns}
+              data={data}
+              enableColumnActions={false}
+              enableColumnFilters={false}
+              enableDensityToggle={false}
+              enableFullScreenToggle={false}
+              initialState={{
+                columnVisibility: {
+                  working_hrs: false,
+                  citizenship: false,
+                  nationality: false,
+                  created_by: false,
+                  created_at: false,
+                  updated_by: false,
+                  updated_at: false,
+                },
+              }}
+              enableRowSelection={true}
+            />
+          </ThemeProvider>
         </div>
       </form>
     </div>

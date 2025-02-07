@@ -17,10 +17,30 @@ function Question() {
   const navigate = useNavigate();
 
   const data = [
-    { id: 1, topic_id: "Grammer", difficult_level: "Medium" },
-    { id: 4, topic_id: "Grammer", difficult_level: "Hard" },
-    { id: 3, topic_id: "Formula", difficult_level: "Medium" },
-    { id: 2, topic_id: "Biology", difficult_level: "Easy" },
+    {
+      id: 1,
+      centre_id: "SRDK",
+      topic_id: "Grammer",
+      difficult_level: "Medium",
+    },
+    {
+      id: 4,
+      centre_id: "KVM",
+      topic_id: "Grammer",
+      difficult_level: "Hard",
+    },
+    {
+      id: 3,
+      centre_id: "KCS",
+      topic_id: "Formula",
+      difficult_level: "Medium",
+    },
+    {
+      id: 2,
+      centre_id: "PAK",
+      topic_id: "Biology",
+      difficult_level: "Easy",
+    },
   ];
 
   const columns = useMemo(
@@ -52,6 +72,7 @@ function Question() {
           </IconButton>
         ),
       },
+      { accessorKey: "centre_id", header: "Centre Name" },
       { accessorKey: "topic_id", header: "Topic" },
       { accessorKey: "difficult_level", header: "Difficult Level" },
       { accessorKey: "created_by", header: "Created By" },
