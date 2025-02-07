@@ -13,32 +13,32 @@ function RewardView() {
   return (
     <div className="container-fluid px-0">
       <ol
-        className="breadcrumb my-2 px-2"
+        className="breadcrumb my-2 d-flex align-items-center"
         style={{ listStyle: "none", padding: 0, margin: 0 }}
       >
         <li>
-          <Link to="/" className="custom-breadcrumb">
+          <Link to="/" className="custom-breadcrumb text-sm">
             Home
           </Link>
           <span className="breadcrumb-separator"> &gt; </span>
         </li>
         <li>
-          <Link to="/reward" className="custom-breadcrumb">
+          <Link to="/reward" className="custom-breadcrumb text-sm">
             &nbsp;Rewards
           </Link>
           <span className="breadcrumb-separator"> &gt; </span>
         </li>
-        <li className="breadcrumb-item active" aria-current="page">
+        <li className="breadcrumb-item active text-sm" aria-current="page">
           &nbsp;Reward View
         </li>
       </ol>
       <div className="card vh-100" style={{ border: "1px solid #dbd9d0" }}>
-        <div className="d-flex px-4 justify-content-between align-items-center card_header p-1 mb-4">
+        <div className="d-flex px-4 justify-content-between align-items-center card_header p-2">
           <div className="d-flex align-items-center">
             <div className="d-flex">
               <div className="dot active"></div>
             </div>
-            <span className="me-2 text-muted">View Reward</span>
+            <span className="me-2 text-muted text-sm">View Reward</span>
           </div>
           <div className="my-2 pe-3 d-flex align-items-center">
             <Link to="/reward">

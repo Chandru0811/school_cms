@@ -15,16 +15,16 @@ function Profile() {
     <div className="container-fluid mb-4 px-0">
       {" "}
       <ol
-        className="breadcrumb my-3"
+        className="breadcrumb my-3 d-flex align-items-center"
         style={{ listStyle: "none", padding: 0, margin: 0 }}
       >
         <li>
-          <Link to="/" className="custom-breadcrumb">
+          <Link to="/" className="custom-breadcrumb text-sm">
             Home
           </Link>
           <span className="breadcrumb-separator"> &gt; </span>
         </li>
-        <li className="breadcrumb-item active" aria-current="page">
+        <li className="breadcrumb-item active text-sm" aria-current="page">
           &nbsp;Settings
         </li>
       </ol>
@@ -34,7 +34,7 @@ function Profile() {
             <div className="d-flex">
               <div className="dot active"></div>
             </div>
-            <span className="me-2 text-muted">
+            <span className="me-2 text-muted text-sm">
               <span className="database_name">Settings</span>
             </span>
           </div>

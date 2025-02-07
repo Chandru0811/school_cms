@@ -52,19 +52,19 @@ function SchoolEdit() {
         style={{ listStyle: "none", padding: 0, margin: 0 }}
       >
         <li>
-          <Link to="/" className="custom-breadcrumb">
+          <Link to="/" className="custom-breadcrumb text-sm">
             Home
           </Link>
           <span className="breadcrumb-separator"> &gt; </span>
         </li>
         <li>
-          <Link to="/servicegroup" className="custom-breadcrumb">
+          <Link to="/servicegroup" className="custom-breadcrumb text-sm">
             &nbsp;School
           </Link>
           <span className="breadcrumb-separator"> &gt; </span>
         </li>
-        <li className="breadcrumb-item active" aria-current="page">
-          &nbsp;School Add
+        <li className="breadcrumb-item active text-sm" aria-current="page">
+          &nbsp;School Edit
         </li>
       </ol>
       <form
@@ -76,12 +76,12 @@ function SchoolEdit() {
         }}
       >
         <div className="card">
-          <div className="d-flex justify-content-between align-items-center card_header p-1 mb-4 px-4">
+          <div className="d-flex justify-content-between align-items-center card_header p-2">
             <div className="d-flex align-items-center">
               <div className="d-flex">
                 <div className="dot active"></div>
               </div>
-              <span className="me-2 text-muted">Edit School</span>
+              <span className="me-2 text-muted text-sm">Edit School</span>
             </div>
             <div className="my-2 pe-3 d-flex align-items-center">
               <Link to="/school">
@@ -90,7 +90,7 @@ function SchoolEdit() {
                 </button>
               </Link>
               &nbsp;&nbsp;
-              <button type="submit" className="btn btn-button">
+              <button type="submit" className="btn btn-sm btn-button">
                 Update
               </button>
             </div>
