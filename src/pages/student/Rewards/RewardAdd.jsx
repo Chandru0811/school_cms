@@ -34,22 +34,22 @@ function RewardAdd() {
   return (
     <div className="container-fluid px-0">
       <ol
-        className="breadcrumb my-3 px-2"
+        className="breadcrumb my-3 d-flex align-items-center"
         style={{ listStyle: "none", padding: 0, margin: 0 }}
       >
         <li>
-          <Link to="/" className="custom-breadcrumb">
+          <Link to="/" className="custom-breadcrumb text-sm">
             Home
           </Link>
           <span className="breadcrumb-separator"> &gt; </span>
         </li>
         <li>
-          <Link to="/rewards" className="custom-breadcrumb">
+          <Link to="/rewards" className="custom-breadcrumb text-sm">
             &nbsp;Rewards
           </Link>
           <span className="breadcrumb-separator"> &gt; </span>
         </li>
-        <li className="breadcrumb-item active" aria-current="page">
+        <li className="breadcrumb-item active text-sm" aria-current="page">
           &nbsp;Reward Add
         </li>
       </ol>
@@ -62,12 +62,12 @@ function RewardAdd() {
         }}
       >
         <div className="card">
-          <div className="d-flex justify-content-between align-items-center card_header p-1 mb-4 px-4">
+          <div className="d-flex justify-content-between align-items-center card_header p-2">
             <div className="d-flex align-items-center">
               <div className="d-flex">
                 <div className="dot active"></div>
               </div>
-              <span className="me-2 text-muted">Add Rewards</span>
+              <span className="me-2 text-muted text-sm">Add Rewards</span>
             </div>
             <div className="my-2 pe-3 d-flex align-items-center">
               <Link to="/rewards">
@@ -76,7 +76,7 @@ function RewardAdd() {
                 </button>
               </Link>
               &nbsp;&nbsp;
-              <button type="submit" className="btn btn-button">
+              <button type="submit" className="btn btn-sm btn-button">
                 Save
               </button>
             </div>

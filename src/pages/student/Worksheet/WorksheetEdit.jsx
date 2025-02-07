@@ -63,23 +63,23 @@ function WorksheetEdit() {
         }}
       >
         <ol
-          className="breadcrumb my-3"
+          className="breadcrumb my-3 d-flex align-items-center"
           style={{ listStyle: "none", padding: 0, margin: 0 }}
         >
           <li>
-            <Link to="/" className="custom-breadcrumb">
+            <Link to="/" className="custom-breadcrumb text-sm">
               Home
             </Link>
             <span className="breadcrumb-separator"> &gt; </span>
           </li>
-          <li className="breadcrumb-item active" aria-current="page">
+          <li className="breadcrumb-item active text-sm" aria-current="page">
             <Link to="/worksheet" className="custom-breadcrumb">
               &nbsp;Work Sheet
             </Link>
           </li>
           <span className="breadcrumb-separator"> &gt; </span>
-          <li className="breadcrumb-item active" aria-current="page">
-            &nbsp;Work Sheet Edi
+          <li className="breadcrumb-item active text-sm" aria-current="page">
+            &nbsp;Work Sheet Edit
           </li>
         </ol>
         <div className="d-flex justify-content-between align-items-center card_header p-2">
@@ -87,12 +87,12 @@ function WorksheetEdit() {
             <div className="d-flex">
               <div className="dot active"></div>
             </div>
-            <span className="me-2 text-muted">
+            <span className="me-2 text-muted text-sm">
               &nbsp;
               <span className="database_name">Edit Work Sheet</span>
             </span>
           </div>
-          <div className="mb-3 d-flex justify-content-end">
+          <div className="mb-3 d-flex justify-content-end align-items-center">
             <Link to="/worksheet" className="custom-breadcrumb">
               <button
                 type="button"
@@ -107,7 +107,7 @@ function WorksheetEdit() {
               className="btn btn-button btn-sm me-2"
               style={{ fontWeight: "600px !important" }}
             >
-              Save
+              Update
             </button>
           </div>
         </div>
