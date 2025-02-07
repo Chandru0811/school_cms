@@ -8,7 +8,7 @@ import Reset from "../components/auth/Reset";
 function Auth({ loginAsAdmin, loginAsSuperAdmin, loginAsStudent  }) {
   return (
     <div>
-      <BrowserRouter>
+      <BrowserRouter basename="/schoolCms">
         <Routes>
           <Route
             path="/"

@@ -59,12 +59,12 @@ function Admin({ handleLogout }) {
   return (
     <div>
       <div>
-        <BrowserRouter>
+        <BrowserRouter basename="/schoolCms">
           <div className="d-flex flex-column flex-lg-row bg-surface-secondary ">
             <AdminSideBar />
 
             <div className="flex-grow-1 h-screen overflow-y-auto">
-              <AdminHeader handleLogout={handleLogout}/>
+              <AdminHeader handleLogout={handleLogout} />
               <main className="pt-2 bg-surface-secondary">
                 <div style={{ minHeight: "90vh" }} className="px-2">
                   <Routes>
@@ -125,8 +125,8 @@ function Admin({ handleLogout }) {
                     <Route path="/worksheet/edit" element={<WorkSheetEdit />} />
                     <Route path="/worksheet/view" element={<WorkSheetView />} />
 
-                     {/* Home Work  */}
-                     <Route path="/homework" element={<Homework />} />
+                    {/* Home Work  */}
+                    <Route path="/homework" element={<Homework />} />
                     <Route path="/homework/add" element={<HomeworkAdd />} />
                     <Route path="/homework/edit" element={<HomeworkEdit />} />
                     <Route path="/homework/view" element={<HomeworkView />} />
@@ -134,8 +134,14 @@ function Admin({ handleLogout }) {
                     {/* Challenges  */}
                     <Route path="/challenges" element={<Challenges />} />
                     <Route path="/challenges/add" element={<ChallengesAdd />} />
-                    <Route path="/challenges/edit" element={<ChallengesEdit />} />
-                    <Route path="/challenges/view" element={<ChallengesView />} />
+                    <Route
+                      path="/challenges/edit"
+                      element={<ChallengesEdit />}
+                    />
+                    <Route
+                      path="/challenges/view"
+                      element={<ChallengesView />}
+                    />
 
                     {/*  rewards  */}
                     <Route path="/rewards" element={<Rewards />} />
@@ -143,16 +149,27 @@ function Admin({ handleLogout }) {
                     <Route path="/reward/edit" element={<RewardEdit />} />
                     <Route path="/reward/view" element={<RewardView />} />
 
-
                     {/* Subscriptions  */}
                     <Route path="/subscriptions" element={<Subscriptions />} />
-                    <Route path="/subscription/add" element={<SubscriptionAdd />} />
-                    <Route path="/subscription/edit" element={<SubscriptionEdit />} />
-                    <Route path="/subscription/view" element={<SubscriptionView />} />
+                    <Route
+                      path="/subscription/add"
+                      element={<SubscriptionAdd />}
+                    />
+                    <Route
+                      path="/subscription/edit"
+                      element={<SubscriptionEdit />}
+                    />
+                    <Route
+                      path="/subscription/view"
+                      element={<SubscriptionView />}
+                    />
 
-                     {/* Profile   */}
+                    {/* Profile   */}
                     <Route path="/settings" element={<Settings />} />
-                    <Route path="/role_permission" element={<RolePermission />} />
+                    <Route
+                      path="/role_permission"
+                      element={<RolePermission />}
+                    />
                   </Routes>
                 </div>
                 <AdminFooter />
