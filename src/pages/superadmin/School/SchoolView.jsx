@@ -1,14 +1,29 @@
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { Link, useParams } from "react-router-dom";
+import api from "../../../config/URL";
 
 function SchoolView() {
-  const data = {
-    school_name: "SRDK",
-    school_location: "Thiruvottuyur",
-    admin_name: "Suriya",
-    admin_email: "suriya@gmail.com",
-    admin_password: "12345678",
-    admin_cpassword: "12345678",
+  const { id } = useParams();
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const getData = async () => {
+    try {
+      setLoading(true);
+      const response = await api.get(`superAdmin/school/${id}`);
+      setData(response.data.data);
+    } catch (error) {
+      toast.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  useEffect(() => {
+    getData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="container-fluid px-0">
@@ -49,50 +64,62 @@ function SchoolView() {
             &nbsp;&nbsp;
           </div>
         </div>
-        <div className="container-fluid px-4">
-          <div className="row pb-3">
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">School Name</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.school_name}</p>
+        {loading ? (
+          <div className="loader-container">
+            <div className="loader">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        ) : (
+          <div className="container-fluid px-4">
+            <div className="row pb-3">
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">School Name</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">: {data.name}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">School Location</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.school_location}</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Admin Name</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.admin_name}</p>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">School Location</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">: {data.location}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Admin Email</p>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Admin Name</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">: {data.admin_name}</p>
+                  </div>
                 </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.admin_email}</p>
+              </div>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Admin Email</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">: {data.admin_email}</p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

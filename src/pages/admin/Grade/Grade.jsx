@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { Link,  } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { MaterialReactTable } from "material-react-table";
 import {
   ThemeProvider,
@@ -14,27 +14,13 @@ import { MoreVert as MoreVertIcon } from "@mui/icons-material";
 import GradeAdd from "./GradeAdd";
 import GradeEdit from "./GradeEdit";
 import GradeView from "./GradeView";
-
+import api from "../../../config/URL";
 
 function Grade() {
   const [menuAnchor, setMenuAnchor] = useState(null);
-  // const navigate = useNavigate();
-  const [showEdit, setShowEdit] = useState(false);
-  const [showView, setShowView] = useState(false);
-  const [selectedData, setSelectedData] = useState(null); // Store selected row data
-
-  const data = [
-    {
-      id: 1,
-      name:"Sumaiya",
-      description: "Test",
-    },
-    {
-      id: 2,
-      name:"Abu",
-      description: "Test 2",
-    },
-  ];
+  const [loading, setLoading] = useState(true);
+  const [selectedId, setSelectedId] = useState(null);
+  const [data, setData] = useState([]); // Store selected row data
 
   const columns = useMemo(
     () => [
@@ -54,11 +40,12 @@ function Grade() {
         enableHiding: false,
         enableSorting: false,
         size: 20,
-        Cell: () => (
+        Cell: ({ cell }) => (
           <IconButton
             onClick={(e) => {
               e.stopPropagation();
               setMenuAnchor(e.currentTarget);
+              setSelectedId(cell.getValue());
             }}
           >
             <MoreVertIcon />
@@ -92,6 +79,22 @@ function Grade() {
     ],
     []
   );
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const response = await api.get(`admin/grades`);
+      setData(response.data.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const theme = createTheme({
     components: {
@@ -165,58 +168,67 @@ function Grade() {
               <span className="database_name">Grade</span>
             </span>
           </div>
-          <GradeAdd/>
+          <GradeAdd />
         </div>
-        <>
-          <ThemeProvider theme={theme}>
-            <MaterialReactTable
-              columns={columns}
-              data={data}
-              enableColumnActions={false}
-              enableColumnFilters={false}
-              enableDensityToggle={false}
-              enableFullScreenToggle={false}
-              initialState={{
-                columnVisibility: {
-                  working_hrs: false,
-                  citizenship: false,
-                  nationality: false,
-                  created_by: false,
-                  created_at: false,
-                  updated_by: false,
-                  updated_at: false,
-                },
-              }}
-              muiTableBodyRowProps={({ row }) => ({
-                style: { cursor: "pointer" },
-                onClick: () => {
-                  setSelectedData(row.original);
-                  setShowView(true);
-                },
-              })}
-            />
-          </ThemeProvider>
-          <Menu
-            id="action-menu"
-            anchorEl={menuAnchor}
-            open={Boolean(menuAnchor)}
-            onClose={handleMenuClose}
-          >
-            <MenuItem
-              onClick={() => {
-                setShowEdit(true);
-                handleMenuClose();
-              }}
+        {loading ? (
+          <div className="loader-container">
+            <div className="loader">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        ) : (
+          <>
+            <ThemeProvider theme={theme}>
+              <MaterialReactTable
+                columns={columns}
+                data={data}
+                enableColumnActions={false}
+                enableColumnFilters={false}
+                enableDensityToggle={false}
+                enableFullScreenToggle={false}
+                initialState={{
+                  columnVisibility: {
+                    working_hrs: false,
+                    citizenship: false,
+                    nationality: false,
+                    created_by: false,
+                    created_at: false,
+                    updated_by: false,
+                    updated_at: false,
+                  },
+                }}
+              />
+            </ThemeProvider>
+            <Menu
+              id="action-menu"
+              anchorEl={menuAnchor}
+              open={Boolean(menuAnchor)}
+              onClose={handleMenuClose}
             >
-              Edit
-            </MenuItem>
-            <MenuItem>
-              <Delete path={`admin/company/delete`} onOpen={handleMenuClose} />
-            </MenuItem>
-          </Menu>
-          <GradeEdit show={showEdit} setShow={setShowEdit} />
-          <GradeView show={showView} setShow={setShowView} data={selectedData} />
-        </>
+              <MenuItem>
+                <GradeEdit
+                  onSuccess={fetchData}
+                  id={selectedId}
+                  handleMenuClose={handleMenuClose}
+                />
+              </MenuItem>
+              <MenuItem>
+                <GradeView id={selectedId} handleMenuClose={handleMenuClose} />
+              </MenuItem>
+              <MenuItem>
+                <Delete
+                  path={`/admin/center/delete/${selectedId}`}
+                  onDeleteSuccess={fetchData}
+                  onOpen={handleMenuClose}
+                />
+              </MenuItem>
+            </Menu>
+          </>
+        )}
       </div>
     </div>
   );

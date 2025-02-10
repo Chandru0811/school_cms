@@ -7,29 +7,35 @@ import {
   DialogTitle,
   DialogContent,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import api from "../../../config/URL";
+import toast from "react-hot-toast";
+import PropTypes from "prop-types";
 
-function TopicAdd() {
+function TopicAdd({ onSuccess }) {
+  const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
 
-  const handleClose = () => {
-    formik.resetForm();
-    setShow(false);
-  };
-
-  const handleShow = () => {
-    setShow(true);
-    formik.resetForm();
-  };
-
   const validationSchema = yup.object().shape({
+    center_id: yup.string().required("*Select a centre"),
     subject_id: yup.string().required("*Select a subject"),
     name: yup.string().required("*Name is required"),
     description: yup.string().required("*Description is required"),
   });
 
+  const handleShow = () => {
+    setShow(true);
+  };
+
+  const handleClose = () => {
+    setShow(false);
+    formik.resetForm();
+  };
+
   const formik = useFormik({
     initialValues: {
+      center_id: "",
       subject_id: "",
       name: "",
       description: "",
@@ -37,7 +43,24 @@ function TopicAdd() {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       setLoadIndicator(true);
-      console.log("Form values:", values);
+      try {
+        const response = await api.post("topic", values);
+        if (response.status === 200) {
+          toast.success(response.data.message);
+          onSuccess(); 
+          handleClose();
+          formik.resetForm();
+          navigate("/topic");
+        } else {
+          toast.error(response.data.message || "An unexpected error occurred.");
+        }
+      } catch (error) {
+        const errorMessage =
+          error.response?.data?.message || "Something went wrong!";
+        toast.error(errorMessage);
+      } finally {
+        setLoadIndicator(false); // Stop loading
+      }
     },
   });
 
@@ -64,6 +87,29 @@ function TopicAdd() {
           <hr className="m-0"></hr>
           <DialogContent>
             <div className="row">
+            <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Centre<span className="text-danger">*</span>
+                </label>
+                <select
+                  className={`form-select form-select-sm ${
+                    formik.touched.center_id && formik.errors.center_id
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("center_id")}
+                >
+                  <option value=""></option>
+                  <option value={10}>Centre 1</option>
+                  <option value={2}>Centre 2</option>
+                  <option value={3}>Centre 3</option>
+                </select>
+                {formik.touched.center_id && formik.errors.center_id && (
+                  <div className="invalid-feedback">
+                    {formik.errors.center_id}
+                  </div>
+                )}
+              </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
                   Subject<span className="text-danger">*</span>
@@ -152,5 +198,9 @@ function TopicAdd() {
     </>
   );
 }
+
+TopicAdd.propTypes = {
+  onSuccess: PropTypes.func.isRequired,
+};
 
 export default TopicAdd;

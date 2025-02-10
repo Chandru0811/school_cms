@@ -1,60 +1,97 @@
-import { Dialog, DialogActions, DialogTitle, DialogContent } from "@mui/material";
+import {
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  DialogContent,
+} from "@mui/material";
 import PropTypes from "prop-types";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import api from "../../../config/URL";
+import { Button } from "react-bootstrap";
 
+function CenterView({ id, handleMenuClose }) {
+  const [open, setOpen] = useState(false);
+  const [data, setData] = useState({});
 
-function CenterView({ show, setShow }) {
+  const getData = async () => {
+    try {
+      const response = await api.get(`admin/center/${id}`);
+      setData(response.data.data);
+    } catch (error) {
+      toast.error("Error Fetching Data");
+      console.error("Error fetching data:", error);
+    }
+  };
 
-  const data = {
-    name:"Dummy School",
-    location:"Mint",
-  }
+  const handleOpen = () => {
+    getData();
+    setOpen(true);
+  };
 
-    const handleClose = () => {
-      setShow(false);
-    };
-  
-    return (
-     <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
-       <DialogTitle>View Center</DialogTitle>
-       <hr className="m-0"></hr>
-       <DialogContent>
-        <div className="row">
-        <div className="col-md-6 col-12">
-          <div className="row mt-3  mb-2">
-            <div className="col-6 ">
-              <p className="">Name</p>
-            </div>
-            <div className="col-6">
-              <p className="text-muted text-sm">: {data.name}</p>
+  const handleClose = () => {
+    setOpen(false);
+    if (handleMenuClose) {
+      handleMenuClose();
+    }
+  };
+
+  return (
+    <>
+      <span
+        onClick={handleOpen}
+        style={{
+          whiteSpace: "nowrap",
+          cursor: "pointer",
+        }}
+      >
+        View
+      </span>
+
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
+        <DialogTitle>View Centre</DialogTitle>
+        <DialogContent>
+          <div className="container">
+            <div className="row">
+              <div className="col-md-6 col-12">
+                <div className="row mb-3">
+                  <div className="col-6 d-flex justify-content-start">
+                    <p className="text-sm">Name</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">: {data.name}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-3">
+                  <div className="col-6 d-flex justify-content-start">
+                    <p className="text-sm">Location</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">: {data.location}</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
-        <div className="col-md-6 col-12">
-          <div className="row mt-3  mb-2">
-            <div className="col-6 ">
-              <p className="">Location</p>
-            </div>
-            <div className="col-6">
-              <p className="text-muted text-sm">: {data.location}</p>
-            </div>
-          </div>
-        </div>
-        </div>
-      </DialogContent>
-      <hr className="m-0"></hr>
-      <DialogActions className="mt-3">
-        <button className="btn btn-sm btn-back" onClick={handleClose}>
-          Back
-        </button>
-      </DialogActions>
-        </Dialog>
-    );
-  }
+        </DialogContent>
+        <DialogActions>
+          <Button
+            className="btn btn-sm btn-border bg-light text-dark"
+            onClick={handleClose}
+          >
+            Back
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  );
+}
 
-  CenterView.propTypes = {
-      show: PropTypes.func.isRequired,
-      setShow: PropTypes.func.isRequired,
-    };
-  
-  export default CenterView;
-  
+CenterView.propTypes = {
+  handleMenuClose: PropTypes.func,
+  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+};
+
+export default CenterView;

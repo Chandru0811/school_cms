@@ -6,6 +6,10 @@ import * as Yup from "yup";
 import PropTypes from "prop-types";
 import { Link, useNavigate } from "react-router-dom";
 import headerlogo from "../../assets/images/logo.webp";
+import toast from "react-hot-toast";
+import api from "../../config/URL";
+// import toast from "react-hot-toast";
+import { FiAlertTriangle } from "react-icons/fi";
 
 const Login = ({ loginAsAdmin, loginAsSuperAdmin, loginAsStudent }) => {
   const navigate = useNavigate();
@@ -28,24 +32,98 @@ const Login = ({ loginAsAdmin, loginAsSuperAdmin, loginAsStudent }) => {
   const formik = useFormik({
     initialValues: { email: "", password: "" },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      setLoadIndicator(true);
+    // onSubmit: (values) => {
+    //   setLoadIndicator(true);
 
-      if (values.email === "admin@gmail.com") {
-        loginAsAdmin();
-      } else if (values.email === "superadmin@gmail.com") {
-        navigate("/");
-        loginAsSuperAdmin();
-      } else if (values.email === "student@gmail.com") {
-        navigate("/");
-        loginAsStudent();
-      } else {
-        alert(
-          "Invalid email! Please use admin@gmail.com or superadmin@gmail.com"
-        );
+    //   if (values.email === "admin@gmail.com") {
+    //     loginAsAdmin();
+    //   } else if (values.email === "superadmin@gmail.com") {
+    //     navigate("/");
+    //     loginAsSuperAdmin();
+    //   } else if (values.email === "student@gmail.com") {
+    //     navigate("/");
+    //     loginAsStudent();
+    //   } else {
+    //     alert(
+    //       "Invalid email! Please use admin@gmail.com or superadmin@gmail.com"
+    //     );
+    //   }
+
+    //   setTimeout(() => setLoadIndicator(false), 2000);
+    // },
+    onSubmit: async (values) => {
+      try {
+        setLoadIndicator(true);
+        let response;
+        if (values.email === "superadmin@gmail.com") {
+          response = await api.post(`superAdmin/login`, values);
+        } else {
+          response = await api.post(`login`, values);
+        }
+        if (response?.status === 200) {
+          const { data } = response;
+          toast.success(data.message);
+          localStorage.setItem("schoolCMS_token", response.data.data.token);
+
+          localStorage.setItem("schoolCMS_name", response.data.data.user.name);
+          localStorage.setItem("schoolCMS_id", response.data.data.user.id);
+          localStorage.setItem(
+            "schoolCMS_email",
+            response.data.data.user.email
+          );
+          localStorage.setItem(
+            "schoolCMS_role",
+            response.data.data.user.role_id
+          );
+          localStorage.setItem(
+            "schoolCMS_mobile",
+            response.data.data.user.mobile
+          );
+          console.log(response.data.data.user.role_id);
+
+          if (
+            response.data.data.user.role_id === "2" ||
+            response.data.data.user.role_id === 2
+          ) {
+            loginAsAdmin();
+          } else if (
+            response.data.data.user.role_id === "1" ||
+            response.data.data.user.role_id === 1
+          ) {
+            navigate("/");
+            loginAsSuperAdmin();
+          } else if (
+            response.data.data.user.role_id === "3" ||
+            response.data.data.user.role_id === 3
+          ) {
+            navigate("/");
+            loginAsStudent();
+          } else {
+            toast(
+              "Oops! You don't have access to this page, but feel free to check out our amazing website! 😊",
+              {
+                icon: "😊",
+              }
+            );
+          }
+        } else {
+          toast.error(response.data.message);
+        }
+      } catch (error) {
+        if (error.response.status === 400) {
+          const errorMessage = error.response.data.message;
+          if (errorMessage) {
+            toast(errorMessage, {
+              icon: <FiAlertTriangle className="text-warning" />,
+            });
+          }
+        } else {
+          console.error("API Error", error);
+          toast.error("An unexpected error occurred.");
+        }
+      } finally {
+        setLoadIndicator(false);
       }
-
-      setTimeout(() => setLoadIndicator(false), 2000);
     },
   });
 

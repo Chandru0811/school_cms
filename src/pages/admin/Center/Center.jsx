@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { Link,  } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { MaterialReactTable } from "material-react-table";
 import {
   ThemeProvider,
@@ -10,22 +10,17 @@ import {
 } from "@mui/material";
 import Delete from "../../../components/common/Delete";
 import PropTypes from "prop-types";
-import { MoreVert as MoreVertIcon } from "@mui/icons-material";import CenterAdd from "./CenterAdd";
+import { MoreVert as MoreVertIcon } from "@mui/icons-material";
+import CenterAdd from "./CenterAdd";
 import CenterEdit from "./CenterEdit";
 import CenterView from "./CenterView";
+import api from "../../../config/URL";
 
 function Center() {
   const [menuAnchor, setMenuAnchor] = useState(null);
-  // const navigate = useNavigate();
-  const [showEdit, setShowEdit] = useState(false);
-  const [showView, setShowView] = useState(false);
-  const [selectedData, setSelectedData] = useState(null);
-
-  const data = [
-    { id: 1, name: "GMTTV Hrs Sec School", location: "Mint" },
-    { id: 2, name: "ST. Thomas Girls Hrs School", location: "Chennai" },
-    { id: 3, name: "Govt Boys Hrs School", location: "Chennai" },
-  ];
+  const [loading, setLoading] = useState(true);
+  const [selectedId, setSelectedId] = useState(null);
+  const [data, setData] = useState([]);
 
   const columns = useMemo(
     () => [
@@ -45,11 +40,12 @@ function Center() {
         enableHiding: false,
         enableSorting: false,
         size: 20,
-        Cell: () => (
+        Cell: ({ cell }) => (
           <IconButton
             onClick={(e) => {
               e.stopPropagation();
               setMenuAnchor(e.currentTarget);
+              setSelectedId(cell.getValue());
             }}
           >
             <MoreVertIcon />
@@ -78,6 +74,22 @@ function Center() {
     ],
     []
   );
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const response = await api.get(`admin/centers/6`);
+      setData(response.data.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const theme = createTheme({
     components: {
@@ -151,58 +163,70 @@ function Center() {
               <span className="database_name">Center</span>
             </span>
           </div>
-          <CenterAdd  />
+          <CenterAdd />
         </div>
-        <>
-          <ThemeProvider theme={theme}>
-            <MaterialReactTable
-              columns={columns}
-              data={data}
-              enableColumnActions={false}
-              enableColumnFilters={false}
-              enableDensityToggle={false}
-              enableFullScreenToggle={false}
-              initialState={{
-                columnVisibility: {
-                  working_hrs: false,
-                  citizenship: false,
-                  nationality: false,
-                  created_by: false,
-                  created_at: false,
-                  updated_by: false,
-                  updated_at: false,
-                },
-              }}
-              muiTableBodyRowProps={({ row }) => ({
-                style: { cursor: "pointer" },
-                onClick: () => {
-                  setSelectedData(row.original);
-                  setShowView(true);
-                },
-              })}
-            />
-          </ThemeProvider>
-          <Menu
-            id="action-menu"
-            anchorEl={menuAnchor}
-            open={Boolean(menuAnchor)}
-            onClose={handleMenuClose}
-          >
-            <MenuItem
-              onClick={() => {
-                setShowEdit(true);
-                handleMenuClose();
-              }}
+        {loading ? (
+          <div className="loader-container">
+            <div className="loader">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        ) : (
+          <>
+            <ThemeProvider theme={theme}>
+              <MaterialReactTable
+                columns={columns}
+                data={data}
+                enableColumnActions={false}
+                enableColumnFilters={false}
+                enableDensityToggle={false}
+                enableFullScreenToggle={false}
+                initialState={{
+                  columnVisibility: {
+                    working_hrs: false,
+                    citizenship: false,
+                    nationality: false,
+                    created_by: false,
+                    created_at: false,
+                    updated_by: false,
+                    updated_at: false,
+                  },
+                }}
+              />
+            </ThemeProvider>
+            <Menu
+              id="action-menu"
+              anchorEl={menuAnchor}
+              open={Boolean(menuAnchor)}
+              onClose={handleMenuClose}
             >
-              Edit
-            </MenuItem>
-            <MenuItem>
-              <Delete path={`admin/company/delete`} onOpen={handleMenuClose} />
-            </MenuItem>
-          </Menu>
-          <CenterEdit  show={showEdit} setShow={setShowEdit} />
-          <CenterView show={showView} setShow={setShowView} data={selectedData} />
-        </>
+             <MenuItem>
+                <CenterEdit
+                  onSuccess={fetchData}
+                  id={selectedId}
+                  handleMenuClose={handleMenuClose}
+                />
+              </MenuItem>
+              <MenuItem>
+                <CenterView
+                  id={selectedId}
+                  handleMenuClose={handleMenuClose}
+                />
+              </MenuItem>
+              <MenuItem>
+                <Delete
+                  path={`/admin/center/delete/${selectedId}`}
+                  onDeleteSuccess={fetchData}
+                  onOpen={handleMenuClose}
+                />
+              </MenuItem>
+            </Menu>
+          </>
+        )}
       </div>
     </div>
   );

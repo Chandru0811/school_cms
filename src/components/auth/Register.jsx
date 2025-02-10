@@ -7,6 +7,9 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import headerlogo from "../../assets/images/logo.webp";
 import { IoMdArrowBack } from "react-icons/io";
+import api from "../../config/URL";
+import toast from "react-hot-toast";
+import { FiAlertTriangle } from "react-icons/fi";
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -36,13 +39,44 @@ const Register = () => {
       name: "",
       email: "",
       password: "",
+      mobile: "",
       password_confirmation: "",
+      role_id: "",
+      school_id: "",
     },
     validationSchema: validationSchema,
-    onSubmit: (values) => {
-      setLoadIndicator(true);
-      console.log(values);
-      setTimeout(() => setLoadIndicator(false), 2000);
+    onSubmit: async (values) => {
+      try {
+        setLoadIndicator(true);
+        const payload = {
+          name: values.name,
+          email: values.email,
+          mobile: values.mobile,
+          password: values.password,
+          password_confirmation: values.password_confirmation,
+          role_id: values.role_id || 2,
+          school_id: values.school_id || 6,
+        };
+        const response = await api.post("register", payload);
+        toast.success(response.data.message);
+      } catch (error) {
+        if (error.response && error.response.status === 422) {
+          const errors = error.response.data.error;
+          if (errors) {
+            Object.keys(errors).forEach((key) => {
+              errors[key].forEach((errorMsg) => {
+                toast(errorMsg, {
+                  icon: <FiAlertTriangle className="text-warning" />,
+                });
+              });
+            });
+          }
+        } else {
+          toast.error("An unexpected error occurred.");
+        }
+      } finally {
+        setLoadIndicator(false);
+      }
     },
   });
 
@@ -117,6 +151,19 @@ const Register = () => {
               />
               <Form.Control.Feedback type="invalid">
                 {formik.errors.email}
+              </Form.Control.Feedback>
+            </Form.Group>
+
+            <Form.Group controlId="formMobile" className="mb-3 pt-4">
+              <Form.Label>Phone Number</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter phone number"
+                {...formik.getFieldProps("mobile")}
+                isInvalid={formik.touched.mobile && !!formik.errors.mobile}
+              />
+              <Form.Control.Feedback type="invalid">
+                {formik.errors.mobile}
               </Form.Control.Feedback>
             </Form.Group>
 

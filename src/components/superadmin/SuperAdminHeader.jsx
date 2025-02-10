@@ -10,7 +10,7 @@ import { GoPencil } from "react-icons/go";
 function SuperAdminHeader({ handleLogout }) {
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-  const user_name = localStorage.getItem("helperlah_name");
+  const user_name = localStorage.getItem("schoolCMS_name");
   const dropdownRef = useRef(null);
 
   const handelLogOutClick = () => {

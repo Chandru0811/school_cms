@@ -1,134 +1,147 @@
-import { useState } from "react";
-import * as yup from "yup";
 import { useFormik } from "formik";
-import {
-  Dialog,
-  DialogActions,
-  DialogTitle,
-  DialogContent,
-} from "@mui/material";
+import { useState } from "react";
+import { Button, Modal } from "react-bootstrap";
+import * as yup from "yup";
+import api from "../../../config/URL";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
 
-function CenterAdd() {
+function CenterAdd({ onSuccess }) {
+  const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
 
-  const handleClose = () => {
-    formik.resetForm();
-    setShow(false);
-  };
-
-  const handleShow = () => {
-    setShow(true);
-    formik.resetForm();
-  };
-
   const validationSchema = yup.object().shape({
-    school_id: yup.string().required("*Select a school"),
     name: yup.string().required("*Name is required"),
     location: yup.string().required("*Location is required"),
   });
 
+  const handleShow = () => {
+    setShow(true);
+  };
+
+  const handleClose = () => {
+    setShow(false);
+    formik.resetForm();
+  };
+
   const formik = useFormik({
     initialValues: {
-      school_id: "",
       name: "",
       location: "",
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       setLoadIndicator(true);
-      console.log("Form values:", values);
+      try {
+        const response = await api.post("admin/center", values);
+        if (response.status === 200) {
+          toast.success(response.data.message);
+          onSuccess(); 
+          handleClose();
+          formik.resetForm();
+          navigate("/center");
+        } else {
+          toast.error(response.data.message || "An unexpected error occurred.");
+        }
+      } catch (error) {
+        const errorMessage =
+          error.response?.data?.message || "Something went wrong!";
+        toast.error(errorMessage);
+      } finally {
+        setLoadIndicator(false); // Stop loading
+      }
     },
   });
 
   return (
     <>
-      <button
-        type="button"
-        className="btn btn-button btn-sm me-2"
-        style={{ fontWeight: "600px !important" }}
-        onClick={handleShow}
-      >
-        &nbsp; Add &nbsp;&nbsp; <i className="bi bi-plus-lg"></i>
-      </button>
-
-      <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
-        <form
-          onSubmit={formik.handleSubmit}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !formik.isSubmitting) {
-              e.preventDefault();
-            }
-          }}
+      <div className="d-flex justify-content-end mb-3 me-2">
+        <button
+          type="button"
+          className="btn btn-button btn-sm"
+          onClick={handleShow}
         >
-          <DialogTitle>Add Center</DialogTitle>
-          <hr className="m-0"></hr>
-          <DialogContent>
-            <div className="row">
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
-                  Name<span className="text-danger">*</span>
-                </label>
-                <input
-                  type="text"
-                  onKeyDown={(e) => e.stopPropagation()}
-                  className={`form-control form-control-sm ${
-                    formik.touched.name && formik.errors.name
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  {...formik.getFieldProps("name")}
-                />
-                {formik.touched.name && formik.errors.name && (
-                  <div className="invalid-feedback">{formik.errors.name}</div>
-                )}
-              </div>
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
+          &nbsp; Add &nbsp;&nbsp; <i className="bx bx-plus"></i>
+        </button>
+      </div>
+
+      <Modal show={show} onHide={handleClose} size="lg">
+        <Modal.Header closeButton>
+          <Modal.Title>Centre Add</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <form onSubmit={formik.handleSubmit}>
+            <div className="container">
+              <div className="row">
+                <div className="col-md-6 col-12 mb-3">
+                  <label className="form-label">
+                    Name<span className="text-danger">*</span>
+                  </label>
+                  <input
+                    aria-label="Default select example"
+                    className={`form-control ${
+                      formik.touched.name && formik.errors.name
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("name")}
+                  />
+                  {formik.touched.name && formik.errors.name && (
+                    <div className="invalid-feedback">{formik.errors.name}</div>
+                  )}
+                </div>
+                <div className="col-md-6 col-12 mb-3">
+                  <label className="form-label">
                   Location<span className="text-danger">*</span>
-                </label>
-                <textarea
-                  type="text"
-                  onKeyDown={(e) => e.stopPropagation()}
-                  className={`form-control form-control-sm ${
-                    formik.touched.location && formik.errors.location
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  rows={3}
-                  {...formik.getFieldProps("location")}
-                />
-                {formik.touched.location && formik.errors.location && (
-                  <div className="invalid-feedback">
-                    {formik.errors.location}
-                  </div>
-                )}
+                  </label>
+                  <textarea
+                    rows={5}
+                    className={`form-control ${
+                      formik.touched.location && formik.errors.location
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("location")}
+                    maxLength={825}
+                  />
+                  {formik.touched.location && formik.errors.location && (
+                    <div className="invalid-feedback">
+                      {formik.errors.location}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-          </DialogContent>
-          <hr className="m-0"></hr>
-          <DialogActions className="mt-3">
-            <button className="btn btn-sm btn-back" onClick={handleClose}>
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="btn btn-button btn-sm"
-              disabled={loadIndicator}
-            >
-              {loadIndicator && (
-                <span
-                  className="spinner-border spinner-border-sm me-2"
-                  aria-hidden="true"
-                ></span>
-              )}
-              Submit
-            </button>
-          </DialogActions>
-        </form>
-      </Dialog>
+          </form>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button className="btn btn-secondary btn-sm" onClick={handleClose}>
+            Close
+          </Button>
+          <Button
+            className="btn btn-button"
+            type="submit"
+            disabled={loadIndicator}
+            onClick={formik.handleSubmit}
+          >
+            {loadIndicator && (
+              <span
+                className="spinner-border spinner-border-sm me-2"
+                aria-hidden="true"
+              ></span>
+            )}
+            Submit
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   );
 }
+
+CenterAdd.propTypes = {
+  onSuccess: PropTypes.func.isRequired,
+};
 
 export default CenterAdd;

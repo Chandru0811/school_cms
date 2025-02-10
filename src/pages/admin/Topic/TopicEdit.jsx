@@ -1,27 +1,22 @@
-import { useState, } from "react";
+import { useState } from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { Dialog, DialogActions, DialogTitle, DialogContent } from "@mui/material";
+import {
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  DialogContent,
+} from "@mui/material";
 import PropTypes from "prop-types";
+import api from "../../../config/URL";
+import toast from "react-hot-toast";
 
-function TopicEdit({ show, setShow,}) {
+function TopicEdit({ id, onSuccess, handleMenuClose }) {
   const [loadIndicator, setLoadIndicator] = useState(false);
-//   const [selectedSchool, setSelectedSchool] = useState(null);
-
-  // Find the selected school data when modal opens
-//   useEffect(() => {
-//     if (selectedId) {
-//       const school = data.find((item) => item.id === selectedId);
-//       setSelectedSchool(school || {});
-//     }
-//   }, [selectedId, data]);
-
-  const handleClose = () => {
-    setShow(false);
-    formik.resetForm();
-  };
+  const [open, setOpen] = useState(false);
 
   const validationSchema = yup.object().shape({
+    center_id: yup.string().required("*Selected a centre"),
     subject_id: yup.string().required("*Selected a subject"),
     name: yup.string().required("*Name is required"),
     description: yup.string().required("*Description is required"),
@@ -29,37 +24,116 @@ function TopicEdit({ show, setShow,}) {
 
   const formik = useFormik({
     initialValues: {
-      subject_id:"1",
-      name:  "Demo Subject",
-      description: "MINT",
+      center_id: "",
+      subject_id: "",
+      name: "",
+      description: "",
     },
     enableReinitialize: true,
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       setLoadIndicator(true);
-      console.log("Form values:", values);
-      setTimeout(() => {
+      try {
+        const response = await api.put(`topic/update/${id}`, values, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (response.status === 200) {
+          onSuccess();
+          handleMenuClose();
+          toast.success(
+            response.data.message || "Payment type updated successfully!"
+          );
+        } else {
+          toast.error(
+            response.data.message || "Failed to update payment type."
+          );
+        }
+      } catch (error) {
+        toast.error(
+          error.response?.data?.message || "An error occurred while updating."
+        );
+      } finally {
         setLoadIndicator(false);
-        setShow(false);
-      }, 1000);
+      }
     },
   });
 
+  const getData = async () => {
+    try {
+      const response = await api.get(`topic/${id}`);
+      if (response?.data?.data) {
+        formik.setValues(response.data.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      toast.error("Failed to fetch payment type details.");
+    }
+  };
+
+  const handleOpen = () => {
+    getData();
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    formik.resetForm();
+    if (handleMenuClose) {
+      handleMenuClose();
+    }
+  };
+
   return (
-    <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
-      <form
-        onSubmit={formik.handleSubmit}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" && !formik.isSubmitting) {
-            e.preventDefault();
-          }
+    <>
+      <span
+        onClick={handleOpen}
+        style={{
+          whiteSpace: "nowrap",
+          cursor: "pointer",
         }}
       >
-        <DialogTitle>Edit Topic</DialogTitle>
-        <hr className="m-0"></hr>
-        <DialogContent>
-          <div className="row">
-            <div className="col-md-6 col-12 mb-3">
+        Edit
+      </span>
+      <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+        <form
+          onSubmit={formik.handleSubmit}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !formik.isSubmitting) {
+              e.preventDefault();
+            }
+          }}
+        >
+          <DialogTitle>Edit Topic</DialogTitle>
+          <hr className="m-0"></hr>
+          <DialogContent>
+            <div className="row">
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Centre<span className="text-danger">*</span>
+                </label>
+                <select
+                  className={`form-select form-select-sm ${
+                    formik.touched.center_id && formik.errors.center_id
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("center_id")}
+                >
+                  <option value=""></option>
+                  <option value="10">Centre 1</option>
+                  <option value="2">Centre 2</option>
+                  <option value="3">Centre 3</option>
+                </select>
+                {formik.touched.center_id && formik.errors.center_id && (
+                  <div className="invalid-feedback">
+                    {formik.errors.center_id}
+                  </div>
+                )}
+              </div>
+              <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
                   Subject<span className="text-danger">*</span>
                 </label>
@@ -81,27 +155,25 @@ function TopicEdit({ show, setShow,}) {
                     {formik.errors.subject_id}
                   </div>
                 )}
-            </div>
-            <div className="col-md-6 col-12 mb-3">
-              <label className="form-label">
-                Name<span className="text-danger">*</span>
-              </label>
-              <input
-                type="text"
-                className={`form-control form-control-sm ${
-                  formik.touched.name && formik.errors.name
-                    ? "is-invalid"
-                    : ""
-                }`}
-                {...formik.getFieldProps("name")}
-              />
-              {formik.touched.name && formik.errors.name && (
-                <div className="invalid-feedback">
-                  {formik.errors.name}
-                </div>
-              )}
-            </div>
-            <div className="col-md-6 col-12 mb-3">
+              </div>
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Name<span className="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  className={`form-control form-control-sm ${
+                    formik.touched.name && formik.errors.name
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("name")}
+                />
+                {formik.touched.name && formik.errors.name && (
+                  <div className="invalid-feedback">{formik.errors.name}</div>
+                )}
+              </div>
+              <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
                   Description<span className="text-danger">*</span>
                 </label>
@@ -115,41 +187,42 @@ function TopicEdit({ show, setShow,}) {
                   {...formik.getFieldProps("description")}
                 />
                 {formik.touched.description && formik.errors.description && (
-                  <div className="invalid-feedback">{formik.errors.description}</div>
+                  <div className="invalid-feedback">
+                    {formik.errors.description}
+                  </div>
                 )}
               </div>
-          </div>
-        </DialogContent>
-        <hr className="m-0"></hr>
-        <DialogActions className="mt-3">
-          <button
-            className="btn btn-sm btn-back"
-            onClick={handleClose}
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="btn btn-button btn-sm"
-            disabled={loadIndicator}
-          >
-            {loadIndicator && (
-              <span
-                className="spinner-border spinner-border-sm me-2"
-                aria-hidden="true"
-              ></span>
-            )}
-            Submit
-          </button>
-        </DialogActions>
-      </form>
-    </Dialog>
+            </div>
+          </DialogContent>
+          <hr className="m-0"></hr>
+          <DialogActions className="mt-3">
+            <button className="btn btn-sm btn-back" onClick={handleClose}>
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="btn btn-button btn-sm"
+              disabled={loadIndicator}
+            >
+              {loadIndicator && (
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  aria-hidden="true"
+                ></span>
+              )}
+              Submit
+            </button>
+          </DialogActions>
+        </form>
+      </Dialog>
+    </>
   );
 }
 
 TopicEdit.propTypes = {
-  show: PropTypes.func.isRequired,
-  setShow: PropTypes.func.isRequired,
+  onSuccess: PropTypes.func.isRequired,
+  handleMenuClose: PropTypes.func.isRequired,
+  id: PropTypes.func.isRequired,
 };
 
 export default TopicEdit;

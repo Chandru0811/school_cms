@@ -29,8 +29,8 @@ function SuperAdmin({ handleLogout }) {
                     {/* School  */}
                     <Route path="/school" element={<School />} />
                     <Route path="/school/add" element={<SchoolAdd />} />
-                    <Route path="/school/edit" element={<SchoolEdit />} />
-                    <Route path="/school/view" element={<SchoolView />} />
+                    <Route path="/school/edit/:id" element={<SchoolEdit />} />
+                    <Route path="/school/view/:id" element={<SchoolView />} />
                   </Routes>
                 </div>
                 <SuperAdminFooter />

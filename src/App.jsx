@@ -43,6 +43,12 @@ function App() {
       localStorage.removeItem("schoolCMS_isAdminAuthenticated");
       localStorage.removeItem("schoolCMS_isSurperAdminAuthenticated");
       localStorage.removeItem("schoolCMS_isStudentAuthenticated");
+      localStorage.removeItem("schoolCMS_token");
+      localStorage.removeItem("schoolCMS_name");
+      localStorage.removeItem("schoolCMS_id");
+      localStorage.removeItem("schoolCMS_email");
+      localStorage.removeItem("schoolCMS_role");
+      localStorage.removeItem("schoolCMS_mobile");
     } catch (e) {
       toast.error("Logout unsuccessful", e?.response?.data?.message);
     }

@@ -7,25 +7,27 @@ import {
   DialogTitle,
   DialogContent,
 } from "@mui/material";
+// import { useNavigate } from "react-router-dom";
 
 function GradeAdd() {
+  // const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
-
-  const handleClose = () => {
-    formik.resetForm();
-    setShow(false);
-  };
-
-  const handleShow = () => {
-    setShow(true);
-    formik.resetForm();
-  };
 
   const validationSchema = yup.object().shape({
     name: yup.string().required("*Name is required"),
     description: yup.string().required("*Description is required"),
   });
+
+  
+  const handleShow = () => {
+    setShow(true);
+  };
+
+  const handleClose = () => {
+    setShow(false);
+    formik.resetForm();
+  };
 
   const formik = useFormik({
     initialValues: {

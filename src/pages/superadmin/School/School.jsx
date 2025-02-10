@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MaterialReactTable } from "material-react-table";
 import {
@@ -11,31 +11,14 @@ import {
 import Delete from "../../../components/common/Delete";
 import PropTypes from "prop-types";
 import { MoreVert as MoreVertIcon } from "@mui/icons-material";
+import api from "../../../config/URL";
 
 function School() {
   const [menuAnchor, setMenuAnchor] = useState(null);
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selectedId, setSelectedId] = useState(null);
   const navigate = useNavigate();
-
-  const data = [
-    {
-      id: 1,
-      school_name: "SRDK",
-      school_location: "Thiruvottuyur",
-      admin_name: "Suriya",
-      admin_email: "suriya@gmail.com",
-      admin_password: "12345678",
-      admin_cpassword: "12345678",
-    },
-    {
-      id: 2,
-      school_name: "KVM",
-      school_location: "Royapuram",
-      admin_name: "Suriya",
-      admin_email: "suriya@gmail.com",
-      admin_password: "12345678",
-      admin_cpassword: "12345678",
-    },
-  ];
 
   const columns = useMemo(
     () => [
@@ -55,11 +38,12 @@ function School() {
         enableHiding: false,
         enableSorting: false,
         size: 20,
-        Cell: () => (
+        Cell: ({ cell }) => (
           <IconButton
             onClick={(e) => {
               e.stopPropagation();
               setMenuAnchor(e.currentTarget);
+              setSelectedId(cell.getValue());
             }}
           >
             <MoreVertIcon />
@@ -67,7 +51,7 @@ function School() {
         ),
       },
       {
-        accessorKey: "school_name",
+        accessorKey: "name",
         enableHiding: false,
         header: "School Name",
       },
@@ -116,6 +100,22 @@ function School() {
     ],
     []
   );
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const response = await api.get(`superAdmin/schools`);
+      setData(response.data.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   const theme = createTheme({
     components: {
@@ -199,44 +199,62 @@ function School() {
             </button>
           </Link>
         </div>
-        <>
-          <ThemeProvider theme={theme}>
-            <MaterialReactTable
-              columns={columns}
-              data={data}
-              enableColumnActions={false}
-              enableColumnFilters={false}
-              enableDensityToggle={false}
-              enableFullScreenToggle={false}
-              initialState={{
-                columnVisibility: {
-                  working_hrs: false,
-                  citizenship: false,
-                  nationality: false,
-                  created_by: false,
-                  created_at: false,
-                  updated_by: false,
-                  updated_at: false,
-                },
-              }}
-              muiTableBodyRowProps={() => ({
-                onClick: () => navigate(`/school/view`),
-                style: { cursor: "pointer" },
-              })}
-            />
-          </ThemeProvider>
-          <Menu
-            id="action-menu"
-            anchorEl={menuAnchor}
-            open={Boolean(menuAnchor)}
-            onClose={handleMenuClose}
-          >
-            <MenuItem onClick={() => navigate(`/school/edit`)}>Edit</MenuItem>
-            <MenuItem>
-              <Delete path={`admin/school/delete`} onOpen={handleMenuClose} />
-            </MenuItem>
-          </Menu>
-        </>
+        {loading ? (
+          <div className="loader-container">
+            <div className="loader">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        ) : (
+          <>
+            <ThemeProvider theme={theme}>
+              <MaterialReactTable
+                columns={columns}
+                data={data}
+                enableColumnActions={false}
+                enableColumnFilters={false}
+                enableDensityToggle={false}
+                enableFullScreenToggle={false}
+                initialState={{
+                  columnVisibility: {
+                    working_hrs: false,
+                    citizenship: false,
+                    nationality: false,
+                    created_by: false,
+                    created_at: false,
+                    updated_by: false,
+                    updated_at: false,
+                  },
+                }}
+                muiTableBodyRowProps={({ row }) => ({
+                  onClick: () => navigate(`/school/view/${row.original.id}`),
+                  style: { cursor: "pointer" },
+                })}
+              />
+            </ThemeProvider>
+            <Menu
+              id="action-menu"
+              anchorEl={menuAnchor}
+              open={Boolean(menuAnchor)}
+              onClose={handleMenuClose}
+            >
+              <MenuItem onClick={() => navigate(`/school/edit/${selectedId}`)}>
+                Edit
+              </MenuItem>
+              <MenuItem>
+                <Delete
+                  path={`superAdmin/school/delete/${selectedId}`}
+                  onDeleteSuccess={fetchData}
+                  onOpen={handleMenuClose}
+                />
+              </MenuItem>
+            </Menu>
+          </>
+        )}
       </div>
     </div>
   );

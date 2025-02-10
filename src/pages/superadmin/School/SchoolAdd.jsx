@@ -1,39 +1,72 @@
 import { useFormik } from "formik";
 import { useState } from "react";
+import toast from "react-hot-toast";
+import { FiAlertTriangle } from "react-icons/fi";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
+import api from "../../../config/URL";
 
 function SchoolAdd() {
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showcPassword, setShowCPassword] = useState(false);
+  const [loadIndicator, setLoadIndicator] = useState(false);
 
   const validationSchema = Yup.object({
-    school_name: Yup.string().required("*School Name is required"),
-    school_location: Yup.string().required("*School Location is required"),
-    admin_name: Yup.string().required("*Admin Name is required"),
-    admin_email: Yup.string()
-      .email("Invalid email address")
-      .required("Admin Email is required"),
-    admin_password: Yup.string()
-      .required("Admin Password is required")
-      .min(8, "Password must be at least 8 characters"),
-    admin_cpassword: Yup.string()
-      .required("Admin Confirm Password is required")
-      .oneOf([Yup.ref("password"), null], "Passwords must match"),
+    name: Yup.string().required("*School Name is required"),
+    location: Yup.string().required("*School Location is required"),
+    // admin_name: Yup.string().required("*Admin Name is required"),
+    // admin_email: Yup.string()
+    //   .email("Invalid email address")
+    //   .required("Admin Email is required"),
+    // admin_password: Yup.string()
+    //   .required("Admin Password is required")
+    //   .min(8, "Password must be at least 8 characters"),
+    // admin_cpassword: Yup.string()
+    //   .required("Admin Confirm Password is required")
+    //   .oneOf([Yup.ref("password"), null], "Passwords must match"),
   });
 
   const formik = useFormik({
     initialValues: {
-      school_name: "",
-      school_location: "",
-      admin_name: "",
-      admin_email: "",
-      admin_password: "",
-      admin_cpassword: "",
+      name: "",
+      location: "",
+      // admin_name: "",
+      // admin_email: "",
+      // admin_password: "",
+      // admin_cpassword: "",
     },
     validationSchema: validationSchema,
-    onSubmit: async () => {},
+    onSubmit: async (values) => {
+      setLoadIndicator(true);
+      try {
+        const response = await api.post("superAdmin/school", values);
+        if (response.status === 200) {
+          toast.success(response.data.message);
+          navigate("/school");
+        } else {
+          toast.error(response.data.message);
+        }
+      } catch (error) {
+        if (error.response && error.response.status === 422) {
+          const errors = error.response.data.errors;
+          if (errors) {
+            Object.keys(errors).forEach((key) => {
+              errors[key].forEach((errorMsg) => {
+                toast(errorMsg, {
+                  icon: <FiAlertTriangle className="text-warning" />,
+                });
+              });
+            });
+          }
+        } else {
+          toast.error("An error occurred while deleting the record.");
+        }
+      } finally {
+        setLoadIndicator(false);
+      }
+    },
     validateOnChange: false,
     validateOnBlur: true,
   });
@@ -90,7 +123,17 @@ function SchoolAdd() {
                 </button>
               </Link>
               &nbsp;&nbsp;
-              <button type="submit" className="btn btn-sm btn-button">
+              <button
+                type="submit"
+                className="btn btn-sm btn-button"
+                disabled={loadIndicator}
+              >
+                {loadIndicator && (
+                  <span
+                    className="spinner-border spinner-border-sm me-2"
+                    aria-hidden="true"
+                  ></span>
+                )}
                 Save
               </button>
             </div>
@@ -104,16 +147,14 @@ function SchoolAdd() {
                 <input
                   type="text"
                   className={`form-control ${
-                    formik.touched.school_name && formik.errors.school_name
+                    formik.touched.name && formik.errors.name
                       ? "is-invalid"
                       : ""
                   }`}
-                  {...formik.getFieldProps("school_name")}
+                  {...formik.getFieldProps("name")}
                 />
-                {formik.touched.school_name && formik.errors.school_name && (
-                  <div className="invalid-feedback">
-                    {formik.errors.school_name}
-                  </div>
+                {formik.touched.name && formik.errors.name && (
+                  <div className="invalid-feedback">{formik.errors.name}</div>
                 )}
               </div>
               <div className="col-md-6 col-12 mb-3">
@@ -123,20 +164,18 @@ function SchoolAdd() {
                 <textarea
                   rows={5}
                   className={`form-control ${
-                    formik.touched.school_location &&
-                    formik.errors.school_location
+                    formik.touched.location && formik.errors.location
                       ? "is-invalid"
                       : ""
                   }`}
-                  {...formik.getFieldProps("school_location")}
+                  {...formik.getFieldProps("location")}
                   maxLength={825}
                 />
-                {formik.touched.school_location &&
-                  formik.errors.school_location && (
-                    <div className="invalid-feedback">
-                      {formik.errors.school_location}
-                    </div>
-                  )}
+                {formik.touched.location && formik.errors.location && (
+                  <div className="invalid-feedback">
+                    {formik.errors.location}
+                  </div>
+                )}
               </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
