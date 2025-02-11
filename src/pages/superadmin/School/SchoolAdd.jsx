@@ -14,28 +14,33 @@ function SchoolAdd() {
   const [loadIndicator, setLoadIndicator] = useState(false);
 
   const validationSchema = Yup.object({
-    name: Yup.string().required("*School Name is required"),
+    school_name: Yup.string().required("*School Name is required"),
     location: Yup.string().required("*School Location is required"),
-    // admin_name: Yup.string().required("*Admin Name is required"),
-    // admin_email: Yup.string()
-    //   .email("Invalid email address")
-    //   .required("Admin Email is required"),
-    // admin_password: Yup.string()
-    //   .required("Admin Password is required")
-    //   .min(8, "Password must be at least 8 characters"),
-    // admin_cpassword: Yup.string()
-    //   .required("Admin Confirm Password is required")
-    //   .oneOf([Yup.ref("password"), null], "Passwords must match"),
+    admin_name: Yup.string().required("*Admin Name is required"),
+    mobile: Yup.string()
+      .min(8, "Mobile number must be minimum 8")
+      .max(10, "Mobile number must be maximun 10")
+      .required("Mobile number is required!"),
+    email: Yup.string()
+      .email("Invalid email address")
+      .required("Admin Email is required"),
+    password: Yup.string()
+      .required("Admin Password is required")
+      .min(8, "Password must be at least 8 characters"),
+    password_confirmation: Yup.string()
+      .required("Admin Confirm Password is required")
+      .oneOf([Yup.ref("password"), null], "Passwords must match"),
   });
 
   const formik = useFormik({
     initialValues: {
-      name: "",
+      school_name: "",
       location: "",
-      // admin_name: "",
-      // admin_email: "",
-      // admin_password: "",
-      // admin_cpassword: "",
+      admin_name: "",
+      email: "",
+      mobile: "",
+      password: "",
+      password_confirmation: "",
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -147,14 +152,16 @@ function SchoolAdd() {
                 <input
                   type="text"
                   className={`form-control ${
-                    formik.touched.name && formik.errors.name
+                    formik.touched.school_name && formik.errors.school_name
                       ? "is-invalid"
                       : ""
                   }`}
-                  {...formik.getFieldProps("name")}
+                  {...formik.getFieldProps("school_name")}
                 />
-                {formik.touched.name && formik.errors.name && (
-                  <div className="invalid-feedback">{formik.errors.name}</div>
+                {formik.touched.school_name && formik.errors.school_name && (
+                  <div className="invalid-feedback">
+                    {formik.errors.school_name}
+                  </div>
                 )}
               </div>
               <div className="col-md-6 col-12 mb-3">
@@ -203,21 +210,44 @@ function SchoolAdd() {
                 <input
                   type="text"
                   className={`form-control ${
-                    formik.touched.admin_email && formik.errors.admin_email
+                    formik.touched.email && formik.errors.email
                       ? "is-invalid"
                       : ""
                   }`}
-                  {...formik.getFieldProps("admin_email")}
+                  {...formik.getFieldProps("email")}
                 />
-                {formik.touched.admin_email && formik.errors.admin_email && (
-                  <div className="invalid-feedback">
-                    {formik.errors.admin_email}
-                  </div>
+                {formik.touched.email && formik.errors.email && (
+                  <div className="invalid-feedback">{formik.errors.email}</div>
+                )}
+              </div>
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Mobile<span className="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  onInput={(event) => {
+                    event.target.value = event.target.value.replace(
+                      /[^0-9]/g,
+                      ""
+                    );
+                  }}
+                  className={`form-control ${
+                    formik.touched.mobile && formik.errors.mobile
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("mobile")}
+                />
+                {formik.touched.mobile && formik.errors.mobile && (
+                  <div className="invalid-feedback">{formik.errors.mobile}</div>
                 )}
               </div>
               <div className="col-md-6 col-12 mb-3">
                 <div className="mb-3">
-                  <label className="form-label fw-medium">Password</label>
+                  <label className="form-label fw-medium">
+                    Password<span className="text-danger">*</span>
+                  </label>
                   <div
                     className={`input-group mb-3`}
                     style={{ outline: "none", boxShadow: "none" }}
@@ -226,8 +256,7 @@ function SchoolAdd() {
                       type={showPassword ? "text" : "password"}
                       placeholder="Enter password"
                       className={`form-control ${
-                        formik.touched.admin_password &&
-                        formik.errors.admin_password
+                        formik.touched.password && formik.errors.password
                           ? "is-invalid"
                           : ""
                       }`}
@@ -237,8 +266,8 @@ function SchoolAdd() {
                         borderTopRightRadius: "0px",
                         borderBottomRightRadius: "0px",
                       }}
-                      name="admin_password"
-                      {...formik.getFieldProps("admin_password")}
+                      name="password"
+                      {...formik.getFieldProps("password")}
                     />
                     <span
                       className={`input-group-text iconInputBackground`}
@@ -248,19 +277,18 @@ function SchoolAdd() {
                     >
                       {showPassword ? <IoEyeOffOutline /> : <IoEyeOutline />}
                     </span>
-                    {formik.touched.admin_password &&
-                      formik.errors.admin_password && (
-                        <div className="invalid-feedback">
-                          {formik.errors.admin_password}
-                        </div>
-                      )}
+                    {formik.touched.password && formik.errors.password && (
+                      <div className="invalid-feedback">
+                        {formik.errors.password}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
               <div className="col-md-6 col-12 mb-3">
                 <div className="mb-3">
                   <label className="form-label fw-medium">
-                    Confirm Password
+                    Confirm Password<span className="text-danger">*</span>
                   </label>
                   <div
                     className={`input-group mb-3`}
@@ -270,8 +298,8 @@ function SchoolAdd() {
                       type={showcPassword ? "text" : "password"}
                       placeholder="Enter password"
                       className={`form-control ${
-                        formik.touched.admin_cpassword &&
-                        formik.errors.admin_cpassword
+                        formik.touched.password_confirmation &&
+                        formik.errors.password_confirmation
                           ? "is-invalid"
                           : ""
                       }`}
@@ -281,8 +309,8 @@ function SchoolAdd() {
                         borderTopRightRadius: "0px",
                         borderBottomRightRadius: "0px",
                       }}
-                      name="admin_cpassword"
-                      {...formik.getFieldProps("admin_cpassword")}
+                      name="password_confirmation"
+                      {...formik.getFieldProps("password_confirmation")}
                     />
                     <span
                       className={`input-group-text iconInputBackground`}
@@ -292,10 +320,10 @@ function SchoolAdd() {
                     >
                       {showcPassword ? <IoEyeOffOutline /> : <IoEyeOutline />}
                     </span>
-                    {formik.touched.admin_cpassword &&
-                      formik.errors.admin_cpassword && (
+                    {formik.touched.password_confirmation &&
+                      formik.errors.password_confirmation && (
                         <div className="invalid-feedback">
-                          {formik.errors.admin_cpassword}
+                          {formik.errors.password_confirmation}
                         </div>
                       )}
                   </div>

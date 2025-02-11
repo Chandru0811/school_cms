@@ -2,7 +2,6 @@ import { useFormik } from "formik";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { FiAlertTriangle } from "react-icons/fi";
-import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import * as Yup from "yup";
 import api from "../../../config/URL";
@@ -12,40 +11,43 @@ function SchoolEdit() {
   const navigate = useNavigate();
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showcPassword, setShowCPassword] = useState(false);
 
   const validationSchema = Yup.object({
     name: Yup.string().required("*School Name is required"),
     location: Yup.string().required("*School Location is required"),
-    // admin_name: Yup.string().required("*Admin Name is required"),
-    // admin_email: Yup.string()
+    // "users[0].name": Yup.string().required("*Admin Name is required"),
+    // "users[0].mobile": Yup.string()
+    //   .min(8, "Mobile number must be minimum 8")
+    //   .max(10, "Mobile number must be maximun 10")
+    //   .required("Mobile number is required!"),
+    // "users[0].email": Yup.string()
     //   .email("Invalid email address")
     //   .required("Admin Email is required"),
-    // admin_password: Yup.string()
-    //   .required("Admin Password is required")
-    //   .min(8, "Password must be at least 8 characters"),
-    // admin_cpassword: Yup.string()
-    //   .required("Admin Confirm Password is required")
-    //   .oneOf([Yup.ref("password"), null], "Passwords must match"),
   });
 
   const formik = useFormik({
     initialValues: {
-      name: "",
+      school_name: "",
       location: "",
-      // admin_name: "",
-      // admin_email: "",
-      // admin_password: "",
-      // admin_cpassword: "",
+      users: [{ name: "", email: "", mobile: "" }],
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       setLoadIndicator(true);
+
+      const payload = {
+        ...values,
+        school_name: values.name,
+        location: values.location,
+        admin_name: values.users[0].name,
+        email: values.users[0].email,
+        mobile: values.users[0].mobile,
+      };
+
       try {
         const response = await api.put(
           `superAdmin/school/update/${id}`,
-          values
+          payload
         );
         if (response.status === 200) {
           toast.success(response.data.message);
@@ -76,18 +78,25 @@ function SchoolEdit() {
     validateOnBlur: true,
   });
 
-  const togglePasswordVisibility = () => {
-    setShowPassword(!showPassword);
-  };
-  const toggleconfirmPasswordVisibility = () => {
-    setShowCPassword(!showcPassword);
-  };
-
   const getData = async () => {
     try {
       setLoading(true);
       const response = await api.get(`superAdmin/school/${id}`);
-      formik.setValues(response.data.data);
+      if (response.data.data) {
+        formik.setValues({
+          name: response.data.data.name || "",
+          location: response.data.data.location || "",
+          users: response.data.data.users.length
+            ? [
+                {
+                  name: response.data.data.users[0].name,
+                  email: response.data.data.users[0].email,
+                  mobile: response.data.data.users[0].mobile,
+                },
+              ]
+            : [{ name: "", email: "" }],
+        });
+      }
     } catch (error) {
       toast.error("Error fetching data:", error);
     } finally {
@@ -217,17 +226,19 @@ function SchoolEdit() {
                   <input
                     type="text"
                     className={`form-control ${
-                      formik.touched.admin_name && formik.errors.admin_name
+                      formik.touched.users?.[0]?.name &&
+                      formik.errors.users?.[0]?.name
                         ? "is-invalid"
                         : ""
                     }`}
-                    {...formik.getFieldProps("admin_name")}
+                    {...formik.getFieldProps("users[0].name")}
                   />
-                  {formik.touched.admin_name && formik.errors.admin_name && (
-                    <div className="invalid-feedback">
-                      {formik.errors.admin_name}
-                    </div>
-                  )}
+                  {formik.touched.users?.[0]?.name &&
+                    formik.errors.users?.[0]?.name && (
+                      <div className="invalid-feedback">
+                        {formik.errors.users[0].name}
+                      </div>
+                    )}
                 </div>
                 <div className="col-md-6 col-12 mb-3">
                   <label className="form-label">
@@ -236,103 +247,40 @@ function SchoolEdit() {
                   <input
                     type="text"
                     className={`form-control ${
-                      formik.touched.admin_email && formik.errors.admin_email
+                      formik.touched.users?.[0]?.email &&
+                      formik.errors.users?.[0]?.email
                         ? "is-invalid"
                         : ""
                     }`}
-                    {...formik.getFieldProps("admin_email")}
+                    {...formik.getFieldProps("users[0].email")}
                   />
-                  {formik.touched.admin_email && formik.errors.admin_email && (
-                    <div className="invalid-feedback">
-                      {formik.errors.admin_email}
-                    </div>
-                  )}
+                  {formik.touched.users?.[0]?.email &&
+                    formik.errors.users?.[0]?.email && (
+                      <div className="invalid-feedback">
+                        {formik.errors.users?.[0]?.email}
+                      </div>
+                    )}
                 </div>
                 <div className="col-md-6 col-12 mb-3">
-                  <div className="mb-3">
-                    <label className="form-label fw-medium">Password</label>
-                    <div
-                      className={`input-group mb-3`}
-                      style={{ outline: "none", boxShadow: "none" }}
-                    >
-                      <input
-                        type={showPassword ? "text" : "password"}
-                        placeholder="Enter password"
-                        className={`form-control ${
-                          formik.touched.admin_password &&
-                          formik.errors.admin_password
-                            ? "is-invalid"
-                            : ""
-                        }`}
-                        style={{
-                          borderRadius: "3px",
-                          borderRight: "none",
-                          borderTopRightRadius: "0px",
-                          borderBottomRightRadius: "0px",
-                        }}
-                        name="admin_password"
-                        {...formik.getFieldProps("admin_password")}
-                      />
-                      <span
-                        className={`input-group-text iconInputBackground`}
-                        id="basic-addon1"
-                        onClick={togglePasswordVisibility}
-                        style={{ cursor: "pointer", borderRadius: "3px" }}
-                      >
-                        {showPassword ? <IoEyeOffOutline /> : <IoEyeOutline />}
-                      </span>
-                      {formik.touched.admin_password &&
-                        formik.errors.admin_password && (
-                          <div className="invalid-feedback">
-                            {formik.errors.admin_password}
-                          </div>
-                        )}
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-6 col-12 mb-3">
-                  <div className="mb-3">
-                    <label className="form-label fw-medium">
-                      Confirm Password
-                    </label>
-                    <div
-                      className={`input-group mb-3`}
-                      style={{ outline: "none", boxShadow: "none" }}
-                    >
-                      <input
-                        type={showcPassword ? "text" : "password"}
-                        placeholder="Enter password"
-                        className={`form-control ${
-                          formik.touched.admin_cpassword &&
-                          formik.errors.admin_cpassword
-                            ? "is-invalid"
-                            : ""
-                        }`}
-                        style={{
-                          borderRadius: "3px",
-                          borderRight: "none",
-                          borderTopRightRadius: "0px",
-                          borderBottomRightRadius: "0px",
-                        }}
-                        name="admin_cpassword"
-                        {...formik.getFieldProps("admin_cpassword")}
-                      />
-                      <span
-                        className={`input-group-text iconInputBackground`}
-                        id="basic-addon1"
-                        onClick={toggleconfirmPasswordVisibility}
-                        style={{ cursor: "pointer", borderRadius: "3px" }}
-                      >
-                        {showcPassword ? <IoEyeOffOutline /> : <IoEyeOutline />}
-                      </span>
-                      {formik.touched.admin_cpassword &&
-                        formik.errors.admin_cpassword && (
-                          <div className="invalid-feedback">
-                            {formik.errors.admin_cpassword}
-                          </div>
-                        )}
-                    </div>
-                  </div>
+                  <label className="form-label">
+                    Admin Mobile<span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className={`form-control ${
+                      formik.touched.users?.[0]?.mobile &&
+                      formik.errors.users?.[0]?.mobile
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("users[0].mobile")}
+                  />
+                  {formik.touched.users?.[0]?.mobile &&
+                    formik.errors.users?.[0]?.mobile && (
+                      <div className="invalid-feedback">
+                        {formik.errors.users?.[0]?.mobile}
+                      </div>
+                    )}
                 </div>
               </div>
             </div>

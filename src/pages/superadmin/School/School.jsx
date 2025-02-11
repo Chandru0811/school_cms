@@ -56,29 +56,14 @@ function School() {
         header: "School Name",
       },
       {
-        accessorKey: "admin_name",
+        accessorFn: (row) => row.users?.[0]?.name,
         enableHiding: false,
         header: "Admin Name",
       },
       {
-        accessorKey: "admin_email",
+        accessorFn: (row) => row.users?.[0]?.email,
         header: "Admin Email",
         enableHiding: false,
-        size: 40,
-      },
-      {
-        accessorKey: "working_hrs",
-        header: "Working Hours",
-        size: 40,
-      },
-      {
-        accessorKey: "citizenship",
-        header: "Nation",
-        size: 40,
-      },
-      {
-        accessorKey: "nationality",
-        header: "Nationality",
         size: 40,
       },
       { accessorKey: "created_by", header: "Created By" },

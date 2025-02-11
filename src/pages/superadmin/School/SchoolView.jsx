@@ -103,7 +103,7 @@ function SchoolView() {
                     <p className="fw-medium text-sm">Admin Name</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">: {data.admin_name}</p>
+                    <p className="text-muted text-sm">: {data.users[0].name}</p>
                   </div>
                 </div>
               </div>
@@ -113,7 +113,17 @@ function SchoolView() {
                     <p className="fw-medium text-sm">Admin Email</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">: {data.admin_email}</p>
+                    <p className="text-muted text-sm">: {data.users[0].email}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Admin Mobile</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">: {data.users[0].mobile}</p>
                   </div>
                 </div>
               </div>
