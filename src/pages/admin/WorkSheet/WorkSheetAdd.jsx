@@ -11,6 +11,7 @@ function WorkSheetAdd() {
   const [selectedServices, setSelectedServices] = useState([]);
   const [selectedSubject, setSelectedSubject] = useState([]);
   const [selectedQuestion, setSelectedQuestion] = useState([]);
+  const [selectedTopic, setSelectedTopic] = useState([]);
 
   const serviceOption = [
     { value: "1", label: "SRDK" },
@@ -31,6 +32,12 @@ function WorkSheetAdd() {
     { value: "3", label: "Multi Choice" },
     { value: "4", label: "Short Answer" },
     { value: "5", label: "Upload" },
+  ];
+
+  const topicOption = [
+    { value: "1", label: "English" },
+    { value: "2", label: "Tamil" },
+    { value: "3", label: "Maths" },
   ];
 
   const data = [
@@ -65,6 +72,11 @@ function WorkSheetAdd() {
       .of(yup.string().required("*Select at least one subject"))
       .min(1, "*Select at least one subject")
       .required("*Select a subject name"),
+    topic_id: yup
+      .array()
+      .of(yup.string().required("*Select at least one subject"))
+      .min(1, "*Select at least one subject")
+      .required("*Select a subject name"),
     type: yup.string().required("*Select a type"),
     ques_type: yup
       .array()
@@ -73,6 +85,7 @@ function WorkSheetAdd() {
       .required("*Select a question type name"),
     difficult_level: yup.string().required("*Select a difficult level"),
     questionType: yup.string().required("*Select a question type"),
+    difficult_type: yup.string().required("*Select a difficult type"),
     question: yup.string().required("*Select a question"),
     target_score: yup
       .number()
@@ -80,6 +93,12 @@ function WorkSheetAdd() {
       .required("*Target Score field is required")
       .positive("*Target Score must be a positive number")
       .integer("*Target Score must be an integer"),
+    total_score: yup
+      .number()
+      .typeError("*Totle Score must be a number")
+      .required("*Totle Score field is required")
+      .positive("*Totle Score must be a positive number")
+      .integer("*Totle Score must be an integer"),
     reward: yup
       .number()
       .typeError("*Reward must be a number")
@@ -96,12 +115,15 @@ function WorkSheetAdd() {
     initialValues: {
       centre_id: "",
       grade_id: "",
+      topic_id: "",
       name: "",
       subject_id: "",
       type: "",
       difficult_level: "",
       ques_type: "",
       target_score: "",
+      total_score: "",
+      difficult_type:"",
       reward: "",
       question_id: "",
       question: "",
@@ -236,7 +258,7 @@ function WorkSheetAdd() {
                 </button>
               </Link>
               &nbsp;&nbsp;
-              <button type="submit" className="btn btn-button">
+              <button type="submit" className="btn btn-button btn-sm">
                 Save
               </button>
             </div>
@@ -245,7 +267,7 @@ function WorkSheetAdd() {
             <div className="row py-4">
               <div className="col-md-6 col-12 mb-4">
                 <label className="form-label">
-                  Centre Name<span className="text-danger">*</span>
+                  Centre<span className="text-danger">*</span>
                 </label>
                 <MultiSelect
                   options={serviceOption}
@@ -368,12 +390,60 @@ function WorkSheetAdd() {
                   }`}
                   {...formik.getFieldProps("type")}
                 >
-                  <option value="">Select Type</option>
+                  <option value=""></option>
                   <option value="Practical">Practical</option>
                   <option value="Grammer">Grammer</option>
                 </select>
                 {formik.touched.type && formik.errors.type && (
                   <div className="invalid-feedback">{formik.errors.type}</div>
+                )}
+              </div>
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Difficulty Type<span className="text-danger">*</span>
+                </label>
+                <select
+                  className={`form-select form-select-sm ${
+                    formik.touched.difficult_type && formik.errors.difficult_type
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("difficult_type")}
+                >
+                  <option value=""></option>
+                  <option value="Easy">Easy</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Hard">Hard</option>
+                </select>
+                {formik.touched.difficult_type && formik.errors.difficult_type && (
+                  <div className="invalid-feedback">{formik.errors.difficult_type}</div>
+                )}
+              </div>
+              <div className="col-md-6 col-12 mb-4">
+                <label className="form-label">
+                  Topic<span className="text-danger">*</span>
+                </label>
+                <MultiSelect
+                  options={topicOption}
+                  value={selectedTopic}
+                  onChange={(selected) => {
+                    setSelectedTopic(selected);
+                    formik.setFieldValue(
+                      "topic_id",
+                      selected.map((option) => option.value)
+                    );
+                  }}
+                  labelledBy="Select Topic"
+                  className={`form-multi-select form-multi-select-sm ${
+                    formik.touched.topic_id && formik.errors.topic_id
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                />
+                {formik.touched.topic_id && formik.errors.topic_id && (
+                  <div className="invalid-feedback">
+                    {formik.errors.topic_id}
+                  </div>
                 )}
               </div>
               <div className="col-md-6 col-12 mb-4">
@@ -403,32 +473,6 @@ function WorkSheetAdd() {
                   </div>
                 )}
               </div>
-              {/* <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
-                  Question Type<span className="text-danger">*</span>
-                </label>
-                <select
-                  className={`form-select form-select-sm ${
-                    formik.touched.ques_type && formik.errors.ques_type
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  {...formik.getFieldProps("ques_type")}
-                >
-                  <option value=""></option>
-                  <option value="All">All</option>
-                  <option value="Filled">Filled</option>
-                  <option value="Closed">Closed</option>
-                  <option value="multiChoice">Multi Choice</option>
-                  <option value="shortAnswer">Short Answer</option>
-                  <option value="Upload">Upload</option>
-                </select>
-                {formik.touched.ques_type && formik.errors.ques_type && (
-                  <div className="invalid-feedback">
-                    {formik.errors.ques_type}
-                  </div>
-                )}
-              </div> */}
               <div className="col-md-6 col-12 mb-4">
                 <label className="form-label">
                   Question Type<span className="text-danger">*</span>
@@ -456,35 +500,24 @@ function WorkSheetAdd() {
                   </div>
                 )}
               </div>
-              {/* <div className="col-md-6 col-12 mb-4">
-                <label className="form-label">Question</label>
-                <MultiSelect
-                  options={serviceOption}
-                  value={selectedServices}
-                  onChange={(selected) => {
-                    setSelectedServices(selected);
-                    formik.setFieldValue(
-                      "service_id",
-                      selected.map((option) => option.value)
-                    );
-                  }}
-                  labelledBy="Select Service"
-                  className={`form-multi-select form-multi-select-sm ${
-                    formik.touched.service_id && formik.errors.service_id
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">Total Score</label>
+                <span className="text-danger">*</span>
+                <input
+                  type="text"
+                  className={`form-control form-control-sm ${
+                    formik.touched.total_score && formik.errors.total_score
                       ? "is-invalid"
                       : ""
                   }`}
-                  style={{
-                    height: "37.6px !important",
-                    minHeight: "37.6px",
-                  }}
+                  {...formik.getFieldProps("total_score")}
                 />
-                {formik.touched.service_id && formik.errors.service_id && (
+                {formik.touched.total_score && formik.errors.total_score && (
                   <div className="invalid-feedback">
-                    {formik.errors.service_id}
+                    {formik.errors.total_score}
                   </div>
                 )}
-              </div> */}
+              </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">Target Score</label>
                 <span className="text-danger">*</span>

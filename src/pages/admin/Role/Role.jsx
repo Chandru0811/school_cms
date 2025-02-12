@@ -22,10 +22,10 @@ function Role() {
   const [selectedData, setSelectedData] = useState(null); // Store selected row data
 
   const data = [
-    { id: 1,school_id: "1",center_id: "1", name: "GMTTV Hrs Sec School", description: "English" },
-    { id: 2,school_id: "2",center_id: "2", name: "ST. Thomas Girls Hrs School", description: "Tamil" },
-    { id: 3,school_id: "3",center_id: "3", name: "Govt Boys Hrs School", description: "Maths" },
-    { id: 4,school_id: "4",center_id: "4", name: "New School", description: "Science" },
+    { id: 1,center_id: "1", name: "GMTTV Hrs Sec School", description: "English",access:"Full Access" },
+    { id: 2,center_id: "2", name: "ST. Thomas Girls Hrs School", description: "Tamil",access:"Limiited Access" },
+    { id: 3,center_id: "3", name: "Govt Boys Hrs School", description: "Maths",access:"Full Access" },
+    { id: 4,center_id: "4", name: "New School", description: "Science",access:"Medium Access" },
   ];
 
   const columns = useMemo(
@@ -57,10 +57,10 @@ function Role() {
           </IconButton>
         ),
       },
-      { accessorKey: "school_id", header: "School ID" },
-      { accessorKey: "center_id", header: "Center ID" },
+      { accessorKey: "center_id", header: "Center" },
       { accessorKey: "name", header: "Name" },
       { accessorKey: "description", header: "Description" },
+      { accessorKey: "access", header: "Access" },
       { accessorKey: "created_by", header: "Created By" },
       {
         accessorKey: "created_at",
@@ -142,7 +142,7 @@ function Role() {
           &nbsp;Role
         </li>
       </ol> */}
-      <div className="card">
+      <div className="">
         {/* <div className="d-flex justify-content-between align-items-center card_header mb-3 p-1">
           <div className="d-flex align-items-center">
             <div className="d-flex">
@@ -154,7 +154,7 @@ function Role() {
             </span>
           </div>
         </div> */}
-        <div className="mb-3 d-flex justify-content-end">
+        <div className=" d-flex justify-content-end">
           <RoleAdd />
         </div>
         <>

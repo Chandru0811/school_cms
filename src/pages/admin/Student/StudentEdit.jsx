@@ -1,23 +1,38 @@
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { Link,  } from "react-router-dom";
+import { useState } from "react";
+import { MultiSelect } from "react-multi-select-component";
+
+
 function StudentEdit() {
+  const [selectedServices, setSelectedServices] = useState([]);
+  
+    const serviceOption = [
+      { value: "1", label: "SRDK" },
+      { value: "2", label: "KVM" },
+      { value: "3", label: "KCS" },
+      { value: "4", label: "PAK" },
+    ];
+
   const validationSchema = yup.object().shape({
-    center_name: yup.string().required("*Center Name is required"),
-    student_first_name: yup.string().required("*Student Name is required"),
-    student_email: yup.string().required("*Student Email is required"),
-    student_mobile: yup.string().required("*Student Mobile is required"),
-    parent_name: yup.string().required("*Parent Name is required"),
-    parent_email: yup.string().required("*Parent Email is required"),
-    parent_number: yup.string().required("*Parent Number is required"),
-    grader_list: yup.string().required("*Grader List is required"),
-    roll_no: yup.string().required("*Roll Number is required"),
-    admission_no: yup.string().required("*Admission Number is required"),
+    center_id: yup.string().required("*Center is required"),
+        role: yup.string().required("*Select a role"),
+    student_first_name: yup.string().required("*Student name is required"),
+    student_email: yup.string().required("*Student email is required"),
+    student_mobile: yup.string().required("*Student mobile is required"),
+    parent_name: yup.string().required("*Parent name is required"),
+    parent_email: yup.string().required("*Parent email is required"),
+    parent_number: yup.string().required("*Parent number is required"),
+    grader_list: yup.string().required("*Grader list is required"),
+    roll_no: yup.string().required("*Roll number is required"),
+    admission_no: yup.string().required("*Admission number is required"),
   });
 
   const formik = useFormik({
     initialValues: {
-      center_name: "School A",
+      center_id: "School A",
+      role:"",
       student_first_name: "Sumaiya",
       student_last_name: "M",
       student_middle_name: "",
@@ -94,26 +109,53 @@ function StudentEdit() {
           </div>
           <div className="container-fluid px-4">
             <div className="row">
-              <div className="col-md-6 col-12 mb-3">
+            <div className="col-md-6 col-12 mb-4">
                 <label className="form-label">
-                  Center Name<span className="text-danger">*</span>
+                  Centre Name<span className="text-danger">*</span>
                 </label>
-                <select
-                  className={`form-select form-select-sm ${
-                    formik.touched.center_name && formik.errors.center_name
+                <MultiSelect
+                  options={serviceOption}
+                  value={selectedServices}
+                  onChange={(selected) => {
+                    setSelectedServices(selected);
+                    formik.setFieldValue(
+                      "center_id",
+                      selected.map((option) => option.value)
+                    );
+                  }}
+                  labelledBy="Select Service"
+                  className={`form-multi-select form-multi-select-sm ${
+                    formik.touched.center_id && formik.errors.center_id
                       ? "is-invalid"
                       : ""
                   }`}
-                  {...formik.getFieldProps("center_name")}
+                />
+                {formik.touched.center_id && formik.errors.center_id && (
+                  <div className="invalid-feedback">
+                    {formik.errors.center_id}
+                  </div>
+                )}
+              </div>
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Role<span className="text-danger">*</span>
+                </label>
+                <select
+                  className={`form-select form-select-sm ${
+                    formik.touched.role && formik.errors.role
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("role")}
                 >
-                  <option value="">Select School</option>
+                  <option value="">Select Role</option>
                   <option value="School A">School A</option>
                   <option value="School B">School B</option>
                   <option value="School C">School C</option>
                 </select>
-                {formik.touched.center_name && formik.errors.center_name && (
+                {formik.touched.role && formik.errors.role && (
                   <div className="invalid-feedback">
-                    {formik.errors.center_name}
+                    {formik.errors.role}
                   </div>
                 )}
               </div>

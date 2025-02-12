@@ -23,7 +23,7 @@ function RewardView() {
           <span className="breadcrumb-separator text-sm"> &gt; </span>
         </li>
         <li>
-          <Link to="/reward" className="custom-breadcrumb text-sm">
+          <Link to="/rewards" className="custom-breadcrumb text-sm">
             &nbsp;Rewards
           </Link>
           <span className="breadcrumb-separator text-sm"> &gt; </span>
@@ -41,7 +41,7 @@ function RewardView() {
             <span className="me-2 text-muted text-sm">View Reward</span>
           </div>
           <div className="my-2 pe-3 d-flex align-items-center">
-            <Link to="/reward">
+            <Link to="/rewards">
               <button type="button" className="btn btn-sm btn-back">
                 Back
               </button>

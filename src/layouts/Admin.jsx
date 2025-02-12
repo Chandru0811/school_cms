@@ -54,6 +54,7 @@ import Employee from "../pages/admin/Employee/Employee";
 import EmployeeAdd from "../pages/admin/Employee/EmployeeAdd";
 import EmployeeEdit from "../pages/admin/Employee/EmployeeEdit";
 import EmployeeView from "../pages/admin/Employee/EmployeeView";
+import DoAssessment from "../pages/admin/DoAssessment";
 
 function Admin({ handleLogout }) {
   return (
@@ -66,7 +67,7 @@ function Admin({ handleLogout }) {
             <div className="flex-grow-1 h-screen overflow-y-auto">
               <AdminHeader handleLogout={handleLogout} />
               <main className="pt-2 bg-surface-secondary">
-                <div style={{ minHeight: "90vh" }} className="px-2">
+                <div style={{ minHeight: "80vh" }} className="px-2">
                   <Routes>
                     <Route path="/" element={<AdminDashboard />} />
                     <Route path="*" element={<AdminDashboard />} />
@@ -166,6 +167,10 @@ function Admin({ handleLogout }) {
 
                     {/* Profile   */}
                     <Route path="/settings" element={<Settings />} />
+
+                      {/* Do Assessment   */}
+                      <Route path="/doassessment" element={<DoAssessment />} />
+
                     <Route
                       path="/role_permission"
                       element={<RolePermission />}

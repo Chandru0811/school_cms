@@ -9,6 +9,8 @@ import { createTheme } from "@mui/material";
 
 function HomeworkAdd() {
   const [selectedServices, setSelectedServices] = useState([]);
+  const [selectedSubject, setSelectedSubject] = useState([]);
+  const [selectedTopic, setSelectedTopic] = useState([]);
 
   const serviceOption = [
     { value: "1", label: "Multi Choice" },
@@ -16,6 +18,18 @@ function HomeworkAdd() {
     { value: "3", label: "Closed" },
     { value: "4", label: "Short Answer" },
     { value: "5", label: "Upload" },
+  ];
+
+  const subjectOption = [
+    { value: "1", label: "English" },
+    { value: "2", label: "Tamil" },
+    { value: "3", label: "Maths" },
+  ];
+
+  const topicOption = [
+    { value: "1", label: "English" },
+    { value: "2", label: "Tamil" },
+    { value: "3", label: "Maths" },
   ];
 
   const data = [
@@ -43,7 +57,16 @@ function HomeworkAdd() {
     grade_id: yup.string().required("*Select a grade id"),
     due_date: yup.string().required("*Due date is required"),
     ques_type: yup.string().required("*Select a question type"),
-
+    subject_id: yup
+      .array()
+      .of(yup.string().required("*Select at least one subject"))
+      .min(1, "*Select at least one subject")
+      .required("*Select a subject name"),
+    topic_id: yup
+      .array()
+      .of(yup.string().required("*Select at least one subject"))
+      .min(1, "*Select at least one subject")
+      .required("*Select a subject name"),
     target_score: yup
       .number()
       .typeError("*Target Score must be a number")
@@ -61,6 +84,8 @@ function HomeworkAdd() {
       target_score: "",
       service_id: "",
       ques_type: "",
+      subject_id: "",
+      topic_id: "",
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -69,80 +94,80 @@ function HomeworkAdd() {
     },
   });
 
-    const columns = useMemo(
-      () => [
-        {
-          accessorFn: (row, index) => index + 1,
-          header: "S.NO",
-          enableSorting: true,
-          enableHiding: false,
-          size: 40,
-          cell: ({ cell }) => (
-            <span style={{ textAlign: "center" }}>{cell.getValue()}</span>
-          ),
-        },
-        { accessorKey: "question", header: "Question" },
-        {
-          accessorKey: "created_at",
-          header: "Created At",
-          Cell: ({ cell }) => cell.getValue()?.substring(0, 10),
-        },
-        {
-          accessorKey: "updated_by",
-          header: "Updated By",
-          Cell: ({ cell }) => cell.getValue() || "",
-        },
-        {
-          accessorKey: "updated_at",
-          header: "Updated At",
-          Cell: ({ cell }) => cell.getValue()?.substring(0, 10) || "",
-        },
-      ],
-      []
-    );
-  
-    const theme = createTheme({
-      components: {
-        MuiTableCell: {
-          styleOverrides: {
-            head: {
-              color: "#535454 !important",
-              backgroundColor: "#e6edf7 !important",
-              fontWeight: "400 !important",
-              fontSize: "13px !important",
-              textAlign: "center !important",
-            },
+  const columns = useMemo(
+    () => [
+      {
+        accessorFn: (row, index) => index + 1,
+        header: "S.NO",
+        enableSorting: true,
+        enableHiding: false,
+        size: 40,
+        cell: ({ cell }) => (
+          <span style={{ textAlign: "center" }}>{cell.getValue()}</span>
+        ),
+      },
+      { accessorKey: "question", header: "Question" },
+      {
+        accessorKey: "created_at",
+        header: "Created At",
+        Cell: ({ cell }) => cell.getValue()?.substring(0, 10),
+      },
+      {
+        accessorKey: "updated_by",
+        header: "Updated By",
+        Cell: ({ cell }) => cell.getValue() || "",
+      },
+      {
+        accessorKey: "updated_at",
+        header: "Updated At",
+        Cell: ({ cell }) => cell.getValue()?.substring(0, 10) || "",
+      },
+    ],
+    []
+  );
+
+  const theme = createTheme({
+    components: {
+      MuiTableCell: {
+        styleOverrides: {
+          head: {
+            color: "#535454 !important",
+            backgroundColor: "#e6edf7 !important",
+            fontWeight: "400 !important",
+            fontSize: "13px !important",
+            textAlign: "center !important",
           },
         },
-        MuiSwitch: {
-          styleOverrides: {
-            root: {
-              "&.Mui-disabled .MuiSwitch-track": {
-                backgroundColor: "#f5e1d0",
-                opacity: 1,
-              },
-              "&.Mui-disabled .MuiSwitch-thumb": {
-                color: "#eb862a",
-              },
+      },
+      MuiSwitch: {
+        styleOverrides: {
+          root: {
+            "&.Mui-disabled .MuiSwitch-track": {
+              backgroundColor: "#f5e1d0",
+              opacity: 1,
             },
-            track: {
-              backgroundColor: "#e0e0e0",
-            },
-            thumb: {
+            "&.Mui-disabled .MuiSwitch-thumb": {
               color: "#eb862a",
             },
-            switchBase: {
-              "&.Mui-checked": {
-                color: "#eb862a",
-              },
-              "&.Mui-checked + .MuiSwitch-track": {
-                backgroundColor: "#eb862a",
-              },
+          },
+          track: {
+            backgroundColor: "#e0e0e0",
+          },
+          thumb: {
+            color: "#eb862a",
+          },
+          switchBase: {
+            "&.Mui-checked": {
+              color: "#eb862a",
+            },
+            "&.Mui-checked + .MuiSwitch-track": {
+              backgroundColor: "#eb862a",
             },
           },
         },
       },
-    });
+    },
+  });
 
   return (
     <div className="container p-3">
@@ -189,7 +214,7 @@ function HomeworkAdd() {
                 </button>
               </Link>
               &nbsp;&nbsp;
-              <button type="submit" className="btn btn-button">
+              <button type="submit" className="btn btn-sm btn-button">
                 Save
               </button>
             </div>
@@ -198,7 +223,7 @@ function HomeworkAdd() {
             <div className="row py-4">
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
-                  Student List<span className="text-danger">*</span>
+                  Student<span className="text-danger">*</span>
                 </label>
                 <input
                   className={`form-control form-control-sm ${
@@ -235,6 +260,60 @@ function HomeworkAdd() {
                 {formik.touched.grade_id && formik.errors.grade_id && (
                   <div className="invalid-feedback">
                     {formik.errors.grade_id}
+                  </div>
+                )}
+              </div>
+              <div className="col-md-6 col-12 mb-4">
+                <label className="form-label">
+                  Topic<span className="text-danger">*</span>
+                </label>
+                <MultiSelect
+                  options={topicOption}
+                  value={selectedTopic}
+                  onChange={(selected) => {
+                    setSelectedTopic(selected);
+                    formik.setFieldValue(
+                      "topic_id",
+                      selected.map((option) => option.value)
+                    );
+                  }}
+                  labelledBy="Select Topic"
+                  className={`form-multi-select form-multi-select-sm ${
+                    formik.touched.topic_id && formik.errors.topic_id
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                />
+                {formik.touched.topic_id && formik.errors.topic_id && (
+                  <div className="invalid-feedback">
+                    {formik.errors.topic_id}
+                  </div>
+                )}
+              </div>
+              <div className="col-md-6 col-12 mb-4">
+                <label className="form-label">
+                  Subject<span className="text-danger">*</span>
+                </label>
+                <MultiSelect
+                  options={subjectOption}
+                  value={selectedSubject}
+                  onChange={(selected) => {
+                    setSelectedSubject(selected);
+                    formik.setFieldValue(
+                      "subject_id",
+                      selected.map((option) => option.value)
+                    );
+                  }}
+                  labelledBy="Select Service"
+                  className={`form-multi-select form-multi-select-sm ${
+                    formik.touched.subject_id && formik.errors.subject_id
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                />
+                {formik.touched.subject_id && formik.errors.subject_id && (
+                  <div className="invalid-feedback">
+                    {formik.errors.subject_id}
                   </div>
                 )}
               </div>

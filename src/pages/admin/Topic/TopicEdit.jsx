@@ -10,13 +10,24 @@ import {
 import PropTypes from "prop-types";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
+import { MultiSelect } from "react-multi-select-component";
 
 function TopicEdit({ id, onSuccess, handleMenuClose }) {
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [open, setOpen] = useState(false);
 
+  const [selectedServices, setSelectedServices] = useState([]);
+
+  const serviceOption = [
+    { value: "1", label: "SRDK" },
+    { value: "2", label: "KVM" },
+    { value: "3", label: "KCS" },
+    { value: "4", label: "PAK" },
+  ];
+
   const validationSchema = yup.object().shape({
     center_id: yup.string().required("*Selected a centre"),
+    grade: yup.string().required("*Select a grade"),
     subject_id: yup.string().required("*Selected a subject"),
     name: yup.string().required("*Name is required"),
     description: yup.string().required("*Description is required"),
@@ -25,6 +36,7 @@ function TopicEdit({ id, onSuccess, handleMenuClose }) {
   const formik = useFormik({
     initialValues: {
       center_id: "",
+      grade: "",
       subject_id: "",
       name: "",
       description: "",
@@ -110,27 +122,52 @@ function TopicEdit({ id, onSuccess, handleMenuClose }) {
           <hr className="m-0"></hr>
           <DialogContent>
             <div className="row">
-              <div className="col-md-6 col-12 mb-3">
+              <div className="col-md-6 col-12 mb-4">
                 <label className="form-label">
                   Centre<span className="text-danger">*</span>
                 </label>
-                <select
-                  className={`form-select form-select-sm ${
+                <MultiSelect
+                  options={serviceOption}
+                  value={selectedServices}
+                  onChange={(selected) => {
+                    setSelectedServices(selected);
+                    formik.setFieldValue(
+                      "center_id",
+                      selected.map((option) => option.value)
+                    );
+                  }}
+                  labelledBy="Select Service"
+                  className={`form-multi-select form-multi-select-sm ${
                     formik.touched.center_id && formik.errors.center_id
                       ? "is-invalid"
                       : ""
                   }`}
-                  {...formik.getFieldProps("center_id")}
-                >
-                  <option value=""></option>
-                  <option value="10">Centre 1</option>
-                  <option value="2">Centre 2</option>
-                  <option value="3">Centre 3</option>
-                </select>
+                />
                 {formik.touched.center_id && formik.errors.center_id && (
                   <div className="invalid-feedback">
                     {formik.errors.center_id}
                   </div>
+                )}
+              </div>
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Grade<span className="text-danger">*</span>
+                </label>
+                <select
+                  className={`form-select form-select-sm ${
+                    formik.touched.grade && formik.errors.grade
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("grade")}
+                >
+                  <option value=""></option>
+                  <option value="1"> 1</option>
+                  <option value="2"> 2</option>
+                  <option value="3"> 3</option>
+                </select>
+                {formik.touched.grade && formik.errors.grade && (
+                  <div className="invalid-feedback">{formik.errors.grade}</div>
                 )}
               </div>
               <div className="col-md-6 col-12 mb-3">

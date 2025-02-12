@@ -13,6 +13,9 @@ function WorkSheetView() {
     reward: "5",
     question: "Dummy Content",
     questionType: "Challenge",
+    topic_id:"Maths",
+    difficult_type:"Easy",
+    total_score:"75",
   };
 
   return (
@@ -60,14 +63,23 @@ function WorkSheetView() {
             >
               Activate
             </button>
+            <Link to="/doassessment">
+            <button
+              type="button"
+              className="btn btn-success btn-sm me-2"
+              style={{ fontWeight: "600px !important" }}
+            >
+              Do Assessment
+            </button>
+            </Link>
           </div>
         </div>
         <div className="container-fluid px-4">
           <div className="row pb-3">
-          <div className="col-md-6 col-12 my-2">
+            <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Centre Name</p>
+                  <p className="fw-medium text-sm">Centre</p>
                 </div>
                 <div className="col-6">
                   <p className="text-muted text-sm">: {data.centre_id}</p>
@@ -81,6 +93,16 @@ function WorkSheetView() {
                 </div>
                 <div className="col-6">
                   <p className="text-muted text-sm">: {data.grade_id}</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12 my-2">
+              <div className="row">
+                <div className="col-6">
+                  <p className="fw-medium text-sm">Topic</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">: {data.topic_id}</p>
                 </div>
               </div>
             </div>
@@ -132,6 +154,30 @@ function WorkSheetView() {
                 <div className="col-6">
                   <p className="text-muted text-sm text-break ">
                     : {data.question}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12 my-2">
+              <div className="row">
+                <div className="col-6">
+                  <p className="fw-medium text-sm">Difficult Level</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm text-break ">
+                    : {data.difficult_type}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12 my-2">
+              <div className="row">
+                <div className="col-6">
+                  <p className="fw-medium text-sm">Total Score</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm text-break ">
+                    : {data.total_score}
                   </p>
                 </div>
               </div>

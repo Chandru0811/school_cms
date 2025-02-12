@@ -2,7 +2,8 @@ import { Link } from "react-router-dom";
 
 function StudentView() {
   const data = {
-    center_name: "Washermenpet",
+    center_id: "Washermenpet",
+    role: "Admin",
     student_first_name: "Ramesh",
     student_middle_name: "Kumar",
     student_last_name: "M",
@@ -61,10 +62,20 @@ function StudentView() {
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Centre Name</p>
+                  <p className="fw-medium text-sm">Centre</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.center_name}</p>
+                  <p className="text-muted text-sm">: {data.center_id}</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12 my-2">
+              <div className="row">
+                <div className="col-6">
+                  <p className="fw-medium text-sm">Role</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">: {data.role}</p>
                 </div>
               </div>
             </div>

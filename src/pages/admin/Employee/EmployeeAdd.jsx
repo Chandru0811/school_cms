@@ -1,15 +1,33 @@
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { Link } from "react-router-dom";
+import { MultiSelect } from "react-multi-select-component";
+import { useState } from "react";
 
 function EmployeeAdd() {
+  const [selectedServices, setSelectedServices] = useState([]);
+
+  const serviceOption = [
+    { value: "1", label: "SRDK" },
+    { value: "2", label: "KVM" },
+    { value: "3", label: "KCS" },
+    { value: "4", label: "PAK" },
+  ];
+
   const validationSchema = yup.object().shape({
     center_id: yup.string().required("*Select a center name"),
     role_id: yup.string().required("*Select a role name"),
     name: yup.string().required("*Employee name is required"),
     email: yup.string().required("*Employee email is required"),
     mobile: yup.string().required("*Employee mobile is required"),
-    password: yup.string().required("*Employee password is required"),
+    password: yup
+      .string()
+      .required("*Employee password is required")
+      .min(6, "*Password must be at least 6 characters"),
+    confirm_password: yup
+      .string()
+      .oneOf([yup.ref("password"), null], "*Passwords must match")
+      .required("*Employee confirm password is required"),
   });
 
   const formik = useFormik({
@@ -20,6 +38,7 @@ function EmployeeAdd() {
       email: "",
       mobile: "",
       password: "",
+      confirm_password: "",
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -84,23 +103,27 @@ function EmployeeAdd() {
           </div>
           <div className="container-fluid px-4">
             <div className="row">
-              <div className="col-md-6 col-12 mb-3">
+              <div className="col-md-6 col-12 mb-4">
                 <label className="form-label">
-                  Center Name<span className="text-danger">*</span>
+                  Centre<span className="text-danger">*</span>
                 </label>
-                <select
-                  className={`form-select form-select-sm ${
+                <MultiSelect
+                  options={serviceOption}
+                  value={selectedServices}
+                  onChange={(selected) => {
+                    setSelectedServices(selected);
+                    formik.setFieldValue(
+                      "center_id",
+                      selected.map((option) => option.value)
+                    );
+                  }}
+                  labelledBy="Select Service"
+                  className={`form-multi-select form-multi-select-sm ${
                     formik.touched.center_id && formik.errors.center_id
                       ? "is-invalid"
                       : ""
                   }`}
-                  {...formik.getFieldProps("center_id")}
-                >
-                  <option value="">Select School</option>
-                  <option value="School A">School A</option>
-                  <option value="School B">School B</option>
-                  <option value="School C">School C</option>
-                </select>
+                />
                 {formik.touched.center_id && formik.errors.center_id && (
                   <div className="invalid-feedback">
                     {formik.errors.center_id}
@@ -109,7 +132,7 @@ function EmployeeAdd() {
               </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
-                  Role Name<span className="text-danger">*</span>
+                  Role<span className="text-danger">*</span>
                 </label>
                 <select
                   className={`form-select form-select-sm ${
@@ -168,6 +191,24 @@ function EmployeeAdd() {
               </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
+                  Employee Mobile<span className="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  onKeyDown={(e) => e.stopPropagation()}
+                  className={`form-control form-control-sm ${
+                    formik.touched.mobile && formik.errors.mobile
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("mobile")}
+                />
+                {formik.touched.mobile && formik.errors.mobile && (
+                  <div className="invalid-feedback">{formik.errors.mobile}</div>
+                )}
+              </div>
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
                   Password<span className="text-danger">*</span>
                 </label>
                 <input
@@ -188,21 +229,25 @@ function EmployeeAdd() {
               </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
-                  Employee Mobile<span className="text-danger">*</span>
+                  Confirm Password<span className="text-danger">*</span>
                 </label>
                 <input
-                  type="text"
+                  type="password"
                   onKeyDown={(e) => e.stopPropagation()}
                   className={`form-control form-control-sm ${
-                    formik.touched.mobile && formik.errors.mobile
+                    formik.touched.confirm_password &&
+                    formik.errors.confirm_password
                       ? "is-invalid"
                       : ""
                   }`}
-                  {...formik.getFieldProps("mobile")}
+                  {...formik.getFieldProps("confirm_password")}
                 />
-                {formik.touched.mobile && formik.errors.mobile && (
-                  <div className="invalid-feedback">{formik.errors.mobile}</div>
-                )}
+                {formik.touched.confirm_password &&
+                  formik.errors.confirm_password && (
+                    <div className="invalid-feedback">
+                      {formik.errors.confirm_password}
+                    </div>
+                  )}
               </div>
             </div>
           </div>

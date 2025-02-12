@@ -10,6 +10,7 @@ function WorkSheetEdit() {
   const [selectedServices, setSelectedServices] = useState([]);
   const [selectedSubject, setSelectedSubject] = useState([]);
   const [selectedQuestion, setSelectedQuestion] = useState([]);
+  const [selectedTopic, setSelectedTopic] = useState([]);
 
   const serviceOption = [
     { value: "1", label: "Multi Choice" },
@@ -31,6 +32,12 @@ function WorkSheetEdit() {
     { value: "3", label: "Multi Choice" },
     { value: "4", label: "Short Answer" },
     { value: "5", label: "Upload" },
+  ];
+
+  const topicOption = [
+    { value: "1", label: "English" },
+    { value: "2", label: "Tamil" },
+    { value: "3", label: "Maths" },
   ];
 
   const data = [
@@ -60,6 +67,11 @@ function WorkSheetEdit() {
       .required("*Select a centre name"),
     grade_id: yup.string().required("*Select a grade"),
     name: yup.string().required("*Title is required"),
+    topic_id: yup
+      .array()
+      .of(yup.string().required("*Select at least one subject"))
+      .min(1, "*Select at least one subject")
+      .required("*Select a subject name"),
     subject_id: yup
       .array()
       .of(yup.string().required("*Select at least one subject"))
@@ -71,6 +83,7 @@ function WorkSheetEdit() {
       .of(yup.string().required("*Select at least one question type"))
       .min(1, "*Select at least one question type")
       .required("*Select a question type name"),
+    difficult_level: yup.string().required("*Select a difficult level"),
     questionType: yup.string().required("*Select a question type"),
     question: yup.string().required("*Select a question"),
     target_score: yup
@@ -79,6 +92,12 @@ function WorkSheetEdit() {
       .required("*Target Score field is required")
       .positive("*Target Score must be a positive number")
       .integer("*Target Score must be an integer"),
+    total_score: yup
+      .number()
+      .typeError("*Totle Score must be a number")
+      .required("*Totle Score field is required")
+      .positive("*Totle Score must be a positive number")
+      .integer("*Totle Score must be an integer"),
     reward: yup
       .number()
       .typeError("*Reward must be a number")
@@ -91,11 +110,15 @@ function WorkSheetEdit() {
     initialValues: {
       centre_id: "",
       grade_id: "",
+      topic_id: "",
       name: "Sumaiya",
       subject_id: " Grammer",
       type: "science",
+      difficult_level: "",
       ques_type: "Closed",
       target_score: "10",
+      total_score: "",
+      difficult_type: "Easy",
       reward: "5",
       question: "",
       questionType: "Challenge",
@@ -106,80 +129,80 @@ function WorkSheetEdit() {
     },
   });
 
-    const columns = useMemo(
-      () => [
-        {
-          accessorFn: (row, index) => index + 1,
-          header: "S.NO",
-          enableSorting: true,
-          enableHiding: false,
-          size: 40,
-          cell: ({ cell }) => (
-            <span style={{ textAlign: "center" }}>{cell.getValue()}</span>
-          ),
-        },
-        { accessorKey: "question", header: "Question" },
-        {
-          accessorKey: "created_at",
-          header: "Created At",
-          Cell: ({ cell }) => cell.getValue()?.substring(0, 10),
-        },
-        {
-          accessorKey: "updated_by",
-          header: "Updated By",
-          Cell: ({ cell }) => cell.getValue() || "",
-        },
-        {
-          accessorKey: "updated_at",
-          header: "Updated At",
-          Cell: ({ cell }) => cell.getValue()?.substring(0, 10) || "",
-        },
-      ],
-      []
-    );
-  
-    const theme = createTheme({
-      components: {
-        MuiTableCell: {
-          styleOverrides: {
-            head: {
-              color: "#535454 !important",
-              backgroundColor: "#e6edf7 !important",
-              fontWeight: "400 !important",
-              fontSize: "13px !important",
-              textAlign: "center !important",
-            },
+  const columns = useMemo(
+    () => [
+      {
+        accessorFn: (row, index) => index + 1,
+        header: "S.NO",
+        enableSorting: true,
+        enableHiding: false,
+        size: 40,
+        cell: ({ cell }) => (
+          <span style={{ textAlign: "center" }}>{cell.getValue()}</span>
+        ),
+      },
+      { accessorKey: "question", header: "Question" },
+      {
+        accessorKey: "created_at",
+        header: "Created At",
+        Cell: ({ cell }) => cell.getValue()?.substring(0, 10),
+      },
+      {
+        accessorKey: "updated_by",
+        header: "Updated By",
+        Cell: ({ cell }) => cell.getValue() || "",
+      },
+      {
+        accessorKey: "updated_at",
+        header: "Updated At",
+        Cell: ({ cell }) => cell.getValue()?.substring(0, 10) || "",
+      },
+    ],
+    []
+  );
+
+  const theme = createTheme({
+    components: {
+      MuiTableCell: {
+        styleOverrides: {
+          head: {
+            color: "#535454 !important",
+            backgroundColor: "#e6edf7 !important",
+            fontWeight: "400 !important",
+            fontSize: "13px !important",
+            textAlign: "center !important",
           },
         },
-        MuiSwitch: {
-          styleOverrides: {
-            root: {
-              "&.Mui-disabled .MuiSwitch-track": {
-                backgroundColor: "#f5e1d0",
-                opacity: 1,
-              },
-              "&.Mui-disabled .MuiSwitch-thumb": {
-                color: "#eb862a",
-              },
+      },
+      MuiSwitch: {
+        styleOverrides: {
+          root: {
+            "&.Mui-disabled .MuiSwitch-track": {
+              backgroundColor: "#f5e1d0",
+              opacity: 1,
             },
-            track: {
-              backgroundColor: "#e0e0e0",
-            },
-            thumb: {
+            "&.Mui-disabled .MuiSwitch-thumb": {
               color: "#eb862a",
             },
-            switchBase: {
-              "&.Mui-checked": {
-                color: "#eb862a",
-              },
-              "&.Mui-checked + .MuiSwitch-track": {
-                backgroundColor: "#eb862a",
-              },
+          },
+          track: {
+            backgroundColor: "#e0e0e0",
+          },
+          thumb: {
+            color: "#eb862a",
+          },
+          switchBase: {
+            "&.Mui-checked": {
+              color: "#eb862a",
+            },
+            "&.Mui-checked + .MuiSwitch-track": {
+              backgroundColor: "#eb862a",
             },
           },
         },
       },
-    });
+    },
+  });
 
   return (
     <div className="container p-3">
@@ -226,8 +249,8 @@ function WorkSheetEdit() {
                 </button>
               </Link>
               &nbsp;&nbsp;
-              <button type="submit" className="btn btn-button">
-                Save
+              <button type="submit" className="btn btn-button btn-sm">
+                Update
               </button>
             </div>
           </div>
@@ -366,6 +389,58 @@ function WorkSheetEdit() {
                   <div className="invalid-feedback">{formik.errors.type}</div>
                 )}
               </div>
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Difficulty Type<span className="text-danger">*</span>
+                </label>
+                <select
+                  className={`form-select form-select-sm ${
+                    formik.touched.difficult_type &&
+                    formik.errors.difficult_type
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("difficult_type")}
+                >
+                  <option value=""></option>
+                  <option value="Easy">Easy</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Hard">Hard</option>
+                </select>
+                {formik.touched.difficult_type &&
+                  formik.errors.difficult_type && (
+                    <div className="invalid-feedback">
+                      {formik.errors.difficult_type}
+                    </div>
+                  )}
+              </div>
+              <div className="col-md-6 col-12 mb-4">
+                <label className="form-label">
+                  Topic<span className="text-danger">*</span>
+                </label>
+                <MultiSelect
+                  options={topicOption}
+                  value={selectedTopic}
+                  onChange={(selected) => {
+                    setSelectedTopic(selected);
+                    formik.setFieldValue(
+                      "topic_id",
+                      selected.map((option) => option.value)
+                    );
+                  }}
+                  labelledBy="Select Topic"
+                  className={`form-multi-select form-multi-select-sm ${
+                    formik.touched.topic_id && formik.errors.topic_id
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                />
+                {formik.touched.topic_id && formik.errors.topic_id && (
+                  <div className="invalid-feedback">
+                    {formik.errors.topic_id}
+                  </div>
+                )}
+              </div>
               <div className="col-md-6 col-12 mb-4">
                 <label className="form-label">
                   Subject<span className="text-danger">*</span>
@@ -420,39 +495,26 @@ function WorkSheetEdit() {
                   </div>
                 )}
               </div>
-              <div className="col-md-6 col-12 mb-4">
-                <label className="form-label">
-                  Service Id<span className="text-danger">*</span>
-                </label>
-                <MultiSelect
-                  options={serviceOption}
-                  value={selectedServices}
-                  onChange={(selected) => {
-                    setSelectedServices(selected);
-                    formik.setFieldValue(
-                      "service_id",
-                      selected.map((option) => option.value)
-                    );
-                  }}
-                  labelledBy="Select Service"
-                  className={`form-multi-select ${
-                    formik.touched.service_id && formik.errors.service_id
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">Total Score</label>
+                <span className="text-danger">*</span>
+                <input
+                  type="text"
+                  className={`form-control form-control-sm ${
+                    formik.touched.total_score && formik.errors.total_score
                       ? "is-invalid"
                       : ""
                   }`}
-                  style={{
-                    height: "37.6px !important",
-                    minHeight: "37.6px",
-                  }}
+                  {...formik.getFieldProps("total_score")}
                 />
-                {formik.touched.service_id && formik.errors.service_id && (
+                {formik.touched.total_score && formik.errors.total_score && (
                   <div className="invalid-feedback">
-                    {formik.errors.service_id}
+                    {formik.errors.total_score}
                   </div>
                 )}
               </div>
               <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">Traget Score</label>
+                <label className="form-label">Target Score</label>
                 <span className="text-danger">*</span>
                 <input
                   type="text"

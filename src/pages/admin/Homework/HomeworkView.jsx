@@ -10,6 +10,8 @@ function HomeworkView() {
     target_score: "80",
     question: "Grammar",
     quest_type: "English",
+    subject_id: "Tamil",
+    topic_id: "Grammer",
   };
 
   return (
@@ -50,6 +52,15 @@ function HomeworkView() {
             </Link>
             &nbsp;&nbsp;
             <HomeworkAssign />
+            <Link to="/doassessment">
+            <button
+              type="button"
+              className="btn btn-success btn-sm me-2"
+              style={{ fontWeight: "600px !important" }}
+            >
+              Do Assessment
+            </button>
+            </Link>
           </div>
         </div>
         <div className="container-fluid px-4">
@@ -57,7 +68,7 @@ function HomeworkView() {
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Student List</p>
+                  <p className="fw-medium text-sm">Student</p>
                 </div>
                 <div className="col-6">
                   <p className="text-muted text-sm">: {data.student_id}</p>
@@ -71,6 +82,26 @@ function HomeworkView() {
                 </div>
                 <div className="col-6">
                   <p className="text-muted text-sm">: {data.grade_id}</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12 my-2">
+              <div className="row">
+                <div className="col-6">
+                  <p className="fw-medium text-sm">Subject</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">: {data.subject_id}</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12 my-2">
+              <div className="row">
+                <div className="col-6">
+                  <p className="fw-medium text-sm">Topic</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">: {data.topic_id}</p>
                 </div>
               </div>
             </div>

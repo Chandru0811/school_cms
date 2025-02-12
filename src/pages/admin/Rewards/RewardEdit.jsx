@@ -141,6 +141,7 @@ function RewardEdit() {
                 <label className="form-label">
                   Reward Type<span className="text-danger">*</span>
                 </label>
+                <div className="d-flex gap-3">
                 <div className="form-check">
                   <input
                     type="checkbox"
@@ -182,6 +183,7 @@ function RewardEdit() {
                   <label className="form-check-label" htmlFor="gift">
                     Gift
                   </label>
+                </div>
                 </div>
               </div>
               <div className="col-md-6 col-12 mb-3">

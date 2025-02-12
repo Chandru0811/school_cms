@@ -7,22 +7,22 @@ import RolePermission from "./RolePermission";
 import { Link } from "react-router-dom";
 
 function Settings() {
-  const [key, setKey] = useState("school");
+  const [key, setKey] = useState("role");
 
   return (
-    <div className="container-fluid mb-4 px-0">
+    <div className="container-fluid mb-4 m-0 px-0">
       {" "}
       <ol
-        className="breadcrumb my-3"
+        className="breadcrumb my-3 text-sm d-flex align-items-center"
         style={{ listStyle: "none", padding: 0, margin: 0 }}
       >
         <li>
-          <Link to="/" className="custom-breadcrumb">
+          <Link to="/" className="custom-breadcrumb text-sm">
             Home
           </Link>
           <span className="breadcrumb-separator"> &gt; </span>
         </li>
-        <li className="breadcrumb-item active" aria-current="page">
+        <li className="breadcrumb-item active text-sm" aria-current="page">
           &nbsp;Settings
         </li>
       </ol>
@@ -32,7 +32,7 @@ function Settings() {
             <div className="d-flex">
               <div className="dot active"></div>
             </div>
-            <span className="me-2 text-muted">
+            <span className="me-2 text-muted text-sm">
               <span className="database_name">Settings</span>
             </span>
           </div>
@@ -44,9 +44,9 @@ function Settings() {
             onSelect={(k) => setKey(k)}
             className="mb-3 ms-2"
           >
-            <Tab eventKey="school" title="School">
+            {/* <Tab eventKey="school" title="School">
               <School />
-            </Tab>
+            </Tab> */}
             <Tab eventKey="role" title="Role">
               <Role />
             </Tab>

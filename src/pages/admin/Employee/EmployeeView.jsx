@@ -7,6 +7,7 @@ function EmployeeView() {
     name: "Sumaiya",
     email: "sumaiya@gmail.com",
     password: "12345678",
+    confirm_password: "12345678",
     mobile: "9043878105",
   };
 
@@ -54,7 +55,7 @@ function EmployeeView() {
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Centre Name</p>
+                  <p className="fw-medium text-sm">Centre</p>
                 </div>
                 <div className="col-6">
                   <p className="text-muted text-sm">: {data.center_id}</p>
@@ -64,7 +65,7 @@ function EmployeeView() {
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Role Name</p>
+                  <p className="fw-medium text-sm">Role</p>
                 </div>
                 <div className="col-6">
                   <p className="text-muted text-sm">: {data.role_id}</p>
@@ -109,6 +110,18 @@ function EmployeeView() {
                 <div className="col-6">
                   <p className="text-muted text-sm text-break ">
                     : {data.password}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12 my-2">
+              <div className="row">
+                <div className="col-6">
+                  <p className="fw-medium text-sm">Employee Confirm Password</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm text-break ">
+                    : {data.confirm_password}
                   </p>
                 </div>
               </div>
