@@ -20,6 +20,24 @@ function SchoolView() {
     }
   };
 
+  
+    // Function to Toggle Status
+    const handleStatusToggle = async () => {
+      try {
+        const response = await api.post(`superAdmin/school/status/${id}`);
+        if (response.status === 200) {
+          toast.success("Status updated successfully!");
+          setData((prevData) => ({
+            ...prevData,
+            active: prevData.active === 1 ? 0 : 1, 
+          }));
+        }
+      } catch (error) {
+        toast.error("Error updating status!");
+        console.error("Status Update Error:", error);
+      }
+    };
+
   useEffect(() => {
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -62,6 +80,12 @@ function SchoolView() {
               </button>
             </Link>
             &nbsp;&nbsp;
+            <button
+              className={`btn btn-sm ${data.active === 1 ? "btn-danger" : "btn-success"}`}
+              onClick={handleStatusToggle}
+            >
+              {data.active === 1 ? "Deactivate" : "Activate"}
+            </button>
           </div>
         </div>
         {loading ? (
