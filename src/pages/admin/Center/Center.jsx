@@ -139,7 +139,7 @@ function Center() {
   return (
     <div className="container-fluid mb-4 px-0">
       <ol
-        className="breadcrumb my-3 d-flex align-items-center"
+        className="breadcrumb my-2 d-flex align-items-center"
         style={{ listStyle: "none", padding: 0, margin: 0 }}
       >
         <li>
@@ -153,7 +153,7 @@ function Center() {
         </li>
       </ol>
       <div className="card">
-        <div className="d-flex justify-content-between align-items-center card_header p-2">
+        <div className="d-flex justify-content-between align-items-center card_header p-1">
           <div className="d-flex align-items-center">
             <div className="d-flex">
               <div className="dot"></div>
@@ -179,6 +179,9 @@ function Center() {
           <>
             <ThemeProvider theme={theme}>
               <MaterialReactTable
+                // muiTableContainerProps={{
+                //   sx: { minHeight: "45vh" },
+                // }}
                 columns={columns}
                 data={data}
                 enableColumnActions={false}
@@ -204,7 +207,7 @@ function Center() {
               open={Boolean(menuAnchor)}
               onClose={handleMenuClose}
             >
-             <MenuItem>
+              <MenuItem>
                 <CenterEdit
                   onSuccess={fetchData}
                   id={selectedId}

@@ -2,15 +2,15 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import helperlogo from "../../assets/images/logo.webp";
 import PropTypes from "prop-types";
-import { 
-  IoHelpCircleOutline,        
-  IoGridOutline,       
-  IoBarChart,                       
-  IoTrophyOutline ,           
-  IoGiftOutline ,             
+import {
+  IoHelpCircleOutline,
+  IoGridOutline,
+  IoBarChart,
+  IoTrophyOutline,
+  IoGiftOutline,
   IoCardOutline,
   IoLibraryOutline,
-      
+
 } from "react-icons/io5"
 import { PiStudentLight } from "react-icons/pi";
 import { FaRegFileAlt } from "react-icons/fa";
@@ -54,9 +54,8 @@ function AdminSidebar() {
           <span className="navbar-toggler-icon"></span>
         </button>
         <NavLink
-          className={`navbar-brand nav-logo logo_ats py-lg-2 px-lg-6 m-0 d-flex align-items-center justify-content-center gap-3 ${
-            leadMenuOpen || activeSubmenu ? "active" : ""
-          }`}
+          className={`navbar-brand nav-logo logo_ats py-lg-2 px-lg-6 m-0 d-flex align-items-center justify-content-center gap-3 ${leadMenuOpen || activeSubmenu ? "active" : ""
+            }`}
           to="/"
         >
           <img
@@ -77,7 +76,7 @@ function AdminSidebar() {
                 style={{ borderRadius: "5px" }}
                 to="/dashboard"
               >
-                <IoBarChart  className="sidebar_icon" />
+                <IoBarChart className="sidebar_icon" />
                 Dashboard
               </NavLink>
             </li>
@@ -87,18 +86,8 @@ function AdminSidebar() {
                 style={{ borderRadius: "5px" }}
                 to="/center"
               >
-                <IoGridOutline   className="sidebar_icon" />
+                <IoGridOutline className="sidebar_icon" />
                 Center
-              </NavLink>
-            </li>
-            <li className="nav-item px-3">
-              <NavLink
-                className="nav-link"
-                style={{ borderRadius: "5px" }}
-                to="/employee"
-              >
-                <BsPerson   className="sidebar_icon" />
-                Employee
               </NavLink>
             </li>
             <li className="nav-item px-3">
@@ -115,20 +104,30 @@ function AdminSidebar() {
               <NavLink
                 className="nav-link"
                 style={{ borderRadius: "5px" }}
-                to="/student"
+                to="/subject"
               >
-                <PiStudentLight  className="sidebar_icon" />
-                Student
+                <SlBookOpen className="sidebar_icon" />
+                Subject
               </NavLink>
             </li>
             <li className="nav-item px-3">
               <NavLink
                 className="nav-link"
                 style={{ borderRadius: "5px" }}
-                to="/subject"
+                to="/employee"
               >
-                <SlBookOpen    className="sidebar_icon" />
-                Subject
+                <BsPerson className="sidebar_icon" />
+                Employee
+              </NavLink>
+            </li>
+            <li className="nav-item px-3">
+              <NavLink
+                className="nav-link"
+                style={{ borderRadius: "5px" }}
+                to="/student"
+              >
+                <PiStudentLight className="sidebar_icon" />
+                Student
               </NavLink>
             </li>
             <li className="nav-item px-3">
@@ -137,7 +136,7 @@ function AdminSidebar() {
                 style={{ borderRadius: "5px" }}
                 to="/topic"
               >
-                <PiNotePencilDuotone  className="sidebar_icon" />
+                <PiNotePencilDuotone className="sidebar_icon" />
                 Topic
               </NavLink>
             </li>
@@ -147,7 +146,7 @@ function AdminSidebar() {
                 style={{ borderRadius: "5px" }}
                 to="/question"
               >
-                <IoHelpCircleOutline   className="sidebar_icon" />
+                <IoHelpCircleOutline className="sidebar_icon" />
                 Question & Answer
               </NavLink>
             </li>
@@ -157,7 +156,7 @@ function AdminSidebar() {
                 style={{ borderRadius: "5px" }}
                 to="/worksheet"
               >
-                <FaRegFileAlt  className="sidebar_icon" />
+                <FaRegFileAlt className="sidebar_icon" />
                 Worksheet
               </NavLink>
             </li>
@@ -167,7 +166,7 @@ function AdminSidebar() {
                 style={{ borderRadius: "5px" }}
                 to="/homework"
               >
-                <IoLibraryOutline   className="sidebar_icon" />
+                <IoLibraryOutline className="sidebar_icon" />
                 Homework
               </NavLink>
             </li>
@@ -177,7 +176,7 @@ function AdminSidebar() {
                 style={{ borderRadius: "5px" }}
                 to="/challenges"
               >
-                <IoTrophyOutline   className="sidebar_icon" />
+                <IoTrophyOutline className="sidebar_icon" />
                 Challenges
               </NavLink>
             </li>
@@ -187,7 +186,7 @@ function AdminSidebar() {
                 style={{ borderRadius: "5px" }}
                 to="/rewards"
               >
-                <IoGiftOutline   className="sidebar_icon" />
+                <IoGiftOutline className="sidebar_icon" />
                 Rewards
               </NavLink>
             </li>
@@ -197,7 +196,7 @@ function AdminSidebar() {
                 style={{ borderRadius: "5px" }}
                 to="/subscriptions"
               >
-                <IoCardOutline  className="sidebar_icon" />
+                <IoCardOutline className="sidebar_icon" />
                 subscriptions
               </NavLink>
             </li>

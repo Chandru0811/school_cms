@@ -60,6 +60,7 @@
   text-decoration: none;
   color: var(--client-teritary-color);
 }
+
 .custom-breadcrumb:hover {
   text-decoration: none;
   color: var(--client-primary-color);
@@ -120,7 +121,7 @@
   border-color: var(--client-primary-color);
 }
 
-.btn-check:focus + .btn-button,
+.btn-check:focus+.btn-button,
 .btn-button:focus {
   color: var(--client-text-color);
   background-color: var(--client-primary-color);
@@ -128,21 +129,21 @@
   box-shadow: 0 0 0 0.25rem var(--client-primary-color);
 }
 
-.btn-check:checked + .btn-button,
-.btn-check:active + .btn-button,
+.btn-check:checked+.btn-button,
+.btn-check:active+.btn-button,
 .btn-button:active,
 .btn-button.active,
-.show > .btn-button.dropdown-toggle {
+.show>.btn-button.dropdown-toggle {
   color: var(--client-text-color);
   background-color: var(--client-primary-color);
   border-color: var(--client-primary-color);
 }
 
-.btn-check:checked + .btn-button:focus,
-.btn-check:active + .btn-button:focus,
+.btn-check:checked+.btn-button:focus,
+.btn-check:active+.btn-button:focus,
 .btn-button:active:focus,
 .btn-button.active:focus,
-.show > .btn-button.dropdown-toggle:focus {
+.show>.btn-button.dropdown-toggle:focus {
   box-shadow: 0 0 0 0.25rem var(--client-button-check-color);
 }
 
@@ -153,11 +154,11 @@
   border-color: var(--client-button-disable-color);
 }
 
-.btn-button-check:checked + .btn-button,
+.btn-button-check:checked+.btn-button,
 .btn-button.active,
 .btn-button.show,
 .btn-button:first-child:active,
-:not(.btn-button-check) + .btn-button:active {
+:not(.btn-button-check)+.btn-button:active {
   background-color: var(--client-primary-color);
   border-color: var(--client-primary-color);
   color: var(--client-text-color);
@@ -179,6 +180,7 @@
   background-color: var(--client-primary-color);
   color: var(--client-text-color);
 }
+
 .find_roll:hover {
   background-color: var(--client-button-findroll-color);
   color: var(--client-text-color);
@@ -201,14 +203,15 @@
 }
 
 .custom-card {
-  box-shadow: 0px 4px 16px rgba(168, 168, 168, 0.2); /* Horizontal, Vertical, Blur, Color */
-  border-radius: 8px; 
+  box-shadow: 0px 4px 16px rgba(168, 168, 168, 0.2);
+  /* Horizontal, Vertical, Blur, Color */
+  border-radius: 8px;
   border: none;
-  padding: 20px; 
+  padding: 20px;
 }
 
 
-.btn-previous{
+.btn-previous {
   padding: 10px 20px;
   border: 1px solid var(--client-back-button-color);
   border-radius: 5px;
@@ -220,8 +223,8 @@
   border-radius: 5px;
 }
 
-.btn-next{
-  padding:10px 35px;
+.btn-next {
+  padding: 10px 35px;
   border: 1px solid var(--client-primary-color);
   border-radius: 5px;
 }
@@ -230,4 +233,8 @@
   color: var(--client-text-color);
   background-color: var(--client-primary-color);
   border-color: var(--client-primary-color);
+}
+
+.css-thn3im-MuiTable-root {
+  min-height: 45vh !important;
 }
