@@ -158,13 +158,13 @@ function RoleEdit({ show, setShow }) {
                   <input
                     type="radio"
                     name="access"
-                    value="medium_access"
+                    value="minimal_access"
                     className="form-check-input"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    checked={formik.values.access === "medium_access"}
+                    checked={formik.values.access === "minimal_access"}
                   />
-                  <label className="form-check-label">Medium Access</label>
+                  <label className="form-check-label">Minimal Access</label>
                 </div>
 
                 <div className="form-check">

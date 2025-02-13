@@ -20,9 +20,18 @@ function SchoolEdit() {
     //   .min(8, "Mobile number must be minimum 8")
     //   .max(10, "Mobile number must be maximun 10")
     //   .required("Mobile number is required!"),
-    // "users[0].email": Yup.string()
-    //   .email("Invalid email address")
-    //   .required("Admin Email is required"),
+    users: Yup.array().of(
+      Yup.object({
+        email: Yup.string()
+          .email("Invalid email address")
+          .required("Admin Email is required"),
+        name: Yup.string().required("*Admin Name is required"),
+        mobile: Yup.string()
+          .min(8, "Mobile number must be minimum 8")
+          .max(10, "Mobile number must be maximun 10")
+          .required("Mobile number is required!"),
+      })
+    ),
   });
 
   const formik = useFormik({
