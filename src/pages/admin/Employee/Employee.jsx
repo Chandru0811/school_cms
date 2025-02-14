@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MaterialReactTable } from "material-react-table";
 import {
@@ -11,35 +11,14 @@ import {
 import Delete from "../../../components/common/Delete";
 import PropTypes from "prop-types";
 import { MoreVert as MoreVertIcon } from "@mui/icons-material";
+import toast from "react-hot-toast";
+import api from "../../../config/URL";
 
 function Employee() {
   const [menuAnchor, setMenuAnchor] = useState(null);
+  const [selectedId, setSelectedId] = useState(null);
+  const[data,setData] = useState([]);
   const navigate = useNavigate();
-
-  const data = [
-    {
-      id: 1,
-      center_id: "SUB001",
-      role_id: "SUB001",
-      name: "Sumaiya",
-      email: "mailto:sumaiya@gmail.com",
-      createdBy: "Admin",
-      createdAt: "2024-01-01",
-      updatedAt: "2024-02-01",
-      updatedBy: "Moderator",
-    },
-    {
-      id: 2,
-      center_id: "SUB001",
-      role_id: "SUB001",
-      name: "Sumaiya",
-      email: "mailto:sumaiya@gmail.com",
-      createdBy: "Admin",
-      createdAt: "2024-01-01",
-      updatedAt: "2024-02-01",
-      updatedBy: "Moderator",
-    },
-  ];
 
   const columns = useMemo(
     () => [
@@ -59,11 +38,14 @@ function Employee() {
         enableHiding: false,
         enableSorting: false,
         size: 20,
-        Cell: () => (
+        Cell: ({cell}) => (
           <IconButton
             onClick={(e) => {
               e.stopPropagation();
               setMenuAnchor(e.currentTarget);
+              setSelectedId(cell.getValue()); 
+              alert(selectedId)
+
             }}
           >
             <MoreVertIcon />
@@ -151,6 +133,19 @@ function Employee() {
 
   const handleMenuClose = () => setMenuAnchor(null);
 
+  const getData = async () => {
+    try {
+      const response = await api.get("admin/employees");
+      setData(response.data.data);
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
   return (
     <div className="container-fluid mb-4 px-0">
       <ol
@@ -178,7 +173,7 @@ function Employee() {
               <span className="database_name">Employee</span>
             </span>
           </div>
-          <Link to="/employee/Add">
+          <Link to="/employee/add">
             <button
               type="button"
               className="btn btn-button btn-sm me-2"
@@ -208,8 +203,8 @@ function Employee() {
                   updated_at: false,
                 },
               }}
-              muiTableBodyRowProps={() => ({
-                onClick: () => navigate(`/employee/View`),
+              muiTableBodyRowProps={({row}) => ({
+                onClick: () => navigate(`/employee/view/${row.original.id}`),
                 style: { cursor: "pointer" },
               })}
             />
@@ -220,9 +215,9 @@ function Employee() {
             open={Boolean(menuAnchor)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={() => navigate(`/employee/Edit`)}>Edit</MenuItem>
+            <MenuItem onClick={() => navigate(`/employee/edit`)}>Edit</MenuItem>
             <MenuItem>
-              <Delete path={`admin/company/delete`} onOpen={handleMenuClose} />
+              <Delete path={`admin/employee/delete/${selectedId}`} onOpen={handleMenuClose} onDeleteSuccess={getData}/>
             </MenuItem>
           </Menu>
         </>

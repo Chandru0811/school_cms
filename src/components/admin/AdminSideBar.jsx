@@ -94,6 +94,16 @@ function AdminSidebar() {
               <NavLink
                 className="nav-link"
                 style={{ borderRadius: "5px" }}
+                to="/employee"
+              >
+                <BsPerson className="sidebar_icon" />
+                Employee
+              </NavLink>
+            </li>
+            <li className="nav-item px-3">
+              <NavLink
+                className="nav-link"
+                style={{ borderRadius: "5px" }}
                 to="/grade"
               >
                 <LiaAwardSolid className="sidebar_icon" />
@@ -114,10 +124,10 @@ function AdminSidebar() {
               <NavLink
                 className="nav-link"
                 style={{ borderRadius: "5px" }}
-                to="/employee"
+                to="/topic"
               >
-                <BsPerson className="sidebar_icon" />
-                Employee
+                <PiNotePencilDuotone className="sidebar_icon" />
+                Topic
               </NavLink>
             </li>
             <li className="nav-item px-3">
@@ -134,20 +144,20 @@ function AdminSidebar() {
               <NavLink
                 className="nav-link"
                 style={{ borderRadius: "5px" }}
-                to="/topic"
+                to="/question"
               >
-                <PiNotePencilDuotone className="sidebar_icon" />
-                Topic
+                <IoHelpCircleOutline className="sidebar_icon" />
+                Question & Answer
               </NavLink>
             </li>
             <li className="nav-item px-3">
               <NavLink
                 className="nav-link"
                 style={{ borderRadius: "5px" }}
-                to="/question"
+                to="/challenges"
               >
-                <IoHelpCircleOutline className="sidebar_icon" />
-                Question & Answer
+                <IoTrophyOutline className="sidebar_icon" />
+                Challenges
               </NavLink>
             </li>
             <li className="nav-item px-3">
@@ -169,17 +179,7 @@ function AdminSidebar() {
                 <IoLibraryOutline className="sidebar_icon" />
                 Homework
               </NavLink>
-            </li>
-            <li className="nav-item px-3">
-              <NavLink
-                className="nav-link"
-                style={{ borderRadius: "5px" }}
-                to="/challenges"
-              >
-                <IoTrophyOutline className="sidebar_icon" />
-                Challenges
-              </NavLink>
-            </li>
+            </li>      
             <li className="nav-item px-3">
               <NavLink
                 className="nav-link"
@@ -197,7 +197,7 @@ function AdminSidebar() {
                 to="/subscriptions"
               >
                 <IoCardOutline className="sidebar_icon" />
-                subscriptions
+                Subscriptions
               </NavLink>
             </li>
             {/* <li className="nav-item px-3">

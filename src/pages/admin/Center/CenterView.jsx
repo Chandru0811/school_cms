@@ -16,7 +16,7 @@ function CenterView({ id, handleMenuClose }) {
 
   const getData = async () => {
     try {
-      const response = await api.get(`admin/center/${id}`);
+      const response = await api.get(`center/${id}`);
       setData(response.data.data);
     } catch (error) {
       toast.error("Error Fetching Data");

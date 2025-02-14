@@ -78,7 +78,7 @@ function Center() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const response = await api.get(`admin/centers/6`);
+      const response = await api.get(`centers`);
       setData(response.data.data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -87,6 +87,7 @@ function Center() {
     }
   };
 
+  
   useEffect(() => {
     fetchData();
   }, []);
@@ -179,9 +180,6 @@ function Center() {
           <>
             <ThemeProvider theme={theme}>
               <MaterialReactTable
-                // muiTableContainerProps={{
-                //   sx: { minHeight: "45vh" },
-                // }}
                 columns={columns}
                 data={data}
                 enableColumnActions={false}
@@ -222,7 +220,7 @@ function Center() {
               </MenuItem>
               <MenuItem>
                 <Delete
-                  path={`/admin/center/delete/${selectedId}`}
+                  path={`/center/delete/${selectedId}`}
                   onDeleteSuccess={fetchData}
                   onOpen={handleMenuClose}
                 />

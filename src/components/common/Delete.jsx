@@ -106,8 +106,7 @@ function Delete({ path, onDeleteSuccess, onOpen }) {
 }
 
 Delete.propTypes = {
-  path: PropTypes.func.isRequired,
-  onSuccess: PropTypes.func.isRequired,
+  path: PropTypes.string.isRequired,
   onOpen: PropTypes.func.isRequired,
   onDeleteSuccess: PropTypes.func.isRequired,
 };

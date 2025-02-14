@@ -4,17 +4,31 @@ import {
   DialogTitle,
   DialogContent,
 } from "@mui/material";
-function RoleView({ show, setShow }) {
+import PropTypes from "prop-types";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import api from "../../../config/URL";
+
+function RoleView({ show, setShow, id }) {
+  const [data, setData] = useState({});
+  // console.log(data)
   const handleClose = () => {
     setShow(false);
   };
-
-  const data = {
-    centre_id: "SRDK",
-    name: "Abi",
-    description: "Maths",
-    access: "Limited",
+  const getRoleData = async () => {
+    try {
+      const response = await api.get(`admin/role/${id}`);
+      setData(response.data.data);
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
   };
+
+  useEffect(() => {
+    if (show) {
+      getRoleData();
+    }
+  }, [id, show]);
 
   return (
     <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
@@ -28,7 +42,7 @@ function RoleView({ show, setShow }) {
                 <p className="fw-medium text-sm">Centre</p>
               </div>
               <div className="col-6">
-                <p className="text-muted text-sm">: {data.centre_id}</p>
+                <p className="text-muted text-sm">: {data.center_names}</p>
               </div>
             </div>
           </div>
@@ -73,5 +87,11 @@ function RoleView({ show, setShow }) {
     </Dialog>
   );
 }
+
+RoleView.propTypes = {
+  show: PropTypes.bool.isRequired,
+  setShow: PropTypes.bool.isRequired,
+  id: PropTypes.number.isRequired,
+};
 
 export default RoleView;

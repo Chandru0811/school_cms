@@ -31,7 +31,7 @@ function CenterEdit({ id, onSuccess, handleMenuClose }) {
     onSubmit: async (values) => {
       setLoadIndicator(true);
       try {
-        const response = await api.put(`admin/center/update/${id}`, values, {
+        const response = await api.put(`center/update/${id}`, values, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -61,7 +61,7 @@ function CenterEdit({ id, onSuccess, handleMenuClose }) {
   // Fetch existing data
   const getData = async () => {
     try {
-      const response = await api.get(`/admin/center/${id}`);
+      const response = await api.get(`center/${id}`);
       if (response?.data?.data) {
         formik.setValues(response.data.data);
       }

@@ -35,7 +35,7 @@ function CenterAdd({ onSuccess }) {
     onSubmit: async (values) => {
       setLoadIndicator(true);
       try {
-        const response = await api.post("admin/center", values);
+        const response = await api.post("center", values);
         if (response.status === 200) {
           toast.success(response.data.message);
           onSuccess(); 

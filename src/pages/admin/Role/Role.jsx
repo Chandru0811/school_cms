@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { MaterialReactTable } from "material-react-table";
 import {
   ThemeProvider,
@@ -13,20 +13,15 @@ import { MoreVert as MoreVertIcon } from "@mui/icons-material";
 import RoleAdd from "./RoleAdd";
 import RoleEdit from "./RoleEdit";
 import RoleView from "./RoleView";
+import api from "../../../config/URL";
+import toast from "react-hot-toast";
 
 function Role() {
   const [menuAnchor, setMenuAnchor] = useState(null);
-  // const navigate = useNavigate();
   const [showEdit, setShowEdit] = useState(false);
   const [showView, setShowView] = useState(false);
-  const [selectedData, setSelectedData] = useState(null); // Store selected row data
-
-  const data = [
-    { id: 1,center_id: "1", name: "GMTTV Hrs Sec School", description: "English",access:"Full Access" },
-    { id: 2,center_id: "2", name: "ST. Thomas Girls Hrs School", description: "Tamil",access:"Limiited Access" },
-    { id: 3,center_id: "3", name: "Govt Boys Hrs School", description: "Maths",access:"Full Access" },
-    { id: 4,center_id: "4", name: "New School", description: "Science",access:"Medium Access" },
-  ];
+  const [selectedId, setSelectedId] = useState(null);
+  const [data, setData] = useState([]);
 
   const columns = useMemo(
     () => [
@@ -46,11 +41,12 @@ function Role() {
         enableHiding: false,
         enableSorting: false,
         size: 20,
-        Cell: () => (
+        Cell: ({ cell }) => (
           <IconButton
             onClick={(e) => {
               e.stopPropagation();
               setMenuAnchor(e.currentTarget);
+              setSelectedId(cell.getValue()); setSelectedId(cell.getValue());
             }}
           >
             <MoreVertIcon />
@@ -126,36 +122,24 @@ function Role() {
 
   const handleMenuClose = () => setMenuAnchor(null);
 
+  const getData = async () => {
+    try {
+      const response = await api.get("admin/roles");
+      setData(response.data.data);
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
   return (
     <div className="container-fluid mb-4 px-0">
-      {/* <ol
-        className="breadcrumb my-3"
-        style={{ listStyle: "none", padding: 0, margin: 0 }}
-      >
-        <li>
-          <Link to="/" className="custom-breadcrumb">
-            Home
-          </Link>
-          <span className="breadcrumb-separator"> &gt; </span>
-        </li>
-        <li className="breadcrumb-item active" aria-current="page">
-          &nbsp;Role
-        </li>
-      </ol> */}
       <div className="">
-        {/* <div className="d-flex justify-content-between align-items-center card_header mb-3 p-1">
-          <div className="d-flex align-items-center">
-            <div className="d-flex">
-              <div className="dot active"></div>
-            </div>
-            <span className="me-2 text-muted">
-              This database shows the list of&nbsp;
-              <span className="database_name">Role</span>
-            </span>
-          </div>
-        </div> */}
         <div className=" d-flex justify-content-end">
-          <RoleAdd />
+          <RoleAdd onSuccess={getData} />
         </div>
         <>
           <ThemeProvider theme={theme}>
@@ -177,10 +161,10 @@ function Role() {
                   updated_at: false,
                 },
               }}
-              muiTableBodyRowProps={({ row }) => ({
+              muiTableBodyRowProps={() => ({
                 style: { cursor: "pointer" },
                 onClick: () => {
-                  setSelectedData(row.original);
+                  // setSelectedData(row.original);
                   setShowView(true);
                 },
               })}
@@ -201,11 +185,11 @@ function Role() {
               Edit
             </MenuItem>
             <MenuItem>
-              <Delete path={`admin/company/delete`} onOpen={handleMenuClose} />
+              <Delete path={`admin/role/delete/${selectedId}`}  onOpen={handleMenuClose} onDeleteSuccess={getData} />
             </MenuItem>
           </Menu>
-          <RoleEdit show={showEdit} setShow={setShowEdit} />
-          <RoleView show={showView} setShow={setShowView} data={selectedData} />
+          <RoleEdit show={showEdit} setShow={setShowEdit}  id={selectedId}  onSuccess={getData}/>
+          <RoleView show={showView} setShow={setShowView} id={selectedId} />
         </>
       </div>
     </div>

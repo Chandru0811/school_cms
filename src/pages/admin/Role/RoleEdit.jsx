@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
+import PropTypes from "prop-types";
 import {
   Dialog,
   DialogActions,
@@ -8,35 +9,25 @@ import {
   DialogContent,
 } from "@mui/material";
 import { MultiSelect } from "react-multi-select-component";
+import api from "../../../config/URL";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
-function RoleEdit({ show, setShow }) {
+function RoleEdit({ show, setShow, id, onSuccess }) {
   const [loadIndicator, setLoadIndicator] = useState(false);
-  const [selectedServices, setSelectedServices] = useState([]);
-
-  //   const [selectedSchool, setSelectedSchool] = useState(null);
-
-  // Find the selected school data when modal opens
-  //   useEffect(() => {
-  //     if (selectedId) {
-  //       const school = data.find((item) => item.id === selectedId);
-  //       setSelectedSchool(school || {});
-  //     }
-  //   }, [selectedId, data]);
-
-  const serviceOption = [
-    { value: "1", label: "SRDK" },
-    { value: "2", label: "KVM" },
-    { value: "3", label: "KCS" },
-    { value: "4", label: "PAK" },
-  ];
-
+  const [selectedCenter, setSelectedCenter] = useState([]);
+  const [centerList, setCenterList] = useState([]);
+  const navigate = useNavigate();
   const handleClose = () => {
     setShow(false);
     formik.resetForm();
   };
 
   const validationSchema = yup.object().shape({
-    center_id: yup.string().required("*Selected a center id"),
+    center_id: yup
+      .array()
+      .min(1, "*Select at least one center")
+      .required("*Select a center id"),
     name: yup.string().required("*Name is required"),
     description: yup.string().required("*Description is required"),
     access: yup.string().required("*Select a access"),
@@ -44,22 +35,77 @@ function RoleEdit({ show, setShow }) {
 
   const formik = useFormik({
     initialValues: {
-      center_id: "Center A",
-      name: "DEMO Roll",
-      description: "MINT",
+      center_id: "",
+      name: "",
+      description: "",
       access: "",
     },
     enableReinitialize: true,
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       setLoadIndicator(true);
-      console.log("Form values:", values);
-      setTimeout(() => {
+      try {
+        const response = await api.put(`admin/role/update/${id}`, values);
+
+        if (response.status === 200) {
+          toast.success(response.data.message);
+          onSuccess();
+          handleClose();
+          formik.resetForm();
+          navigate("/settings");
+        }
+      } catch (e) {
+        toast.error("Error Fetching Data ", e?.response?.data?.error);
+      } finally {
         setLoadIndicator(false);
-        setShow(false);
-      }, 1000);
+      }
     },
   });
+
+  const getRoleData = async () => {
+    try {
+      const response = await api.get(`admin/role/${id}`);
+      const { data } = response.data;
+
+      const parsedCenterIds = JSON.parse(data.center_id);
+      const parsedCenterNames = JSON.parse(data.center_names);
+
+      const selectedCenters = parsedCenterIds.map((id, index) => ({
+        value: id,
+        label: parsedCenterNames[index] || "",
+      }));
+
+      setSelectedCenter(selectedCenters);
+
+      formik.setValues({
+        ...data,
+        center_id: selectedCenters.map((center) => center.value),
+      });
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
+  };
+
+  const getCenterList = async () => {
+    try {
+      const response = await api.get("centers/list");
+      const formattedCenters = response.data.data.map((center) => ({
+        value: center.id,
+        label: center.name,
+      }));
+
+      setCenterList(formattedCenters);
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
+  };
+
+  useEffect(() => {
+    if (show) {
+      getRoleData();
+      getCenterList();
+    }
+  }, [id, show]);
 
   return (
     <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
@@ -80,25 +126,25 @@ function RoleEdit({ show, setShow }) {
                 Centre Name<span className="text-danger">*</span>
               </label>
               <MultiSelect
-                options={serviceOption}
-                value={selectedServices}
+                options={centerList}
+                value={selectedCenter}
                 onChange={(selected) => {
-                  setSelectedServices(selected);
+                  setSelectedCenter(selected);
                   formik.setFieldValue(
-                    "centre_id",
+                    "center_id",
                     selected.map((option) => option.value)
                   );
                 }}
                 labelledBy="Select Service"
                 className={`form-multi-select form-multi-select-sm ${
-                  formik.touched.centre_id && formik.errors.centre_id
+                  formik.touched.center_id && formik.errors.center_id
                     ? "is-invalid"
                     : ""
                 }`}
               />
-              {formik.touched.centre_id && formik.errors.centre_id && (
+              {formik.touched.center_id && formik.errors.center_id && (
                 <div className="invalid-feedback">
-                  {formik.errors.centre_id}
+                  {formik.errors.center_id}
                 </div>
               )}
             </div>
@@ -145,24 +191,24 @@ function RoleEdit({ show, setShow }) {
                   <input
                     type="radio"
                     name="access"
-                    value="full_accesss"
+                    value="Full Access"
                     className="form-check-input"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    checked={formik.values.access === "full_accesss"}
+                    checked={formik.values.access === "Full Access"}
                   />
-                  <label className="form-check-label">Full Accesss</label>
+                  <label className="form-check-label">Full Access</label>
                 </div>
 
                 <div className="form-check">
                   <input
                     type="radio"
                     name="access"
-                    value="minimal_access"
+                    value="Minimal Access"
                     className="form-check-input"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    checked={formik.values.access === "minimal_access"}
+                    checked={formik.values.access === "Minimal Access"}
                   />
                   <label className="form-check-label">Minimal Access</label>
                 </div>
@@ -171,11 +217,11 @@ function RoleEdit({ show, setShow }) {
                   <input
                     type="radio"
                     name="access"
-                    value="limited_access"
+                    value="Limited Access"
                     className="form-check-input"
                     onChange={formik.handleChange}
                     onBlur={formik.handleBlur}
-                    checked={formik.values.access === "limited_access"}
+                    checked={formik.values.access === "Limited Access"}
                   />
                   <label className="form-check-label">Limited Access</label>
                 </div>
@@ -199,18 +245,25 @@ function RoleEdit({ show, setShow }) {
             className="btn btn-button btn-sm"
             disabled={loadIndicator}
           >
-            {loadIndicator && (
-              <span
-                className="spinner-border spinner-border-sm me-2"
-                aria-hidden="true"
-              ></span>
-            )}
-            Submit
+           {loadIndicator && (
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  aria-hidden="true"
+                ></span>
+              )}
+            Update
           </button>
         </DialogActions>
       </form>
     </Dialog>
   );
 }
+
+RoleEdit.propTypes = {
+  show: PropTypes.bool.isRequired,
+  setShow: PropTypes.bool.isRequired,
+  id: PropTypes.number.isRequired,
+  onSuccess: PropTypes.func.isRequired,
+};
 
 export default RoleEdit;

@@ -1,15 +1,27 @@
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useParams} from "react-router-dom";
+import api from "../../../config/URL";
+import toast from "react-hot-toast";
+import PropTypes from "prop-types";
 
 function EmployeeView() {
-  const data = {
-    center_id: "School A",
-    role_id: "Junior Developer",
-    name: "Sumaiya",
-    email: "sumaiya@gmail.com",
-    password: "12345678",
-    confirm_password: "12345678",
-    mobile: "9043878105",
-  };
+const [data,setData] = useState({});
+const { id } = useParams();
+
+const getEmployeeData = async () => {
+  try {
+    const response = await api.get(`admin/employee/${id}`);
+    setData(response.data.data);
+  } catch (e) {
+    const errorMessage = e?.response?.data?.error || "Error Fetching Data. Please try again.";
+    toast.error(errorMessage);
+  }
+};
+
+
+useEffect(() => {
+  getEmployeeData();
+}, [id]);
 
   return (
     <div className="container-fluid px-0">
@@ -102,35 +114,15 @@ function EmployeeView() {
                 </div>
               </div>
             </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Employee Password</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm text-break ">
-                    : {data.password}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Employee Confirm Password</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm text-break ">
-                    : {data.confirm_password}
-                  </p>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
     </div>
   );
 }
+
+EmployeeView.propTypes = {
+  id: PropTypes.number.isRequired,
+};
 
 export default EmployeeView;
