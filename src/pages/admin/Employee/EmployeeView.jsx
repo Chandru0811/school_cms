@@ -10,7 +10,7 @@ const { id } = useParams();
 
 const getEmployeeData = async () => {
   try {
-    const response = await api.get(`admin/employee/${id}`);
+    const response = await api.get(`employee/${id}`);
     setData(response.data.data);
   } catch (e) {
     const errorMessage = e?.response?.data?.error || "Error Fetching Data. Please try again.";

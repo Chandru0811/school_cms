@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import {
@@ -9,12 +9,17 @@ import {
 } from "@mui/material";
 import PropTypes from "prop-types";
 import { MultiSelect } from "react-multi-select-component";
+import toast from "react-hot-toast";
+import api from "../../../config/URL";
+import { useNavigate } from "react-router-dom";
+
 
 function SubjectEdit({ show, setShow,id,onSuccess }) {
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [selectedCenter, setSelectedCenter] = useState([]);
   const [centerList, setCenterList] = useState([]);
-
+  const navigate = useNavigate();
+  const [grades, setGrades] = useState([]);
 
   const handleClose = () => {
     setShow(false);
@@ -42,7 +47,7 @@ function SubjectEdit({ show, setShow,id,onSuccess }) {
     onSubmit: async (values) => {
       setLoadIndicator(true);
       try {
-        const response = await api.put(`admin/subject/update/${id}`, values);
+        const response = await api.put(`subject/update/${id}`, values);
 
         if (response.status === 200) {
           toast.success(response.data.message);
@@ -61,7 +66,7 @@ function SubjectEdit({ show, setShow,id,onSuccess }) {
 
   const getSubjectData = async () => {
     try {
-      const response = await api.get(`admin/subject/${id}`);
+      const response = await api.get(`subject/${id}`);
       const { data } = response.data;
 
       const parsedCenterIds = JSON.parse(data.center_id);
@@ -105,7 +110,7 @@ function SubjectEdit({ show, setShow,id,onSuccess }) {
         label: grade.name,
       }));
 
-      getGradeList(formattedGrades);
+      setGrades(formattedGrades);
     } catch (e) {
       toast.error("Error Fetching Data ", e?.response?.data?.error);
     }
@@ -176,7 +181,7 @@ function SubjectEdit({ show, setShow,id,onSuccess }) {
                   }
                 >
                   <option value="">Select Grade</option>
-                  {roles.map((grade) => (
+                  {grades.map((grade) => (
                     <option key={grade.value} value={grade.value}>
                       {grade.label}
                     </option>

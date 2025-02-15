@@ -17,7 +17,7 @@ import api from "../../../config/URL";
 function Employee() {
   const [menuAnchor, setMenuAnchor] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
-  const[data,setData] = useState([]);
+  const [data, setData] = useState([]);
   const navigate = useNavigate();
 
   const columns = useMemo(
@@ -38,14 +38,12 @@ function Employee() {
         enableHiding: false,
         enableSorting: false,
         size: 20,
-        Cell: ({cell}) => (
+        Cell: ({ cell }) => (
           <IconButton
             onClick={(e) => {
               e.stopPropagation();
               setMenuAnchor(e.currentTarget);
-              setSelectedId(cell.getValue()); 
-              alert(selectedId)
-
+              setSelectedId(cell.getValue());
             }}
           >
             <MoreVertIcon />
@@ -135,7 +133,7 @@ function Employee() {
 
   const getData = async () => {
     try {
-      const response = await api.get("admin/employees");
+      const response = await api.get("employees");
       setData(response.data.data);
     } catch (e) {
       toast.error("Error Fetching Data ", e?.response?.data?.error);
@@ -203,7 +201,7 @@ function Employee() {
                   updated_at: false,
                 },
               }}
-              muiTableBodyRowProps={({row}) => ({
+              muiTableBodyRowProps={({ row }) => ({
                 onClick: () => navigate(`/employee/view/${row.original.id}`),
                 style: { cursor: "pointer" },
               })}
@@ -215,9 +213,19 @@ function Employee() {
             open={Boolean(menuAnchor)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={({row}) => navigate(`/employee/edit/${row.original.id}`)}>Edit</MenuItem>
+            <MenuItem
+              onClick={({ row }) =>
+                navigate(`/employee/edit/${row.original.id}`)
+              }
+            >
+              Edit
+            </MenuItem>
             <MenuItem>
-              <Delete path={`admin/employee/delete/${selectedId}`} onOpen={handleMenuClose} onDeleteSuccess={getData}/>
+              <Delete
+                path={`admin/employee/delete/${selectedId}`}
+                onOpen={handleMenuClose}
+                onDeleteSuccess={getData}
+              />
             </MenuItem>
           </Menu>
         </>

@@ -1,3 +1,4 @@
+// Updated code for Topic Management
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { MaterialReactTable } from "material-react-table";
@@ -22,15 +23,13 @@ function Topic() {
   const [showEdit, setShowEdit] = useState(false);
   const [showView, setShowView] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
-  const [data, setData] = useState([]); 
+  const [data, setData] = useState([]);
 
   const columns = useMemo(
     () => [
       {
         accessorFn: (row, index) => index + 1,
         header: "S.NO",
-        enableSorting: true,
-        enableHiding: false,
         size: 40,
         cell: ({ cell }) => (
           <span style={{ textAlign: "center" }}>{cell.getValue()}</span>
@@ -39,30 +38,21 @@ function Topic() {
       {
         accessorKey: "id",
         header: "",
-        enableHiding: false,
-        enableSorting: false,
         size: 20,
-        Cell: ({ cell }) => (
+        Cell: ({ row }) => (
           <IconButton
             onClick={(e) => {
               e.stopPropagation();
               setMenuAnchor(e.currentTarget);
-              setSelectedId(cell.getValue());
+              setSelectedId(row.original.id);
             }}
           >
             <MoreVertIcon />
           </IconButton>
         ),
       },
-      {
-        accessorKey: "name",
-        header: "Name",
-      },
-      {
-        accessorKey: "description",
-        header: "Description",
-      },
-      { accessorKey: "created_by", header: "Created By" },
+      { accessorKey: "name", header: "Name" },
+      { accessorKey: "description", header: "Description" },
       {
         accessorKey: "created_at",
         header: "Created At",
@@ -81,19 +71,6 @@ function Topic() {
     ],
     []
   );
-
-  const getData = async () => {
-    try {
-      const response = await api.get("admin/topic");
-      setData(response.data.data);
-    } catch (e) {
-      toast.error("Error Fetching Data ", e?.response?.data?.error);
-    }
-  };
-
-  useEffect(() => {
-    getData();
-  }, []);
 
   const theme = createTheme({
     components: {
@@ -119,19 +96,11 @@ function Topic() {
               color: "#eb862a",
             },
           },
-          track: {
-            backgroundColor: "#e0e0e0",
-          },
-          thumb: {
-            color: "#eb862a",
-          },
+          track: { backgroundColor: "#e0e0e0" },
+          thumb: { color: "#eb862a" },
           switchBase: {
-            "&.Mui-checked": {
-              color: "#eb862a",
-            },
-            "&.Mui-checked + .MuiSwitch-track": {
-              backgroundColor: "#eb862a",
-            },
+            "&.Mui-checked": { color: "#eb862a" },
+            "&.Mui-checked + .MuiSwitch-track": { backgroundColor: "#eb862a" },
           },
         },
       },
@@ -140,16 +109,24 @@ function Topic() {
 
   const handleMenuClose = () => setMenuAnchor(null);
 
+  const getData = async () => {
+    try {
+      const response = await api.get("topics");
+      setData(response.data.data);
+    } catch (e) {
+      toast.error("Error Fetching Data", e?.response?.data?.error);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
   return (
     <div className="container-fluid mb-4 px-0">
-      <ol
-        className="breadcrumb my-3 d-flex align-items-center"
-        style={{ listStyle: "none", padding: 0, margin: 0 }}
-      >
+      <ol className="breadcrumb my-3 d-flex align-items-center" style={{ listStyle: "none", padding: 0, margin: 0 }}>
         <li>
-          <Link to="/" className="custom-breadcrumb text-sm">
-            Home
-          </Link>
+          <Link to="/" className="custom-breadcrumb text-sm">Home</Link>
           <span className="breadcrumb-separator"> &gt; </span>
         </li>
         <li className="breadcrumb-item active text-sm" aria-current="page">
@@ -167,65 +144,63 @@ function Topic() {
               <span className="database_name">Topic</span>
             </span>
           </div>
-          <TopicAdd  onSuccess={getData}/>
+          <TopicAdd onSuccess={getData} />
         </div>
-        {loading ? (
-          <div className="loader-container">
-            <div className="loader">
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
-          </div>
-        ) : (
-          <>
-            <ThemeProvider theme={theme}>
-              <MaterialReactTable
-                columns={columns}
-                data={data}
-                enableColumnActions={false}
-                enableColumnFilters={false}
-                enableDensityToggle={false}
-                enableFullScreenToggle={false}
-                initialState={{
-                  columnVisibility: {
-                    working_hrs: false,
-                    citizenship: false,
-                    nationality: false,
-                    created_by: false,
-                    created_at: false,
-                    updated_by: false,
-                    updated_at: false,
-                  },
-                }}
-              />
-            </ThemeProvider>
-            <Menu
-              id="action-menu"
-              anchorEl={menuAnchor}
-              open={Boolean(menuAnchor)}
-              onClose={handleMenuClose}
-            >
-              <MenuItem>
-                <TopicEdit
-                  show={showEdit} setShow={setShowEdit}  id={selectedId}  onSuccess={getData}
-                />
-              </MenuItem>
-              <MenuItem>
-                <TopicView show={showView} setShow={setShowView} id={selectedId} />
-              </MenuItem>
-              <MenuItem>
-                <Delete
-                  path={`topic/delete/${selectedId}`}
-                  onDeleteSuccess={fetchData}
-                  onOpen={handleMenuClose}
-                />
-              </MenuItem>
-            </Menu>
-          </>
-        )}
+
+        <ThemeProvider theme={theme}>
+          <MaterialReactTable
+            columns={columns}
+            data={data}
+            enableColumnActions={false}
+            enableColumnFilters={false}
+            enableDensityToggle={false}
+            enableFullScreenToggle={false}
+            initialState={{
+              columnVisibility: {
+                working_hrs: false,
+                citizenship: false,
+                nationality: false,
+                created_by: false,
+                created_at: false,
+                updated_by: false,
+                updated_at: false,
+              },
+            }}
+            muiTableBodyRowProps={({ row }) => ({
+              style: { cursor: "pointer" },
+              onClick: () => {
+                setSelectedId(row.original.id);
+                setShowView(true);
+              },
+            })}
+          />
+        </ThemeProvider>
+
+        <Menu
+          id="action-menu"
+          anchorEl={menuAnchor}
+          open={Boolean(menuAnchor)}
+          onClose={handleMenuClose}
+        >
+          <MenuItem
+            onClick={() => {
+              setShowEdit(true);
+              handleMenuClose();
+            }}
+          >
+            Edit
+          </MenuItem>
+          <MenuItem>
+            <Delete
+              path={`topic/delete/${selectedId}`}
+              onDeleteSuccess={getData}
+              onOpen={handleMenuClose}
+            />
+          </MenuItem>
+        </Menu>
+
+        <TopicEdit show={showEdit} setShow={setShowEdit} id={selectedId} onSuccess={getData} />
+        <TopicView show={showView} setShow={setShowView} id={selectedId} />
       </div>
     </div>
   );

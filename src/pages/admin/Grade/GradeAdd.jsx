@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import {
@@ -11,6 +11,8 @@ import { MultiSelect } from "react-multi-select-component";
 import { useNavigate } from "react-router-dom";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
+import PropTypes from "prop-types";
+
 
 function GradeAdd({onSuccess}) {
   const [selectedCenter, setSelectedCenter] = useState([]);
@@ -47,7 +49,7 @@ function GradeAdd({onSuccess}) {
     onSubmit: async (values) => {
       setLoadIndicator(true);
       try {
-        const response = await api.post("admin/grade", values);
+        const response = await api.post("grade", values);
         console.log(response.status)
 
         if (response.status === 200) {

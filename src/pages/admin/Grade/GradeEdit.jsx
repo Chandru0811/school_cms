@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import {
@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
 
-function GradeEdit({ show, setShow,id }) {
+function GradeEdit({ show, setShow,id,onSuccess }) {
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [selectedCenter, setSelectedCenter] = useState([]);
   const [centerList, setCenterList] = useState([]);
@@ -44,7 +44,7 @@ function GradeEdit({ show, setShow,id }) {
     onSubmit: async (values) => {
       setLoadIndicator(true);
       try {
-        const response = await api.put(`admin/role/update/${id}`, values);
+        const response = await api.put(`grade/update/${id}`, values);
 
         if (response.status === 200) {
           toast.success(response.data.message);

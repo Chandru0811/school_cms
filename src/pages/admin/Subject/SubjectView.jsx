@@ -7,6 +7,7 @@ import {
 import PropTypes from "prop-types";
 import toast from "react-hot-toast";
 import api from "../../../config/URL";
+import { useEffect, useState } from "react";
 
 function SubjectView({ show, setShow ,id}) {
   const [data, setData] = useState({});
@@ -16,7 +17,7 @@ function SubjectView({ show, setShow ,id}) {
   };
   const getSubjectData = async () => {
     try {
-      const response = await api.get(`admin/subject/${id}`);
+      const response = await api.get(`subject/${id}`);
       setData(response.data.data);
     } catch (e) {
       toast.error("Error Fetching Data ", e?.response?.data?.error);

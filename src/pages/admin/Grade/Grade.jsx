@@ -85,7 +85,7 @@ function Grade() {
   const fetchData = async () => {
     try {
       setLoading(true);
-      const response = await api.get(`admin/grades`);
+      const response = await api.get(`grades`);
       setData(response.data.data);
     } catch (error) {
       console.error("Error fetching data:", error);

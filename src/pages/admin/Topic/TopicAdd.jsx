@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import {
@@ -8,12 +8,10 @@ import {
   DialogContent,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import PropTypes from "prop-types";
 import { MultiSelect } from "react-multi-select-component";
 import api from "../../../config/URL";
-import toast from "react-hot-toast";
 
 function TopicAdd({ onSuccess }) {
   const [show, setShow] = useState(false);
@@ -21,12 +19,13 @@ function TopicAdd({ onSuccess }) {
   const [selectedCenter, setSelectedCenter] = useState([]);
   const navigate = useNavigate();
   const [centerList, setCenterList] = useState([]);
+  const [subjects, setSubjects] = useState([]);
 
   const validationSchema = yup.object().shape({
     center_id: yup
-             .array()
-             .min(1, "*Select at least one center")
-             .required("*Select a center id"),
+      .array()
+      .min(1, "*Select at least one center")
+      .required("*Select a center id"),
     grade: yup.string().required("*Select a grade"),
     subject_id: yup.string().required("*Select a subject"),
     name: yup.string().required("*Name is required"),
@@ -54,8 +53,8 @@ function TopicAdd({ onSuccess }) {
     onSubmit: async (values) => {
       setLoadIndicator(true);
       try {
-        const response = await api.post("admin/topic", values);
-        console.log(response.status)
+        const response = await api.post("topic", values);
+        console.log(response.status);
 
         if (response.status === 200) {
           toast.success(response.data.message);
@@ -67,7 +66,7 @@ function TopicAdd({ onSuccess }) {
       } catch (e) {
         toast.error("Error Fetching Data ", e?.response?.data?.error);
       } finally {
-        setLoadIndicator(false); 
+        setLoadIndicator(false);
       }
     },
   });
@@ -89,14 +88,14 @@ function TopicAdd({ onSuccess }) {
   const getSubjectList = async () => {
     try {
       const response = await api.get("subject/list");
-      const formattedSubject = response.data.data.map((subject) => ({
+      const formattedSubjects = response.data.data.map((subject) => ({
         value: subject.id,
         label: subject.name,
       }));
-
-      getSubjectList(formattedSubject);
+  
+      setSubjects(formattedSubjects);
     } catch (e) {
-      toast.error("Error Fetching Data ", e?.response?.data?.error);
+      toast.error("Error Fetching Data", e?.response?.data?.error);
     }
   };
 
@@ -128,7 +127,7 @@ function TopicAdd({ onSuccess }) {
           <hr className="m-0"></hr>
           <DialogContent>
             <div className="row">
-            <div className="col-md-6 col-12 mb-4">
+              <div className="col-md-6 col-12 mb-4">
                 <label className="form-label">
                   Centre Name<span className="text-danger">*</span>
                 </label>
@@ -155,27 +154,6 @@ function TopicAdd({ onSuccess }) {
                   </div>
                 )}
               </div>
-              {/* <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
-                  Grade<span className="text-danger">*</span>
-                </label>
-                <select
-                  className={`form-select form-select-sm ${
-                    formik.touched.grade && formik.errors.grade
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  {...formik.getFieldProps("grade")}
-                >
-                  <option value=""></option>
-                  <option value="1"> 1</option>
-                  <option value="2"> 2</option>
-                  <option value="3"> 3</option>
-                </select>
-                {formik.touched.grade && formik.errors.grade && (
-                  <div className="invalid-feedback">{formik.errors.grade}</div>
-                )}
-              </div> */}
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
                   Subject<span className="text-danger">*</span>
@@ -186,13 +164,13 @@ function TopicAdd({ onSuccess }) {
                       ? "is-invalid"
                       : ""
                   }`}
-                  value={formik.values.subject_id} // Ensure it's bound to formik values
+                  value={formik.values.subject_id}
                   onChange={(e) =>
                     formik.setFieldValue("subject_id", e.target.value)
                   }
                 >
                   <option value="">Select Subject</option>
-                  {roles.map((subject) => (
+                  {subjects.map((subject) => (
                     <option key={subject.value} value={subject.value}>
                       {subject.label}
                     </option>
@@ -232,7 +210,7 @@ function TopicAdd({ onSuccess }) {
                       ? "is-invalid"
                       : ""
                   }`}
-                  rows="4" // Adjust the rows for better visibility
+                  rows="4"
                   {...formik.getFieldProps("description")}
                 />
                 {formik.touched.description && formik.errors.description && (

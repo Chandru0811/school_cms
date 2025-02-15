@@ -47,7 +47,7 @@ function EmployeeAdd() {
       console.log(values);
       setLoadIndicator(true);
       try {
-        const response = await api.post("admin/employee", values);
+        const response = await api.post("employee", values);
         console.log(response.status);
 
         if (response.status === 200) {
@@ -158,7 +158,7 @@ function EmployeeAdd() {
                     aria-hidden="true"
                   ></span>
                 )}
-                Submit
+                Save
               </button>
             </div>
           </div>

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import {
@@ -12,12 +12,13 @@ import { useNavigate } from "react-router-dom";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
 
-function SubjectAdd({onSuccess}) {
+function SubjectAdd() {
   const [show, setShow] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [selectedCenter, setSelectedCenter] = useState([]);
   const navigate = useNavigate();
   const [centerList, setCenterList] = useState([]);
+  const [grades, setGrades] = useState([]);
 
   const handleClose = () => {
     formik.resetForm();
@@ -49,12 +50,11 @@ function SubjectAdd({onSuccess}) {
     onSubmit: async (values) => {
       setLoadIndicator(true);
       try {
-        const response = await api.post("admin/subject", values);
+        const response = await api.post("subject", values);
         console.log(response.status)
 
         if (response.status === 200) {
           toast.success(response.data.message);
-          onSuccess();
           handleClose();
           formik.resetForm();
           navigate("/subject");
@@ -89,7 +89,7 @@ function SubjectAdd({onSuccess}) {
         label: grade.name,
       }));
 
-      getGradeList(formattedGrades);
+      setGrades(formattedGrades);
     } catch (e) {
       toast.error("Error Fetching Data ", e?.response?.data?.error);
     }
@@ -167,7 +167,7 @@ function SubjectAdd({onSuccess}) {
                   }
                 >
                   <option value="">Select Grade</option>
-                  {roles.map((grade) => (
+                  {grades.map((grade) => (
                     <option key={grade.value} value={grade.value}>
                       {grade.label}
                     </option>
@@ -232,7 +232,7 @@ function SubjectAdd({onSuccess}) {
                   aria-hidden="true"
                 ></span>
               )}
-              Submit
+              Save
             </button>
           </DialogActions>
         </form>

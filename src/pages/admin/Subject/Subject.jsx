@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { MaterialReactTable } from "material-react-table";
 import {
@@ -124,7 +124,7 @@ function Subject() {
   
   const getData = async () => {
     try {
-      const response = await api.get("admin/subject");
+      const response = await api.get("subjects");
       setData(response.data.data);
     } catch (e) {
       toast.error("Error Fetching Data ", e?.response?.data?.error);
@@ -188,7 +188,7 @@ function Subject() {
               muiTableBodyRowProps={({ row }) => ({
                 style: { cursor: "pointer" },
                 onClick: () => {
-                  setSelectedData(row.original);
+                  setSelectedId(row.original);
                   setShowView(true);
                 },
               })}

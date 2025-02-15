@@ -1,8 +1,13 @@
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { MultiSelect } from "react-multi-select-component";
+import toast from "react-hot-toast";
+import api from "../../../config/URL";
+import PropTypes from "prop-types";
+
+
 
 function EmployeeEdit() {
   const [loadIndicator, setLoadIndicator] = useState(false);
@@ -10,6 +15,7 @@ function EmployeeEdit() {
   const [centerList, setCenterList] = useState([]);
   const navigate = useNavigate();
   const { id } = useParams();
+  const [roles, setRoles] = useState();
 
 
   const validationSchema = yup.object().shape({
@@ -49,7 +55,7 @@ function EmployeeEdit() {
 
         if (response.status === 200) {
           toast.success(response.data.message);
-          onSuccess();
+        
           navigate("/employee");
         }
       } catch (e) {
@@ -62,7 +68,7 @@ function EmployeeEdit() {
 
   const getRoleData = async () => {
     try {
-      const response = await api.get(`admin/employee/${id}`);
+      const response = await api.get(`employee/${id}`);
       const { data } = response.data;
 
       const parsedCenterIds = JSON.parse(data.center_id);
@@ -166,7 +172,14 @@ function EmployeeEdit() {
                 type="submit"
                 className="btn btn-button btn-sm me-2"
                 style={{ fontWeight: "600px !important" }}
+                disabled={loadIndicator}
               >
+                 {loadIndicator && (
+              <span
+                className="spinner-border spinner-border-sm me-2"
+                aria-hidden="true"
+              ></span>
+            )}
                 Update
               </button>
             </div>
