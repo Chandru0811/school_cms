@@ -12,23 +12,21 @@ import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import PropTypes from "prop-types";
 import { MultiSelect } from "react-multi-select-component";
+import api from "../../../config/URL";
+import toast from "react-hot-toast";
 
 function TopicAdd({ onSuccess }) {
-  const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
-
-  const [selectedServices, setSelectedServices] = useState([]);
-
-  const serviceOption = [
-    { value: "1", label: "SRDK" },
-    { value: "2", label: "KVM" },
-    { value: "3", label: "KCS" },
-    { value: "4", label: "PAK" },
-  ];
+  const [selectedCenter, setSelectedCenter] = useState([]);
+  const navigate = useNavigate();
+  const [centerList, setCenterList] = useState([]);
 
   const validationSchema = yup.object().shape({
-    center_id: yup.string().required("*Select a centre"),
+    center_id: yup
+             .array()
+             .min(1, "*Select at least one center")
+             .required("*Select a center id"),
     grade: yup.string().required("*Select a grade"),
     subject_id: yup.string().required("*Select a subject"),
     name: yup.string().required("*Name is required"),
@@ -46,8 +44,8 @@ function TopicAdd({ onSuccess }) {
 
   const formik = useFormik({
     initialValues: {
-      center_id: "",
-      grade: "",
+      center_id: [],
+      // grade: "",
       subject_id: "",
       name: "",
       description: "",
@@ -56,25 +54,56 @@ function TopicAdd({ onSuccess }) {
     onSubmit: async (values) => {
       setLoadIndicator(true);
       try {
-        const response = await api.post("topic", values);
+        const response = await api.post("admin/topic", values);
+        console.log(response.status)
+
         if (response.status === 200) {
           toast.success(response.data.message);
           onSuccess();
           handleClose();
           formik.resetForm();
-          navigate("/topic");
-        } else {
-          toast.error(response.data.message || "An unexpected error occurred.");
+          navigate("/subject");
         }
-      } catch (error) {
-        const errorMessage =
-          error.response?.data?.message || "Something went wrong!";
-        toast.error(errorMessage);
+      } catch (e) {
+        toast.error("Error Fetching Data ", e?.response?.data?.error);
       } finally {
-        setLoadIndicator(false); // Stop loading
+        setLoadIndicator(false); 
       }
     },
   });
+
+  const getCenterList = async () => {
+    try {
+      const response = await api.get("centers/list");
+      const formattedCenters = response.data.data.map((center) => ({
+        value: center.id,
+        label: center.name,
+      }));
+
+      setCenterList(formattedCenters);
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
+  };
+
+  const getSubjectList = async () => {
+    try {
+      const response = await api.get("subject/list");
+      const formattedSubject = response.data.data.map((subject) => ({
+        value: subject.id,
+        label: subject.name,
+      }));
+
+      getSubjectList(formattedSubject);
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
+  };
+
+  useEffect(() => {
+    getCenterList();
+    getSubjectList();
+  }, []);
 
   return (
     <>
@@ -99,21 +128,21 @@ function TopicAdd({ onSuccess }) {
           <hr className="m-0"></hr>
           <DialogContent>
             <div className="row">
-              <div className="col-md-6 col-12 mb-4">
+            <div className="col-md-6 col-12 mb-4">
                 <label className="form-label">
-                  Centre<span className="text-danger">*</span>
+                  Centre Name<span className="text-danger">*</span>
                 </label>
                 <MultiSelect
-                  options={serviceOption}
-                  value={selectedServices}
+                  options={centerList}
+                  value={selectedCenter}
                   onChange={(selected) => {
-                    setSelectedServices(selected);
+                    setSelectedCenter(selected);
                     formik.setFieldValue(
                       "center_id",
                       selected.map((option) => option.value)
                     );
                   }}
-                  labelledBy="Select Service"
+                  labelledBy="Select Center"
                   className={`form-multi-select form-multi-select-sm ${
                     formik.touched.center_id && formik.errors.center_id
                       ? "is-invalid"
@@ -126,7 +155,7 @@ function TopicAdd({ onSuccess }) {
                   </div>
                 )}
               </div>
-              <div className="col-md-6 col-12 mb-3">
+              {/* <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
                   Grade<span className="text-danger">*</span>
                 </label>
@@ -146,7 +175,7 @@ function TopicAdd({ onSuccess }) {
                 {formik.touched.grade && formik.errors.grade && (
                   <div className="invalid-feedback">{formik.errors.grade}</div>
                 )}
-              </div>
+              </div> */}
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
                   Subject<span className="text-danger">*</span>
@@ -157,12 +186,17 @@ function TopicAdd({ onSuccess }) {
                       ? "is-invalid"
                       : ""
                   }`}
-                  {...formik.getFieldProps("subject_id")}
+                  value={formik.values.subject_id} // Ensure it's bound to formik values
+                  onChange={(e) =>
+                    formik.setFieldValue("subject_id", e.target.value)
+                  }
                 >
-                  <option value=""></option>
-                  <option value="1">English</option>
-                  <option value="2">Tamil</option>
-                  <option value="3">Maths</option>
+                  <option value="">Select Subject</option>
+                  {roles.map((subject) => (
+                    <option key={subject.value} value={subject.value}>
+                      {subject.label}
+                    </option>
+                  ))}
                 </select>
                 {formik.touched.subject_id && formik.errors.subject_id && (
                   <div className="invalid-feedback">

@@ -1,51 +1,121 @@
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
 import { MultiSelect } from "react-multi-select-component";
 
 function EmployeeEdit() {
-  const [selectedServices, setSelectedServices] = useState([]);
+  const [loadIndicator, setLoadIndicator] = useState(false);
+  const [selectedCenter, setSelectedCenter] = useState([]);
+  const [centerList, setCenterList] = useState([]);
+  const navigate = useNavigate();
+  const { id } = useParams();
 
-  const serviceOption = [
-    { value: "1", label: "SRDK" },
-    { value: "2", label: "KVM" },
-    { value: "3", label: "KCS" },
-    { value: "4", label: "PAK" },
-  ];
 
   const validationSchema = yup.object().shape({
-    center_id: yup.string().required("*Select a center name"),
-    role_id: yup.string().required("*Select a role name"),
-    name: yup.string().required("*Employee name is required"),
-    email: yup.string().required("*Employee email is required"),
-    mobile: yup.string().required("*Employee mobile is required"),
-    password: yup
-      .string()
-      .required("*Employee password is required")
-      .min(6, "*Password must be at least 6 characters"),
-    confirm_password: yup
-      .string()
-      .oneOf([yup.ref("password"), null], "*Passwords must match")
-      .required("*Employee confirm password is required"),
-  });
+    center_id: yup
+         .array()
+         .min(1, "*Select at least one center")
+         .required("*Select a center id"),
+       role_id: yup.string().required("*Select a role"),
+       name: yup.string().required("*Employee name is required"),
+       email: yup.string().required("*Employee email is required"),
+       mobile: yup.string().required("*Employee mobile is required"),
+       password: yup
+         .string()
+         .required("*Employee password is required")
+         .min(6, "*Password must be at least 6 characters"),
+       password_confirmation: yup
+         .string()
+         .oneOf([yup.ref("password"), null], "*Passwords must match")
+         .required("*Employee confirm password is required"),
+     });
 
   const formik = useFormik({
     initialValues: {
-      center_id: "",
+      center_id: [],
       role_id: "",
       name: "",
       email: "",
       mobile: "",
       password: "",
-      confirm_password: "",
+      password_confirmation: "",
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      // setLoadIndicator(true);
-      console.log("Form values:", values);
+      setLoadIndicator(true);
+      try {
+        const response = await api.put(`admin/employee/update/${id}`, values);
+
+        if (response.status === 200) {
+          toast.success(response.data.message);
+          onSuccess();
+          navigate("/employee");
+        }
+      } catch (e) {
+        toast.error("Error Fetching Data ", e?.response?.data?.error);
+      } finally {
+        setLoadIndicator(false);
+      }
     },
   });
+
+  const getRoleData = async () => {
+    try {
+      const response = await api.get(`admin/employee/${id}`);
+      const { data } = response.data;
+
+      const parsedCenterIds = JSON.parse(data.center_id);
+      const parsedCenterNames = JSON.parse(data.center_names);
+
+      const selectedCenters = parsedCenterIds.map((id, index) => ({
+        value: id,
+        label: parsedCenterNames[index] || "",
+      }));
+
+      setSelectedCenter(selectedCenters);
+
+      formik.setValues({
+        ...data,
+        center_id: selectedCenters.map((center) => center.value),
+      });
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
+  };
+
+  const getCenterList = async () => {
+    try {
+      const response = await api.get("centers/list");
+      const formattedCenters = response.data.data.map((center) => ({
+        value: center.id,
+        label: center.name,
+      }));
+
+      setCenterList(formattedCenters);
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
+  };
+
+  const getRoleList = async () => {
+    try {
+      const response = await api.get("admin/roles/list");
+      const formattedRoles = response.data.data.map((role) => ({
+        value: role.id,
+        label: role.name,
+      }));
+
+      setRoles(formattedRoles);
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
+  };
+  useEffect(() => {
+    getCenterList();
+    getRoleList();
+    getRoleData();
+  }, [id]);
 
   return (
     <div className="container p-3">
@@ -108,10 +178,10 @@ function EmployeeEdit() {
                   Centre<span className="text-danger">*</span>
                 </label>
                 <MultiSelect
-                  options={serviceOption}
-                  value={selectedServices}
+                  options={centerList}
+                  value={selectedCenter}
                   onChange={(selected) => {
-                    setSelectedServices(selected);
+                    setSelectedCenter(selected);
                     formik.setFieldValue(
                       "center_id",
                       selected.map((option) => option.value)
@@ -140,13 +210,19 @@ function EmployeeEdit() {
                       ? "is-invalid"
                       : ""
                   }`}
-                  {...formik.getFieldProps("role_id")}
+                  value={formik.values.role_id} // Ensure it's bound to formik values
+                  onChange={(e) =>
+                    formik.setFieldValue("role_id", e.target.value)
+                  }
                 >
                   <option value="">Select Role</option>
-                  <option value="Junior Developer">Junior Developer</option>
-                  <option value="Java Developer">Java Developer</option>
-                  <option value="React Developer">React Developer</option>
+                  {roles.map((role) => (
+                    <option key={role.value} value={role.value}>
+                      {role.label}
+                    </option>
+                  ))}
                 </select>
+
                 {formik.touched.role_id && formik.errors.role_id && (
                   <div className="invalid-feedback">
                     {formik.errors.role_id}
@@ -235,17 +311,17 @@ function EmployeeEdit() {
                   type="password"
                   onKeyDown={(e) => e.stopPropagation()}
                   className={`form-control form-control-sm ${
-                    formik.touched.confirm_password &&
-                    formik.errors.confirm_password
+                    formik.touched.password_confirmation &&
+                    formik.errors.password_confirmation
                       ? "is-invalid"
                       : ""
                   }`}
-                  {...formik.getFieldProps("confirm_password")}
+                  {...formik.getFieldProps("password_confirmation")}
                 />
-                {formik.touched.confirm_password &&
-                  formik.errors.confirm_password && (
+                {formik.touched.password_confirmation &&
+                  formik.errors.password_confirmation && (
                     <div className="invalid-feedback">
-                      {formik.errors.confirm_password}
+                      {formik.errors.password_confirmation}
                     </div>
                   )}
               </div>
@@ -256,5 +332,9 @@ function EmployeeEdit() {
     </div>
   );
 }
+
+EmployeeEdit.propTypes = {
+  id: PropTypes.number.isRequired,
+};
 
 export default EmployeeEdit;

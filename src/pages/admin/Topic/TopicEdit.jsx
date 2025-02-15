@@ -14,19 +14,14 @@ import { MultiSelect } from "react-multi-select-component";
 
 function TopicEdit({ id, onSuccess, handleMenuClose }) {
   const [loadIndicator, setLoadIndicator] = useState(false);
-  const [open, setOpen] = useState(false);
-
-  const [selectedServices, setSelectedServices] = useState([]);
-
-  const serviceOption = [
-    { value: "1", label: "SRDK" },
-    { value: "2", label: "KVM" },
-    { value: "3", label: "KCS" },
-    { value: "4", label: "PAK" },
-  ];
+  const [selectedCenter, setSelectedCenter] = useState([]);
+  const [centerList, setCenterList] = useState([]);
 
   const validationSchema = yup.object().shape({
-    center_id: yup.string().required("*Selected a centre"),
+    center_id: yup
+                .array()
+                .min(1, "*Select at least one center")
+                .required("*Select a center id"),
     grade: yup.string().required("*Select a grade"),
     subject_id: yup.string().required("*Selected a subject"),
     name: yup.string().required("*Name is required"),
@@ -35,7 +30,7 @@ function TopicEdit({ id, onSuccess, handleMenuClose }) {
 
   const formik = useFormik({
     initialValues: {
-      center_id: "",
+      center_id: [],
       grade: "",
       subject_id: "",
       name: "",
@@ -46,44 +41,83 @@ function TopicEdit({ id, onSuccess, handleMenuClose }) {
     onSubmit: async (values) => {
       setLoadIndicator(true);
       try {
-        const response = await api.put(`topic/update/${id}`, values, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await api.put(`admin/topic/update/${id}`, values);
 
         if (response.status === 200) {
+          toast.success(response.data.message);
           onSuccess();
-          handleMenuClose();
-          toast.success(
-            response.data.message || "Payment type updated successfully!"
-          );
-        } else {
-          toast.error(
-            response.data.message || "Failed to update payment type."
-          );
+          handleClose();
+          formik.resetForm();
+          navigate("/topic");
         }
-      } catch (error) {
-        toast.error(
-          error.response?.data?.message || "An error occurred while updating."
-        );
+      } catch (e) {
+        toast.error("Error Fetching Data ", e?.response?.data?.error);
       } finally {
         setLoadIndicator(false);
       }
     },
   });
 
-  const getData = async () => {
+  const getTopicData = async () => {
     try {
-      const response = await api.get(`topic/${id}`);
-      if (response?.data?.data) {
-        formik.setValues(response.data.data);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-      toast.error("Failed to fetch payment type details.");
+      const response = await api.get(`admin/topic/${id}`);
+      const { data } = response.data;
+
+      const parsedCenterIds = JSON.parse(data.center_id);
+      const parsedCenterNames = JSON.parse(data.center_names);
+
+      const selectedCenters = parsedCenterIds.map((id, index) => ({
+        value: id,
+        label: parsedCenterNames[index] || "",
+      }));
+
+      setSelectedCenter(selectedCenters);
+
+      formik.setValues({
+        ...data,
+        center_id: selectedCenters.map((center) => center.value),
+      });
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
     }
   };
+
+  const getCenterList = async () => {
+    try {
+      const response = await api.get("centers/list");
+      const formattedCenters = response.data.data.map((center) => ({
+        value: center.id,
+        label: center.name,
+      }));
+
+      setCenterList(formattedCenters);
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
+  };
+
+  const getSubjectList = async () => {
+    try {
+      const response = await api.get("subject/list");
+      const formattedSubject = response.data.data.map((subject) => ({
+        value: subject.id,
+        label: subject.name,
+      }));
+
+      getSubjectList(formattedSubject);
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
+  };
+
+
+  useEffect(() => {
+    if (show) {
+      getTopicData();
+      getCenterList();
+      getSubjectList();
+    }
+  }, [id, show]);
 
   const handleOpen = () => {
     getData();
@@ -122,21 +156,21 @@ function TopicEdit({ id, onSuccess, handleMenuClose }) {
           <hr className="m-0"></hr>
           <DialogContent>
             <div className="row">
-              <div className="col-md-6 col-12 mb-4">
+            <div className="col-md-6 col-12 mb-4">
                 <label className="form-label">
-                  Centre<span className="text-danger">*</span>
+                  Centre Name<span className="text-danger">*</span>
                 </label>
                 <MultiSelect
-                  options={serviceOption}
-                  value={selectedServices}
+                  options={centerList}
+                  value={selectedCenter}
                   onChange={(selected) => {
-                    setSelectedServices(selected);
+                    setSelectedCenter(selected);
                     formik.setFieldValue(
                       "center_id",
                       selected.map((option) => option.value)
                     );
                   }}
-                  labelledBy="Select Service"
+                  labelledBy="Select Center"
                   className={`form-multi-select form-multi-select-sm ${
                     formik.touched.center_id && formik.errors.center_id
                       ? "is-invalid"
@@ -149,7 +183,7 @@ function TopicEdit({ id, onSuccess, handleMenuClose }) {
                   </div>
                 )}
               </div>
-              <div className="col-md-6 col-12 mb-3">
+              {/* <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
                   Grade<span className="text-danger">*</span>
                 </label>
@@ -169,8 +203,8 @@ function TopicEdit({ id, onSuccess, handleMenuClose }) {
                 {formik.touched.grade && formik.errors.grade && (
                   <div className="invalid-feedback">{formik.errors.grade}</div>
                 )}
-              </div>
-              <div className="col-md-6 col-12 mb-3">
+              </div> */}
+               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
                   Subject<span className="text-danger">*</span>
                 </label>
@@ -180,12 +214,17 @@ function TopicEdit({ id, onSuccess, handleMenuClose }) {
                       ? "is-invalid"
                       : ""
                   }`}
-                  {...formik.getFieldProps("subject_id")}
+                  value={formik.values.subject_id} // Ensure it's bound to formik values
+                  onChange={(e) =>
+                    formik.setFieldValue("subject_id", e.target.value)
+                  }
                 >
-                  <option value=""></option>
-                  <option value="1">English</option>
-                  <option value="2">Tamil</option>
-                  <option value="3">Maths</option>
+                  <option value="">Select Subject</option>
+                  {roles.map((subject) => (
+                    <option key={subject.value} value={subject.value}>
+                      {subject.label}
+                    </option>
+                  ))}
                 </select>
                 {formik.touched.subject_id && formik.errors.subject_id && (
                   <div className="invalid-feedback">
@@ -257,9 +296,10 @@ function TopicEdit({ id, onSuccess, handleMenuClose }) {
 }
 
 TopicEdit.propTypes = {
+  show: PropTypes.bool.isRequired,
+  setShow: PropTypes.bool.isRequired,
+  id: PropTypes.number.isRequired,
   onSuccess: PropTypes.func.isRequired,
-  handleMenuClose: PropTypes.func.isRequired,
-  id: PropTypes.func.isRequired,
 };
 
 export default TopicEdit;

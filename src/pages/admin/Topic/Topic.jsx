@@ -15,12 +15,14 @@ import TopicAdd from "./TopicAdd";
 import TopicEdit from "./TopicEdit";
 import TopicView from "./TopicView";
 import api from "../../../config/URL";
+import toast from "react-hot-toast";
 
 function Topic() {
   const [menuAnchor, setMenuAnchor] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [showEdit, setShowEdit] = useState(false);
+  const [showView, setShowView] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
-  const [data, setData] = useState([]); // Store selected row data
+  const [data, setData] = useState([]); 
 
   const columns = useMemo(
     () => [
@@ -80,20 +82,17 @@ function Topic() {
     []
   );
 
-  const fetchData = async () => {
+  const getData = async () => {
     try {
-      setLoading(true);
-      const response = await api.get(`topics/6`);
+      const response = await api.get("admin/topic");
       setData(response.data.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setLoading(false);
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
     }
   };
 
   useEffect(() => {
-    fetchData();
+    getData();
   }, []);
 
   const theme = createTheme({
@@ -168,7 +167,7 @@ function Topic() {
               <span className="database_name">Topic</span>
             </span>
           </div>
-          <TopicAdd />
+          <TopicAdd  onSuccess={getData}/>
         </div>
         {loading ? (
           <div className="loader-container">
@@ -211,13 +210,11 @@ function Topic() {
             >
               <MenuItem>
                 <TopicEdit
-                  onSuccess={fetchData}
-                  id={selectedId}
-                  handleMenuClose={handleMenuClose}
+                  show={showEdit} setShow={setShowEdit}  id={selectedId}  onSuccess={getData}
                 />
               </MenuItem>
               <MenuItem>
-                <TopicView id={selectedId} handleMenuClose={handleMenuClose} />
+                <TopicView show={showView} setShow={setShowView} id={selectedId} />
               </MenuItem>
               <MenuItem>
                 <Delete

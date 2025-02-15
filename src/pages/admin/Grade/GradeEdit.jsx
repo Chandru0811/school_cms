@@ -9,26 +9,15 @@ import {
 } from "@mui/material";
 import PropTypes from "prop-types";
 import { MultiSelect } from "react-multi-select-component";
+import { useNavigate } from "react-router-dom";
+import api from "../../../config/URL";
+import toast from "react-hot-toast";
 
-function GradeEdit({ show, setShow }) {
+function GradeEdit({ show, setShow,id }) {
   const [loadIndicator, setLoadIndicator] = useState(false);
-  const [selectedServices, setSelectedServices] = useState([]);
-
-  const serviceOption = [
-    { value: "1", label: "SRDK" },
-    { value: "2", label: "KVM" },
-    { value: "3", label: "KCS" },
-    { value: "4", label: "PAK" },
-  ];
-  //   const [selectedSchool, setSelectedSchool] = useState(null);
-
-  // Find the selected school data when modal opens
-  //   useEffect(() => {
-  //     if (selectedId) {
-  //       const school = data.find((item) => item.id === selectedId);
-  //       setSelectedSchool(school || {});
-  //     }
-  //   }, [selectedId, data]);
+  const [selectedCenter, setSelectedCenter] = useState([]);
+  const [centerList, setCenterList] = useState([]);
+  const navigate = useNavigate();
 
   const handleClose = () => {
     setShow(false);
@@ -36,7 +25,10 @@ function GradeEdit({ show, setShow }) {
   };
 
   const validationSchema = yup.object().shape({
-    center_id: yup.string().required("*Select a center name"),
+     center_id: yup
+          .array()
+          .min(1, "*Select at least one center")
+          .required("*Select a center id"),
     name: yup.string().required("*Name is required"),
     description: yup.string().required("*Description is required"),
   });
@@ -44,20 +36,75 @@ function GradeEdit({ show, setShow }) {
   const formik = useFormik({
     initialValues: {
       center_id: "",
-      name: "Demo Grade",
-      description: "MINT",
+      name: "",
+      description: "",
     },
     enableReinitialize: true,
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       setLoadIndicator(true);
-      console.log("Form values:", values);
-      setTimeout(() => {
+      try {
+        const response = await api.put(`admin/role/update/${id}`, values);
+
+        if (response.status === 200) {
+          toast.success(response.data.message);
+          onSuccess();
+          handleClose();
+          formik.resetForm();
+          navigate("/settings");
+        }
+      } catch (e) {
+        toast.error("Error Fetching Data ", e?.response?.data?.error);
+      } finally {
         setLoadIndicator(false);
-        setShow(false);
-      }, 1000);
+      }
     },
   });
+
+  const getGradeData = async () => {
+    try {
+      const response = await api.get(`admin/grade/${id}`);
+      const { data } = response.data;
+
+      const parsedCenterIds = JSON.parse(data.center_id);
+      const parsedCenterNames = JSON.parse(data.center_names);
+
+      const selectedCenters = parsedCenterIds.map((id, index) => ({
+        value: id,
+        label: parsedCenterNames[index] || "",
+      }));
+
+      setSelectedCenter(selectedCenters);
+
+      formik.setValues({
+        ...data,
+        center_id: selectedCenters.map((center) => center.value),
+      });
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
+  };
+
+  const getCenterList = async () => {
+    try {
+      const response = await api.get("centers/list");
+      const formattedCenters = response.data.data.map((center) => ({
+        value: center.id,
+        label: center.name,
+      }));
+
+      setCenterList(formattedCenters);
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
+  };
+
+  useEffect(() => {
+    if (show) {
+      getGradeData();
+      getCenterList();
+    }
+  }, [id, show]);
 
   return (
     <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
@@ -78,10 +125,10 @@ function GradeEdit({ show, setShow }) {
                 Centre Name<span className="text-danger">*</span>
               </label>
               <MultiSelect
-                options={serviceOption}
-                value={selectedServices}
+                options={centerList}
+                value={selectedCenter}
                 onChange={(selected) => {
-                  setSelectedServices(selected);
+                  setSelectedCenter(selected);
                   formik.setFieldValue(
                     "center_id",
                     selected.map((option) => option.value)
@@ -160,8 +207,10 @@ function GradeEdit({ show, setShow }) {
   );
 }
 GradeEdit.propTypes = {
-  show: PropTypes.func.isRequired,
-  setShow: PropTypes.func.isRequired,
+  show: PropTypes.bool.isRequired,
+  setShow: PropTypes.bool.isRequired,
+  id: PropTypes.number.isRequired,
+  onSuccess: PropTypes.func.isRequired,
 };
 
 export default GradeEdit;

@@ -5,16 +5,29 @@ import {
   DialogContent,
 } from "@mui/material";
 import PropTypes from "prop-types";
+import api from "../../../config/URL";
+import toast from "react-hot-toast";
 
-function GradeView({ show, setShow }) {
-  const data = {
-    center_id: "ABC",
-    name: "Dummy School",
-    description: "Mint",
-  };
+function GradeView({ show, setShow ,id}) {
+  const [data, setData] = useState({});
+
   const handleClose = () => {
     setShow(false);
   };
+  const getGradeData = async () => {
+    try {
+      const response = await api.get(`admin/grade/${id}`);
+      setData(response.data.data);
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
+  };
+
+  useEffect(() => {
+    if (show) {
+      getGradeData();
+    }
+  }, [id, show]);
 
   return (
     <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
@@ -28,7 +41,7 @@ function GradeView({ show, setShow }) {
                 <p className="">Center</p>
               </div>
               <div className="col-6">
-                <p className="text-muted text-sm">:{data.center_id}</p>
+                <p className="text-muted text-sm">:{data.center_names}</p>
               </div>
             </div>
           </div>
@@ -65,8 +78,9 @@ function GradeView({ show, setShow }) {
 }
 
 GradeView.propTypes = {
-  show: PropTypes.func.isRequired,
-  setShow: PropTypes.func.isRequired,
+    show: PropTypes.bool.isRequired,
+    setShow: PropTypes.bool.isRequired,
+    id: PropTypes.number.isRequired,
 };
 
 export default GradeView;

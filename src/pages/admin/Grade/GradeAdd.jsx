@@ -8,23 +8,22 @@ import {
   DialogContent,
 } from "@mui/material";
 import { MultiSelect } from "react-multi-select-component";
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import api from "../../../config/URL";
+import toast from "react-hot-toast";
 
-function GradeAdd() {
-  const [selectedServices, setSelectedServices] = useState([]);
-
-  const serviceOption = [
-    { value: "1", label: "SRDK" },
-    { value: "2", label: "KVM" },
-    { value: "3", label: "KCS" },
-    { value: "4", label: "PAK" },
-  ];
-  // const navigate = useNavigate();
+function GradeAdd({onSuccess}) {
+  const [selectedCenter, setSelectedCenter] = useState([]);
+  const [centerList, setCenterList] = useState([]);
+  const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
 
   const validationSchema = yup.object().shape({
-    center_id: yup.string().required("*Select a center name"),
+       center_id: yup
+         .array()
+         .min(1, "*Select at least one center")
+         .required("*Select a center id"),
     name: yup.string().required("*Name is required"),
     description: yup.string().required("*Description is required"),
   });
@@ -34,22 +33,55 @@ function GradeAdd() {
   };
 
   const handleClose = () => {
-    setShow(false);
     formik.resetForm();
+    setShow(false);
   };
 
   const formik = useFormik({
     initialValues: {
-      center_id: "",
+      center_id: [],
       name: "",
       description: "",
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       setLoadIndicator(true);
-      console.log("Form values:", values);
+      try {
+        const response = await api.post("admin/grade", values);
+        console.log(response.status)
+
+        if (response.status === 200) {
+          toast.success(response.data.message);
+          onSuccess();
+          handleClose();
+          formik.resetForm();
+          navigate("/grade");
+        }
+      } catch (e) {
+        toast.error("Error Fetching Data ", e?.response?.data?.error);
+      } finally {
+        setLoadIndicator(false); 
+      }
     },
   });
+
+  const getCenterList = async () => {
+    try {
+      const response = await api.get("centers/list");
+      const formattedCenters = response.data.data.map((center) => ({
+        value: center.id,
+        label: center.name,
+      }));
+
+      setCenterList(formattedCenters);
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
+  };
+
+  useEffect(() => {
+    getCenterList();
+  }, []);
 
   return (
     <>
@@ -80,16 +112,16 @@ function GradeAdd() {
                   Centre Name<span className="text-danger">*</span>
                 </label>
                 <MultiSelect
-                  options={serviceOption}
-                  value={selectedServices}
+                  options={centerList}
+                  value={selectedCenter}
                   onChange={(selected) => {
-                    setSelectedServices(selected);
+                    setSelectedCenter(selected);
                     formik.setFieldValue(
                       "center_id",
                       selected.map((option) => option.value)
                     );
                   }}
-                  labelledBy="Select Service"
+                  labelledBy="Select Center"
                   className={`form-multi-select form-multi-select-sm ${
                     formik.touched.center_id && formik.errors.center_id
                       ? "is-invalid"
@@ -157,7 +189,7 @@ function GradeAdd() {
                   aria-hidden="true"
                 ></span>
               )}
-              Save
+              Submit
             </button>
           </DialogActions>
         </form>
@@ -165,5 +197,8 @@ function GradeAdd() {
     </>
   );
 }
+GradeAdd.propTypes = {
+  onSuccess: PropTypes.func.isRequired,
+};
 
 export default GradeAdd;

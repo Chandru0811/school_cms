@@ -14,36 +14,15 @@ import { MoreVert as MoreVertIcon } from "@mui/icons-material";
 import SubjectAdd from "./SubjectAdd";
 import SubjectEdit from "./SubjectEdit";
 import SubjectView from "./SubjectView";
+import api from "../../../config/URL";
+import toast from "react-hot-toast";
 
 function Subject() {
   const [menuAnchor, setMenuAnchor] = useState(null);
   const [showEdit, setShowEdit] = useState(false);
   const [showView, setShowView] = useState(false);
-  const [selectedData, setSelectedData] = useState(null); // Store selected row data
-
-  const data = [
-    {
-      id: 1,
-      center_id: "SRDK",
-      grade_id: "5 Grade",
-      name: "English",
-      description: "Mint",
-    },
-    {
-      id: 2,
-      center_id: "KVM",
-      grade_id: "8 Grade",
-      name: "Tamil",
-      description: "Chennai",
-    },
-    {
-      id: 3,
-      center_id: "KCS",
-      grade_id: "10 Grade",
-      name: "English",
-      description: "Dubai",
-    },
-  ];
+  const [selectedId, setSelectedId] = useState(null);
+  const [data, setData] = useState([]);
 
   const columns = useMemo(
     () => [
@@ -142,6 +121,20 @@ function Subject() {
 
   const handleMenuClose = () => setMenuAnchor(null);
 
+  
+  const getData = async () => {
+    try {
+      const response = await api.get("admin/subject");
+      setData(response.data.data);
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
   return (
     <div className="container-fluid mb-4 px-0">
       <ol
@@ -169,7 +162,7 @@ function Subject() {
               <span className="database_name">Subject</span>
             </span>
           </div>
-          <SubjectAdd />
+          <SubjectAdd  onSuccess={getData} />
         </div>
 
         <>
@@ -219,12 +212,8 @@ function Subject() {
               <Delete path={`admin/company/delete`} onOpen={handleMenuClose} />
             </MenuItem>
           </Menu>
-          <SubjectEdit show={showEdit} setShow={setShowEdit} />
-          <SubjectView
-            show={showView}
-            setShow={setShowView}
-            data={selectedData}
-          />
+          <SubjectEdit show={showEdit} setShow={setShowEdit}  id={selectedId}  onSuccess={getData}/>
+          <SubjectView show={showView} setShow={setShowView} id={selectedId} />
         </>
       </div>
     </div>

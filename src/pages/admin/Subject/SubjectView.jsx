@@ -5,18 +5,29 @@ import {
   DialogContent,
 } from "@mui/material";
 import PropTypes from "prop-types";
+import toast from "react-hot-toast";
+import api from "../../../config/URL";
 
-function SubjectView({ show, setShow }) {
-  const data = {
-    centre_id: "SRDK",
-    grade_id: "10 Grade",
-    name: "Maths",
-    description: "Test",
-  };
+function SubjectView({ show, setShow ,id}) {
+  const [data, setData] = useState({});
 
   const handleClose = () => {
     setShow(false);
   };
+  const getSubjectData = async () => {
+    try {
+      const response = await api.get(`admin/subject/${id}`);
+      setData(response.data.data);
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
+  };
+
+  useEffect(() => {
+    if (show) {
+      getSubjectData();
+    }
+  }, [id, show]);
 
   return (
     <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
@@ -30,7 +41,7 @@ function SubjectView({ show, setShow }) {
                 <p className="">Centre Name</p>
               </div>
               <div className="col-6">
-                <p className="text-muted text-sm">: {data.centre_id}</p>
+                <p className="text-muted text-sm">: {data.center_names}</p>
               </div>
             </div>
           </div>
@@ -40,7 +51,7 @@ function SubjectView({ show, setShow }) {
                 <p className="">Grade</p>
               </div>
               <div className="col-6">
-                <p className="text-muted text-sm">: {data.grade_id}</p>
+                <p className="text-muted text-sm">: {data.grade_names}</p>
               </div>
             </div>
           </div>
@@ -77,8 +88,9 @@ function SubjectView({ show, setShow }) {
 }
 
 SubjectView.propTypes = {
-  show: PropTypes.func.isRequired,
-  setShow: PropTypes.func.isRequired,
+  show: PropTypes.bool.isRequired,
+  setShow: PropTypes.bool.isRequired,
+  id: PropTypes.number.isRequired,
 };
 
 export default SubjectView;

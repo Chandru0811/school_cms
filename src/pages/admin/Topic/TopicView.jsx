@@ -6,34 +6,30 @@ import {
 } from "@mui/material";
 import PropTypes from "prop-types";
 import { useState } from "react";
-import api from "../../../config/URL";
 import toast from "react-hot-toast";
+import api from "../../../config/URL";
 
-function TopicView({ id, handleMenuClose }) {
-  const [open, setOpen] = useState(false);
+function TopicView({ show, setShow ,id }) {
   const [data, setData] = useState({});
 
-  const getData = async () => {
-    try {
-      const response = await api.get(`topic/${id}`);
-      setData(response.data.data);
-    } catch (error) {
-      toast.error("Error Fetching Data");
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  const handleOpen = () => {
-    getData();
-    setOpen(true);
-  };
-
   const handleClose = () => {
-    setOpen(false);
-    if (handleMenuClose) {
-      handleMenuClose();
+    setShow(false);
+  };
+  const getTopicData = async () => {
+    try {
+      const response = await api.get(`admin/topic/${id}`);
+      setData(response.data.data);
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
     }
   };
+
+  useEffect(() => {
+    if (show) {
+      getTopicData();
+    }
+  }, [id, show]);
+
 
   return (
     <>
@@ -58,7 +54,7 @@ function TopicView({ id, handleMenuClose }) {
                   <p className="fw-medium text-sm">Centre</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.center_id}</p>
+                  <p className="text-muted text-sm">: {data.center_names}</p>
                 </div>
               </div>
             </div>
@@ -68,7 +64,7 @@ function TopicView({ id, handleMenuClose }) {
                   <p className="fw-medium text-sm">Subject</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.subject_name}</p>
+                  <p className="text-muted text-sm">: {data.subject_names}</p>
                 </div>
               </div>
             </div>
@@ -106,8 +102,9 @@ function TopicView({ id, handleMenuClose }) {
 }
 
 TopicView.propTypes = {
-  handleMenuClose: PropTypes.func,
-  id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
+  show: PropTypes.bool.isRequired,
+  setShow: PropTypes.bool.isRequired,
+  id: PropTypes.number.isRequired,
 };
 
 export default TopicView;

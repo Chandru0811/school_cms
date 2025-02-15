@@ -20,7 +20,9 @@ function Grade() {
   const [menuAnchor, setMenuAnchor] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedId, setSelectedId] = useState(null);
-  const [data, setData] = useState([]); // Store selected row data
+  const [data, setData] = useState([]); 
+  const [showView, setShowView] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
 
   const columns = useMemo(
     () => [
@@ -168,7 +170,7 @@ function Grade() {
               <span className="database_name">Grade</span>
             </span>
           </div>
-          <GradeAdd />
+          <GradeAdd onSuccess={fetchData}/>
         </div>
         {loading ? (
           <div className="loader-container">
@@ -211,17 +213,15 @@ function Grade() {
             >
               <MenuItem>
                 <GradeEdit
-                  onSuccess={fetchData}
-                  id={selectedId}
-                  handleMenuClose={handleMenuClose}
+                  show={showEdit} setShow={setShowEdit}  id={selectedId}  onSuccess={fetchData}
                 />
               </MenuItem>
               <MenuItem>
-                <GradeView id={selectedId} handleMenuClose={handleMenuClose} />
+                <GradeView show={showView} setShow={setShowView} id={selectedId}/>
               </MenuItem>
               <MenuItem>
                 <Delete
-                  path={`/admin/center/delete/${selectedId}`}
+                  path={`admin/grade/delete/${selectedId}`}
                   onDeleteSuccess={fetchData}
                   onOpen={handleMenuClose}
                 />

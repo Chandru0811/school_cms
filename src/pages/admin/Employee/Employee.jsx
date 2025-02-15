@@ -215,7 +215,7 @@ function Employee() {
             open={Boolean(menuAnchor)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={() => navigate(`/employee/edit`)}>Edit</MenuItem>
+            <MenuItem onClick={({row}) => navigate(`/employee/edit/${row.original.id}`)}>Edit</MenuItem>
             <MenuItem>
               <Delete path={`admin/employee/delete/${selectedId}`} onOpen={handleMenuClose} onDeleteSuccess={getData}/>
             </MenuItem>

@@ -10,16 +10,11 @@ import {
 import PropTypes from "prop-types";
 import { MultiSelect } from "react-multi-select-component";
 
-function SubjectEdit({ show, setShow }) {
+function SubjectEdit({ show, setShow,id,onSuccess }) {
   const [loadIndicator, setLoadIndicator] = useState(false);
-  const [selectedServices, setSelectedServices] = useState([]);
+  const [selectedCenter, setSelectedCenter] = useState([]);
+  const [centerList, setCenterList] = useState([]);
 
-  const serviceOption = [
-    { value: "1", label: "SRDK" },
-    { value: "2", label: "KVM" },
-    { value: "3", label: "KCS" },
-    { value: "4", label: "PAK" },
-  ];
 
   const handleClose = () => {
     setShow(false);
@@ -27,14 +22,17 @@ function SubjectEdit({ show, setShow }) {
   };
 
   const validationSchema = yup.object().shape({
-    centre_id: yup.string().required("*Select a centre name"),
+   center_id: yup
+            .array()
+            .min(1, "*Select at least one center")
+            .required("*Select a center id"),
     grade_id: yup.string().required("*Select a grade"),
     name: yup.string().required("*Name is required"),
   });
 
   const formik = useFormik({
     initialValues: {
-      centre_id: "",
+      centre_id: [],
       grade_id: "",
       name: "",
       description: "",
@@ -43,13 +41,83 @@ function SubjectEdit({ show, setShow }) {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       setLoadIndicator(true);
-      console.log("Form values:", values);
-      setTimeout(() => {
+      try {
+        const response = await api.put(`admin/subject/update/${id}`, values);
+
+        if (response.status === 200) {
+          toast.success(response.data.message);
+          onSuccess();
+          handleClose();
+          formik.resetForm();
+          navigate("/subject");
+        }
+      } catch (e) {
+        toast.error("Error Fetching Data ", e?.response?.data?.error);
+      } finally {
         setLoadIndicator(false);
-        setShow(false);
-      }, 1000);
+      }
     },
   });
+
+  const getSubjectData = async () => {
+    try {
+      const response = await api.get(`admin/subject/${id}`);
+      const { data } = response.data;
+
+      const parsedCenterIds = JSON.parse(data.center_id);
+      const parsedCenterNames = JSON.parse(data.center_names);
+
+      const selectedCenters = parsedCenterIds.map((id, index) => ({
+        value: id,
+        label: parsedCenterNames[index] || "",
+      }));
+
+      setSelectedCenter(selectedCenters);
+
+      formik.setValues({
+        ...data,
+        center_id: selectedCenters.map((center) => center.value),
+      });
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
+  };
+
+  const getCenterList = async () => {
+    try {
+      const response = await api.get("centers/list");
+      const formattedCenters = response.data.data.map((center) => ({
+        value: center.id,
+        label: center.name,
+      }));
+
+      setCenterList(formattedCenters);
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
+  };
+
+  const getGradeList = async () => {
+    try {
+      const response = await api.get("grade/list");
+      const formattedGrades = response.data.data.map((grade) => ({
+        value: grade.id,
+        label: grade.name,
+      }));
+
+      getGradeList(formattedGrades);
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
+  };
+
+  useEffect(() => {
+    if (show) {
+      getSubjectData();
+      getCenterList();
+      getGradeList();
+    }
+  }, [id, show]);
 
   return (
     <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
@@ -65,54 +133,61 @@ function SubjectEdit({ show, setShow }) {
         <hr className="m-0"></hr>
         <DialogContent>
           <div className="row">
-            <div className="col-md-6 col-12 mb-4">
-              <label className="form-label">
-                Centre Name<span className="text-danger">*</span>
-              </label>
-              <MultiSelect
-                options={serviceOption}
-                value={selectedServices}
-                onChange={(selected) => {
-                  setSelectedServices(selected);
-                  formik.setFieldValue(
-                    "centre_id",
-                    selected.map((option) => option.value)
-                  );
-                }}
-                labelledBy="Select Service"
-                className={`form-multi-select form-multi-select-sm ${
-                  formik.touched.centre_id && formik.errors.centre_id
-                    ? "is-invalid"
-                    : ""
-                }`}
-              />
-              {formik.touched.centre_id && formik.errors.centre_id && (
-                <div className="invalid-feedback">
-                  {formik.errors.centre_id}
-                </div>
-              )}
-            </div>
-            <div className="col-md-6 col-12 mb-3">
-              <label className="form-label">
-                Grade<span className="text-danger">*</span>
-              </label>
-              <select
-                className={`form-select form-select-sm ${
-                  formik.touched.grade_id && formik.errors.grade_id
-                    ? "is-invalid"
-                    : ""
-                }`}
-                {...formik.getFieldProps("grade_id")}
-              >
-                <option value=""></option>
-                <option value="1">9 Grade</option>
-                <option value="2">10 Grade</option>
-                <option value="3">11 Grade</option>
-              </select>
-              {formik.touched.grade_id && formik.errors.grade_id && (
-                <div className="invalid-feedback">{formik.errors.grade_id}</div>
-              )}
-            </div>  
+          <div className="col-md-6 col-12 mb-4">
+                <label className="form-label">
+                  Centre Name<span className="text-danger">*</span>
+                </label>
+                <MultiSelect
+                  options={centerList}
+                  value={selectedCenter}
+                  onChange={(selected) => {
+                    setSelectedCenter(selected);
+                    formik.setFieldValue(
+                      "center_id",
+                      selected.map((option) => option.value)
+                    );
+                  }}
+                  labelledBy="Select Center"
+                  className={`form-multi-select form-multi-select-sm ${
+                    formik.touched.center_id && formik.errors.center_id
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                />
+                {formik.touched.center_id && formik.errors.center_id && (
+                  <div className="invalid-feedback">
+                    {formik.errors.center_id}
+                  </div>
+                )}
+              </div>
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Grade<span className="text-danger">*</span>
+                </label>
+                <select
+                  className={`form-select form-select-sm ${
+                    formik.touched.grade_id && formik.errors.grade_id
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  value={formik.values.grade_id} // Ensure it's bound to formik values
+                  onChange={(e) =>
+                    formik.setFieldValue("grade_id", e.target.value)
+                  }
+                >
+                  <option value="">Select Grade</option>
+                  {roles.map((grade) => (
+                    <option key={grade.value} value={grade.value}>
+                      {grade.label}
+                    </option>
+                  ))}
+                </select>
+                {formik.touched.grade_id && formik.errors.grade_id && (
+                  <div className="invalid-feedback">
+                    {formik.errors.grade_id}
+                  </div>
+                )}
+              </div> 
             <div className="col-md-6 col-12 mb-3">
               <label className="form-label">
                 Name<span className="text-danger">*</span>
@@ -174,8 +249,10 @@ function SubjectEdit({ show, setShow }) {
 }
 
 SubjectEdit.propTypes = {
-  show: PropTypes.func.isRequired,
-  setShow: PropTypes.func.isRequired,
+  show: PropTypes.bool.isRequired,
+  setShow: PropTypes.bool.isRequired,
+  id: PropTypes.number.isRequired,
+  onSuccess: PropTypes.func.isRequired,
 };
 
 export default SubjectEdit;

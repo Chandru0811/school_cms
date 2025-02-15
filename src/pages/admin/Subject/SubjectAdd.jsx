@@ -8,18 +8,16 @@ import {
   DialogContent,
 } from "@mui/material";
 import { MultiSelect } from "react-multi-select-component";
+import { useNavigate } from "react-router-dom";
+import api from "../../../config/URL";
+import toast from "react-hot-toast";
 
-function SubjectAdd() {
+function SubjectAdd({onSuccess}) {
   const [show, setShow] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
-  const [selectedServices, setSelectedServices] = useState([]);
-
-  const serviceOption = [
-    { value: "1", label: "SRDK" },
-    { value: "2", label: "KVM" },
-    { value: "3", label: "KCS" },
-    { value: "4", label: "PAK" },
-  ];
+  const [selectedCenter, setSelectedCenter] = useState([]);
+  const navigate = useNavigate();
+  const [centerList, setCenterList] = useState([]);
 
   const handleClose = () => {
     formik.resetForm();
@@ -32,14 +30,17 @@ function SubjectAdd() {
   };
 
   const validationSchema = yup.object().shape({
-    centre_id: yup.string().required("*Select a centre name"),
+   center_id: yup
+         .array()
+         .min(1, "*Select at least one center")
+         .required("*Select a center id"),
     grade_id: yup.string().required("*Select a grade"),
     name: yup.string().required("*Name is required"),
   });
 
   const formik = useFormik({
     initialValues: {
-      centre_id: "",
+      centre_id: [],
       grade_id: "",
       name: "",
       description: "",
@@ -47,9 +48,57 @@ function SubjectAdd() {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       setLoadIndicator(true);
-      console.log("Form values:", values);
+      try {
+        const response = await api.post("admin/subject", values);
+        console.log(response.status)
+
+        if (response.status === 200) {
+          toast.success(response.data.message);
+          onSuccess();
+          handleClose();
+          formik.resetForm();
+          navigate("/subject");
+        }
+      } catch (e) {
+        toast.error("Error Fetching Data ", e?.response?.data?.error);
+      } finally {
+        setLoadIndicator(false); 
+      }
     },
   });
+
+  const getCenterList = async () => {
+    try {
+      const response = await api.get("centers/list");
+      const formattedCenters = response.data.data.map((center) => ({
+        value: center.id,
+        label: center.name,
+      }));
+
+      setCenterList(formattedCenters);
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
+  };
+
+  const getGradeList = async () => {
+    try {
+      const response = await api.get("grade/list");
+      const formattedGrades = response.data.data.map((grade) => ({
+        value: grade.id,
+        label: grade.name,
+      }));
+
+      getGradeList(formattedGrades);
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
+  };
+
+  useEffect(() => {
+    getCenterList();
+    getGradeList();
+  }, []);
 
   return (
     <>
@@ -80,25 +129,25 @@ function SubjectAdd() {
                   Centre Name<span className="text-danger">*</span>
                 </label>
                 <MultiSelect
-                  options={serviceOption}
-                  value={selectedServices}
+                  options={centerList}
+                  value={selectedCenter}
                   onChange={(selected) => {
-                    setSelectedServices(selected);
+                    setSelectedCenter(selected);
                     formik.setFieldValue(
-                      "centre_id",
+                      "center_id",
                       selected.map((option) => option.value)
                     );
                   }}
-                  labelledBy="Select Service"
+                  labelledBy="Select Center"
                   className={`form-multi-select form-multi-select-sm ${
-                    formik.touched.centre_id && formik.errors.centre_id
+                    formik.touched.center_id && formik.errors.center_id
                       ? "is-invalid"
                       : ""
                   }`}
                 />
-                {formik.touched.centre_id && formik.errors.centre_id && (
+                {formik.touched.center_id && formik.errors.center_id && (
                   <div className="invalid-feedback">
-                    {formik.errors.centre_id}
+                    {formik.errors.center_id}
                   </div>
                 )}
               </div>
@@ -112,12 +161,17 @@ function SubjectAdd() {
                       ? "is-invalid"
                       : ""
                   }`}
-                  {...formik.getFieldProps("grade_id")}
+                  value={formik.values.grade_id} // Ensure it's bound to formik values
+                  onChange={(e) =>
+                    formik.setFieldValue("grade_id", e.target.value)
+                  }
                 >
-                  <option value=""></option>
-                  <option value="1">9 Grade</option>
-                  <option value="2">10 Grade</option>
-                  <option value="3">11 Grade</option>
+                  <option value="">Select Grade</option>
+                  {roles.map((grade) => (
+                    <option key={grade.value} value={grade.value}>
+                      {grade.label}
+                    </option>
+                  ))}
                 </select>
                 {formik.touched.grade_id && formik.errors.grade_id && (
                   <div className="invalid-feedback">
