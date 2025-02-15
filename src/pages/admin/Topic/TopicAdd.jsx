@@ -26,7 +26,7 @@ function TopicAdd({ onSuccess }) {
       .array()
       .min(1, "*Select at least one center")
       .required("*Select a center id"),
-    grade: yup.string().required("*Select a grade"),
+    // grade: yup.string().required("*Select a grade"),
     subject_id: yup.string().required("*Select a subject"),
     name: yup.string().required("*Name is required"),
     description: yup.string().required("*Description is required"),
@@ -34,6 +34,7 @@ function TopicAdd({ onSuccess }) {
 
   const handleShow = () => {
     setShow(true);
+    formik.resetForm();
   };
 
   const handleClose = () => {
@@ -61,7 +62,7 @@ function TopicAdd({ onSuccess }) {
           onSuccess();
           handleClose();
           formik.resetForm();
-          navigate("/subject");
+          navigate("/topic");
         }
       } catch (e) {
         toast.error("Error Fetching Data ", e?.response?.data?.error);
@@ -87,15 +88,17 @@ function TopicAdd({ onSuccess }) {
 
   const getSubjectList = async () => {
     try {
-      const response = await api.get("subject/list");
-      const formattedSubjects = response.data.data.map((subject) => ({
+      const response = await api.get("subjects/list");
+      console.log(response); 
+      const formattedSubjects = response.data?.data?.map((subject) => ({
         value: subject.id,
         label: subject.name,
       }));
   
       setSubjects(formattedSubjects);
     } catch (e) {
-      toast.error("Error Fetching Data", e?.response?.data?.error);
+      console.error("Error Fetching Data", e);
+      toast.error("Error Fetching Data", e?.response?.data?.error || e.message);
     }
   };
 
@@ -109,7 +112,6 @@ function TopicAdd({ onSuccess }) {
       <button
         type="button"
         className="btn btn-button btn-sm me-2"
-        style={{ fontWeight: "600px !important" }}
         onClick={handleShow}
       >
         &nbsp; Add &nbsp;&nbsp; <i className="bi bi-plus-lg"></i>
@@ -237,7 +239,7 @@ function TopicAdd({ onSuccess }) {
                   aria-hidden="true"
                 ></span>
               )}
-              Submit
+              Save
             </button>
           </DialogActions>
         </form>

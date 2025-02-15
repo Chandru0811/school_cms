@@ -20,7 +20,7 @@ function Grade() {
   const [menuAnchor, setMenuAnchor] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedId, setSelectedId] = useState(null);
-  const [data, setData] = useState([]); 
+  const [data, setData] = useState([]);
   const [showView, setShowView] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
 
@@ -170,7 +170,7 @@ function Grade() {
               <span className="database_name">Grade</span>
             </span>
           </div>
-          <GradeAdd onSuccess={fetchData}/>
+          <GradeAdd onSuccess={fetchData} />
         </div>
         {loading ? (
           <div className="loader-container">
@@ -203,6 +203,13 @@ function Grade() {
                     updated_at: false,
                   },
                 }}
+                muiTableBodyRowProps={({ row }) => ({
+                  style: { cursor: "pointer" },
+                  onClick: () => {
+                    setSelectedId(row.original.id);
+                    setShowView(true);
+                  },
+                })}
               />
             </ThemeProvider>
             <Menu
@@ -211,13 +218,13 @@ function Grade() {
               open={Boolean(menuAnchor)}
               onClose={handleMenuClose}
             >
-              <MenuItem>
-                <GradeEdit
-                  show={showEdit} setShow={setShowEdit}  id={selectedId}  onSuccess={fetchData}
-                />
-              </MenuItem>
-              <MenuItem>
-                <GradeView show={showView} setShow={setShowView} id={selectedId}/>
+              <MenuItem
+                onClick={() => {
+                  setShowEdit(true);
+                  handleMenuClose();
+                }}
+              >
+                Edit
               </MenuItem>
               <MenuItem>
                 <Delete
@@ -227,6 +234,13 @@ function Grade() {
                 />
               </MenuItem>
             </Menu>
+            <GradeEdit
+              show={showEdit}
+              setShow={setShowEdit}
+              id={selectedId}
+              onSuccess={fetchData}
+            />
+            <GradeView show={showView} setShow={setShowView} id={selectedId} />
           </>
         )}
       </div>

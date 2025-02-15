@@ -42,10 +42,11 @@ function Subject() {
         enableHiding: false,
         enableSorting: false,
         size: 20,
-        Cell: () => (
+        Cell: ({row}) => (
           <IconButton
             onClick={(e) => {
               e.stopPropagation();
+              setSelectedId(row.original.id);
               setMenuAnchor(e.currentTarget);
             }}
           >
@@ -164,7 +165,6 @@ function Subject() {
           </div>
           <SubjectAdd  onSuccess={getData} />
         </div>
-
         <>
           <ThemeProvider theme={theme}>
             <MaterialReactTable
@@ -188,7 +188,7 @@ function Subject() {
               muiTableBodyRowProps={({ row }) => ({
                 style: { cursor: "pointer" },
                 onClick: () => {
-                  setSelectedId(row.original);
+                  setSelectedId(row.original.id);
                   setShowView(true);
                 },
               })}
@@ -209,7 +209,10 @@ function Subject() {
               Edit
             </MenuItem>
             <MenuItem>
-              <Delete path={`admin/company/delete`} onOpen={handleMenuClose} />
+              <Delete
+               path={`subject/delete/${selectedId}`}
+               onDeleteSuccess={getData}
+               />
             </MenuItem>
           </Menu>
           <SubjectEdit show={showEdit} setShow={setShowEdit}  id={selectedId}  onSuccess={getData}/>

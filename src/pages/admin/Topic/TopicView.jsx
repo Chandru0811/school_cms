@@ -5,36 +5,53 @@ import {
   DialogContent,
 } from "@mui/material";
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import api from "../../../config/URL";
 
-function TopicView({ show, setShow ,id }) {
+function TopicView({ show, setShow, id }) {
   const [data, setData] = useState({});
+  const [centerList, setCenterList] = useState([]);
 
   const handleClose = () => {
     setShow(false);
   };
+
   const getTopicData = async () => {
     try {
-      const response = await api.get(`admin/topic/${id}`);
+      const response = await api.get(`topic/${id}`);
       setData(response.data.data);
     } catch (e) {
-      toast.error("Error Fetching Data ", e?.response?.data?.error);
+      toast.error(
+        `Error Fetching Topic Data: ${e?.response?.data?.error || e.message}`
+      );
+    }
+  };
+
+  const getCenterList = async () => {
+    try {
+      const response = await api.get("centers/list");
+      const centerNames = response.data.data.map((center) => ({
+        name: center.name,
+      }));
+      setCenterList(centerNames);
+    } catch (e) {
+      toast.error(
+        `Error Fetching Centers: ${e?.response?.data?.error || e.message}`
+      );
     }
   };
 
   useEffect(() => {
     if (show) {
       getTopicData();
+      getCenterList();
     }
   }, [id, show]);
-
 
   return (
     <>
       <span
-        onClick={handleOpen}
         style={{
           whiteSpace: "nowrap",
           cursor: "pointer",
@@ -43,45 +60,52 @@ function TopicView({ show, setShow ,id }) {
         View
       </span>
 
-      <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
+      <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
         <DialogTitle>View Topic</DialogTitle>
-        <hr className="m-0"></hr>
+        <hr className="m-0" />
         <DialogContent>
           <div className="row">
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
+            <div className="col-md-6 col-12">
+              <div className="row mt-3 mb-2">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Centre</p>
+                  <p>Centre Names</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.center_names}</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Subject</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.subject_names}</p>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">
+                      : {centerList.map((center) => center.name).join(", ")}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
+
+            <div className="col-md-6 col-12">
+              <div className="row mt-3 mb-2">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Name</p>
+                  <p>Grade</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">: {data.subject_name}</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-md-6 col-12">
+              <div className="row mt-3 mb-2">
+                <div className="col-6">
+                  <p>Name</p>
                 </div>
                 <div className="col-6">
                   <p className="text-muted text-sm">: {data.name}</p>
                 </div>
               </div>
             </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
+
+            <div className="col-md-6 col-12">
+              <div className="row mt-3 mb-2">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Description</p>
+                  <p>Description</p>
                 </div>
                 <div className="col-6">
                   <p className="text-muted text-sm">: {data.description}</p>
@@ -90,10 +114,10 @@ function TopicView({ show, setShow ,id }) {
             </div>
           </div>
         </DialogContent>
-        <hr className="m-0"></hr>
-        <DialogActions className="mt-3">
+        <hr className="m-0" />
+        <DialogActions>
           <button className="btn btn-sm btn-back" onClick={handleClose}>
-            Back
+            Close
           </button>
         </DialogActions>
       </Dialog>
@@ -103,7 +127,7 @@ function TopicView({ show, setShow ,id }) {
 
 TopicView.propTypes = {
   show: PropTypes.bool.isRequired,
-  setShow: PropTypes.bool.isRequired,
+  setShow: PropTypes.func.isRequired,
   id: PropTypes.number.isRequired,
 };
 

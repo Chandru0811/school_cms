@@ -25,7 +25,7 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
       .array()
       .min(1, "*Select at least one center")
       .required("*Select a center id"),
-    grade: yup.string().required("*Select a grade"),
+    // grade: yup.string().required("*Select a grade"),
     subject_id: yup.string().required("*Selected a subject"),
     name: yup.string().required("*Name is required"),
     description: yup.string().required("*Description is required"),
@@ -34,7 +34,7 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
   const formik = useFormik({
     initialValues: {
       center_id: [],
-      grade: "",
+      // grade: "",
       subject_id: "",
       name: "",
       description: "",
@@ -51,7 +51,9 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
           navigate("/topic");
         }
       } catch (e) {
-        toast.error(`Error Fetching Data: ${e?.response?.data?.error || e.message}`);
+        toast.error(
+          `Error Fetching Data: ${e?.response?.data?.error || e.message}`
+        );
       } finally {
         setLoadIndicator(false);
       }
@@ -62,23 +64,25 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
     try {
       const response = await api.get(`topic/${id}`);
       const { data } = response.data;
-      const parsedCenterIds = JSON.parse(data.center_id);
-      const parsedCenterNames = JSON.parse(data.center_names);
-      const selectedCenters = parsedCenterIds.map((centerId, index) => ({
-        value: centerId,
-        label: parsedCenterNames[index] || "",
-      }));
+      const centerIds = JSON.parse(data.center_id);
+      await getCenterList();
+
+      const selectedCenters = centerList.filter((center) =>
+        centerIds.includes(center.value)
+      );
 
       setSelectedCenter(selectedCenters);
       formik.setValues({
-        center_id: selectedCenters.map((c) => c.value),
-        grade: data.grade,
-        subject_id: data.subject_id,
-        name: data.name,
-        description: data.description,
+        center_id: centerIds,
+        // grade: data.grade || "",
+        subject_id: data.subject_id || "",
+        name: data.name || "",
+        description: data.description || "",
       });
     } catch (e) {
-      toast.error(`Error Fetching Data: ${e?.response?.data?.error || e.message}`);
+      toast.error(
+        `Error Fetching Data: ${e?.response?.data?.error || e.message}`
+      );
     }
   };
 
@@ -94,6 +98,7 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
       toast.error(`Error Fetching Data: ${e?.response?.data?.error || e.message}`);
     }
   };
+  
 
   const getSubjectList = async () => {
     try {
@@ -104,7 +109,9 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
       }));
       setSubjects(formattedSubject);
     } catch (e) {
-      toast.error(`Error Fetching Data: ${e?.response?.data?.error || e.message}`);
+      toast.error(
+        `Error Fetching Data: ${e?.response?.data?.error || e.message}`
+      );
     }
   };
 
@@ -157,7 +164,9 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
                 }
               />
               {formik.touched.center_id && formik.errors.center_id && (
-                <div className="invalid-feedback">{formik.errors.center_id}</div>
+                <div className="invalid-feedback">
+                  {formik.errors.center_id}
+                </div>
               )}
             </div>
 
@@ -184,7 +193,9 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
                 ))}
               </select>
               {formik.touched.subject_id && formik.errors.subject_id && (
-                <div className="invalid-feedback">{formik.errors.subject_id}</div>
+                <div className="invalid-feedback">
+                  {formik.errors.subject_id}
+                </div>
               )}
             </div>
 
@@ -218,14 +229,20 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
                 {...formik.getFieldProps("description")}
               />
               {formik.touched.description && formik.errors.description && (
-                <div className="invalid-feedback">{formik.errors.description}</div>
+                <div className="invalid-feedback">
+                  {formik.errors.description}
+                </div>
               )}
             </div>
           </div>
         </DialogContent>
         <hr className="m-0" />
         <DialogActions className="mt-3">
-          <button className="btn btn-sm btn-back" onClick={handleClose} type="button">
+          <button
+            className="btn btn-sm btn-back"
+            onClick={handleClose}
+            type="button"
+          >
             Cancel
           </button>
           <button
@@ -239,7 +256,7 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
                 aria-hidden="true"
               ></span>
             )}
-            Submit
+            Update
           </button>
         </DialogActions>
       </form>

@@ -1,27 +1,43 @@
 import { useEffect, useState } from "react";
-import { Link, useParams} from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import PropTypes from "prop-types";
 
 function EmployeeView() {
-const [data,setData] = useState({});
-const { id } = useParams();
+  const [data, setData] = useState({});
+  const { id } = useParams();
+  const [centerList, setCenterList] = useState([]);
 
-const getEmployeeData = async () => {
-  try {
-    const response = await api.get(`employee/${id}`);
-    setData(response.data.data);
-  } catch (e) {
-    const errorMessage = e?.response?.data?.error || "Error Fetching Data. Please try again.";
-    toast.error(errorMessage);
-  }
-};
+  const getEmployeeData = async () => {
+    try {
+      const response = await api.get(`employee/${id}`);
+      setData(response.data.data);
+    } catch (e) {
+      const errorMessage =
+        e?.response?.data?.error || "Error Fetching Data. Please try again.";
+      toast.error(errorMessage);
+    }
+  };
 
+  const getCenterList = async () => {
+    try {
+      const response = await api.get("centers/list");
+      const centerNames = response.data.data.map((center) => ({
+        name: center.name,
+      }));
+      setCenterList(centerNames);
+    } catch (e) {
+      toast.error(
+        `Error Fetching Centers: ${e?.response?.data?.error || e.message}`
+      );
+    }
+  };
 
-useEffect(() => {
-  getEmployeeData();
-}, [id]);
+  useEffect(() => {
+    getEmployeeData();
+    getCenterList();
+  }, [id]);
 
   return (
     <div className="container-fluid px-0">
@@ -70,7 +86,10 @@ useEffect(() => {
                   <p className="fw-medium text-sm">Centre</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.center_id}</p>
+                  <p className="text-muted text-sm">
+                    : {centerList.map((center) => center.name).join(", ") ||
+                      "No Centers Available"}
+                  </p>
                 </div>
               </div>
             </div>

@@ -5,14 +5,24 @@ import { MultiSelect } from "react-multi-select-component";
 import { useEffect, useState } from "react";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 function EmployeeAdd() {
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [selectedCenter, setSelectedCenter] = useState([]);
   const navigate = useNavigate();
-
   const [centerList, setCenterList] = useState([]);
   const [roles, setRoles] = useState([]);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword((prev) => !prev);
+  };
+
   const validationSchema = yup.object().shape({
     center_id: yup
       .array()
@@ -278,37 +288,58 @@ function EmployeeAdd() {
                 <label className="form-label">
                   Password<span className="text-danger">*</span>
                 </label>
-                <input
-                  type="password"
-                  onKeyDown={(e) => e.stopPropagation()}
-                  className={`form-control form-control-sm ${
-                    formik.touched.password && formik.errors.password
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  {...formik.getFieldProps("password")}
-                />
+                <div className="input-group">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    onKeyDown={(e) => e.stopPropagation()}
+                    className={`form-control form-control-sm ${
+                      formik.touched.password && formik.errors.password
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("password")}
+                  />
+                  <span
+                    className="input-group-text iconInputBackground"
+                    id="basic-addon1"
+                    onClick={togglePasswordVisibility}
+                    style={{ cursor: "pointer", borderRadius: "3px" }}
+                  >
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  </span>
+                </div>
                 {formik.touched.password && formik.errors.password && (
                   <div className="invalid-feedback">
                     {formik.errors.password}
                   </div>
                 )}
               </div>
+
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
                   Confirm Password<span className="text-danger">*</span>
                 </label>
-                <input
-                  type="password"
-                  onKeyDown={(e) => e.stopPropagation()}
-                  className={`form-control form-control-sm ${
-                    formik.touched.password_confirmation &&
-                    formik.errors.password_confirmation
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  {...formik.getFieldProps("password_confirmation")}
-                />
+                <div className="input-group">
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    onKeyDown={(e) => e.stopPropagation()}
+                    className={`form-control form-control-sm ${
+                      formik.touched.password_confirmation &&
+                      formik.errors.password_confirmation
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("password_confirmation")}
+                  />
+                  <span
+                    className="input-group-text iconInputBackground"
+                    id="basic-addon1"
+                    onClick={toggleConfirmPasswordVisibility}
+                    style={{ cursor: "pointer", borderRadius: "3px" }}
+                  >
+                    {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                  </span>
+                </div>
                 {formik.touched.password_confirmation &&
                   formik.errors.password_confirmation && (
                     <div className="invalid-feedback">

@@ -51,7 +51,7 @@ function GradeEdit({ show, setShow,id,onSuccess }) {
           onSuccess();
           handleClose();
           formik.resetForm();
-          navigate("/settings");
+          navigate("/grade");
         }
       } catch (e) {
         toast.error("Error Fetching Data ", e?.response?.data?.error);
@@ -63,7 +63,7 @@ function GradeEdit({ show, setShow,id,onSuccess }) {
 
   const getGradeData = async () => {
     try {
-      const response = await api.get(`admin/grade/${id}`);
+      const response = await api.get(`grade/${id}`);
       const { data } = response.data;
 
       const parsedCenterIds = JSON.parse(data.center_id);

@@ -19,6 +19,7 @@ function Employee() {
   const [selectedId, setSelectedId] = useState(null);
   const [data, setData] = useState([]);
   const navigate = useNavigate();
+  
 
   const columns = useMemo(
     () => [
@@ -214,8 +215,8 @@ function Employee() {
             onClose={handleMenuClose}
           >
             <MenuItem
-              onClick={({ row }) =>
-                navigate(`/employee/edit/${row.original.id}`)
+              onClick={() =>
+                navigate(`/employee/edit/${selectedId}`)
               }
             >
               Edit

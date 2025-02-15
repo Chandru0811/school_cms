@@ -27,14 +27,14 @@ function EmployeeEdit() {
        name: yup.string().required("*Employee name is required"),
        email: yup.string().required("*Employee email is required"),
        mobile: yup.string().required("*Employee mobile is required"),
-       password: yup
-         .string()
-         .required("*Employee password is required")
-         .min(6, "*Password must be at least 6 characters"),
-       password_confirmation: yup
-         .string()
-         .oneOf([yup.ref("password"), null], "*Passwords must match")
-         .required("*Employee confirm password is required"),
+      //  password: yup
+      //    .string()
+      //    .required("*Employee password is required")
+      //    .min(6, "*Password must be at least 6 characters"),
+      //  password_confirmation: yup
+      //    .string()
+      //    .oneOf([yup.ref("password"), null], "*Passwords must match")
+      //    .required("*Employee confirm password is required"),
      });
 
   const formik = useFormik({
@@ -44,8 +44,8 @@ function EmployeeEdit() {
       name: "",
       email: "",
       mobile: "",
-      password: "",
-      password_confirmation: "",
+      // password: "",
+      // password_confirmation: "",
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -223,13 +223,13 @@ function EmployeeEdit() {
                       ? "is-invalid"
                       : ""
                   }`}
-                  value={formik.values.role_id} // Ensure it's bound to formik values
+                  value={formik.values.role_id} 
                   onChange={(e) =>
                     formik.setFieldValue("role_id", e.target.value)
                   }
                 >
                   <option value="">Select Role</option>
-                  {roles.map((role) => (
+                  {roles?.map((role) => (
                     <option key={role.value} value={role.value}>
                       {role.label}
                     </option>
@@ -296,7 +296,7 @@ function EmployeeEdit() {
                   <div className="invalid-feedback">{formik.errors.mobile}</div>
                 )}
               </div>
-              <div className="col-md-6 col-12 mb-3">
+              {/* <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
                   Password<span className="text-danger">*</span>
                 </label>
@@ -337,7 +337,7 @@ function EmployeeEdit() {
                       {formik.errors.password_confirmation}
                     </div>
                   )}
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

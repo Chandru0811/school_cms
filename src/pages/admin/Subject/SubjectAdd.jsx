@@ -7,12 +7,13 @@ import {
   DialogTitle,
   DialogContent,
 } from "@mui/material";
-import { MultiSelect } from "react-multi-select-component";
 import { useNavigate } from "react-router-dom";
-import api from "../../../config/URL";
 import toast from "react-hot-toast";
+import PropTypes from "prop-types";
+import { MultiSelect } from "react-multi-select-component";
+import api from "../../../config/URL";
 
-function SubjectAdd() {
+function TopicAdd({ onSuccess }) {
   const [show, setShow] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [selectedCenter, setSelectedCenter] = useState([]);
@@ -20,28 +21,29 @@ function SubjectAdd() {
   const [centerList, setCenterList] = useState([]);
   const [grades, setGrades] = useState([]);
 
-  const handleClose = () => {
-    formik.resetForm();
-    setShow(false);
-  };
+  const validationSchema = yup.object().shape({
+    center_id: yup
+      .array()
+      .min(1, "*Select at least one center")
+      .required("*Select a center id"),
+    grade_id: yup.string().required("*Select a subject"),
+    name: yup.string().required("*Name is required"),
+    description: yup.string().required("*Description is required"),
+  });
 
   const handleShow = () => {
     setShow(true);
     formik.resetForm();
   };
 
-  const validationSchema = yup.object().shape({
-   center_id: yup
-         .array()
-         .min(1, "*Select at least one center")
-         .required("*Select a center id"),
-    grade_id: yup.string().required("*Select a grade"),
-    name: yup.string().required("*Name is required"),
-  });
+  const handleClose = () => {
+    setShow(false);
+    formik.resetForm();
+  };
 
   const formik = useFormik({
     initialValues: {
-      centre_id: [],
+      center_id: [],
       grade_id: "",
       name: "",
       description: "",
@@ -51,10 +53,11 @@ function SubjectAdd() {
       setLoadIndicator(true);
       try {
         const response = await api.post("subject", values);
-        console.log(response.status)
+        console.log(response.status);
 
         if (response.status === 200) {
           toast.success(response.data.message);
+          onSuccess();
           handleClose();
           formik.resetForm();
           navigate("/subject");
@@ -62,7 +65,7 @@ function SubjectAdd() {
       } catch (e) {
         toast.error("Error Fetching Data ", e?.response?.data?.error);
       } finally {
-        setLoadIndicator(false); 
+        setLoadIndicator(false);
       }
     },
   });
@@ -83,15 +86,17 @@ function SubjectAdd() {
 
   const getGradeList = async () => {
     try {
-      const response = await api.get("grade/list");
-      const formattedGrades = response.data.data.map((grade) => ({
+      const response = await api.get("grades/list");
+      console.log(response); 
+      const formattedGrades = response.data?.data?.map((grade) => ({
         value: grade.id,
         label: grade.name,
       }));
-
+  
       setGrades(formattedGrades);
     } catch (e) {
-      toast.error("Error Fetching Data ", e?.response?.data?.error);
+      console.error("Error Fetching Data", e);
+      toast.error("Error Fetching Data", e?.response?.data?.error || e.message);
     }
   };
 
@@ -105,12 +110,10 @@ function SubjectAdd() {
       <button
         type="button"
         className="btn btn-button btn-sm me-2"
-        style={{ fontWeight: "600px !important" }}
         onClick={handleShow}
       >
         &nbsp; Add &nbsp;&nbsp; <i className="bi bi-plus-lg"></i>
       </button>
-
       <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
         <form
           onSubmit={formik.handleSubmit}
@@ -161,7 +164,7 @@ function SubjectAdd() {
                       ? "is-invalid"
                       : ""
                   }`}
-                  value={formik.values.grade_id} // Ensure it's bound to formik values
+                  value={formik.values.grade_id}
                   onChange={(e) =>
                     formik.setFieldValue("grade_id", e.target.value)
                   }
@@ -198,7 +201,9 @@ function SubjectAdd() {
                 )}
               </div>
               <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">Description</label>
+                <label className="form-label">
+                  Description<span className="text-danger">*</span>
+                </label>
                 <textarea
                   className={`form-control ${
                     formik.touched.description && formik.errors.description
@@ -241,4 +246,8 @@ function SubjectAdd() {
   );
 }
 
-export default SubjectAdd;
+TopicAdd.propTypes = {
+  onSuccess: PropTypes.func.isRequired,
+};
+
+export default TopicAdd;

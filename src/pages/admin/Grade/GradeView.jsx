@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 
 function GradeView({ show, setShow ,id}) {
   const [data, setData] = useState({});
+  const [centerList, setCenterList] = useState([]);
 
   const handleClose = () => {
     setShow(false);
@@ -24,9 +25,24 @@ function GradeView({ show, setShow ,id}) {
     }
   };
 
+  const getCenterList = async () => {
+    try {
+      const response = await api.get("centers/list");
+      const centerNames = response.data.data.map((center) => ({
+        name: center.name,
+      }));
+      setCenterList(centerNames);
+    } catch (e) {
+      toast.error(
+        `Error Fetching Centers: ${e?.response?.data?.error || e.message}`
+      );
+    }
+  };
+
   useEffect(() => {
     if (show) {
       getGradeData();
+      getCenterList();
     }
   }, [id, show]);
 
@@ -42,7 +58,9 @@ function GradeView({ show, setShow ,id}) {
                 <p className="">Center</p>
               </div>
               <div className="col-6">
-                <p className="text-muted text-sm">:{data.center_names}</p>
+              <p className="text-muted text-sm">
+                      : {centerList.map((center) => center.name).join(", ")}
+                    </p>
               </div>
             </div>
           </div>
@@ -52,7 +70,7 @@ function GradeView({ show, setShow ,id}) {
                 <p className="">Name</p>
               </div>
               <div className="col-6">
-                <p className="text-muted text-sm">:{data.name}</p>
+                <p className="text-muted text-sm">: {data.name}</p>
               </div>
             </div>
           </div>
@@ -62,7 +80,7 @@ function GradeView({ show, setShow ,id}) {
                 <p className="">Description</p>
               </div>
               <div className="col-6">
-                <p className="text-muted text-sm">:{data.description}</p>
+                <p className="text-muted text-sm">: {data.description}</p>
               </div>
             </div>
           </div>
