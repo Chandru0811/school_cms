@@ -182,7 +182,7 @@ function StudentView() {
                 </div>
                 <div className="col-6">
                   <p className="text-muted text-sm">
-                    :{data.grade_name}
+                    : {data.grade_name}
                   </p>
                 </div>
               </div>
