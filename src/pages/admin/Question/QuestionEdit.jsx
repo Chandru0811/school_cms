@@ -1,23 +1,23 @@
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { FaTrash } from "react-icons/fa";
-import { useState } from "react";
 import { MultiSelect } from "react-multi-select-component";
-// import { useState } from "react";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import api from "../../../config/URL";
 
 function QuestionEdit() {
-  const [selectedServices, setSelectedServices] = useState([]);
+  const [selectedCenter, setSelectedCenter] = useState([]);
+  const [centerList, setCenterList] = useState([]);
+  const [subjects, setSubjects] = useState([]);
+  const [grades, setGrades] = useState([]);
+  const [topics, setTopics] = useState([]);
+  const { id } = useParams();
 
-  const serviceOption = [
-    { value: "1", label: "SRDK" },
-    { value: "2", label: "KVM" },
-    { value: "3", label: "KCS" },
-    { value: "4", label: "PAK" },
-  ];
 
   const validationSchema = yup.object().shape({
-    centre_id: yup
+    center_id: yup
       .array()
       .of(yup.string().required("*Select at least one centre"))
       .min(1, "*Select at least one centre")
@@ -44,30 +44,122 @@ function QuestionEdit() {
 
   const formik = useFormik({
     initialValues: {
-      centre_id: "",
+      center_id: "",
       grade_id: "",
       subject_id: "",
       topic_id: "",
       difficult_level: "",
-      ques_type: [],
+      question: "",
+      upload: null,
+      ques_type: "",
       multiChoices: [
         { id: Date.now(), value: "" },
         { id: Date.now() + 1, value: "" },
       ],
-      filledAnswer: "",
-      closedOption: "",
-      shortAnswer: "",
-      checkUploadFile: null,
+      answer_upload: "",
+      options: [],
       hint: "",
-      upload_file: null,
-      question: "",
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      // setLoadIndicator(true);
-      console.log("Form values:", values);
+      setLoadIndicator(true);
+      try {
+        const response = await api.post(`question/updated/${id}`, values);
+        if (response.status === 200) {
+          toast.success(response.data.message);
+          navigate("/question");
+        }
+      } catch (e) {
+        toast.error("Error Fetching Data ", e?.response?.data?.error);
+      } finally {
+        setLoadIndicator(false);
+      }
     },
   });
+
+  const getData = async () => {
+    try {
+      const response = await api.get(`question/${id}`);
+      const { data } = response.data;
+      const parsedCenterIds = JSON.parse(data.center_id);
+      const parsedCenterNames = JSON.parse(data.center_names);
+      const selectedCenters = parsedCenterIds.map((id, index) => ({
+        value: id,
+        label: parsedCenterNames[index] || "",
+      }));
+
+      setSelectedCenter(selectedCenters);
+
+      formik.setValues({
+        ...data,
+        center_id: selectedCenters.map((center) => center.value),
+      });
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
+  };
+
+  const getCenterList = async () => {
+    try {
+      const response = await api.get("centers/list");
+      const formattedCenters = response.data.data.map((center) => ({
+        value: center.id,
+        label: center.name,
+      }));
+      console.log("center", formattedCenters)
+      setCenterList(formattedCenters);
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
+  };
+
+  const getSubjectList = async () => {
+    try {
+      const response = await api.get("subjects/list");
+      console.log(response);
+      const formattedSubjects = response.data?.data?.map((subject) => ({
+        value: subject.id,
+        label: subject.name,
+      }));
+
+      setSubjects(formattedSubjects);
+    } catch (e) {
+      console.error("Error Fetching Data", e);
+      toast.error("Error Fetching Data", e?.response?.data?.error || e.message);
+    }
+  };
+
+  const getGradeList = async () => {
+    try {
+      const response = await api.get("grades/list");
+      console.log(response);
+      const formattedGrades = response.data?.data?.map((grade) => ({
+        value: grade.id,
+        label: grade.name,
+      }));
+
+      setGrades(formattedGrades);
+    } catch (e) {
+      console.error("Error Fetching Data", e);
+      toast.error("Error Fetching Data", e?.response?.data?.error || e.message);
+    }
+  };
+
+  const topicList = async () => {
+    try {
+      const response = await api.get("topics/list");
+      console.log(response);
+      const formattedTopics = response.data?.data?.map((grade) => ({
+        value: topics.id,
+        label: topics.name,
+      }));
+
+      setTopics(formattedTopics);
+    } catch (e) {
+      console.error("Error Fetching Data", e);
+      toast.error("Error Fetching Data", e?.response?.data?.error || e.message);
+    }
+  };
 
   const handleCheckboxChange = (event) => {
     const { value, checked } = event.target;
@@ -103,6 +195,14 @@ function QuestionEdit() {
     );
     formik.setFieldValue("multiChoices", updatedMultiChoices);
   };
+
+  useEffect(() => {
+    getData();
+    getCenterList();
+    getSubjectList();
+    getGradeList();
+    topicList();
+  }, []);
 
   return (
     <div className="container p-3">
@@ -141,7 +241,7 @@ function QuestionEdit() {
                 <div className="dot active"></div>
               </div>
               <span className="me-2 text-muted text-sm">
-                Edit Question & Answer
+                Add Question & Answer
               </span>
             </div>
             <div className="my-2 pe-3 d-flex align-items-center">
@@ -156,7 +256,7 @@ function QuestionEdit() {
                 className="btn btn-button btn-sm me-2"
                 style={{ fontWeight: "600px !important" }}
               >
-                Update
+                Save
               </button>
             </div>
           </div>
@@ -167,25 +267,24 @@ function QuestionEdit() {
                   Centre Name<span className="text-danger">*</span>
                 </label>
                 <MultiSelect
-                  options={serviceOption}
-                  value={selectedServices}
+                  options={centerList}
+                  value={selectedCenter}
                   onChange={(selected) => {
-                    setSelectedServices(selected);
+                    setSelectedCenter(selected);
                     formik.setFieldValue(
-                      "centre_id",
+                      "center_id",
                       selected.map((option) => option.value)
                     );
                   }}
-                  labelledBy="Select Service"
-                  className={`form-multi-select form-multi-select-sm ${
-                    formik.touched.centre_id && formik.errors.centre_id
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  labelledBy="Select Center"
+                  className={`form-multi-select form-multi-select-sm ${formik.touched.center_id && formik.errors.center_id
+                    ? "is-invalid"
+                    : ""
+                    }`}
                 />
-                {formik.touched.centre_id && formik.errors.centre_id && (
+                {formik.touched.center_id && formik.errors.center_id && (
                   <div className="invalid-feedback">
-                    {formik.errors.centre_id}
+                    {formik.errors.center_id}
                   </div>
                 )}
               </div>
@@ -194,17 +293,18 @@ function QuestionEdit() {
                   Grade<span className="text-danger">*</span>
                 </label>
                 <select
-                  className={`form-select form-select-sm ${
-                    formik.touched.grade_id && formik.errors.grade_id
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-select form-select-sm ${formik.touched.grade_id && formik.errors.grade_id
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   {...formik.getFieldProps("grade_id")}
                 >
-                  <option value="">Select School</option>
-                  <option value="A">A</option>
-                  <option value="B">B</option>
-                  <option value="C">C</option>
+                  <option value=""></option>
+                  {grades.map((grade) => (
+                    <option key={grade.value} value={grade.value}>
+                      {grade.label}
+                    </option>
+                  ))}
                 </select>
                 {formik.touched.grade_id && formik.errors.grade_id && (
                   <div className="invalid-feedback">
@@ -217,17 +317,18 @@ function QuestionEdit() {
                   Subject<span className="text-danger">*</span>
                 </label>
                 <select
-                  className={`form-select form-select-sm ${
-                    formik.touched.subject_id && formik.errors.subject_id
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-select form-select-sm ${formik.touched.subject_id && formik.errors.subject_id
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   {...formik.getFieldProps("subject_id")}
                 >
-                  <option value="">Select Subject</option>
-                  <option value="math">Mathematics</option>
-                  <option value="science">Science</option>
-                  <option value="history">History</option>
+                  <option value=""></option>
+                  {subjects.map((subject) => (
+                    <option key={subject.value} value={subject.value}>
+                      {subject.label}
+                    </option>
+                  ))}
                 </select>
                 {formik.touched.subject_id && formik.errors.subject_id && (
                   <div className="invalid-feedback">
@@ -240,17 +341,18 @@ function QuestionEdit() {
                   Topic<span className="text-danger">*</span>
                 </label>
                 <select
-                  className={`form-select form-select-sm ${
-                    formik.touched.topic_id && formik.errors.topic_id
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-select form-select-sm ${formik.touched.topic_id && formik.errors.topic_id
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   {...formik.getFieldProps("topic_id")}
                 >
                   <option value="">Select Topic</option>
-                  <option value="algebra">Algebra</option>
-                  <option value="geometry">Geometry</option>
-                  <option value="physics">Physics</option>
+                  {topics.map((topic) => (
+                    <option key={topic.value} value={topic.value}>
+                      {topic.label}
+                    </option>
+                  ))}
                 </select>
                 {formik.touched.topic_id && formik.errors.topic_id && (
                   <div className="invalid-feedback">
@@ -315,11 +417,10 @@ function QuestionEdit() {
                 <span className="text-danger">*</span>
                 <input
                   type="text"
-                  className={`form-control form-control-sm ${
-                    formik.touched.question && formik.errors.question
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-control form-control-sm ${formik.touched.question && formik.errors.question
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   {...formik.getFieldProps("question")}
                 ></input>
                 {formik.touched.question && formik.errors.question && (
@@ -332,11 +433,10 @@ function QuestionEdit() {
                 <label className="form-label">Upload File</label>
                 <input
                   type="file"
-                  className={`form-control form-control-sm ${
-                    formik.touched.upload_file && formik.errors.upload_file
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-control form-control-sm ${formik.touched.upload_file && formik.errors.upload_file
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   {...formik.getFieldProps("upload_file")}
                 ></input>
                 {formik.touched.upload_file && formik.errors.upload_file && (
@@ -385,12 +485,11 @@ function QuestionEdit() {
                     <input
                       type="text"
                       placeholder="Your Question & Answer"
-                      className={`form-control form-control-sm ${
-                        formik.touched.filledAnswer &&
+                      className={`form-control form-control-sm ${formik.touched.filledAnswer &&
                         formik.errors.filledAnswer
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                        ? "is-invalid"
+                        : ""
+                        }`}
                       name="filledAnswer"
                       value={formik.values.filledAnswer}
                       onChange={formik.handleChange}
@@ -444,17 +543,27 @@ function QuestionEdit() {
                   <div className="mt-2">
                     <label className="form-label">Select Multi Choice:</label>
                     {formik.values.multiChoices.map((multiChoice, index) => (
-                      <div key={multiChoice.id}>
+                      <div
+                        key={multiChoice.id}
+                        className="d-flex align-items-center justify-content-center"
+                      >
+                        <input
+                          type="checkbox"
+                          className="form-check-input mb-2"
+                          name="multiChoiseAnswer"
+                          id="multiChoiseAnswer"
+                          aria-label="Multi Choise"
+                        />{" "}
+                        &nbsp; &nbsp;
                         <div className="input-group mb-2">
                           <input
                             type="text"
-                            className={`form-control form-control-sm ${
-                              formik.errors.multiChoices &&
+                            className={`form-control form-control-sm ${formik.errors.multiChoices &&
                               formik.touched.multiChoices &&
                               formik.errors.multiChoices[index]?.value
-                                ? "is-invalid"
-                                : ""
-                            }`}
+                              ? "is-invalid"
+                              : ""
+                              }`}
                             name={`multiChoices[${index}].value`}
                             value={multiChoice.value}
                             onChange={(e) => {
@@ -504,11 +613,10 @@ function QuestionEdit() {
                     <label className="form-label">Short Answer</label>
                     <textarea
                       rows={3}
-                      className={`form-control ${
-                        formik.touched.shortAnswer && formik.errors.shortAnswer
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                      className={`form-control ${formik.touched.shortAnswer && formik.errors.shortAnswer
+                        ? "is-invalid"
+                        : ""
+                        }`}
                       name="shortAnswer"
                       value={formik.values.shortAnswer}
                       onChange={formik.handleChange}
@@ -526,12 +634,11 @@ function QuestionEdit() {
                     <label className="form-label">Upload File:</label>
                     <input
                       type="file"
-                      className={`form-control form-control-sm ${
-                        formik.touched.checkUploadFile &&
+                      className={`form-control form-control-sm ${formik.touched.checkUploadFile &&
                         formik.errors.checkUploadFile
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                        ? "is-invalid"
+                        : ""
+                        }`}
                       name="checkUploadFile"
                       value={formik.values.checkUploadFile}
                       onChange={formik.handleChange}
@@ -556,8 +663,8 @@ function QuestionEdit() {
             </div>
           </div>
         </div>
-      </form>
-    </div>
+      </form >
+    </div >
   );
 }
 

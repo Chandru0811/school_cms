@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MaterialReactTable } from "material-react-table";
 import {
@@ -11,37 +11,12 @@ import {
 import Delete from "../../../components/common/Delete";
 import PropTypes from "prop-types";
 import { MoreVert as MoreVertIcon } from "@mui/icons-material";
-
+import api from "../../../config/URL";
+import toast from "react-hot-toast";
 function Question() {
   const [menuAnchor, setMenuAnchor] = useState(null);
   const navigate = useNavigate();
-
-  const data = [
-    {
-      id: 1,
-      centre_id: "SRDK",
-      topic_id: "Grammer",
-      difficult_level: "Medium",
-    },
-    {
-      id: 4,
-      centre_id: "KVM",
-      topic_id: "Grammer",
-      difficult_level: "Hard",
-    },
-    {
-      id: 3,
-      centre_id: "KCS",
-      topic_id: "Formula",
-      difficult_level: "Medium",
-    },
-    {
-      id: 2,
-      centre_id: "PAK",
-      topic_id: "Biology",
-      difficult_level: "Easy",
-    },
-  ];
+  const [data, setData] = useState([]);
 
   const columns = useMemo(
     () => [
@@ -137,6 +112,19 @@ function Question() {
       },
     },
   });
+
+  const getData = async () => {
+    try {
+      const response = await api.get("questions");
+      setData(response.data.data);
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   const handleMenuClose = () => setMenuAnchor(null);
 

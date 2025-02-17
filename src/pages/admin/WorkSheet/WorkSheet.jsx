@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MaterialReactTable } from "material-react-table";
 import {
@@ -11,49 +11,13 @@ import {
 import Delete from "../../../components/common/Delete";
 import PropTypes from "prop-types";
 import { MoreVert as MoreVertIcon } from "@mui/icons-material";
+import api from "../../../config/URL";
+import toast from "react-hot-toast";
 
 function Worksheet() {
   const [menuAnchor, setMenuAnchor] = useState(null);
   const navigate = useNavigate();
-
-  const data = [
-    {
-      id: 1,
-      centre_id: "SRDK",
-      grade_id: "5 Grade",
-      name: "Algebra Worksheet 1",
-      type: "Practiceh",
-      target_score: "80",
-      reward: "10",
-    },
-    {
-      id: 4,
-      centre_id: "KVM",
-      grade_id: "5 Grade",
-      name: "Grammer Worksheet 1",
-      type: "Theory",
-      target_score: "50",
-      reward: "20",
-    },
-    {
-      id: 3,
-      centre_id: "KCS",
-      grade_id: "5 Grade",
-      name: "Formula Worksheet 1",
-      type: "Theory",
-      target_score: "25",
-      reward: "30",
-    },
-    {
-      id: 2,
-      centre_id: "PAK",
-      grade_id: "5 Grade",
-      name: "Biology Worksheet 1",
-      type: "Practicee",
-      target_score: "100",
-      reward: "40",
-    },
-  ];
+  const [data, setData] = useState([]);
 
   const columns = useMemo(
     () => [
@@ -109,6 +73,19 @@ function Worksheet() {
     ],
     []
   );
+
+  const getData = async () => {
+    try {
+      const response = await api.get("worksheets");
+      setData(response.data.data);
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   const theme = createTheme({
     components: {

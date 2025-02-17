@@ -1,5 +1,4 @@
-import { useState } from "react";
-// import api from "../../config/URL";
+import { useState, useEffect } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import toast from "react-hot-toast";
@@ -8,447 +7,143 @@ import api from "../../../config/URL";
 const validationSchema = Yup.object().shape({});
 
 function RolePermission() {
-  const [role, setRole] = useState("1");
+  const role = localStorage.getItem("schoolCMS_role");
   const userName = localStorage.getItem("userName");
-  const [roleName, setRoleName] = useState("SMS_ADMIN");
+  const [roleName, setRoleName] = useState([]);
+  console.log("roless", roleName)
+  const [selectedRole, setSelectedRole] = useState("");
+  const [selectedRoleId, setSelectedRoleId] = useState("");
+  const role_id = selectedRoleId;
+  console.log("selectedRole", selectedRole);
+  const [loadIndicator, setLoadIndicator] = useState(false);
 
-  const roleMapping = {
-    1: "SMS_ADMIN",
-    2: "SMS_BRANCH_ADMIN",
-    4: "SMS_STAFF",
-    5: "SMS_STAFF_ADMIN",
-    6: "SMS_TEACHER",
-    7: "CENTER_MANAGER",
-    8: "SMS_FREELANCER",
+  const fetchRole = async () => {
+    try {
+      const response = await api.get("/admin/roles/list");
+      console.log("API Response: ", response);
+      if (response.data.data && response.data.data.length > 0) {
+        setRoleName(response.data.data);
+        setSelectedRoleId(response.data.data[0].id);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   };
 
+  useEffect(() => {
+    fetchRole();
+  }, []);
+
   const handleRoleChange = (e) => {
-    const selectedRole = e.target.value;
-    setRole(selectedRole);
-    setRoleName(roleMapping[selectedRole]);
+    const selectedRoleId = e.target.value;
+    const selectedRole = roleName.find((role) => role.id === parseInt(selectedRoleId));
+    setSelectedRole(selectedRole.name);
+    setSelectedRoleId(selectedRoleId);
   };
 
   const formik = useFormik({
-    initialValues: {
-      courseIndex: true,
-      courseRead: true,
-      courseCreate: true,
-      courseUpdate: true,
-      courseDelete: true,
-      classIndex: true,
-      classRead: true,
-      classCreate: true,
-      classUpdate: true,
-      classDelete: true,
-      levelIndex: true,
-      levelRead: true,
-      levelCreate: true,
-      levelUpdate: true,
-      levelDelete: true,
-      subjectIndex: true,
-      subjectRead: true,
-      subjectCreate: true,
-      subjectUpdate: true,
-      subjectDelete: true,
-
-      curriculumIndex: true,
-      curriculumRead: true,
-      curriculumCreate: true,
-      curriculumUpdate: true,
-      curriculumDelete: true,
-
-      courseFeesIndex: true,
-      courseFeesRead: true,
-      courseFeesCreate: true,
-      courseFeesUpdate: true,
-      courseFeesDelete: true,
-
-      subscriptionsIndex: true,
-      subscriptionsRead: true,
-      subscriptionsCreate: true,
-      subscriptionsUpdate: true,
-      subscriptionsDelete: true,
-
-      rewardsIndex: true,
-      rewardsRead: true,
-      rewardsCreate: true,
-      rewardsUpdate: true,
-      rewardsDelete: true,
-
-      homeworkIndex: true,
-      homeworkRead: true,
-      homeworkCreate: true,
-      homeworkUpdate: true,
-      homeworkDelete: true,
-
-      worksheetIndex: true,
-      worksheetRead: true,
-      worksheetCreate: true,
-      worksheetUpdate: true,
-      worksheetDelete: true,
-
-      employeeIndex: true,
-      employeeRead: true,
-      employeeCreate: true,
-      employeeUpdate: true,
-      employeeDelete: true,
-
-      courseDepositFeesIndex: true,
-      courseDepositFeesRead: true,
-      courseDepositFeesCreate: true,
-      courseDepositFeesUpdate: true,
-      courseDepositFeesDelete: true,
-      curriculumOutlineIndex: true,
-      curriculumOutlineRead: true,
-      curriculumOutlineCreate: true,
-      curriculumOutlineUpdate: true,
-      curriculumOutlineDelete: true,
-      centerListingIndex: true,
-      centerListingRead: true,
-      centerListingCreate: true,
-      centerListingUpdate: true,
-      centerListingDelete: true,
-      leadListingIndex: true,
-      leadListingRead: true,
-      leadListingCreate: true,
-      leadListingUpdate: true,
-      leadListingDelete: true,
-      enrollmentIndex: true,
-      enrollmentRead: true,
-      enrollmentCreate: true,
-      enrollmentUpdate: true,
-      enrollmentDelete: true,
-      staffIndex: true,
-      staffRead: true,
-      staffCreate: true,
-      staffUpdate: true,
-      staffDelete: true,
-      teacherIndex: true,
-      teacherRead: true,
-      teacherCreate: true,
-      teacherUpdate: true,
-      teacherDelete: true,
-      attendanceIndex: true,
-      attendanceRead: true,
-      attendanceCreate: true,
-      attendanceUpdate: true,
-      attendanceDelete: true,
-      staffAttendanceCreate: true,
-      staffAttendanceIndex: true,
-      staffAttendanceRead: true,
-      staffAttendanceUpdate: true,
-      staffAttendanceDelete: true,
-      leaveAdminIndex: true,
-      leaveAdminRead: true,
-      leaveAdminUpdate: true,
-      leaveIndex: true,
-      leaveCreate: true,
-      holidayIndex: true,
-      holidayRead: true,
-      holidayCreate: true,
-      holidayUpdate: true,
-      holidayDelete: true,
-      deductionIndex: true,
-      deductionCreate: true,
-      deductionRead: true,
-      deductionUpdate: true,
-      deductionDelete: true,
-
-      payrollIndex: true,
-      payrollRead: true,
-      payrollCreate: true,
-      payrollUpdate: true,
-      payrollDelete: true,
-
-      //   payrollIndex: true,
-      //   payrollRead: true,
-      //   payrollCreate: true,
-      //   payrollUpdate: true,
-      //   payrollDelete: true,
-
-      payslipIndex: true,
-      payslipRead: true,
-
-      freeLancerIndex: true,
-      freeLancerRead: true,
-      freeLancerCreate: true,
-      freeLancerUpdate: true,
-      freeLancerDelete: true,
-
-      leaveRequestIndex: true,
-      leaveRequestRead: true,
-      leaveRequestCreate: true,
-      leaveRequestUpdate: true,
-      leaveRequestDelete: true,
-      rolesMatrixIndex: true,
-      rolesMatrixRead: true,
-      rolesMatrixCreate: true,
-      rolesMatrixUpdate: true,
-      rolesMatrixDelete: true,
-      studentListingIndex: true,
-      studentListingRead: true,
-      studentListingCreate: true,
-      studentListingUpdate: true,
-      studentListingDelete: true,
-      changeClassIndex: true,
-      changeClassRead: true,
-      changeClassCreate: true,
-      changeClassUpdate: true,
-      changeClassDelete: true,
-      transferOutIndex: true,
-      transferOutRead: true,
-      transferOutCreate: true,
-      transferOutUpdate: true,
-      transferOutDelete: true,
-      withdrawIndex: true,
-      withdrawRead: true,
-      withdrawCreate: true,
-      withdrawUpdate: true,
-      withdrawDelete: true,
-      endClassIndex: true,
-      endClassRead: true,
-      endClassCreate: true,
-      endClassUpdate: true,
-      endClassDelete: true,
-      registerNewIndex: true,
-      registerNewRead: true,
-      registerNewCreate: true,
-      registerNewUpdate: true,
-      registerNewDelete: true,
-      deductDepositIndex: true,
-      deductDepositRead: true,
-      deductDepositCreate: true,
-      deductDepositUpdate: true,
-      deductDepositDelete: true,
-      documentListingIndex: true,
-      documentListingRead: true,
-      documentListingCreate: true,
-      documentListingUpdate: true,
-      documentListingDelete: true,
-      documentFileIndex: true,
-      documentFileRead: true,
-      documentFileCreate: true,
-      documentFileUpdate: true,
-      documentFileDelete: true,
-      invoiceIndex: true,
-      invoiceRead: true,
-      invoiceCreate: true,
-      invoiceUpdate: true,
-      invoiceDelete: true,
-      paymentIndex: true,
-      paymentRead: true,
-      paymentCreate: true,
-      paymentUpdate: true,
-      paymentDelete: true,
-      scheduleTeacherIndex: true,
-      scheduleTeacherRead: true,
-      scheduleTeacherCreate: true,
-      scheduleTeacherUpdate: true,
-      scheduleTeacherDelete: true,
-      documentReportIndex: true,
-      documentReportRead: true,
-      documentReportCreate: true,
-      documentReportUpdate: true,
-      documentReportDelete: true,
-      attendanceReportIndex: true,
-      attendanceReportRead: true,
-      attendanceReportCreate: true,
-      attendanceReportUpdate: true,
-      attendanceReportDelete: true,
-      studentReportIndex: true,
-      studentReportRead: true,
-      studentReportCreate: true,
-      studentReportUpdate: true,
-      studentReportDelete: true,
-      assessmentReportIndex: true,
-      assessmentReportRead: true,
-      assessmentReportCreate: true,
-      assessmentReportUpdate: true,
-      assessmentReportDelete: true,
-      enrollmentReportIndex: true,
-      enrollmentReportRead: true,
-      enrollmentReportCreate: true,
-      enrollmentReportUpdate: true,
-      enrollmentReportDelete: true,
-      feeCollectionReportIndex: true,
-      feeCollectionReportRead: true,
-      feeCollectionReportCreate: true,
-      feeCollectionReportUpdate: true,
-      feeCollectionReportDelete: true,
-      packageBalanceReportIndex: true,
-      packageBalanceReportRead: true,
-      packageBalanceReportCreate: true,
-      packageBalanceReportUpdate: true,
-      packageBalanceReportDelete: true,
-      salesRevenueReportIndex: true,
-      salesRevenueReportRead: true,
-      salesRevenueReportCreate: true,
-      salesRevenueReportUpdate: true,
-      salesRevenueReportDelete: true,
-      replaceClassLessonListIndex: true,
-      replaceClassLessonListRead: true,
-      replaceClassLessonListCreate: true,
-      replaceClassLessonListUpdate: true,
-      replaceClassLessonListDelete: true,
-      timeScheduleIndex: true,
-      timeScheduleDelete: true,
-      timeScheduleBlock: true,
-      timeScheduleUnBlock: true,
-      timeScheduleAdd: true,
-      timeScheduleApproved: true,
-      sendNotificationIndex: true,
-      sendNotificationCreate: true,
-      sendNotificationUpdate: true,
-      smsMessageIndex: true,
-      smsMessageRead: true,
-      smsMessageCreate: true,
-      account_read: true,
-      headerIndex: true,
-      headerRead: true,
-      headerCreate: true,
-      headerUpdate: true,
-      headerDelete: true,
-      headerPublish: true,
-      homeIndex: true,
-      homeRead: true,
-      homeCreate: true,
-      homeUpdate: true,
-      homeDelete: true,
-      homePublish: true,
-      testimonialIndex: true,
-      testimonialRead: true,
-      testimonialCreate: true,
-      testimonialUpdate: true,
-      testimonialDelete: true,
-      testimonialPublish: true,
-      aboutIndex: true,
-      aboutRead: true,
-      aboutCreate: true,
-      aboutUpdate: true,
-      aboutDelete: true,
-      aboutPublish: true,
-      englishCourseIndex: true,
-      englishCourseRead: true,
-      englishCourseCreate: true,
-      englishCourseUpdate: true,
-      englishCourseDelete: true,
-      englishCoursePublish: true,
-      chineseCourseIndex: true,
-      chineseCourseRead: true,
-      chineseCourseCreate: true,
-      chineseCourseUpdate: true,
-      chineseCourseDelete: true,
-      chineseCoursePublish: true,
-      teacherSaveCreate: true,
-      teacherSaveIndex: true,
-      teacherSaveUpdate: true,
-      teacherSaveDelete: true,
-      teacherSavePublish: true,
-      teacherSaveRead: true,
-
-      productSaveCreate: true,
-      productSaveUpdate: true,
-      productSaveRead: true,
-      productSaveIndex: true,
-      productSaveDelete: true,
-      productSavePublish: true,
-      productImageSaveCreate: true,
-      productImageSaveUpdate: true,
-      productImageSaveRead: true,
-      productImageSaveIndex: true,
-      productImageSaveDelete: true,
-      productImageSavePublish: true,
-
-      newsUpdatesIndex: true,
-      newsUpdatesRead: true,
-      newsUpdatesCreate: true,
-      newsUpdatesUpdate: true,
-      newsUpdatesDelete: true,
-      newsUpdatesPublish: true,
-
-      contactUsIndex: true,
-      contactUsRead: true,
-      contactUsCreate: true,
-      contactUsUpdate: true,
-      contactUsDelete: true,
-      contactUsPublish: true,
-
-      taxSettingIndex: true,
-      taxSettingRead: true,
-      taxSettingCreate: true,
-      taxSettingUpdate: true,
-      taxSettingDelete: true,
-
-      raceSettingIndex: true,
-      raceSettingRead: true,
-      raceSettingCreate: true,
-      raceSettingUpdate: true,
-      raceSettingDelete: true,
-
-      countrySettingIndex: true,
-      countrySettingRead: true,
-      countrySettingCreate: true,
-      countrySettingUpdate: true,
-      countrySettingDelete: true,
-
-      shgSettingIndex: true,
-      shgSettingRead: true,
-      shgSettingCreate: true,
-      shgSettingUpdate: true,
-      shgSettingDelete: true,
-
-      batchtimeSettingIndex: true,
-      batchtimeSettingRead: true,
-      batchtimeSettingCreate: true,
-      batchtimeSettingUpdate: true,
-      batchtimeSettingDelete: true,
-
-      leaveSettingIndex: true,
-      leaveSettingRead: true,
-      leaveSettingCreate: true,
-      leaveSettingUpdate: true,
-      leaveSettingDelete: true,
-
-      idTypeSettingIndex: true,
-      idTypeSettingRead: true,
-      idTypeSettingCreate: true,
-      idTypeSettingUpdate: true,
-      idTypeSettingDelete: true,
-
-      salarySettingIndex: true,
-      salarySettingRead: true,
-      salarySettingCreate: true,
-      salarySettingUpdate: true,
-      salarySettingDelete: true,
-
-      blogIndex: true,
-      blogRead: true,
-      blogCreate: true,
-      blogUpdate: true,
-      blogDelete: true,
-      blogPublish: true,
-
-      contactUsSettingIndex: true,
-      contactUsSettingRead: true,
-      contactUsSettingCreate: true,
-      contactUsSettingUpdate: true,
-      contactUsSettingDelete: true,
+    initialValues:
+    {
+      "centers": {
+        "canAccess": true,
+        "canCreate": true,
+        "canView": true,
+        "canEdit": true,
+        "canDelete": true
+      },
+      "employees": {
+        "canAccess": true,
+        "canCreate": true,
+        "canView": true,
+        "canEdit": true,
+        "canDelete": true
+      },
+      "grades": {
+        "canAccess": true,
+        "canCreate": true,
+        "canView": true,
+        "canEdit": true,
+        "canDelete": true
+      },
+      "students": {
+        "canAccess": true,
+        "canCreate": true,
+        "canView": true,
+        "canEdit": true,
+        "canDelete": true
+      },
+      "subjects": {
+        "canAccess": true,
+        "canCreate": true,
+        "canView": true,
+        "canEdit": true,
+        "canDelete": true
+      },
+      "topics": {
+        "canAccess": true,
+        "canCreate": true,
+        "canView": true,
+        "canEdit": true,
+        "canDelete": true
+      },
+      "questions": {
+        "canAccess": true,
+        "canCreate": true,
+        "canView": true,
+        "canEdit": true,
+        "canDelete": true
+      },
+      "challenges": {
+        "canAccess": true,
+        "canCreate": true,
+        "canView": true,
+        "canEdit": true,
+        "canDelete": true
+      },
+      "worksheets": {
+        "canAccess": true,
+        "canCreate": true,
+        "canView": true,
+        "canEdit": true,
+        "canDelete": true
+      },
+      "homeworks": {
+        "canAccess": true,
+        "canCreate": true,
+        "canView": true,
+        "canEdit": true,
+        "canDelete": true
+      },
+      "rewards": {
+        "canAccess": true,
+        "canCreate": true,
+        "canView": true,
+        "canEdit": true,
+        "canDelete": true
+      },
+      "subscriptions": {
+        "canAccess": true,
+        "canCreate": true,
+        "canView": true,
+        "canEdit": true,
+        "canDelete": true
+      },
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       console.log("Api Data:", values);
-      const payload = {
-        ...values,
-        roleName: roleName,
-        id: role,
-        updatedBy: userName,
-        createdBy: userName,
-        createdAt: "2025-01-10",
-        updatedAt: "2025-01-10",
-      };
+      setLoadIndicator(true);
+      const transformedValues = Object.keys(values).map((moduleName) => ({
+        module_name: moduleName,
+        can_access: values[moduleName].canAccess,
+        can_view: values[moduleName].canView,
+        can_create: values[moduleName].canCreate,
+        can_edit: values[moduleName].canEdit,
+        can_delete: values[moduleName].canDelete,
+      }));
 
       try {
-        const response = await api.put(`/updateRoleInfo/${role}`, payload, {
+        const response = await api.put(`admin/role_permission/update/${role_id}`, transformedValues, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -461,442 +156,98 @@ function RolePermission() {
       } catch (error) {
         toast.error(error);
       }
+      setLoadIndicator(false);
     },
   });
 
-  //   useEffect(() => {
-  //     getRoleData();
-  //     // eslint-disable-next-line react-hooks/exhaustive-deps
-  //   }, [role]);
+  useEffect(() => {
+    getRoleData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [role_id]);
 
-  const handleCheckboxChange = (fieldName) => {
-    return (event) => {
-      formik.setFieldValue(fieldName, event.target.checked);
-    };
+  const handleCheckboxChange = (name) => (event) => {
+    const { checked } = event.target;
+    formik.setFieldValue(name, checked);
   };
   const handleCheckAll = () => {
-    Object.keys(formik.values).map((key) => {
-      formik.setFieldValue(key, true);
+    Object.keys(formik.values).forEach((key) => {
+      formik.setFieldValue(key, {
+        canAccess: true,
+        canView: true,
+        canCreate: true,
+        canEdit: true,
+        canDelete: true,
+      });
     });
   };
 
   const handleUncheckAll = () => {
-    Object.keys(formik.values).map((key) => {
-      formik.setFieldValue(key, false);
+    Object.keys(formik.values).forEach((key) => {
+      formik.setFieldValue(key, {
+        canAccess: false,
+        canView: false,
+        canCreate: false,
+        canEdit: false,
+        canDelete: false,
+      });
     });
   };
 
   const handleCheckAllCreate = () => {
-    formik.setValues({
-      ...formik.values,
-      courseCreate: true,
-      classCreate: true,
-      levelCreate: true,
-      subjectCreate: true,
-      curriculumCreate: true,
-      courseFeesCreate: true,
-      courseDepositFeesCreate: true,
-      curriculumOutlineCreate: true,
-      centerListingCreate: true,
-      leadListingCreate: true,
-      leadListingUpdate: true,
-      enrollmentCreate: true,
-      staffCreate: true,
-      teacherCreate: true,
-      attendanceCreate: true,
-      staffAttendanceCreate: true,
-      leaveAdminCreate: true,
-      leaveCreate: true,
-      holidayCreate: true,
-      deductionCreate: true,
-      payrollCreate: true,
-      payslipCreate: true,
-      freeLancerCreate: true,
-      leaveRequestCreate: true,
-      rolesMatrixCreate: true,
-      studentListingCreate: true,
-      changeClassCreate: true,
-      transferOutCreate: true,
-      withdrawCreate: true,
-      endClassCreate: true,
-      registerNewCreate: true,
-      deductDepositCreate: true,
-      documentListingCreate: true,
-      documentFileCreate: true,
-      invoiceCreate: true,
-      paymentCreate: true,
-      scheduleTeacherCreate: true,
-      documentReportCreate: true,
-      attendanceReportCreate: true,
-      studentReportCreate: true,
-      assessmentReportCreate: true,
-      enrollmentReportCreate: true,
-      feeCollectionReportCreate: true,
-      packageBalanceReportCreate: true,
-      salesRevenueReportCreate: true,
-      replaceClassLessonListCreate: true,
-      timeScheduleAdd: true,
-      sendNotificationCreate: true,
-      smsMessageCreate: true,
-      account_create: true,
-      headerCreate: true,
-      homeCreate: true,
-      testimonialCreate: true,
-      aboutCreate: true,
-      englishCourseCreate: true,
-      chineseCourseCreate: true,
-      teacherSaveCreate: true,
-      productSaveCreate: true,
-      productImageSaveCreate: true,
-      newsUpdatesCreate: true,
-      contactUsCreate: true,
-      taxSettingCreate: true,
-      raceSettingCreate: true,
-      countrySettingCreate: true,
-      shgSettingCreate: true,
-      batchtimeSettingCreate: true,
-      leaveSettingCreate: true,
-      idTypeSettingCreate: true,
-      salarySettingCreate: true,
-      blogCreate: true,
-      contactUsSettingCreate: true,
-      employeeCreate: true,
-      worksheetCreate: true,
-      homeworkCreate: true,
-      rewardsCreate: true,
-      subscriptionsCreate: true,
-    });
-  };
-  const handleCheckAllRead = () => {
-    formik.setValues({
-      ...formik.values,
-      courseRead: true,
-      classRead: true,
-      levelRead: true,
-      subjectRead: true,
-      curriculumRead: true,
-      courseFeesRead: true,
-      courseDepositFeesRead: true,
-      curriculumOutlineRead: true,
-      centerListingRead: true,
-      leadListingRead: true,
-      enrollmentRead: true,
-      staffRead: true,
-      teacherRead: true,
-      attendanceRead: true,
-      staffAttendanceRead: true,
-      leaveAdminRead: true,
-      leaveRead: true,
-      holidayRead: true,
-      deductionRead: true,
-      payrollRead: true,
-      payslipRead: true,
-      freeLancerRead: true,
-      leaveRequestRead: true,
-      rolesMatrixRead: true,
-      studentListingRead: true,
-      changeClassRead: true,
-      transferOutRead: true,
-      withdrawRead: true,
-      endClassRead: true,
-      registerNewRead: true,
-      deductDepositRead: true,
-      documentListingRead: true,
-      documentFileRead: true,
-      invoiceRead: true,
-      paymentRead: true,
-      scheduleTeacherRead: true,
-      documentReportRead: true,
-      attendanceReportRead: true,
-      studentReportRead: true,
-      assessmentReportRead: true,
-      enrollmentReportRead: true,
-      feeCollectionReportRead: true,
-      packageBalanceReportRead: true,
-      salesRevenueReportRead: true,
-      replaceClassLessonListRead: true,
-      timeScheduleBlock: true,
-      sendNotificationRead: true,
-      smsMessageRead: true,
-      account_read: true,
-      headerRead: true,
-      homeRead: true,
-      testimonialRead: true,
-      aboutRead: true,
-      englishCourseRead: true,
-      chineseCourseRead: true,
-      teacherSaveRead: true,
-      productSaveRead: true,
-      productImageSaveRead: true,
-      newsUpdatesRead: true,
-      contactUsRead: true,
-      taxSettingRead: true,
-      raceSettingRead: true,
-      countrySettingRead: true,
-      shgSettingRead: true,
-      batchtimeSettingRead: true,
-      leaveSettingRead: true,
-      idTypeSettingRead: true,
-      salarySettingRead: true,
-      blogRead: true,
-      contactUsSettingRead: true,
-      employeeRead: true,
-      worksheetRead: true,
-      homeworkRead: true,
-      rewardsRead: true,
-      subscriptionsRead: true,
-    });
-  };
-  const handleCheckAllUpdate = () => {
-    formik.setValues({
-      ...formik.values,
-      courseUpdate: true,
-      classUpdate: true,
-      levelUpdate: true,
-      subjectUpdate: true,
-      curriculumUpdate: true,
-      courseFeesUpdate: true,
-      courseDepositFeesUpdate: true,
-      curriculumOutlineUpdate: true,
-      centerListingUpdate: true,
-      leadListingUpdate: true,
-      enrollmentUpdate: true,
-      staffUpdate: true,
-      teacherUpdate: true,
-      attendanceUpdate: true,
-      staffAttendanceUpdate: true,
-      leaveAdminUpdate: true,
-      leaveUpdate: true,
-      holidayUpdate: true,
-      deductionUpdate: true,
-      payrollUpdate: true,
-      payslipUpdate: true,
-      freeLancerUpdate: true,
-      leaveRequestUpdate: true,
-      rolesMatrixUpdate: true,
-      studentListingUpdate: true,
-      changeClassUpdate: true,
-      transferOutUpdate: true,
-      withdrawUpdate: true,
-      endClassUpdate: true,
-      registerNewUpdate: true,
-      deductDepositUpdate: true,
-      documentListingUpdate: true,
-      documentFileUpdate: true,
-      invoiceUpdate: true,
-      paymentUpdate: true,
-      scheduleTeacherUpdate: true,
-      documentReportUpdate: true,
-      attendanceReportUpdate: true,
-      studentReportUpdate: true,
-      assessmentReportUpdate: true,
-      enrollmentReportUpdate: true,
-      feeCollectionReportUpdate: true,
-      packageBalanceReportUpdate: true,
-      salesRevenueReportUpdate: true,
-      replaceClassLessonListUpdate: true,
-      timeScheduleBlockUpdate: true,
-      sendNotificationUpdate: true,
-      smsMessageUpdate: true,
-      account_update: true,
-      headerUpdate: true,
-      homeUpdate: true,
-      testimonialUpdate: true,
-      aboutUpdate: true,
-      englishCourseUpdate: true,
-      chineseCourseUpdate: true,
-      teacherSaveUpdate: true,
-      productSaveUpdate: true,
-      productImageSaveUpdate: true,
-      newsUpdatesUpdate: true,
-      contactUsUpdate: true,
-      taxSettingUpdate: true,
-      raceSettingUpdate: true,
-      countrySettingUpdate: true,
-      shgSettingUpdate: true,
-      batchtimeSettingUpdate: true,
-      leaveSettingUpdate: true,
-      idTypeSettingUpdate: true,
-      salarySettingUpdate: true,
-      blogUpdate: true,
-      contactUsSettingUpdate: true,
-      employeeUpdate: true,
-      worksheetUpdate: true,
-      homeworkUpdate: true,
-      rewardsUpdate: true,
-      subscriptionsUpdate: true,
-    });
-  };
-  const handleCheckAllDelete = () => {
-    formik.setValues({
-      ...formik.values,
-      courseDelete: true,
-      classDelete: true,
-      levelDelete: true,
-      subjectDelete: true,
-      curriculumDelete: true,
-      courseFeesDelete: true,
-      courseDepositFeesDelete: true,
-      curriculumOutlineDelete: true,
-      centerListingDelete: true,
-      leadListingDelete: true,
-      enrollmentDelete: true,
-      staffDelete: true,
-      teacherDelete: true,
-      attendanceDelete: true,
-      staffAttendanceDelete: true,
-      leaveAdminDelete: true,
-      leaveDelete: true,
-      holidayDelete: true,
-      deductionDelete: true,
-      payrollDelete: true,
-      payslipDelete: true,
-      freeLancerDelete: true,
-      leaveRequestDelete: true,
-      rolesMatrixDelete: true,
-      studentListingDelete: true,
-      changeClassDelete: true,
-      transferOutDelete: true,
-      withdrawDelete: true,
-      endClassDelete: true,
-      registerNewDelete: true,
-      deductDepositDelete: true,
-      documentListingDelete: true,
-      documentFileDelete: true,
-      invoiceDelete: true,
-      paymentDelete: true,
-      scheduleTeacherDelete: true,
-      documentReportDelete: true,
-      attendanceReportDelete: true,
-      studentReportDelete: true,
-      assessmentReportDelete: true,
-      enrollmentReportDelete: true,
-      feeCollectionReportDelete: true,
-      packageBalanceReportDelete: true,
-      salesRevenueReportDelete: true,
-      replaceClassLessonListDelete: true,
-      timeScheduleBlockDelete: true,
-      sendNotificationDelete: true,
-      smsMessageDelete: true,
-      account_delete: true,
-      headerDelete: true,
-      homeDelete: true,
-      testimonialDelete: true,
-      aboutDelete: true,
-      englishCourseDelete: true,
-      chineseCourseDelete: true,
-      teacherSaveDelete: true,
-      productSaveDelete: true,
-      productImageSaveDelete: true,
-      newsUpdatesDelete: true,
-      contactUsDelete: true,
-      taxSettingDelete: true,
-      raceSettingDelete: true,
-      countrySettingDelete: true,
-      shgSettingDelete: true,
-      batchtimeSettingDelete: true,
-      leaveSettingDelete: true,
-      idTypeSettingDelete: true,
-      salarySettingDelete: true,
-      blogDelete: true,
-      contactUsSettingDelete: true,
-      employeeDelete: true,
-      worksheetDelete: true,
-      homeworkDelete: true,
-      rewardsDelete: true,
-      subscriptionsDelete: true,
-    });
-  };
-  const handleCheckAllIndex = () => {
-    formik.setValues({
-      ...formik.values,
-      courseIndex: true,
-      classIndex: true,
-      levelIndex: true,
-      subjectIndex: true,
-      curriculumIndex: true,
-      courseFeesIndex: true,
-      courseDepositFeesIndex: true,
-      curriculumOutlineIndex: true,
-      centerListingIndex: true,
-      leadListingIndex: true,
-      enrollmentIndex: true,
-      staffIndex: true,
-      teacherIndex: true,
-      attendanceIndex: true,
-      staffAttendanceIndex: true,
-      leaveAdminIndex: true,
-      leaveIndex: true,
-      holidayIndex: true,
-      deductionIndex: true,
-      payrollIndex: true,
-      payslipIndex: true,
-      freeLancerIndex: true,
-      leaveRequestIndex: true,
-      rolesMatrixIndex: true,
-      studentListingIndex: true,
-      changeClassIndex: true,
-      transferOutIndex: true,
-      withdrawIndex: true,
-      endClassIndex: true,
-      registerNewIndex: true,
-      deductDepositIndex: true,
-      documentListingIndex: true,
-      documentFileIndex: true,
-      invoiceIndex: true,
-      paymentIndex: true,
-      scheduleTeacherIndex: true,
-      documentReportIndex: true,
-      attendanceReportIndex: true,
-      studentReportIndex: true,
-      assessmentReportIndex: true,
-      enrollmentReportIndex: true,
-      feeCollectionReportIndex: true,
-      packageBalanceReportIndex: true,
-      salesRevenueReportIndex: true,
-      replaceClassLessonListIndex: true,
-      timeScheduleBlockIndex: true,
-      sendNotificationIndex: true,
-      smsMessageIndex: true,
-      account_index: true,
-      headerIndex: true,
-      homeIndex: true,
-      testimonialIndex: true,
-      aboutIndex: true,
-      englishCourseIndex: true,
-      chineseCourseIndex: true,
-      teacherSaveIndex: true,
-      productSaveIndex: true,
-      productImageSaveIndex: true,
-      newsUpdatesIndex: true,
-      contactUsIndex: true,
-      taxSettingIndex: true,
-      raceSettingIndex: true,
-      countrySettingIndex: true,
-      shgSettingIndex: true,
-      batchtimeSettingIndex: true,
-      leaveSettingIndex: true,
-      idTypeSettingIndex: true,
-      salarySettingIndex: true,
-      blogIndex: true,
-      contactUsSettingIndex: true,
-      employeeIndex: true,
-      worksheetIndex: true,
-      homeworkIndex: true,
-      rewardsIndex: true,
-      subscriptionsIndex: true,
+    Object.keys(formik.values).forEach((key) => {
+      formik.setFieldValue(`${key}.canCreate`, true);
     });
   };
 
-  //   const getRoleData = async () => {
-  //     try {
-  //       const response = await api.get(`/getAllRoleInfoById/${role}`);
-  //       formik.setValues(response.data);
-  //       // console.log(response.data, "getroleData");
-  //     } catch (error) {
-  //       console.error("Error fetching role data:", error);
-  //     }
-  //   };
+  const handleCheckAllRead = () => {
+    Object.keys(formik.values).forEach((key) => {
+      formik.setFieldValue(`${key}.canView`, true);
+    });
+  };
+
+  const handleCheckAllUpdate = () => {
+    Object.keys(formik.values).forEach((key) => {
+      formik.setFieldValue(`${key}.canEdit`, true);
+    });
+  };
+
+  const handleCheckAllDelete = () => {
+    Object.keys(formik.values).forEach((key) => {
+      formik.setFieldValue(`${key}.canDelete`, true);
+    });
+  };
+
+  const handleCheckAllIndex = () => {
+    Object.keys(formik.values).forEach((key) => {
+      formik.setFieldValue(`${key}.canAccess`, true);
+    });
+  };
+
+  const getRoleData = async () => {
+    try {
+      const response = await api.get(`admin/role_permission/${role_id}`);
+      console.log(response.data, "response.data");
+      const permissions = response.data.data;
+      if (!Array.isArray(permissions)) {
+        throw new Error("permissions is not an array");
+      }
+      const transformedPermissions = permissions.reduce((acc, permission) => {
+        acc[permission.module_name] = {
+          canAccess: permission.can_access,
+          canView: permission.can_view,
+          canCreate: permission.can_create,
+          canEdit: permission.can_edit,
+          canDelete: permission.can_delete,
+        };
+        return acc;
+      }, {});
+
+      formik.setValues(transformedPermissions);
+      console.log(transformedPermissions, "transformedPermissions");
+    } catch (error) {
+      console.error("Error fetching role data:", error);
+    }
+  };
 
   return (
     <div className="container-fluid">
@@ -911,27 +262,37 @@ function RolePermission() {
         <div className="">
           <div className="row d-flex align-items-start p-2">
             <div className="col-md-7 col-12">
-              <lable className="form-lable">
+              <label className="form-label">
                 User Role <span className="text-danger">*</span>
-              </lable>
+              </label>
               <div className="input-group mb-3">
                 <select
-                  className="form-select form-select-sm iconInput "
-                  aria-label="Default select example"
+                  className="form-select form-select-sm iconInput"
+                  aria-label="Select Role"
                   onChange={handleRoleChange}
+                  value={selectedRoleId}
                 >
-                  <option value="1">Admin</option>
-                  <option value="2">Branch Admin</option>
-                  <option value="4">Staff</option>
-                  <option value="5">Staff Admin</option>
-                  <option value="6">Teacher</option>
-                  <option value="7">Centre Manager</option>
-                  <option value="8">Freelancer</option>
+                  <option disabled>Select Role</option>
+                  {roleName && roleName.map((role) => (
+                    <option key={role.id} value={role.id}>
+                      {role.name}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
             <div className="col-md-5 col-12 d-flex justify-content-end">
-              <button type="submit" className="btn btn-button btn-sm ">
+              <button
+                type="submit"
+                className="btn btn-button btn-sm"
+                disabled={loadIndicator}
+              >
+                {loadIndicator && (
+                  <span
+                    className="spinner-border spinner-border-sm me-2"
+                    aria-hidden="true"
+                  ></span>
+                )}
                 Save
               </button>
             </div>
@@ -1002,7 +363,7 @@ function RolePermission() {
                     style={{ maxHeight: "460px", overflowY: "auto" }}
                   >
                     <table className="table table-hover">
-                      <thead className="bg-light" style={{ position: "sticky", top: 0, zIndex: 1 ,}}>
+                      <thead className="bg-light" style={{ position: "sticky", top: 0, zIndex: 1, }}>
                         <tr>
                           <th scope="col" className="cms-header">
                             Module Permission
@@ -1027,12 +388,7 @@ function RolePermission() {
                       <tbody>
                         <tr>
                           <td>
-                            <p
-                              style={{
-                                marginLeft: "30px",
-                                marginBottom: "0px",
-                              }}
-                            >
+                            <p style={{ marginLeft: "30px", marginBottom: "0px" }}>
                               Center
                             </p>
                           </td>
@@ -1040,45 +396,45 @@ function RolePermission() {
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="courseIndex"
-                              checked={formik.values.courseIndex}
-                              onChange={handleCheckboxChange(`courseIndex`)}
+                              name="centers.canAccess"
+                              checked={formik.values?.centers?.canAccess}
+                              onChange={handleCheckboxChange("centers.canAccess")}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="courseRead"
-                              checked={formik.values.courseRead}
-                              onChange={handleCheckboxChange(`courseRead`)}
+                              name="centers.canView"
+                              checked={formik.values?.centers?.canView}
+                              onChange={handleCheckboxChange("centers.canView")}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="courseCreate"
-                              checked={formik.values.courseCreate}
-                              onChange={handleCheckboxChange(`courseCreate`)}
+                              name="centers.canCreate"
+                              checked={formik.values?.centers?.canCreate}
+                              onChange={handleCheckboxChange("centers.canCreate")}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="courseUpdate"
-                              checked={formik.values.courseUpdate}
-                              onChange={handleCheckboxChange(`courseUpdate`)}
+                              name="centers.canEdit"
+                              checked={formik.values?.centers?.canEdit}
+                              onChange={handleCheckboxChange("centers.canEdit")}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="courseDelete"
-                              checked={formik.values.courseDelete}
-                              onChange={handleCheckboxChange(`courseDelete`)}
+                              name="centers.canDelete"
+                              checked={formik.values?.centers?.canDelete}
+                              onChange={handleCheckboxChange("centers.canDelete")}
                             />
                           </td>
                         </tr>
@@ -1097,45 +453,45 @@ function RolePermission() {
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="employeeIndex"
-                              checked={formik.values.employeeIndex}
-                              onChange={handleCheckboxChange(`employeeIndex`)}
+                              name="employees.canAccess"
+                              checked={formik.values?.employees?.canAccess}
+                              onChange={handleCheckboxChange(`employees.canAccess`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="employeeRead"
-                              checked={formik.values.employeeRead}
-                              onChange={handleCheckboxChange(`employeeRead`)}
+                              name="employees.canView"
+                              checked={formik.values?.employees?.canView}
+                              onChange={handleCheckboxChange(`employees.canView`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="employeeCreate"
-                              checked={formik.values.employeeCreate}
-                              onChange={handleCheckboxChange(`employeeCreate`)}
+                              name="employees.canCreate"
+                              checked={formik.values?.employees?.canCreate}
+                              onChange={handleCheckboxChange(`employees.canCreate`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="employeeUpdate"
-                              checked={formik.values.employeeUpdate}
-                              onChange={handleCheckboxChange(`employeeUpdate`)}
+                              name="employees.canEdit"
+                              checked={formik.values?.employees?.canEdit}
+                              onChange={handleCheckboxChange(`employees.canEdit`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="employeeDelete"
-                              checked={formik.values.employeeDelete}
-                              onChange={handleCheckboxChange(`employeeDelete`)}
+                              name="employees.canDelete"
+                              checked={formik.values?.employees?.canDelete}
+                              onChange={handleCheckboxChange(`employees.canDelete`)}
                             />
                           </td>
                         </tr>
@@ -1154,45 +510,45 @@ function RolePermission() {
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="classIndex"
-                              checked={formik.values.classIndex}
-                              onChange={handleCheckboxChange(`classIndex`)}
+                              name="grades.canAccess"
+                              checked={formik.values?.grades?.canAccess}
+                              onChange={handleCheckboxChange(`grades.canAccess`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="classRead"
-                              checked={formik.values.classRead}
-                              onChange={handleCheckboxChange(`classRead`)}
+                              name="grades.canView"
+                              checked={formik.values?.grades?.canView}
+                              onChange={handleCheckboxChange(`grades.canView`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="classCreate"
-                              checked={formik.values.classCreate}
-                              onChange={handleCheckboxChange(`classCreate`)}
+                              name="grades.canCreate"
+                              checked={formik.values?.grades?.canCreate}
+                              onChange={handleCheckboxChange(`grades.canCreate`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="classUpdate"
-                              checked={formik.values.classUpdate}
-                              onChange={handleCheckboxChange(`classUpdate`)}
+                              name="grades.canEdit"
+                              checked={formik.values?.grades?.canEdit}
+                              onChange={handleCheckboxChange(`grades.canEdit`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="classDelete"
-                              checked={formik.values.classDelete}
-                              onChange={handleCheckboxChange(`classDelete`)}
+                              name="grades.canDelete"
+                              checked={formik.values?.grades?.canDelete}
+                              onChange={handleCheckboxChange(`grades.canDelete`)}
                             />
                           </td>
                         </tr>
@@ -1211,45 +567,45 @@ function RolePermission() {
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="levelIndex"
-                              checked={formik.values.levelIndex}
-                              onChange={handleCheckboxChange(`levelIndex`)}
+                              name="students.canAccess"
+                              checked={formik.values?.students?.canAccess}
+                              onChange={handleCheckboxChange(`students.canAccess`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="levelRead"
-                              checked={formik.values.levelRead}
-                              onChange={handleCheckboxChange(`levelRead`)}
+                              name="students.canView"
+                              checked={formik.values?.students?.canView}
+                              onChange={handleCheckboxChange(`students.canView`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="levelCreate"
-                              checked={formik.values.levelCreate}
-                              onChange={handleCheckboxChange(`levelCreate`)}
+                              name="students.canCreate"
+                              checked={formik.values?.students?.canCreate}
+                              onChange={handleCheckboxChange(`students.canCreate`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="levelUpdate"
-                              checked={formik.values.levelUpdate}
-                              onChange={handleCheckboxChange(`levelUpdate`)}
+                              name="students.canEdit"
+                              checked={formik.values?.students?.canEdit}
+                              onChange={handleCheckboxChange(`students.canEdit`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="levelDelete"
-                              checked={formik.values.levelDelete}
-                              onChange={handleCheckboxChange(`levelDelete`)}
+                              name="students.canDelete"
+                              checked={formik.values?.students?.canDelete}
+                              onChange={handleCheckboxChange(`students.canDelete`)}
                             />
                           </td>
                         </tr>
@@ -1268,45 +624,45 @@ function RolePermission() {
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="subjectIndex"
-                              checked={formik.values.subjectIndex}
-                              onChange={handleCheckboxChange(`subjectIndex`)}
+                              name="subjects.canAccess"
+                              checked={formik.values?.subjects?.canAccess}
+                              onChange={handleCheckboxChange(`subjects.canAccess`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="subjectRead"
-                              checked={formik.values.subjectRead}
-                              onChange={handleCheckboxChange(`subjectRead`)}
+                              name="subjects.canView"
+                              checked={formik.values?.subjects?.canView}
+                              onChange={handleCheckboxChange(`subjects.canView`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="subjectCreate"
-                              checked={formik.values.subjectCreate}
-                              onChange={handleCheckboxChange(`subjectCreate`)}
+                              name="subjects.canCreate"
+                              checked={formik.values?.subjects?.canCreate}
+                              onChange={handleCheckboxChange(`subjects.canCreate`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="subjectUpdate"
-                              checked={formik.values.subjectUpdate}
-                              onChange={handleCheckboxChange(`subjectUpdate`)}
+                              name="subjects.canEdit"
+                              checked={formik.values?.subjects?.canEdit}
+                              onChange={handleCheckboxChange(`subjects.canEdit`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="subjectDelete"
-                              checked={formik.values.subjectDelete}
-                              onChange={handleCheckboxChange(`subjectDelete`)}
+                              name="subjects.canDelete"
+                              checked={formik.values?.subjects?.canDelete}
+                              onChange={handleCheckboxChange(`subjects.canDelete`)}
                             />
                           </td>
                         </tr>
@@ -1325,51 +681,45 @@ function RolePermission() {
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="curriculumIndex"
-                              checked={formik.values.curriculumIndex}
-                              onChange={handleCheckboxChange(`curriculumIndex`)}
-                            />
-                          </td>
-                          <td>
-                            {/* <input
-                          className="form-check-input"
-                          type="checkbox"
-                          name="curriculumRead"
-                          checked={formik.values.curriculumRead}
-                          onChange={handleCheckboxChange(`curriculumRead`)}
-                        /> */}
-                          </td>
-                          <td>
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              name="curriculumCreate"
-                              checked={formik.values.curriculumCreate}
-                              onChange={handleCheckboxChange(
-                                `curriculumCreate`
-                              )}
+                              name="topics.canAccess"
+                              checked={formik.values?.topics?.canAccess}
+                              onChange={handleCheckboxChange(`topics.canAccess`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="curriculumUpdate"
-                              checked={formik.values.curriculumUpdate}
-                              onChange={handleCheckboxChange(
-                                `curriculumUpdate`
-                              )}
+                              name="topics.canView"
+                              checked={formik.values?.topics?.canView}
+                              onChange={handleCheckboxChange(`topics.canView`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="curriculumDelete"
-                              checked={formik.values.curriculumDelete}
-                              onChange={handleCheckboxChange(
-                                `curriculumDelete`
-                              )}
+                              name="topics.canCreate"
+                              checked={formik.values?.topics?.canCreate}
+                              onChange={handleCheckboxChange(`topics.canCreate`)}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              name="topics.canEdit"
+                              checked={formik.values?.topics?.canEdit}
+                              onChange={handleCheckboxChange(`topics.canEdit`)}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              name="topics.canDelete"
+                              checked={formik.values?.topics?.canDelete}
+                              onChange={handleCheckboxChange(`topics.canDelete`)}
                             />
                           </td>
                         </tr>
@@ -1388,165 +738,45 @@ function RolePermission() {
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="courseFeesIndex"
-                              checked={formik.values.courseFeesIndex}
-                              onChange={handleCheckboxChange(`courseFeesIndex`)}
+                              name="questions.canAccess"
+                              checked={formik.values?.questions?.canAccess}
+                              onChange={handleCheckboxChange(`questions.canAccess`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="courseFeesRead"
-                              checked={formik.values.courseFeesRead}
-                              onChange={handleCheckboxChange(`courseFeesRead`)}
+                              name="questions.canView"
+                              checked={formik.values?.questions?.canView}
+                              onChange={handleCheckboxChange(`questions.canView`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="courseFeesCreate"
-                              checked={formik.values.courseFeesCreate}
-                              onChange={handleCheckboxChange(
-                                `courseFeesCreate`
-                              )}
+                              name="questions.canCreate"
+                              checked={formik.values?.questions?.canCreate}
+                              onChange={handleCheckboxChange(`questions.canCreate`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="courseFeesUpdate"
-                              checked={formik.values.courseFeesUpdate}
-                              onChange={handleCheckboxChange(
-                                `courseFeesUpdate`
-                              )}
+                              name="questions.canEdit"
+                              checked={formik.values?.questions?.canEdit}
+                              onChange={handleCheckboxChange(`questions.canEdit`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="courseFeesDelete"
-                              checked={formik.values.courseFeesDelete}
-                              onChange={handleCheckboxChange(
-                                `courseFeesDelete`
-                              )}
-                            />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <p
-                              style={{
-                                marginLeft: "30px",
-                                marginBottom: "0px",
-                              }}
-                            >
-                              Worksheet
-                            </p>
-                          </td>
-                          <td>
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              name="worksheetIndex"
-                              checked={formik.values.worksheetIndex}
-                              onChange={handleCheckboxChange(`worksheetIndex`)}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              name="worksheetRead"
-                              checked={formik.values.worksheetRead}
-                              onChange={handleCheckboxChange(`worksheetRead`)}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              name="worksheetCreate"
-                              checked={formik.values.worksheetCreate}
-                              onChange={handleCheckboxChange(`worksheetCreate`)}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              name="worksheetUpdate"
-                              checked={formik.values.worksheetUpdate}
-                              onChange={handleCheckboxChange(`worksheetUpdate`)}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              name="worksheetDelete"
-                              checked={formik.values.worksheetDelete}
-                              onChange={handleCheckboxChange(`worksheetDelete`)}
-                            />
-                          </td>
-                        </tr>
-                        <tr>
-                          <td>
-                            <p
-                              style={{
-                                marginLeft: "30px",
-                                marginBottom: "0px",
-                              }}
-                            >
-                              Homework
-                            </p>
-                          </td>
-                          <td>
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              name="homeworkIndex"
-                              checked={formik.values.homeworkIndex}
-                              onChange={handleCheckboxChange(`homeworkIndex`)}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              name="homeworkRead"
-                              checked={formik.values.homeworkRead}
-                              onChange={handleCheckboxChange(`homeworkRead`)}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              name="homeworkCreate"
-                              checked={formik.values.homeworkCreate}
-                              onChange={handleCheckboxChange(`homeworkCreate`)}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              name="homeworkUpdate"
-                              checked={formik.values.homeworkUpdate}
-                              onChange={handleCheckboxChange(`homeworkUpdate`)}
-                            />
-                          </td>
-                          <td>
-                            <input
-                              className="form-check-input"
-                              type="checkbox"
-                              name="homeworkDelete"
-                              checked={formik.values.homeworkDelete}
-                              onChange={handleCheckboxChange(`homeworkDelete`)}
+                              name="questions.canDelete"
+                              checked={formik.values?.questions?.canDelete}
+                              onChange={handleCheckboxChange(`questions.canDelete`)}
                             />
                           </td>
                         </tr>
@@ -1565,55 +795,45 @@ function RolePermission() {
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="courseDepositFeesIndex"
-                              checked={formik.values.courseDepositFeesIndex}
-                              onChange={handleCheckboxChange(
-                                `courseDepositFeesIndex`
-                              )}
+                              name="challenges.canAccess"
+                              checked={formik.values?.challenges?.canAccess}
+                              onChange={handleCheckboxChange(`challenges.canAccess`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="courseDepositFeesRead"
-                              checked={formik.values.courseDepositFeesRead}
-                              onChange={handleCheckboxChange(
-                                `courseDepositFeesRead`
-                              )}
+                              name="challenges.canView"
+                              checked={formik.values?.challenges?.canView}
+                              onChange={handleCheckboxChange(`challenges.canView`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="courseDepositFeesCreate"
-                              checked={formik.values.courseDepositFeesCreate}
-                              onChange={handleCheckboxChange(
-                                `courseDepositFeesCreate`
-                              )}
+                              name="challenges.canCreate"
+                              checked={formik.values?.challenges?.canCreate}
+                              onChange={handleCheckboxChange(`challenges.canCreate`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="courseDepositFeesUpdate"
-                              checked={formik.values.courseDepositFeesUpdate}
-                              onChange={handleCheckboxChange(
-                                `courseDepositFeesUpdate`
-                              )}
+                              name="challenges.canEdit"
+                              checked={formik.values?.challenges?.canEdit}
+                              onChange={handleCheckboxChange(`challenges.canEdit`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="courseDepositFeesDelete"
-                              checked={formik.values.courseFeesDelete}
-                              onChange={handleCheckboxChange(
-                                `courseDepositFeesDelete`
-                              )}
+                              name="challenges.canDelete"
+                              checked={formik.values?.challenges?.canDelete}
+                              onChange={handleCheckboxChange(`challenges.canDelete`)}
                             />
                           </td>
                         </tr>
@@ -1625,52 +845,166 @@ function RolePermission() {
                                 marginBottom: "0px",
                               }}
                             >
-                              Rewards
+                              Worksheet
                             </p>
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="rewardsIndex"
-                              checked={formik.values.rewardsIndex}
-                              onChange={handleCheckboxChange(`rewardsIndex`)}
+                              name="worksheets.canAccess"
+                              checked={formik.values?.worksheets?.canAccess}
+                              onChange={handleCheckboxChange(`worksheets.canAccess`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="rewardsRead"
-                              checked={formik.values.rewardsRead}
-                              onChange={handleCheckboxChange(`rewardsRead`)}
+                              name="worksheets.canView"
+                              checked={formik.values?.worksheets?.canView}
+                              onChange={handleCheckboxChange(`worksheets.canView`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="rewardsCreate"
-                              checked={formik.values.rewardsCreate}
-                              onChange={handleCheckboxChange(`rewardsCreate`)}
+                              name="worksheets.canCreate"
+                              checked={formik.values?.worksheets?.canCreate}
+                              onChange={handleCheckboxChange(`worksheets.canCreate`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="rewardsUpdate"
-                              checked={formik.values.rewardsUpdate}
-                              onChange={handleCheckboxChange(`rewardsUpdate`)}
+                              name="worksheets.canEdit"
+                              checked={formik.values?.worksheets?.canEdit}
+                              onChange={handleCheckboxChange(`worksheets.canEdit`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="rewardsDelete"
-                              checked={formik.values.rewardsDelete}
-                              onChange={handleCheckboxChange(`rewardsDelete`)}
+                              name="worksheets.canDelete"
+                              checked={formik.values?.worksheets?.canDelete}
+                              onChange={handleCheckboxChange(`worksheets.canDelete`)}
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <p
+                              style={{
+                                marginLeft: "30px",
+                                marginBottom: "0px",
+                              }}
+                            >
+                              Homework
+                            </p>
+                          </td>
+                          <td>
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              name="homeworks.canAccess"
+                              checked={formik.values?.homeworks?.canAccess}
+                              onChange={handleCheckboxChange(`homeworks.canAccess`)}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              name="homeworks.canView"
+                              checked={formik.values?.homeworks?.canView}
+                              onChange={handleCheckboxChange(`homeworks.canView`)}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              name="homeworks.canCreate"
+                              checked={formik.values?.homeworks?.canCreate}
+                              onChange={handleCheckboxChange(`homeworks.canCreate`)}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              name="homeworks.canEdit"
+                              checked={formik.values?.homeworks?.canEdit}
+                              onChange={handleCheckboxChange(`homeworks.canEdit`)}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              name="homeworks.canDelete"
+                              checked={formik.values?.homeworks?.canDelete}
+                              onChange={handleCheckboxChange(`homeworks.canDelete`)}
+                            />
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>
+                            <p
+                              style={{
+                                marginLeft: "30px",
+                                marginBottom: "0px",
+                              }}
+                            >
+                              rewards
+                            </p>
+                          </td>
+                          <td>
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              name="rewards.canAccess"
+                              checked={formik.values?.rewards?.canAccess}
+                              onChange={handleCheckboxChange(`rewards.canAccess`)}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              name="rewards.canView"
+                              checked={formik.values?.rewards?.canView}
+                              onChange={handleCheckboxChange(`rewards.canView`)}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              name="rewards.canCreate"
+                              checked={formik.values?.rewards?.canCreate}
+                              onChange={handleCheckboxChange(`rewards.canCreate`)}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              name="rewards.canEdit"
+                              checked={formik.values?.rewards?.canEdit}
+                              onChange={handleCheckboxChange(`rewards.canEdit`)}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              name="rewards.canDelete"
+                              checked={formik.values?.rewards?.canDelete}
+                              onChange={handleCheckboxChange(`rewards.canDelete`)}
                             />
                           </td>
                         </tr>
@@ -1689,45 +1023,45 @@ function RolePermission() {
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="subscriptionsIndex"
-                              checked={formik.values.subscriptionsIndex}
-                              onChange={handleCheckboxChange(`subscriptionsIndex`)}
+                              name="subscriptions.canAccess"
+                              checked={formik.values?.subscriptions?.canAccess}
+                              onChange={handleCheckboxChange(`subscriptions.canAccess`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="subscriptionsRead"
-                              checked={formik.values.subscriptionsRead}
-                              onChange={handleCheckboxChange(`subscriptionsRead`)}
+                              name="subscriptions.canView"
+                              checked={formik.values?.subscriptions?.canView}
+                              onChange={handleCheckboxChange(`subscriptions.canView`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="subscriptionsCreate"
-                              checked={formik.values.subscriptionsCreate}
-                              onChange={handleCheckboxChange(`subscriptionsCreate`)}
+                              name="subscriptions.canCreate"
+                              checked={formik.values?.subscriptions?.canCreate}
+                              onChange={handleCheckboxChange(`subscriptions.canCreate`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="subscriptionsUpdate"
-                              checked={formik.values.subscriptionsUpdate}
-                              onChange={handleCheckboxChange(`subscriptionsUpdate`)}
+                              name="subscriptions.canEdit"
+                              checked={formik.values?.subscriptions?.canEdit}
+                              onChange={handleCheckboxChange(`subscriptions.canEdit`)}
                             />
                           </td>
                           <td>
                             <input
                               className="form-check-input"
                               type="checkbox"
-                              name="subscriptionsDelete"
-                              checked={formik.values.subscriptionsDelete}
-                              onChange={handleCheckboxChange(`subscriptionsDelete`)}
+                              name="subscriptions.canDelete"
+                              checked={formik.values?.subscriptions?.canDelete}
+                              onChange={handleCheckboxChange(`subscriptions.canDelete`)}
                             />
                           </td>
                         </tr>

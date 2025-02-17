@@ -23,10 +23,7 @@ function EmployeeView() {
   const getCenterList = async () => {
     try {
       const response = await api.get("centers/list");
-      const centerNames = response.data.data.map((center) => ({
-        name: center.name,
-      }));
-      setCenterList(centerNames);
+      setCenterList(response.data.data);
     } catch (e) {
       toast.error(
         `Error Fetching Centers: ${e?.response?.data?.error || e.message}`
@@ -38,6 +35,22 @@ function EmployeeView() {
     getEmployeeData();
     getCenterList();
   }, [id]);
+
+  const centerFind = (name) => {
+    const FName = [];
+    try {
+      const centerIds = JSON.parse(name);
+      centerIds.forEach((id) => {
+        const center = centerList.find((center) => center.id === id);
+        if (center) {
+          FName.push(center.name);
+        }
+      });
+    } catch (error) {
+      console.error("Invalid JSON format:", error);
+    }
+    return FName.join(", ");
+  };
 
   return (
     <div className="container-fluid px-0">
@@ -87,8 +100,7 @@ function EmployeeView() {
                 </div>
                 <div className="col-6">
                   <p className="text-muted text-sm">
-                    : {centerList.map((center) => center.name).join(", ") ||
-                      "No Centers Available"}
+                    : {centerFind(data.center_id) || "--"}
                   </p>
                 </div>
               </div>

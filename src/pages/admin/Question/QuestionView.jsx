@@ -1,17 +1,104 @@
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { Link, useParams } from "react-router-dom";
+import api from "../../../config/URL";
 
 function QustionView() {
-  const data = {
-    centre_id: "SRDK",
-    grade_id: "A",
-    subject_id: "Maths",
-    topic_id: "Problem",
-    difficult_level: "Easy",
-    upload_file: "",
-    ques_type: "Closed",
-    hint: "Jane Doe Dummy",
-    question: "Dummy",
+  const [data, setData] = useState({});
+  const { id } = useParams();
+  const [centerList, setCenterList] = useState([]);
+  const [gradeList, setGradeList] = useState([]);
+  const [subjectList, setSubjectList] = useState([]);
+  const [topicList, setTopicList] = useState([]);
+
+  const getData = async () => {
+    try {
+      const response = await api.get(`question/${id}`);
+      setData(response.data.data);
+    } catch (e) {
+      const errorMessage =
+        e?.response?.data?.error || "Error Fetching Data. Please try again.";
+      toast.error(errorMessage);
+    }
   };
+
+  const getCenterList = async () => {
+    try {
+      const response = await api.get("centers/list");
+      const centerNames = response.data.data.map((center) => ({
+        name: center.name,
+      }));
+      setCenterList(centerNames);
+    } catch (e) {
+      toast.error(
+        `Error Fetching Centers: ${e?.response?.data?.error || e.message}`
+      );
+    }
+  };
+  const getGradeList = async () => {
+    try {
+      const response = await api.get("grades/list");
+      const gradeNames = response.data.data.map((grade) => ({
+        name: grade.name,
+      }));
+      setGradeList(gradeNames);
+    } catch (e) {
+      toast.error(
+        `Error Fetching Centers: ${e?.response?.data?.error || e.message}`
+      );
+    }
+  };
+  const getSubjectList = async () => {
+    try {
+      const response = await api.get("subjects/list");
+
+      const subjectNames = response.data.data.map((subject) => ({
+        name: subject.name,
+      }));
+      setSubjectList(subjectNames);
+    } catch (e) {
+      toast.error(
+        `Error Fetching Centers: ${e?.response?.data?.error || e.message}`
+      );
+    }
+  };
+  const getTopicList = async () => {
+    try {
+      const response = await api.get("topics/list");
+      const topicNames = response.data.data.map((topic) => ({
+        name: topic.name,
+      }));
+      setTopicList(topicNames);
+    } catch (e) {
+      toast.error(
+        `Error Fetching Centers: ${e?.response?.data?.error || e.message}`
+      );
+    }
+  };
+
+  const nameFind = (name) => {
+    const FName = [];
+    try {
+      const centerIds = JSON.parse(name);
+      centerIds.forEach((id) => {
+        const center = centerList.find((center) => center.id === id);
+        if (center) {
+          FName.push(center.name);
+        }
+      });
+    } catch (error) {
+      console.error("Invalid JSON format:", error);
+    }
+    return FName.join(", ");
+  };
+
+  useEffect(() => {
+    getData();
+    getCenterList();
+    getGradeList();
+    getSubjectList();
+    getTopicList();
+  }, [id]);
 
   return (
     <div className="container-fluid px-0">
@@ -54,13 +141,15 @@ function QustionView() {
         </div>
         <div className="container-fluid px-4">
           <div className="row pb-3">
-          <div className="col-md-6 col-12 my-2">
+            <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
                   <p className="fw-medium text-sm">Centre Name</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.centre_id}</p>
+                  <p className="text-muted text-sm">
+                    : {nameFind(data.center_id) || "--"}
+                  </p>
                 </div>
               </div>
             </div>
