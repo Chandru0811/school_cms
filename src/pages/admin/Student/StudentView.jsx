@@ -1,22 +1,26 @@
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
+import api from "../../../config/URL";
+import toast from "react-hot-toast";
 
 function StudentView() {
-  const data = {
-    center_id: "Washermenpet",
-    role: "Admin",
-    student_first_name: "Ramesh",
-    student_middle_name: "Kumar",
-    student_last_name: "M",
-    student_email: "john.doe@example.com",
-    student_mobile_number: "94567890",
-    parent_name: "Jane Doe",
-    parent_email: "jane.doe@example.com",
-    parent_mobile_number: "987654321",
-    grader_list: "Grade 10",
-    roll_number: "1023",
-    admission_number: "ADM5678",
-    admission_date: "2024-06-15",
+  const [data, setData] = useState({});
+  const { id } = useParams();
+
+  const getData = async () => {
+    try {
+      const response = await api.get(`student/${id}`);
+      const studentData = response.data.data; // Get student data
+      setData(studentData); // Set student data to state
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      toast.error("Failed to fetch student details.");
+    }
   };
+
+  useEffect(() => {
+    getData();
+  }, [id]);
 
   return (
     <div className="container-fluid px-0">
@@ -65,7 +69,7 @@ function StudentView() {
                   <p className="fw-medium text-sm">Centre</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.center_id}</p>
+                  <p className="text-muted text-sm">: {data.center_name}</p>
                 </div>
               </div>
             </div>
@@ -75,7 +79,9 @@ function StudentView() {
                   <p className="fw-medium text-sm">Role</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.role}</p>
+                  <p className="text-muted text-sm">
+                    : {data?.student?.role?.name || "No Role Available"}
+                  </p>
                 </div>
               </div>
             </div>
@@ -85,9 +91,7 @@ function StudentView() {
                   <p className="fw-medium text-sm">Student First Name</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">
-                    : {data.student_first_name}
-                  </p>
+                  <p className="text-muted text-sm">: {data.first_name}</p>
                 </div>
               </div>
             </div>
@@ -97,9 +101,7 @@ function StudentView() {
                   <p className="fw-medium text-sm">Student Middle Name</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">
-                    : {data.student_middle_name}
-                  </p>
+                  <p className="text-muted text-sm">: {data.middle_name}</p>
                 </div>
               </div>
             </div>
@@ -109,18 +111,18 @@ function StudentView() {
                   <p className="fw-medium text-sm">Student Last Name</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.student_last_name}</p>
+                  <p className="text-muted text-sm">: {data.last_name}</p>
                 </div>
               </div>
             </div>
             <div className="col-md-6 col-12 my-2">
-              <div className="row">
+            <div className="row">
                 <div className="col-6">
                   <p className="fw-medium text-sm">Student Email</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm text-break ">
-                    : {data.student_email}
+                  <p className="text-muted text-sm text-break">
+                    : {data?.student?.email}
                   </p>
                 </div>
               </div>
@@ -131,8 +133,8 @@ function StudentView() {
                   <p className="fw-medium text-sm">Student Mobile Number</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm text-break ">
-                    : {data.student_mobile_number}
+                  <p className="text-muted text-sm text-break">
+                    :  {data?.student?.mobile}
                   </p>
                 </div>
               </div>
@@ -143,8 +145,8 @@ function StudentView() {
                   <p className="fw-medium text-sm">Parent Name</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm text-break ">
-                    : {data.parent_name}
+                  <p className="text-muted text-sm text-break">
+                    : {data?.parent?.name}
                   </p>
                 </div>
               </div>
@@ -155,8 +157,8 @@ function StudentView() {
                   <p className="fw-medium text-sm">Parent Email</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm text-break ">
-                    : {data.parent_email}
+                  <p className="text-muted text-sm text-break">
+                    :  {data?.parent?.email}
                   </p>
                 </div>
               </div>
@@ -167,19 +169,8 @@ function StudentView() {
                   <p className="fw-medium text-sm">Parent Mobile Number</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm text-break ">
-                    : {data.parent_mobile_number}
-                  </p>
-                </div>
-              </div>
-            </div> <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Grader List</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm text-break ">
-                    : {data.grader_list}
+                  <p className="text-muted text-sm text-break">
+                    :  {data?.parent?.mobile}
                   </p>
                 </div>
               </div>
@@ -187,35 +178,11 @@ function StudentView() {
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Roll Number</p>
+                  <p className="fw-medium text-sm">Grade</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm text-break ">
-                    : {data.roll_number}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Admission Number</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm text-break ">
-                    : {data.admission_number}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Admission Date</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm text-break ">
-                    : {data.admission_date}
+                  <p className="text-muted text-sm">
+                    :{data.grade_name}
                   </p>
                 </div>
               </div>

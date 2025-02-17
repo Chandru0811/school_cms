@@ -90,8 +90,8 @@ function Admin({ handleLogout }) {
                     {/* Student */}
                     <Route path="/student" element={<Student />} />
                     <Route path="/student/add" element={<StudentAdd />} />
-                    <Route path="/student/edit" element={<StudentEdit />} />
-                    <Route path="/student/view" element={<StudentView />} />
+                    <Route path="/student/edit/:id" element={<StudentEdit />} />
+                    <Route path="/student/view/:id" element={<StudentView />} />
 
                     {/* Subject */}
                     <Route path="/subject" element={<Subject />} />
@@ -108,8 +108,8 @@ function Admin({ handleLogout }) {
                     {/* Question  */}
                     <Route path="/question" element={<Question />} />
                     <Route path="/question/add" element={<QuestionAdd />} />
-                    <Route path="/question/edit" element={<QuestionEdit />} />
-                    <Route path="/question/view" element={<QuestionView />} />
+                    <Route path="/question/edit/:id" element={<QuestionEdit />} />
+                    <Route path="/question/view/:id" element={<QuestionView />} />
 
                     {/* Answer  */}
                     <Route path="/answer" element={<Answer />} />

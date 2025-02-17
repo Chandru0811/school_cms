@@ -223,7 +223,7 @@ function Employee() {
             </MenuItem>
             <MenuItem>
               <Delete
-                path={`admin/employee/delete/${selectedId}`}
+                path={`employee/delete/${selectedId}`}
                 onOpen={handleMenuClose}
                 onDeleteSuccess={getData}
               />

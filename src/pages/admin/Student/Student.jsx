@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MaterialReactTable } from "material-react-table";
 import {
@@ -11,37 +11,27 @@ import {
 import Delete from "../../../components/common/Delete";
 import PropTypes from "prop-types";
 import { MoreVert as MoreVertIcon } from "@mui/icons-material";
+import api from "../../../config/URL";
+import toast from "react-hot-toast";
 
 function Student() {
   const [menuAnchor, setMenuAnchor] = useState(null);
+  const [selectedId, setSelectedId] = useState(null);
   const navigate = useNavigate();
+  const [data,setData] = useState([]);
 
-  const data = [
-    {
-      id: 1,
-      center_list: "SUB001",
-      student_first_name: "Sumaiya",
-      student_last_name: "Bee",
-      email: "sumaiya@gmail.com",
-      admission_no: 12,
-      createdBy: "Admin",
-      createdAt: "2024-01-01",
-      updatedAt: "2024-02-01",
-      updatedBy: "Moderator",
-    },
-    {
-      id: 2,
-      center_list: "SUB001",
-      student_first_name: "Sumaiya",
-      student_last_name: "Bee",
-      email: "sumaiya@gmail.com",
-      admission_no: 12,
-      createdBy: "Admin",
-      createdAt: "2024-01-01",
-      updatedAt: "2024-02-01",
-      updatedBy: "Moderator",
-    },
-  ];
+  const getData = async () => {
+    try {
+      const response = await api.get("students");
+      setData(response.data.data);
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   const columns = useMemo(
     () => [
@@ -61,11 +51,12 @@ function Student() {
         enableHiding: false,
         enableSorting: false,
         size: 20,
-        Cell: () => (
+        Cell: ({ cell }) => (
           <IconButton
             onClick={(e) => {
               e.stopPropagation();
               setMenuAnchor(e.currentTarget);
+              setSelectedId(cell.getValue());
             }}
           >
             <MoreVertIcon />
@@ -73,21 +64,22 @@ function Student() {
         ),
       },
       {
-        accessorKey: "center_list",
+        accessorKey: "center.name",
         header: "Center List",
       },
       {
-        accessorKey: "student_first_name",
+        accessorKey: "first_name",
         header: "Student Name",
       },
       {
-        accessorKey: "student_last_name",
+        accessorKey: "last_name",
         header: "Last Name",
       },
       {
-        accessorKey: "email",
+        accessorKey: "student.email",
         header: "Email",
       },
+      
       {
         accessorKey: "admission_no",
         header: "Admission Number",
@@ -111,7 +103,7 @@ function Student() {
     ],
     []
   );
-
+  
   const theme = createTheme({
     components: {
       MuiTableCell: {
@@ -184,7 +176,7 @@ function Student() {
               <span className="database_name">Student</span>
             </span>
           </div>
-          <Link to="/student/Add">
+          <Link to="/student/add">
             <button
               type="button"
               className="btn btn-button btn-sm me-2"
@@ -214,8 +206,8 @@ function Student() {
                   updated_at: false,
                 },
               }}
-              muiTableBodyRowProps={() => ({
-                onClick: () => navigate(`/student/View`),
+              muiTableBodyRowProps={({ row }) => ({
+                onClick: () => navigate(`/student/view/${row.original.id}`),
                 style: { cursor: "pointer" },
               })}
             />
@@ -226,9 +218,9 @@ function Student() {
             open={Boolean(menuAnchor)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={() => navigate(`/student/Edit`)}>Edit</MenuItem>
+            <MenuItem onClick={() => navigate(`/student/edit/${selectedId}`)}>Edit</MenuItem>
             <MenuItem>
-              <Delete path={`admin/company/delete`} onOpen={handleMenuClose} />
+              <Delete path={`/student/delete/${selectedId}`} onOpen={handleMenuClose} />
             </MenuItem>
           </Menu>
         </>
