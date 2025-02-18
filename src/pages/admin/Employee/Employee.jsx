@@ -52,11 +52,11 @@ function Employee() {
         ),
       },
       {
-        accessorKey: "center_id",
+        accessorKey: "centers",
         header: "Center Name",
       },
       {
-        accessorKey: "role_id",
+        accessorKey: "role.name",
         header: "Role Name",
       },
       {

@@ -60,63 +60,41 @@ const Login = ({ loginAsAdmin, loginAsSuperAdmin, loginAsStudent }) => {
         } else {
           response = await api.post(`login`, values);
         }
+    
         if (response?.status === 200) {
           const { data } = response;
           toast.success(data.message);
-          localStorage.setItem("schoolCMS_token", response.data.data.token);
-
-          localStorage.setItem("schoolCMS_name", response.data.data.user.name);
-          localStorage.setItem("schoolCMS_id", response.data.data.user.id);
-          localStorage.setItem(
-            "schoolCMS_email",
-            response.data.data.user.email
-          );
-          localStorage.setItem(
-            "schoolCMS_role",
-            response.data.data.user.role_id
-          );
-          localStorage.setItem(
-            "schoolCMS_mobile",
-            response.data.data.user.mobile
-          );
-          console.log(response.data.data.user.role_id);
-
-          if (
-            response.data.data.user.role_id === "2" ||
-            response.data.data.user.role_id === 2
-          ) {
+          localStorage.setItem("schoolCMS_token", data.data.token);
+          localStorage.setItem("schoolCMS_name", data.data.user.name);
+          localStorage.setItem("schoolCMS_id", data.data.user.id);
+          localStorage.setItem("schoolCMS_email", data.data.user.email);
+          localStorage.setItem("schoolCMS_role", data.data.user.role_id);
+          localStorage.setItem("schoolCMS_mobile", data.data.user.mobile);
+    
+          console.log(data.data.user.role_id);
+    
+          if (data.data.user.role_id === "2" || data.data.user.role_id === 2) {
             loginAsAdmin();
-          } else if (
-            response.data.data.user.role_id === "1" ||
-            response.data.data.user.role_id === 1
-          ) {
+          } else if (data.data.user.role_id === "1" || data.data.user.role_id === 1) {
             navigate("/");
             loginAsSuperAdmin();
-          } else if (
-            response.data.data.user.role_id === "3" ||
-            response.data.data.user.role_id === 3
-          ) {
+          } else if (data.data.user.role_id === "3" || data.data.user.role_id === 3) {
             navigate("/");
             loginAsStudent();
           } else {
-            toast(
-              "Oops! You don't have access to this page, but feel free to check out our amazing website! 😊",
-              {
-                icon: "😊",
-              }
-            );
-          }
-        } else {
-          toast.error(response.data.message);
-        }
-      } catch (error) {
-        if (error.response.status === 400) {
-          const errorMessage = error.response.data.message;
-          if (errorMessage) {
-            toast(errorMessage, {
-              icon: <FiAlertTriangle className="text-warning" />,
+            toast("Oops! You don't have access to this page, but feel free to check out our amazing website! 😊", {
+              icon: "😊",
             });
           }
+        } else {
+          toast.error(response.data.message || "Invalid credentials");
+        }
+      } catch (error) {
+        if (error.response) {
+          const errorMessage = error.response.data.error || "An unexpected error occurred.";
+          toast.error(errorMessage, {
+            icon: <FiAlertTriangle className="text-warning" />,
+          });
         } else {
           console.error("API Error", error);
           toast.error("An unexpected error occurred.");
@@ -124,7 +102,8 @@ const Login = ({ loginAsAdmin, loginAsSuperAdmin, loginAsStudent }) => {
       } finally {
         setLoadIndicator(false);
       }
-    },
+    }
+    
   });
 
   return (

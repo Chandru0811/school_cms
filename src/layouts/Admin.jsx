@@ -55,6 +55,9 @@ import EmployeeAdd from "../pages/admin/Employee/EmployeeAdd";
 import EmployeeEdit from "../pages/admin/Employee/EmployeeEdit";
 import EmployeeView from "../pages/admin/Employee/EmployeeView";
 import DoAssessment from "../pages/admin/DoAssessment";
+import CenterAdd from "../pages/admin/Center/CenterAdd";
+import CenterEdit from "../pages/admin/Center/CenterEdit";
+import CenterView from "../pages/admin/Center/CenterView";
 
 function Admin({ handleLogout }) {
   return (
@@ -74,6 +77,9 @@ function Admin({ handleLogout }) {
 
                     {/* Center  */}
                     <Route path="/center" element={<Center />} />
+                    <Route path="/center/add" element={<CenterAdd />} />
+                    <Route path="/center/edit" element={<CenterEdit />} />
+                    <Route path="/center/view" element={<CenterView />} />
 
                     {/* Grade */}
                     <Route path="/grade" element={<Grade />} />

@@ -51,15 +51,6 @@ function TopicView({ show, setShow, id }) {
 
   return (
     <>
-      <span
-        style={{
-          whiteSpace: "nowrap",
-          cursor: "pointer",
-        }}
-      >
-        View
-      </span>
-
       <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
         <DialogTitle>View Topic</DialogTitle>
         <hr className="m-0" />

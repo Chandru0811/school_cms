@@ -54,7 +54,7 @@ function Role() {
         ),
       },
       {
-        accessorKey: "center_name",
+        accessorKey: "centers",
         header: "Center",
       },
       { accessorKey: "name", header: "Name" },
@@ -164,13 +164,13 @@ function Role() {
                   updated_at: false,
                 },
               }}
-              muiTableBodyRowProps={() => ({
-                style: { cursor: "pointer" },
-                onClick: () => {
-                  // setSelectedData(row.original);
-                  setShowView(true);
-                },
-              })}
+              muiTableBodyRowProps={({ row }) => ({
+              style: { cursor: "pointer" },
+              onClick: () => {
+                setSelectedId(row.original.id);
+                setShowView(true);
+              },
+            })}
             />
           </ThemeProvider>
           <Menu
