@@ -54,8 +54,8 @@ function Subject() {
           </IconButton>
         ),
       },
-      { accessorKey: "center_id", header: "Centre Name" },
-      { accessorKey: "grade_id", header: "Grade" },
+      { accessorKey: "centers", header: "Centre Name" },
+      { accessorKey: "grade.name", header: "Grade" },
       { accessorKey: "name", header: "Name" },
       { accessorKey: "created_by", header: "Created By" },
       {

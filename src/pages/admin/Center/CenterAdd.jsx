@@ -22,8 +22,8 @@ function CenterAdd({ onSuccess }) {
   };
 
   const handleClose = () => {
-    setShow(false);
     formik.resetForm();
+    setShow(false);
   };
 
   const formik = useFormik({
@@ -35,24 +35,23 @@ function CenterAdd({ onSuccess }) {
     onSubmit: async (values) => {
       setLoadIndicator(true);
       try {
-        const response = await api.post("center", values);
+        const response = await api.post("center", values);    
         if (response.status === 200) {
           toast.success(response.data.message);
-          onSuccess(); 
-          handleClose();
+          if (onSuccess) onSuccess();  
+          if (handleClose) handleClose(); 
           formik.resetForm();
           navigate("/center");
         } else {
           toast.error(response.data.message || "An unexpected error occurred.");
         }
-      } catch (error) {
-        const errorMessage =
-          error.response?.data?.message || "Something went wrong!";
-        toast.error(errorMessage);
+      } catch (e) {
+        console.error("Error Fetching Data:", e);
+        toast.error(e?.response?.data?.error || "Error Fetching Data");
       } finally {
-        setLoadIndicator(false); // Stop loading
+        setLoadIndicator(false);
       }
-    },
+    },   
   });
 
   return (

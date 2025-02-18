@@ -52,7 +52,7 @@ function SubjectView({ show, setShow ,id}) {
                 <p className="">Grade</p>
               </div>
               <div className="col-6">
-                <p className="text-muted text-sm">: {data.grandName}</p>
+                <p className="text-muted text-sm">: {data.grand_name}</p>
               </div>
             </div>
           </div>
