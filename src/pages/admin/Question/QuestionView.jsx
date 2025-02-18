@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
 import { Link, useParams } from "react-router-dom";
 import api from "../../../config/URL";
+import toast from "react-hot-toast";
+import PropTypes from "prop-types";
 
 function QustionView() {
   const [data, setData] = useState({});
   const { id } = useParams();
   const [centerList, setCenterList] = useState([]);
-  const [gradeList, setGradeList] = useState([]);
-  const [subjectList, setSubjectList] = useState([]);
-  const [topicList, setTopicList] = useState([]);
 
   const getData = async () => {
     try {
@@ -25,50 +23,7 @@ function QustionView() {
   const getCenterList = async () => {
     try {
       const response = await api.get("centers/list");
-      const centerNames = response.data.data.map((center) => ({
-        name: center.name,
-      }));
-      setCenterList(centerNames);
-    } catch (e) {
-      toast.error(
-        `Error Fetching Centers: ${e?.response?.data?.error || e.message}`
-      );
-    }
-  };
-  const getGradeList = async () => {
-    try {
-      const response = await api.get("grades/list");
-      const gradeNames = response.data.data.map((grade) => ({
-        name: grade.name,
-      }));
-      setGradeList(gradeNames);
-    } catch (e) {
-      toast.error(
-        `Error Fetching Centers: ${e?.response?.data?.error || e.message}`
-      );
-    }
-  };
-  const getSubjectList = async () => {
-    try {
-      const response = await api.get("subjects/list");
-
-      const subjectNames = response.data.data.map((subject) => ({
-        name: subject.name,
-      }));
-      setSubjectList(subjectNames);
-    } catch (e) {
-      toast.error(
-        `Error Fetching Centers: ${e?.response?.data?.error || e.message}`
-      );
-    }
-  };
-  const getTopicList = async () => {
-    try {
-      const response = await api.get("topics/list");
-      const topicNames = response.data.data.map((topic) => ({
-        name: topic.name,
-      }));
-      setTopicList(topicNames);
+      setCenterList(response.data.data);
     } catch (e) {
       toast.error(
         `Error Fetching Centers: ${e?.response?.data?.error || e.message}`
@@ -76,7 +31,12 @@ function QustionView() {
     }
   };
 
-  const nameFind = (name) => {
+  useEffect(() => {
+    getData();
+    getCenterList();
+  }, [id]);
+
+  const centerFind = (name) => {
     const FName = [];
     try {
       const centerIds = JSON.parse(name);
@@ -92,18 +52,10 @@ function QustionView() {
     return FName.join(", ");
   };
 
-  useEffect(() => {
-    getData();
-    getCenterList();
-    getGradeList();
-    getSubjectList();
-    getTopicList();
-  }, [id]);
-
   return (
     <div className="container-fluid px-0">
       <ol
-        className="breadcrumb my-2 px-2 d-flex align-items-center"
+        className="breadcrumb my-2 px-2"
         style={{ listStyle: "none", padding: 0, margin: 0 }}
       >
         <li>
@@ -128,7 +80,7 @@ function QustionView() {
             <div className="d-flex">
               <div className="dot active"></div>
             </div>
-            <span className="me-2 text-muted text-sm">View Question</span>
+            <span className="me-2 text-muted">View Question</span>
           </div>
           <div className="my-2 pe-3 d-flex align-items-center">
             <Link to="/question">
@@ -144,11 +96,11 @@ function QustionView() {
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Centre Name</p>
+                  <p className="fw-medium text-sm">Centre</p>
                 </div>
                 <div className="col-6">
                   <p className="text-muted text-sm">
-                    : {nameFind(data.center_id) || "--"}
+                    : {centerFind(data.question?.center_id) || "--"}
                   </p>
                 </div>
               </div>
@@ -159,7 +111,7 @@ function QustionView() {
                   <p className="fw-medium text-sm">Grade</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.grade_id}</p>
+                  <p className="text-muted text-sm">: {data.question?.grade_id}</p>
                 </div>
               </div>
             </div>
@@ -169,9 +121,7 @@ function QustionView() {
                   <p className="fw-medium text-sm">Subject</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">
-                    : {data.subject_id}
-                  </p>
+                  <p className="text-muted text-sm">: {data.question?.subject_id}</p>
                 </div>
               </div>
             </div>
@@ -181,29 +131,7 @@ function QustionView() {
                   <p className="fw-medium text-sm">Topic</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">
-                    : {data.topic_id}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Difficult Level</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.difficult_level}</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Question</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.question}</p>
+                  <p className="text-muted text-sm">: {data.question?.topic_id}</p>
                 </div>
               </div>
             </div>
@@ -213,21 +141,37 @@ function QustionView() {
                   <p className="fw-medium text-sm">Question Type</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm text-break ">
-                    : {data.ques_type}
-                  </p>
+                  <p className="text-muted text-sm">: {data.question?.ques_type}</p>
                 </div>
               </div>
             </div>
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Upload File</p>
+                  <p className="fw-medium text-sm">Question</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm text-break ">
-                    : {data.upload_file}
-                  </p>
+                  <p className="text-muted text-sm">: {data.question?.question}</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12 my-2">
+              <div className="row">
+                <div className="col-6">
+                  <p className="fw-medium text-sm">Options</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">: {data.question?.options}</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12 my-2">
+              <div className="row">
+                <div className="col-6">
+                  <p className="fw-medium text-sm">Difficulty Level</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">: {data.question?.difficult_level}</p>
                 </div>
               </div>
             </div>
@@ -237,9 +181,27 @@ function QustionView() {
                   <p className="fw-medium text-sm">Hint</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm text-break ">
-                    : {data.hint}
-                  </p>
+                  <p className="text-muted text-sm">: {data.question?.hint}</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12 my-2">
+              <div className="row">
+                <div className="col-6">
+                  <p className="fw-medium text-sm">Answer Type</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">: {data.answer?.answer_type}</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12 my-2">
+              <div className="row">
+                <div className="col-6">
+                  <p className="fw-medium text-sm">Answer</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">: {data.answer?.answer}</p>
                 </div>
               </div>
             </div>
@@ -249,5 +211,4 @@ function QustionView() {
     </div>
   );
 }
-
 export default QustionView;

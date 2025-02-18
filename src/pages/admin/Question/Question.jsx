@@ -13,10 +13,12 @@ import PropTypes from "prop-types";
 import { MoreVert as MoreVertIcon } from "@mui/icons-material";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
+
 function Question() {
   const [menuAnchor, setMenuAnchor] = useState(null);
   const navigate = useNavigate();
   const [data, setData] = useState([]);
+  const [selectedId, setSelectedId] = useState(null);
 
   const columns = useMemo(
     () => [
@@ -36,11 +38,12 @@ function Question() {
         enableHiding: false,
         enableSorting: false,
         size: 20,
-        Cell: () => (
+        Cell: ({ cell }) => (
           <IconButton
             onClick={(e) => {
               e.stopPropagation();
               setMenuAnchor(e.currentTarget);
+              setSelectedId(cell.getValue());
             }}
           >
             <MoreVertIcon />
@@ -118,7 +121,7 @@ function Question() {
       const response = await api.get("questions");
       setData(response.data.data);
     } catch (e) {
-      toast.error("Error Fetching Data ", e?.response?.data?.error);
+      toast.error("Error Fetching Data", e?.response?.data?.error);
     }
   };
 
@@ -185,8 +188,8 @@ function Question() {
                   updated_at: false,
                 },
               }}
-              muiTableBodyRowProps={() => ({
-                onClick: () => navigate(`/question/view`),
+              muiTableBodyRowProps={({ row }) => ({
+                onClick: () => navigate(`/question/view/${row.original.id}`),
                 style: { cursor: "pointer" },
               })}
             />
@@ -197,7 +200,9 @@ function Question() {
             open={Boolean(menuAnchor)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={() => navigate(`/question/edit`)}>Edit</MenuItem>
+            <MenuItem onClick={() => navigate(`/question/edit/${selectedId}`)}>
+              Edit
+            </MenuItem>
             <MenuItem>
               <Delete path={`admin/company/delete`} onOpen={handleMenuClose} />
             </MenuItem>
