@@ -15,7 +15,6 @@ const Login = ({ loginAsAdmin, loginAsSuperAdmin, loginAsStudent }) => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
-  const role_id = localStorage.getItem("schoolCMS_role");
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
@@ -75,10 +74,10 @@ const Login = ({ loginAsAdmin, loginAsSuperAdmin, loginAsStudent }) => {
           const roleId = data.data.user.role_id;
           const permissionsResponse = await api.get(`role_permission/${roleId}`);
           if (permissionsResponse?.status === 200) {
-            const schoo_Permissions = permissionsResponse.data;
+            const schoolCMS_Permissions = permissionsResponse.data;
             localStorage.setItem(
-              "schoo_Permissions",
-              JSON.stringify(schoo_Permissions)
+              "schoolCMS_Permissions",
+              JSON.stringify(schoolCMS_Permissions)
             );
           } else {
             toast.error("Failed to fetch permissions");

@@ -21,7 +21,9 @@ function Center() {
   const [loading, setLoading] = useState(true);
   const [selectedId, setSelectedId] = useState(null);
   const [data, setData] = useState([]);
-  const storedScreens = JSON.parse(localStorage.getItem("schoo_Permissions") || "{}");
+  const storedScreens = JSON.parse(
+    localStorage.getItem("schoolCMS_Permissions") || "{}"
+  );
 
   const columns = useMemo(
     () => [
@@ -87,7 +89,6 @@ function Center() {
       setLoading(false);
     }
   };
-
 
   useEffect(() => {
     fetchData();
@@ -165,9 +166,8 @@ function Center() {
               <span className="database_name">Center</span>
             </span>
           </div>
-          {storedScreens?.[0]?.can_create && (
-            <CenterAdd />
-          )}
+          {storedScreens?.data[0]?.can_create === 1 && 
+          <CenterAdd />}
         </div>
         {loading ? (
           <div className="loader-container">
@@ -208,7 +208,7 @@ function Center() {
               open={Boolean(menuAnchor)}
               onClose={handleMenuClose}
             >
-              {storedScreens?.[0]?.can_edit && (
+              {storedScreens?.data[0]?.can_edit && (
                 <MenuItem>
                   <CenterEdit
                     onSuccess={fetchData}
@@ -217,7 +217,7 @@ function Center() {
                   />
                 </MenuItem>
               )}
-              {storedScreens?.[0]?.can_view && (
+              {storedScreens?.data[0]?.can_view && (
                 <MenuItem>
                   <CenterView
                     id={selectedId}

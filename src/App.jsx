@@ -49,6 +49,7 @@ function App() {
       localStorage.removeItem("schoolCMS_email");
       localStorage.removeItem("schoolCMS_role");
       localStorage.removeItem("schoolCMS_mobile");
+      localStorage.removeItem("schoolCMS_Permissions");
     } catch (e) {
       toast.error("Logout unsuccessful", e?.response?.data?.message);
     }
