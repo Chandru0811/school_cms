@@ -228,20 +228,6 @@ function ChallengesAdd() {
     }
   };
 
-  const addMultiChoice = () => {
-    formik.setFieldValue("options", [
-      ...formik.values.options,
-      { id: Date.now(), value: "" },
-    ]);
-  };
-
-  const removeMultiChoice = (id) => {
-    const updatedMultiChoices = formik.values.options.filter(
-      (multiChoice) => multiChoice.id !== id
-    );
-    formik.setFieldValue("options", updatedMultiChoices);
-  };
-
   useEffect(() => {
     getCenterList();
     getSubjectList();
@@ -504,8 +490,8 @@ function ChallengesAdd() {
                 </label>
                 <input
                   className={`form-control form-control-sm ${formik.touched.time_limit && formik.errors.time_limit
-                      ? "is-invalid"
-                      : ""
+                    ? "is-invalid"
+                    : ""
                     }`}
                   {...formik.getFieldProps("time_limit")}
                 />
@@ -525,7 +511,7 @@ function ChallengesAdd() {
                   { id: "fillable", label: "fillable" },
                   { id: "closed", label: "Closed" },
                   { id: "multichoice", label: "Multi choice" },
-                  { id: "shortCheckbox", label: "Short Answer" },
+                  { id: "short_answer", label: "Short Answer" },
                   { id: "uploadCheckbox", label: "Upload" },
                 ].map(({ id, label }) => (
                   <div className="form-check form-check-inline" key={id}>
@@ -582,7 +568,6 @@ function ChallengesAdd() {
                           name="closed"
                           value="yes"
                           onChange={(e) => {
-                            // Create or update the first object in the answer array with closed value
                             const currentAnswer = formik.values.answer?.[0] || {};
                             formik.setFieldValue("answer", [
                               { ...currentAnswer, closed: e.target.value },
@@ -724,25 +709,25 @@ function ChallengesAdd() {
                     </button>
                   </div>
                 )}
-                {formik.values.ques_type.includes("shortCheckbox") && (
+                {formik.values.ques_type.includes("short_answer") && (
                   <div className="mt-2">
                     <label className="form-label">Short Answer</label>
                     <textarea
                       rows={3}
-                      className={`form-control ${formik.touched.short_answer && formik.errors.short_answer
+                      className={`form-control form-control-sm ${formik.touched.answer?.[0]?.short_answer && formik.errors.answer?.[0]?.short_answer
                         ? "is-invalid"
                         : ""
                         }`}
-                      name="short_answer"
-                      value={formik.values.short_answer}
-                      onChange={formik.handleChange}
+                      name="answer"
+                      value={formik.values.answer[0]?.short_answer || ""}
+                      onChange={(e) => {
+                        const updatedAnswer = [{ ...formik.values.answer[0], short_answer: e.target.value }];
+                        formik.setFieldValue("answer", updatedAnswer);
+                      }}
                     />
-                    {formik.touched.short_answer &&
-                      formik.errors.short_answer && (
-                        <div className="text-danger">
-                          {formik.errors.short_answer}
-                        </div>
-                      )}
+                    {formik.touched.answer?.[0]?.short_answer && formik.errors.answer?.[0]?.short_answer && (
+                      <div className="text-danger">{formik.errors.answer[0]?.short_answer}</div>
+                    )}
                   </div>
                 )}
                 {formik.values.ques_type.includes("uploadCheckbox") && (

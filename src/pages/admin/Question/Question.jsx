@@ -16,6 +16,7 @@ import toast from "react-hot-toast";
 
 function Question() {
   const [menuAnchor, setMenuAnchor] = useState(null);
+  const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const storedScreens = JSON.parse(localStorage.getItem("schoolCMS_Permissions") || "{}");

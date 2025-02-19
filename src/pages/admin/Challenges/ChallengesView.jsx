@@ -1,18 +1,55 @@
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import ChallengesAssign from "./ChallengesAssign";
+import { useEffect, useState } from "react";
+import api from "../../../config/URL";
+import toast from "react-hot-toast";
 
 function ChallengesView() {
-  const data = {
-    centre_id: "SRDK",
-    grade_id: "10 Grade",
-    subject_topic: "Science",
-    type: "Math",
-    title: "Solving for x",
-    description: "Solve for x in the equation 3x - 4 = 11",
-    level: "Medium",
-    hint: "First, add 4 to both sides, then divide by 3.",
-    time_limit: 20,
-    ques_type: "Filled",
+  const [data, setData] = useState({});
+  const { id } = useParams();
+  const [centerList, setCenterList] = useState([]);
+
+  const getData = async () => {
+    try {
+      const response = await api.get(`challenge/${id}`);
+      setData(response.data.data);
+    } catch (e) {
+      const errorMessage =
+        e?.response?.data?.error || "Error Fetching Data. Please try again.";
+      toast.error(errorMessage);
+    }
+  };
+
+  const getCenterList = async () => {
+    try {
+      const response = await api.get("centers/list");
+      setCenterList(response.data.data);
+    } catch (e) {
+      toast.error(
+        `Error Fetching Centers: ${e?.response?.data?.error || e.message}`
+      );
+    }
+  };
+
+  useEffect(() => {
+    getData();
+    getCenterList();
+  }, [id]);
+
+  const centerFind = (name) => {
+    const FName = [];
+    try {
+      const centerIds = JSON.parse(name);
+      centerIds.forEach((id) => {
+        const center = centerList.find((center) => center.id === id);
+        if (center) {
+          FName.push(center.name);
+        }
+      });
+    } catch (error) {
+      console.error("Invalid JSON format:", error);
+    }
+    return FName.join(", ");
   };
 
   return (
@@ -64,73 +101,45 @@ function ChallengesView() {
         </div>
         <div className="container-fluid px-4">
           <div className="row pb-3">
-            <div className="col-md-6 col-12">
-              <div className="row mt-3  mb-2">
-                <div className="col-6 ">
-                  <p className="">Centre Name</p>
+            <div className="col-md-6 col-12 my-2">
+              <div className="row">
+                <div className="col-6">
+                  <p className="fw-medium text-sm">Centre</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.centre_id}</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12">
-              <div className="row mt-3  mb-2">
-                <div className="col-6 ">
-                  <p className="">Grade</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.grade_id}</p>
+                  <p className="text-muted text-sm">
+                    : {centerFind(data.challenge?.center_id) || "--"}
+                  </p>
                 </div>
               </div>
             </div>
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Subject Topic</p>
+                  <p className="fw-medium text-sm">Grade</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.subject_topic}</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Level</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.level}</p>
+                  <p className="text-muted text-sm">: {data.challenge?.grade_id}</p>
                 </div>
               </div>
             </div>
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Challenge Title</p>
+                  <p className="fw-medium text-sm">Subject</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.title}</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Type</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.type}</p>
+                  <p className="text-muted text-sm">: {data.challenge?.subject_id}</p>
                 </div>
               </div>
             </div>
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Question Type</p>
+                  <p className="fw-medium text-sm">Topic</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.ques_type}</p>
+                  <p className="text-muted text-sm">: {data.challenge?.topic_id}</p>
                 </div>
               </div>
             </div>
@@ -140,7 +149,57 @@ function ChallengesView() {
                   <p className="fw-medium text-sm">Time Limit</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.time_limit}</p>
+                  <p className="text-muted text-sm">: {data.challenge?.time_limit}</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12 my-2">
+              <div className="row">
+                <div className="col-6">
+                  <p className="fw-medium text-sm">challenge Type</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">: {data.challenge?.ques_type}</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12 my-2">
+              <div className="row">
+                <div className="col-6">
+                  <p className="fw-medium text-sm">Challenges Title</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">: {data.challenge?.title}</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12 my-2">
+              <div className="row">
+                <div className="col-6">
+                  <p className="fw-medium text-sm">Options</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">: {data.challenge?.options}</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12 my-2">
+              <div className="row">
+                <div className="col-6">
+                  <p className="fw-medium text-sm">Description</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">: {data.challenge?.description}</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12 my-2">
+              <div className="row">
+                <div className="col-6">
+                  <p className="fw-medium text-sm">Difficulty Level</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">: {data.challenge?.difficult_level}</p>
                 </div>
               </div>
             </div>
@@ -150,21 +209,27 @@ function ChallengesView() {
                   <p className="fw-medium text-sm">Hint</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm text-break ">
-                    : {data.hint}
-                  </p>
+                  <p className="text-muted text-sm">: {data.challenge?.hint}</p>
                 </div>
               </div>
             </div>
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Challenge Description</p>
+                  <p className="fw-medium text-sm">Answer Type</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm text-break ">
-                    : {data.description}
-                  </p>
+                  <p className="text-muted text-sm">: {data.answer?.answer_type}</p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12 my-2">
+              <div className="row">
+                <div className="col-6">
+                  <p className="fw-medium text-sm">Answer</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">: {data.answer?.answer}</p>
                 </div>
               </div>
             </div>

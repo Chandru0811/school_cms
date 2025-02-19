@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MaterialReactTable } from "material-react-table";
 import {
   ThemeProvider,
@@ -11,14 +11,15 @@ import {
 import Delete from "../../../components/common/Delete";
 import PropTypes from "prop-types";
 import { MoreVert as MoreVertIcon } from "@mui/icons-material";
-import toast from "react-hot-toast";
 import api from "../../../config/URL";
+import toast from "react-hot-toast";
 
 function Challenges() {
   const [menuAnchor, setMenuAnchor] = useState(null);
   const [data, setData] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
-
+  const storedScreens = JSON.parse(localStorage.getItem("schoolCMS_Permissions") || "{}");
+  const navigate = useNavigate()
   const columns = useMemo(
     () => [
       {
@@ -49,29 +50,9 @@ function Challenges() {
           </IconButton>
         ),
       },
-      { accessorKey: "center_id", header: "Centre Name" },
-      { accessorKey: "grade_id", header: "Grade" },
-      {
-        accessorKey: "title",
-        enableHiding: false,
-        header: "Title",
-      },
-      {
-        accessorKey: "type",
-        enableHiding: false,
-        header: "Type",
-      },
-      {
-        accessorKey: "level",
-        header: "Level",
-        enableHiding: false,
-        size: 40,
-      },
-      {
-        accessorKey: "time_limit",
-        header: "Time Limit",
-        size: 40,
-      },
+      { accessorKey: "centre_id", header: "Centre Name" },
+      { accessorKey: "topic_id", header: "Topic" },
+      { accessorKey: "difficult_level", header: "Difficult Level" },
       { accessorKey: "created_by", header: "Created By" },
       {
         accessorKey: "created_at",
@@ -91,20 +72,6 @@ function Challenges() {
     ],
     []
   );
-
-
-  const getData = async () => {
-    try {
-      const response = await api.get("challenges");
-      setData(response.data.data);
-    } catch (e) {
-      toast.error("Error Fetching Data", e?.response?.data?.error);
-    }
-  };
-
-  useEffect(() => {
-    getData();
-  }, []);
 
   const theme = createTheme({
     components: {
@@ -149,6 +116,19 @@ function Challenges() {
     },
   });
 
+  const getData = async () => {
+    try {
+      const response = await api.get("challenges");
+      setData(response.data.data);
+    } catch (e) {
+      toast.error("Error Fetching Data", e?.response?.data?.error);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
   const handleMenuClose = () => setMenuAnchor(null);
 
   return (
@@ -178,6 +158,7 @@ function Challenges() {
               <span className="database_name">Challenges</span>
             </span>
           </div>
+          {storedScreens?.data[7]?.can_create && (
           <Link to="/challenges/add">
             <button
               type="button"
@@ -187,6 +168,7 @@ function Challenges() {
               &nbsp; Add &nbsp;&nbsp; <i className="bi bi-plus-lg"></i>
             </button>
           </Link>
+        )}
         </div>
         <>
           <ThemeProvider theme={theme}>
@@ -208,10 +190,15 @@ function Challenges() {
                   updated_at: false,
                 },
               }}
-              muiTableBodyRowProps={({ row }) => ({
-                onClick: () => navigate(`/challenges/view/${row.original.id}`),
-                style: { cursor: "pointer" },
-              })}
+              muiTableBodyRowProps={({ row }) =>
+                storedScreens?.data[7]?.can_view
+                  ? {
+                      onClick: () =>
+                        navigate(`/challenges/view/${row.original.id}`),
+                      style: { cursor: "pointer" },
+                    }
+                  : {}
+              }
             />
           </ThemeProvider>
           <Menu
@@ -220,14 +207,13 @@ function Challenges() {
             open={Boolean(menuAnchor)}
             onClose={handleMenuClose}
           >
+          {storedScreens?.data[7]?.can_edit && (
             <MenuItem onClick={() => navigate(`/challenges/edit/${selectedId}`)}>
               Edit
             </MenuItem>
+          )}
             <MenuItem>
-              <Delete
-                path={`admin/challenges/delete`}
-                onOpen={handleMenuClose}
-              />
+              <Delete path={`admin/company/delete`} onOpen={handleMenuClose} />
             </MenuItem>
           </Menu>
         </>
@@ -235,10 +221,5 @@ function Challenges() {
     </div>
   );
 }
-
-Challenges.propTypes = {
-  row: PropTypes.func.isRequired,
-  cell: PropTypes.func.isRequired,
-};
 
 export default Challenges;
