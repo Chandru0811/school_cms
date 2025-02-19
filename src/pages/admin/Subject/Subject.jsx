@@ -23,6 +23,7 @@ function Subject() {
   const [showView, setShowView] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [data, setData] = useState([]);
+  const storedScreens = JSON.parse(localStorage.getItem("schoolCMS_Permissions") || "{}");
 
   const columns = useMemo(
     () => [
@@ -163,7 +164,9 @@ function Subject() {
               <span className="database_name">Subject</span>
             </span>
           </div>
+          {storedScreens?.data[4]?.can_create && (
           <SubjectAdd  onSuccess={getData} />
+        )}
         </div>
         <>
           <ThemeProvider theme={theme}>
@@ -215,8 +218,12 @@ function Subject() {
                />
             </MenuItem>
           </Menu>
+          {storedScreens?.data[4]?.can_edit && (
           <SubjectEdit show={showEdit} setShow={setShowEdit}  id={selectedId}  onSuccess={getData}/>
+        )}
+        {storedScreens?.data[4]?.can_view && (
           <SubjectView show={showView} setShow={setShowView} id={selectedId} />
+        )}
         </>
       </div>
     </div>

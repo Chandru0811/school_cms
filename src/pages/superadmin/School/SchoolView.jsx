@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import api from "../../../config/URL";
-import { FaEye, FaEyeSlash } from "react-icons/fa"; 
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useFormik } from "formik";
 import {
   Dialog,
@@ -22,12 +22,19 @@ function SchoolView() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
-  
+
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
-  const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword);
+  const toggleConfirmPasswordVisibility = () =>
+    setShowConfirmPassword(!showConfirmPassword);
   const validationSchema = yup.object().shape({
-    password: yup.string().min(8, "Password must be at least 8 characters").required("Password is required"),
-    password_confirmation: yup.string().oneOf([yup.ref('password'), null], "Passwords must match").required("Confirm your password"),
+    password: yup
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .required("Password is required"),
+    password_confirmation: yup
+      .string()
+      .oneOf([yup.ref("password"), null], "Passwords must match")
+      .required("Confirm your password"),
   });
 
   const handleShow = () => {
@@ -49,7 +56,10 @@ function SchoolView() {
       setLoadIndicator(true);
       try {
         const userId = data.users[0].id;
-        const response = await api.post(`superAdmin/change/password/${userId}`, values);
+        const response = await api.post(
+          `superAdmin/change/password/${userId}`,
+          values
+        );
         if (response.status === 200) {
           toast.success("Password changed successfully!");
           handleClose();
@@ -62,7 +72,6 @@ function SchoolView() {
         setLoadIndicator(false);
       }
     },
-    
   });
 
   const getData = async () => {
@@ -77,22 +86,22 @@ function SchoolView() {
     }
   };
 
-    // Function to Toggle Status
-    const handleStatusToggle = async () => {
-      try {
-        const response = await api.post(`superAdmin/school/status/${id}`);
-        if (response.status === 200) {
-          toast.success("Status updated successfully!");
-          setData((prevData) => ({
-            ...prevData,
-            active: prevData.active === 1 ? 0 : 1, 
-          }));
-        }
-      } catch (error) {
-        toast.error("Error updating status!");
-        console.error("Status Update Error:", error);
+  // Function to Toggle Status
+  const handleStatusToggle = async () => {
+    try {
+      const response = await api.post(`superAdmin/school/status/${id}`);
+      if (response.status === 200) {
+        toast.success("Status updated successfully!");
+        setData((prevData) => ({
+          ...prevData,
+          active: prevData.active === 1 ? 0 : 1,
+        }));
       }
-    };
+    } catch (error) {
+      toast.error("Error updating status!");
+      console.error("Status Update Error:", error);
+    }
+  };
 
   useEffect(() => {
     getData();
@@ -137,7 +146,9 @@ function SchoolView() {
             </Link>
             &nbsp;&nbsp;
             <button
-              className={`btn btn-sm ${data.active === 1 ? "btn-danger" : "btn-success"}`}
+              className={`btn btn-sm ${
+                data.active === 1 ? "btn-danger" : "btn-success"
+              }`}
               onClick={handleStatusToggle}
             >
               {data.active === 1 ? "Deactivate" : "Activate"}
@@ -154,83 +165,102 @@ function SchoolView() {
         </div>
 
         {/* Modal for Changing Password */}
-      <Dialog open={show} onClose={handleClose} maxWidth="sm" fullWidth>
-        <form onSubmit={formik.handleSubmit}>
-          <DialogTitle>Change Password</DialogTitle>
-          <DialogContent>
-          <div className="row">
-      {/* New Password Field */}
-      <div className="col-12 mb-3">
-        <label className="form-label">
-          New Password<span className="text-danger">*</span>
-        </label>
-        <div className="input-group">
-          <input
-            type={showPassword ? "text" : "password"} // Toggle between text and password
-            className={`form-control form-control-sm ${
-              formik.touched.password && formik.errors.password ? "is-invalid" : ""
-            }`}
-            {...formik.getFieldProps("password")}
-          />
-          <button
-            type="button"
-            className="input-group-text"
-            onClick={togglePasswordVisibility} // Toggle visibility
-          >
-            {showPassword ? <FaEyeSlash /> : <FaEye />}
-          </button>
-        </div>
-        {formik.touched.password && formik.errors.password && (
-          <div className="invalid-feedback">{formik.errors.password}</div>
-        )}
-      </div>
+        <Dialog open={show} onClose={handleClose} maxWidth="sm" fullWidth>
+          <form onSubmit={formik.handleSubmit}>
+            <DialogTitle>Change Password</DialogTitle>
+            <DialogContent>
+              <div className="row">
+                {/* New Password Field */}
+                <div className="text-center">
+                  <p>{data?.users?.[0]?.email || "No email available"}</p>
+                </div>
 
-      {/* Confirm Password Field */}
-      <div className="col-12 mb-3">
-        <label className="form-label">
-          Confirm Password<span className="text-danger">*</span>
-        </label>
-        <div className="input-group">
-          <input
-            type={showConfirmPassword ? "text" : "password"} // Toggle between text and password
-            className={`form-control form-control-sm ${
-              formik.touched.password_confirmation && formik.errors.password_confirmation
-                ? "is-invalid"
-                : ""
-            }`}
-            {...formik.getFieldProps("password_confirmation")}
-          />
-          <button
-            type="button"
-            className="input-group-text"
-            onClick={toggleConfirmPasswordVisibility} // Toggle visibility
-          >
-            {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-          </button>
-        </div>
-        {formik.touched.password_confirmation && formik.errors.password_confirmation && (
-          <div className="invalid-feedback">{formik.errors.password_confirmation}</div>
-        )}
-      </div>
-      </div>
-          </DialogContent>
-          <DialogActions>
-            <button type="button" className="btn btn-sm btn-back" onClick={handleClose}>
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="btn btn-sm btn-button"
-              disabled={loadIndicator}
-            >
-              {loadIndicator && (
-                <span className="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
-              )}
-              Submit
-            </button>
-          </DialogActions>
-        </form>
-      </Dialog>
+                <div className="col-12 mb-3">
+                  <label className="form-label">
+                    New Password<span className="text-danger">*</span>
+                  </label>
+                  <div className="input-group">
+                    <input
+                      type={showPassword ? "text" : "password"} // Toggle between text and password
+                      className={`form-control form-control-sm ${
+                        formik.touched.password && formik.errors.password
+                          ? "is-invalid"
+                          : ""
+                      }`}
+                      {...formik.getFieldProps("password")}
+                    />
+                    <button
+                      type="button"
+                      className="input-group-text"
+                      onClick={togglePasswordVisibility} // Toggle visibility
+                    >
+                      {showPassword ? <FaEyeSlash /> : <FaEye />}
+                    </button>
+                  </div>
+                  {formik.touched.password && formik.errors.password && (
+                    <div className="invalid-feedback">
+                      {formik.errors.password}
+                    </div>
+                  )}
+                </div>
+
+                {/* Confirm Password Field */}
+                <div className="col-12 mb-3">
+                  <label className="form-label">
+                    Confirm Password<span className="text-danger">*</span>
+                  </label>
+                  <div className="input-group">
+                    <input
+                      type={showConfirmPassword ? "text" : "password"} // Toggle between text and password
+                      className={`form-control form-control-sm ${
+                        formik.touched.password_confirmation &&
+                        formik.errors.password_confirmation
+                          ? "is-invalid"
+                          : ""
+                      }`}
+                      {...formik.getFieldProps("password_confirmation")}
+                    />
+                    <button
+                      type="button"
+                      className="input-group-text"
+                      onClick={toggleConfirmPasswordVisibility} // Toggle visibility
+                    >
+                      {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                    </button>
+                  </div>
+                  {formik.touched.password_confirmation &&
+                    formik.errors.password_confirmation && (
+                      <div className="invalid-feedback">
+                        {formik.errors.password_confirmation}
+                      </div>
+                    )}
+                </div>
+              </div>
+            </DialogContent>
+            <DialogActions>
+              <button
+                type="button"
+                className="btn btn-sm btn-back"
+                onClick={handleClose}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="btn btn-sm btn-button"
+                disabled={loadIndicator}
+              >
+                {loadIndicator && (
+                  <span
+                    className="spinner-border spinner-border-sm me-2"
+                    aria-hidden="true"
+                  ></span>
+                )}
+                Submit
+              </button>
+            </DialogActions>
+          </form>
+        </Dialog>
         {loading ? (
           <div className="loader-container">
             <div className="loader">
@@ -280,7 +310,9 @@ function SchoolView() {
                     <p className="fw-medium text-sm">Admin Email</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">: {data.users[0].email}</p>
+                    <p className="text-muted text-sm">
+                      : {data.users[0].email}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -290,7 +322,9 @@ function SchoolView() {
                     <p className="fw-medium text-sm">Admin Mobile</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">: {data.users[0].mobile}</p>
+                    <p className="text-muted text-sm">
+                      : {data.users[0].mobile}
+                    </p>
                   </div>
                 </div>
               </div>

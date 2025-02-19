@@ -24,6 +24,7 @@ function Topic() {
   const [showView, setShowView] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [data, setData] = useState([]);
+  const storedScreens = JSON.parse(localStorage.getItem("schoolCMS_Permissions") || "{}");
 
   const columns = useMemo(
     () => [
@@ -144,7 +145,9 @@ function Topic() {
               <span className="database_name">Topic</span>
             </span>
           </div>
+          {storedScreens?.data[5]?.can_create && (
           <TopicAdd onSuccess={getData} />
+        )}
         </div>
 
         <ThemeProvider theme={theme}>
@@ -198,9 +201,12 @@ function Topic() {
             />
           </MenuItem>
         </Menu>
-
+        {storedScreens?.data[5]?.can_edit && (
         <TopicEdit show={showEdit} setShow={setShowEdit} id={selectedId} onSuccess={getData} />
+      )}
+      {storedScreens?.data[5]?.can_view && (
         <TopicView show={showView} setShow={setShowView} id={selectedId} />
+      )}
       </div>
     </div>
   );

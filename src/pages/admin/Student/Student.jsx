@@ -19,6 +19,7 @@ function Student() {
   const [selectedId, setSelectedId] = useState(null);
   const navigate = useNavigate();
   const [data,setData] = useState([]);
+  const storedScreens = JSON.parse(localStorage.getItem("schoolCMS_Permissions") || "{}");
 
   const getData = async () => {
     try {
@@ -176,6 +177,7 @@ function Student() {
               <span className="database_name">Student</span>
             </span>
           </div>
+          {storedScreens?.data[3]?.can_create && (
           <Link to="/student/add">
             <button
               type="button"
@@ -185,6 +187,7 @@ function Student() {
               &nbsp; Add &nbsp;&nbsp; <i className="bi bi-plus-lg"></i>
             </button>
           </Link>
+        )}
         </div>
         <>
           <ThemeProvider theme={theme}>
@@ -206,10 +209,15 @@ function Student() {
                   updated_at: false,
                 },
               }}
-              muiTableBodyRowProps={({ row }) => ({
-                onClick: () => navigate(`/student/view/${row.original.id}`),
-                style: { cursor: "pointer" },
-              })}
+              muiTableBodyRowProps={({ row }) =>
+                storedScreens?.data[3]?.can_view
+                  ? {
+                      onClick: () =>
+                        navigate(`/student/view/${row.original.id}`),
+                      style: { cursor: "pointer" },
+                    }
+                  : {}
+              }
             />
           </ThemeProvider>
           <Menu
@@ -218,7 +226,9 @@ function Student() {
             open={Boolean(menuAnchor)}
             onClose={handleMenuClose}
           >
+            {storedScreens?.data[3]?.can_edit && (
             <MenuItem onClick={() => navigate(`/student/edit/${selectedId}`)}>Edit</MenuItem>
+          )}
             <MenuItem>
               <Delete path={`/student/delete/${selectedId}`} onOpen={handleMenuClose} />
             </MenuItem>

@@ -12,7 +12,7 @@ import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import { FaEye, FaEyeSlash } from "react-icons/fa"; 
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 function StudentView() {
   const [data, setData] = useState({});
@@ -24,15 +24,28 @@ function StudentView() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
-  const toggleConfirmPasswordVisibility = () => setShowConfirmPassword(!showConfirmPassword);
+  const toggleConfirmPasswordVisibility = () =>
+    setShowConfirmPassword(!showConfirmPassword);
   const validationSchema = yup.object().shape({
-    password: yup.string().min(8, "Password must be at least 8 characters").required("Password is required"),
-    password_confirmation: yup.string().oneOf([yup.ref('password'), null], "Passwords must match").required("Confirm your password"),
+    password: yup
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .required("Password is required"),
+    password_confirmation: yup
+      .string()
+      .oneOf([yup.ref("password"), null], "Passwords must match")
+      .required("Confirm your password"),
   });
 
   const validationParentSchema = yup.object().shape({
-    password: yup.string().min(8, "Password must be at least 8 characters").required("Password is required"),
-    password_confirmation: yup.string().oneOf([yup.ref('password'), null], "Passwords must match").required("Confirm your password"),
+    password: yup
+      .string()
+      .min(8, "Password must be at least 8 characters")
+      .required("Password is required"),
+    password_confirmation: yup
+      .string()
+      .oneOf([yup.ref("password"), null], "Passwords must match")
+      .required("Confirm your password"),
   });
   const handleShow = () => {
     setShow(true);
@@ -61,7 +74,10 @@ function StudentView() {
     onSubmit: async (values) => {
       setLoadIndicator(true);
       try {
-        const response = await api.post(`admin/change/password/${data.user_id}`, values);
+        const response = await api.post(
+          `admin/change/password/${data.user_id}`,
+          values
+        );
         if (response.status === 200) {
           toast.success("Password changed successfully!");
           handleClose();
@@ -83,7 +99,10 @@ function StudentView() {
     onSubmit: async (values) => {
       setLoadIndicator(true);
       try {
-        const response = await api.post(`admin/change/password/${data.parent_id}`, values); // Use parent_id for password change
+        const response = await api.post(
+          `admin/change/password/${data.parent_id}`,
+          values
+        ); // Use parent_id for password change
         if (response.status === 200) {
           toast.success("Parent password changed successfully!");
           handleParentClose();
@@ -153,7 +172,7 @@ function StudentView() {
               className="btn btn-sm btn-button"
               onClick={handleShow}
             >
-               Change Student Password
+              Change Student Password
             </button>
             &nbsp;&nbsp;
             <button
@@ -161,17 +180,20 @@ function StudentView() {
               className="btn btn-sm btn-button"
               onClick={handleParentShow}
             >
-               Change Parent Password
+              Change Parent Password
             </button>
           </div>
         </div>
 
- {/* Modal for Changing Student Password */}
- <Dialog open={show} onClose={handleClose} maxWidth="sm" fullWidth>
+        {/* Modal for Changing Student Password */}
+        <Dialog open={show} onClose={handleClose} maxWidth="sm" fullWidth>
           <form onSubmit={formik.handleSubmit}>
             <DialogTitle>Change Student Password</DialogTitle>
             <DialogContent>
               {/* Student password fields */}
+              <div className="text-center">
+                <p>{data.student?.email}</p>
+              </div>
               <div className="row">
                 <div className="col-12 mb-3">
                   <label className="form-label">
@@ -181,7 +203,9 @@ function StudentView() {
                     <input
                       type={showPassword ? "text" : "password"}
                       className={`form-control form-control-sm ${
-                        formik.touched.password && formik.errors.password ? "is-invalid" : ""
+                        formik.touched.password && formik.errors.password
+                          ? "is-invalid"
+                          : ""
                       }`}
                       {...formik.getFieldProps("password")}
                     />
@@ -194,7 +218,9 @@ function StudentView() {
                     </button>
                   </div>
                   {formik.touched.password && formik.errors.password && (
-                    <div className="invalid-feedback">{formik.errors.password}</div>
+                    <div className="invalid-feedback">
+                      {formik.errors.password}
+                    </div>
                   )}
                 </div>
 
@@ -206,7 +232,8 @@ function StudentView() {
                     <input
                       type={showConfirmPassword ? "text" : "password"}
                       className={`form-control form-control-sm ${
-                        formik.touched.password_confirmation && formik.errors.password_confirmation
+                        formik.touched.password_confirmation &&
+                        formik.errors.password_confirmation
                           ? "is-invalid"
                           : ""
                       }`}
@@ -220,14 +247,21 @@ function StudentView() {
                       {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
                     </button>
                   </div>
-                  {formik.touched.password_confirmation && formik.errors.password_confirmation && (
-                    <div className="invalid-feedback">{formik.errors.password_confirmation}</div>
-                  )}
+                  {formik.touched.password_confirmation &&
+                    formik.errors.password_confirmation && (
+                      <div className="invalid-feedback">
+                        {formik.errors.password_confirmation}
+                      </div>
+                    )}
                 </div>
               </div>
             </DialogContent>
             <DialogActions>
-              <button type="button" className="btn btn-sm btn-back" onClick={handleClose}>
+              <button
+                type="button"
+                className="btn btn-sm btn-back"
+                onClick={handleClose}
+              >
                 Cancel
               </button>
               <button
@@ -236,7 +270,10 @@ function StudentView() {
                 disabled={loadIndicator}
               >
                 {loadIndicator && (
-                  <span className="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+                  <span
+                    className="spinner-border spinner-border-sm me-2"
+                    aria-hidden="true"
+                  ></span>
                 )}
                 Submit
               </button>
@@ -245,11 +282,19 @@ function StudentView() {
         </Dialog>
 
         {/* Modal for Changing Parent Password */}
-        <Dialog open={showParent} onClose={handleParentClose} maxWidth="sm" fullWidth>
+        <Dialog
+          open={showParent}
+          onClose={handleParentClose}
+          maxWidth="sm"
+          fullWidth
+        >
           <form onSubmit={parentFormik.handleSubmit}>
             <DialogTitle>Change Parent Password</DialogTitle>
             <DialogContent>
               {/* Parent password fields */}
+              <div className="text-center">
+                <p>{data.parent?.email}</p>
+              </div>
               <div className="row">
                 <div className="col-12 mb-3">
                   <label className="form-label">
@@ -259,7 +304,10 @@ function StudentView() {
                     <input
                       type={showPassword ? "text" : "password"}
                       className={`form-control form-control-sm ${
-                        parentFormik.touched.password && parentFormik.errors.password ? "is-invalid" : ""
+                        parentFormik.touched.password &&
+                        parentFormik.errors.password
+                          ? "is-invalid"
+                          : ""
                       }`}
                       {...parentFormik.getFieldProps("password")}
                     />
@@ -271,9 +319,12 @@ function StudentView() {
                       {showPassword ? <FaEyeSlash /> : <FaEye />}
                     </button>
                   </div>
-                  {parentFormik.touched.password && parentFormik.errors.password && (
-                    <div className="invalid-feedback">{parentFormik.errors.password}</div>
-                  )}
+                  {parentFormik.touched.password &&
+                    parentFormik.errors.password && (
+                      <div className="invalid-feedback">
+                        {parentFormik.errors.password}
+                      </div>
+                    )}
                 </div>
 
                 <div className="col-12 mb-3">
@@ -284,7 +335,8 @@ function StudentView() {
                     <input
                       type={showConfirmPassword ? "text" : "password"}
                       className={`form-control form-control-sm ${
-                        parentFormik.touched.password_confirmation && parentFormik.errors.password_confirmation
+                        parentFormik.touched.password_confirmation &&
+                        parentFormik.errors.password_confirmation
                           ? "is-invalid"
                           : ""
                       }`}
@@ -298,14 +350,21 @@ function StudentView() {
                       {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
                     </button>
                   </div>
-                  {parentFormik.touched.password_confirmation && parentFormik.errors.password_confirmation && (
-                    <div className="invalid-feedback">{parentFormik.errors.password_confirmation}</div>
-                  )}
+                  {parentFormik.touched.password_confirmation &&
+                    parentFormik.errors.password_confirmation && (
+                      <div className="invalid-feedback">
+                        {parentFormik.errors.password_confirmation}
+                      </div>
+                    )}
                 </div>
               </div>
             </DialogContent>
             <DialogActions>
-              <button type="button" className="btn btn-sm btn-back" onClick={handleParentClose}>
+              <button
+                type="button"
+                className="btn btn-sm btn-back"
+                onClick={handleParentClose}
+              >
                 Cancel
               </button>
               <button
@@ -314,7 +373,10 @@ function StudentView() {
                 disabled={loadIndicator}
               >
                 {loadIndicator && (
-                  <span className="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+                  <span
+                    className="spinner-border spinner-border-sm me-2"
+                    aria-hidden="true"
+                  ></span>
                 )}
                 Submit
               </button>
@@ -339,9 +401,7 @@ function StudentView() {
                   <p className="fw-medium text-sm">Role</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">
-                    : {data.role_name}
-                  </p>
+                  <p className="text-muted text-sm">: {data.role_name}</p>
                 </div>
               </div>
             </div>
@@ -376,7 +436,7 @@ function StudentView() {
               </div>
             </div>
             <div className="col-md-6 col-12 my-2">
-            <div className="row">
+              <div className="row">
                 <div className="col-6">
                   <p className="fw-medium text-sm">Student Email</p>
                 </div>
@@ -394,7 +454,7 @@ function StudentView() {
                 </div>
                 <div className="col-6">
                   <p className="text-muted text-sm text-break">
-                    :  {data?.student?.mobile}
+                    : {data?.student?.mobile}
                   </p>
                 </div>
               </div>
@@ -418,7 +478,7 @@ function StudentView() {
                 </div>
                 <div className="col-6">
                   <p className="text-muted text-sm text-break">
-                    :  {data?.parent?.email}
+                    : {data?.parent?.email}
                   </p>
                 </div>
               </div>
@@ -430,7 +490,7 @@ function StudentView() {
                 </div>
                 <div className="col-6">
                   <p className="text-muted text-sm text-break">
-                    :  {data?.parent?.mobile}
+                    : {data?.parent?.mobile}
                   </p>
                 </div>
               </div>
@@ -441,9 +501,7 @@ function StudentView() {
                   <p className="fw-medium text-sm">Grade</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">
-                    : {data.grade_name}
-                  </p>
+                  <p className="text-muted text-sm">: {data.grade_name}</p>
                 </div>
               </div>
             </div>

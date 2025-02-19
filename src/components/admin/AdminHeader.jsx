@@ -279,6 +279,9 @@ function AdminHeader({ handleLogout }) {
                       </>
                     ) : (
                       <form onSubmit={formik.handleSubmit}>
+                      <div className="text-center">
+                        <p>{data.email}</p>
+                      </div>
                         <div className="row py-4">
                           {/* New Password Field */}
                           <div className="col-12 mb-3">

@@ -19,7 +19,9 @@ function Employee() {
   const [selectedId, setSelectedId] = useState(null);
   const [data, setData] = useState([]);
   const navigate = useNavigate();
-  
+  const storedScreens = JSON.parse(
+    localStorage.getItem("schoolCMS_Permissions") || "{}"
+  );
 
   const columns = useMemo(
     () => [
@@ -172,15 +174,17 @@ function Employee() {
               <span className="database_name">Employee</span>
             </span>
           </div>
-          <Link to="/employee/add">
-            <button
-              type="button"
-              className="btn btn-button btn-sm me-2"
-              style={{ fontWeight: "600px !important" }}
-            >
-              &nbsp; Add &nbsp;&nbsp; <i className="bi bi-plus-lg"></i>
-            </button>
-          </Link>
+          {storedScreens?.data[1]?.can_create && (
+            <Link to="/employee/add">
+              <button
+                type="button"
+                className="btn btn-button btn-sm me-2"
+                style={{ fontWeight: "600px !important" }}
+              >
+                &nbsp; Add &nbsp;&nbsp; <i className="bi bi-plus-lg"></i>
+              </button>
+            </Link>
+          )}
         </div>
         <>
           <ThemeProvider theme={theme}>
@@ -202,25 +206,31 @@ function Employee() {
                   updated_at: false,
                 },
               }}
-              muiTableBodyRowProps={({ row }) => ({
-                onClick: () => navigate(`/employee/view/${row.original.id}`),
-                style: { cursor: "pointer" },
-              })}
+              muiTableBodyRowProps={({ row }) =>
+                storedScreens?.data[1]?.can_view
+                  ? {
+                      onClick: () =>
+                        navigate(`/employee/view/${row.original.id}`),
+                      style: { cursor: "pointer" },
+                    }
+                  : {}
+              }
             />
           </ThemeProvider>
+
           <Menu
             id="action-menu"
             anchorEl={menuAnchor}
             open={Boolean(menuAnchor)}
             onClose={handleMenuClose}
           >
-            <MenuItem
-              onClick={() =>
-                navigate(`/employee/edit/${selectedId}`)
-              }
-            >
-              Edit
-            </MenuItem>
+            {storedScreens?.data[1]?.can_edit && (
+              <MenuItem
+                onClick={() => navigate(`/employee/edit/${selectedId}`)}
+              >
+                Edit
+              </MenuItem>
+            )}
             <MenuItem>
               <Delete
                 path={`employee/delete/${selectedId}`}

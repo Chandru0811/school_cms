@@ -1,15 +1,44 @@
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { Link, useParams } from "react-router-dom";
+import api from "../../../config/URL";
+import PropTypes from "prop-types";
+import ImageURL from "../../../config/ImageURL";
 
 function RewardView() {
-  const data = {
-    target_archieved: 1,
-    name: "Star of the Month",
-    description: "Reward for best performance",
-    reward_type: ["Gift Card", "Cash"],
-    reward_value: "1000",
-    image: null,
+  const [data, setData] = useState({});
+  const [centerList, setCenterList] = useState([]);
+  const { id } = useParams();
+
+  // console.log("Image URL:", `${ImageURL}/${data.image}`);
+
+  const getRewardData = async () => {
+    try {
+      const response = await api.get(`reward/${id}`);
+      setData(response.data.data);
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
   };
 
+  const getCenterList = async () => {
+    try {
+      const response = await api.get("centers/list");
+      const centerNames = response.data.data.map((center) => ({
+        name: center.name,
+      }));
+      setCenterList(centerNames);
+    } catch (e) {
+      toast.error(
+        `Error Fetching Centers: ${e?.response?.data?.error || e.message}`
+      );
+    }
+  };
+
+  useEffect(() => {
+    getRewardData();
+    getCenterList();
+  }, [id]);
   return (
     <div className="container-fluid px-0">
       <ol
@@ -61,6 +90,18 @@ function RewardView() {
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
+                  <p className="fw-medium text-sm">Center Name</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">
+                    : {centerList.map((center) => center.name).join(", ")}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12 my-2">
+              <div className="row">
+                <div className="col-6">
                   <p className="fw-medium text-sm">Name</p>
                 </div>
                 <div className="col-6">
@@ -86,9 +127,7 @@ function RewardView() {
                   <p className="fw-medium text-sm">Reward Type</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">
-                    : {data.reward_type.join(", ")}
-                  </p>
+                  <p className="text-muted text-sm">: {data.reward_type}</p>
                 </div>
               </div>
             </div>
@@ -119,11 +158,19 @@ function RewardView() {
                 <div className="col-3">
                   <p className="fw-medium text-sm">Image</p>
                 </div>
-                <div className="col-3">
+                <div className="col-3 text-muted text-sm text-break">
+                  :
                   <img
-                    src={data.image ? URL.createObjectURL(data.image) : ""}
+                    src={`${ImageURL.replace(/\/$/, "")}/${data?.image?.replace(
+                      /^\//,
+                      ""
+                    )}`}
                     alt="Reward"
-                    style={{ maxWidth: "100%", height: "auto" }}
+                    style={{
+                      maxWidth: "100%",
+                      height: "auto",
+                      borderRadius: "5px",
+                    }}
                   />
                 </div>
               </div>
@@ -135,4 +182,7 @@ function RewardView() {
   );
 }
 
+RewardView.propTypes = {
+  id: PropTypes.number.isRequired,
+};
 export default RewardView;

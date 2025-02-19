@@ -1,37 +1,148 @@
 import { useFormik } from "formik";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import * as Yup from "yup";
+import api from "../../../config/URL";
+import PropTypes from "prop-types";
+import { MultiSelect } from "react-multi-select-component";
+import ImageURL from "../../../config/ImageURL";
 
 function RewardEdit() {
+  const [loadIndicator, setLoadIndicator] = useState(false);
+  const navigate = useNavigate();
+  const [centerList, setCenterList] = useState([]);
+  const [selectedCenter, setSelectedCenter] = useState([]);
+  const { id } = useParams();
+
   const validationSchema = Yup.object({
+    center_id: Yup.array()
+      .min(1, "*Select at least one center")
+      .required("*Select a center id"),
     name: Yup.string().required("*Name is a required field"),
-    reward_type: Yup.array().min(1, "*At least one reward type is required"),
+    reward_type: Yup.string().required("*Reward Type is a required field"),
     reward_value: Yup.string().required("*Reward Value is a required field"),
     target_archieved: Yup.string().required(
       "*Target Achieved is a required field"
     ),
     description: Yup.string()
-      .notRequired()
+      .required()
       .max(250, "*The maximum length is 250 characters"),
-    image: Yup.mixed().required("*Image is a required field"),
   });
 
   const formik = useFormik({
     initialValues: {
-      target_archieved: "",
       name: "",
       description: "",
-      reward_type: [],
+      reward_type: "",
       reward_value: "",
       image: null,
+      center_id: "",
+      target_archieved: "",
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
-      console.log("Form Values:", values);
+      setLoadIndicator(true);
+
+      const formData = new FormData();
+      const fieldsToConvert = ["center_id"];
+
+      fieldsToConvert.forEach((field) => {
+        if (Array.isArray(values[field])) {
+          values[field].forEach((item) => {
+            formData.append(`${field}[]`, item);
+          });
+        } else {
+          formData.append(`${field}[]`, values[field]);
+        }
+      });
+
+      formData.append("_method", "PUT"); // Required for Laravel
+      formData.append("target_archieved", values.target_archieved);
+      formData.append("name", values.name);
+      formData.append("description", values.description);
+      formData.append("reward_type", values.reward_type);
+      formData.append("reward_value", values.reward_value);
+
+      // Ensure image is a file
+      if (values.image instanceof File) {
+        formData.append("image", values.image);
+      }
+
+      try {
+        const response = await api.post(`reward/update/${id}`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+
+        if (response.status === 200) {
+          toast.success(response.data.message);
+          navigate("/rewards");
+        }
+      } catch (e) {
+        if (e?.response?.data?.error) {
+          Object.values(e.response.data.error).forEach((errorMessages) => {
+            errorMessages.forEach((errorMessage) => {
+              toast.error(errorMessage);
+            });
+          });
+        } else {
+          toast.error("Error Fetching Data");
+        }
+      } finally {
+        setLoadIndicator(false);
+      }
     },
-    validateOnChange: false,
-    validateOnBlur: true,
   });
+
+  const getData = async () => {
+    try {
+      const response = await api.get(`reward/${id}`);
+      const data = response.data.data;
+
+      const parsedCenterIds = JSON.parse(data.center_id);
+      const parsedCenterNames = JSON.parse(data.center_names);
+
+      const selectedCenters = parsedCenterIds.map((id, index) => ({
+        value: id,
+        label: parsedCenterNames[index] || "",
+      }));
+
+      setSelectedCenter(selectedCenters);
+      
+      const formattedData = {
+        center_id: selectedCenters.map((center) => center.value),
+        name: data.name,
+        description: data.description,
+        reward_type: data.reward_type,
+        reward_value: data.reward_value,
+        target_archieved: String(data.target_archieved),
+        image: data.image ? `${ImageURL}${data.image}` : "",
+      };
+      formik.setValues(formattedData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      toast.error("Failed to fetch reward details.");
+    }
+  };
+
+  const getCenterList = async () => {
+    try {
+      const response = await api.get("centers/list");
+      const formattedCenters = response.data.data.map((center) => ({
+        value: center.id,
+        label: center.name,
+      }));
+
+      setCenterList(formattedCenters);
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
+  };
+
+  useEffect(() => {
+    getCenterList();
+    getData();
+  }, [id]);
 
   return (
     <div className="container-fluid px-0">
@@ -69,7 +180,7 @@ function RewardEdit() {
               <div className="d-flex">
                 <div className="dot active"></div>
               </div>
-              <span className="me-2 text-muted text-sm">Edit Rewards</span>
+              <span className="me-2 text-muted text-sm">Add Rewards</span>
             </div>
             <div className="my-2 pe-3 d-flex align-items-center">
               <Link to="/rewards">
@@ -78,13 +189,50 @@ function RewardEdit() {
                 </button>
               </Link>
               &nbsp;&nbsp;
-              <button type="submit" className="btn btn-button">
+              <button
+                type="submit"
+                className="btn btn-button btn-sm"
+                disabled={loadIndicator}
+              >
+                {loadIndicator && (
+                  <span
+                    className="spinner-border spinner-border-sm me-2"
+                    aria-hidden="true"
+                  ></span>
+                )}
                 Save
               </button>
             </div>
           </div>
           <div className="container-fluid px-4">
             <div className="row py-4">
+              <div className="col-md-6 col-12 mb-4">
+                <label className="form-label">
+                  Centre Name<span className="text-danger">*</span>
+                </label>
+                <MultiSelect
+                  options={centerList}
+                  value={selectedCenter}
+                  onChange={(selected) => {
+                    setSelectedCenter(selected);
+                    formik.setFieldValue(
+                      "center_id",
+                      selected.map((option) => option.value)
+                    );
+                  }}
+                  labelledBy="Select Service"
+                  className={`form-multi-select form-multi-select-sm ${
+                    formik.touched.center_id && formik.errors.center_id
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                />
+                {formik.touched.center_id && formik.errors.center_id && (
+                  <div className="invalid-feedback">
+                    {formik.errors.center_id}
+                  </div>
+                )}
+              </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
                   Name<span className="text-danger">*</span>
@@ -123,76 +271,94 @@ function RewardEdit() {
               </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
-                  Image<span className="text-danger">*</span>
+                  Image
                 </label>
                 <input
                   type="file"
-                  className="form-control form-control-sm"
+                  className={`form-control form-control-sm ${
+                    formik.touched.image && formik.errors.image
+                      ? "is-invalid"
+                      : ""
+                  }`}
                   accept="image/*"
                   onChange={(event) => {
-                    formik.setFieldValue("image", event.currentTarget.files[0]);
+                    const file = event.currentTarget.files[0];
+                    formik.setFieldValue("image", file || null);
                   }}
                 />
-                {formik.errors.image && (
+                {formik.touched.image && formik.errors.image && (
                   <div className="invalid-feedback">{formik.errors.image}</div>
                 )}
               </div>
+
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
                   Reward Type<span className="text-danger">*</span>
                 </label>
                 <div className="d-flex gap-3">
-                <div className="form-check">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    id="cash"
-                    value="cash"
-                    checked={formik.values.reward_type.includes("cash")}
-                    onChange={formik.handleChange}
-                    name="reward_type"
-                  />
-                  <label className="form-check-label" htmlFor="cash">
-                    Cash
-                  </label>
+                  <div className="form-check">
+                    <input
+                      type="radio"
+                      className="form-check-input"
+                      id="cash"
+                      value="cash"
+                      checked={formik.values.reward_type === "cash"}
+                      onChange={(e) =>
+                        formik.setFieldValue("reward_type", e.target.value)
+                      }
+                      name="reward_type"
+                    />
+                    <label className="form-check-label" htmlFor="cash">
+                      Cash
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      type="radio"
+                      className="form-check-input"
+                      id="voucher"
+                      value="voucher"
+                      checked={formik.values.reward_type === "voucher"}
+                      onChange={(e) =>
+                        formik.setFieldValue("reward_type", e.target.value)
+                      }
+                      name="reward_type"
+                    />
+                    <label className="form-check-label" htmlFor="voucher">
+                      Voucher
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      type="radio"
+                      className="form-check-input"
+                      id="gift"
+                      value="gift"
+                      checked={formik.values.reward_type === "gift"}
+                      onChange={(e) =>
+                        formik.setFieldValue("reward_type", e.target.value)
+                      }
+                      name="reward_type"
+                    />
+                    <label className="form-check-label" htmlFor="gift">
+                      Gift
+                    </label>
+                  </div>
                 </div>
-                <div className="form-check">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    id="voucher"
-                    value="voucher"
-                    checked={formik.values.reward_type.includes("voucher")}
-                    onChange={formik.handleChange}
-                    name="reward_type"
-                  />
-                  <label className="form-check-label" htmlFor="voucher">
-                    Voucher
-                  </label>
-                </div>
-                <div className="form-check">
-                  <input
-                    type="checkbox"
-                    className="form-check-input"
-                    id="gift"
-                    value="gift"
-                    checked={formik.values.reward_type.includes("gift")}
-                    onChange={formik.handleChange}
-                    name="reward_type"
-                  />
-                  <label className="form-check-label" htmlFor="gift">
-                    Gift
-                  </label>
-                </div>
-                </div>
+                {formik.touched.reward_type && formik.errors.reward_type && (
+                  <div className="invalid-feedback d-block">
+                    {formik.errors.reward_type}
+                  </div>
+                )}
               </div>
+
               <div className="col-md-6 col-12 mb-3">
                 <div className="form-check">
                   <input
                     type="checkbox"
                     className="form-check-input"
                     id="target_achieved"
-                    checked={formik.values.target_archieved === "1"} // Convert to boolean
+                    checked={formik.values.target_archieved === "1"}
                     onChange={(e) =>
                       formik.setFieldValue(
                         "target_archieved",
@@ -206,8 +372,9 @@ function RewardEdit() {
                   </label>
                 </div>
               </div>
+
               <div className="col-12 mb-3">
-                <label className="form-label">Description</label>
+                <label className="form-label">Description <span className="text-danger">*</span></label>
                 <textarea
                   rows={5}
                   className={`form-control form-control-sm ${
@@ -231,5 +398,9 @@ function RewardEdit() {
     </div>
   );
 }
+
+RewardEdit.propTypes = {
+  id: PropTypes.number.isRequired,
+};
 
 export default RewardEdit;

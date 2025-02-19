@@ -153,8 +153,8 @@ function Admin({ handleLogout }) {
                     {/*  rewards  */}
                     <Route path="/rewards" element={<Rewards />} />
                     <Route path="/reward/add" element={<RewardAdd />} />
-                    <Route path="/reward/edit" element={<RewardEdit />} />
-                    <Route path="/reward/view" element={<RewardView />} />
+                    <Route path="/reward/edit/:id" element={<RewardEdit />} />
+                    <Route path="/reward/view/:id" element={<RewardView />} />
 
                     {/* Subscriptions  */}
                     <Route path="/subscriptions" element={<Subscriptions />} />

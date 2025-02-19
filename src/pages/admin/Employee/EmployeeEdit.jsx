@@ -7,8 +7,6 @@ import toast from "react-hot-toast";
 import api from "../../../config/URL";
 import PropTypes from "prop-types";
 
-
-
 function EmployeeEdit() {
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [selectedCenter, setSelectedCenter] = useState([]);

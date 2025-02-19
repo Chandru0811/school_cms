@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MaterialReactTable } from "material-react-table";
 import {
@@ -11,27 +11,17 @@ import {
 import Delete from "../../../components/common/Delete";
 import PropTypes from "prop-types";
 import { MoreVert as MoreVertIcon } from "@mui/icons-material";
+import api from "../../../config/URL";
+import toast from "react-hot-toast";
 
 function Rewards() {
   const [menuAnchor, setMenuAnchor] = useState(null);
+  const [data, setData] = useState([]);
   const navigate = useNavigate();
-
-  const data = [
-    {
-      id: 1,
-      target_archieved: 1,
-      name: "Star of the Month",
-      description: "Reward for best performance",
-      reward_type: "Certificate",
-    },
-    {
-      id: 2,
-      target_archieved: 0,
-      name: "Star of the Month",
-      description: "Reward for best performance",
-      reward_type: "Medal",
-    },
-  ];
+  const [selectedId, setSelectedId] = useState(null);
+  const storedScreens = JSON.parse(
+    localStorage.getItem("schoolCMS_Permissions") || "{}"
+  );
 
   const columns = useMemo(
     () => [
@@ -51,11 +41,12 @@ function Rewards() {
         enableHiding: false,
         enableSorting: false,
         size: 20,
-        Cell: () => (
+        Cell: ({ cell }) => (
           <IconButton
             onClick={(e) => {
               e.stopPropagation();
               setMenuAnchor(e.currentTarget);
+              setSelectedId(cell.getValue());
             }}
           >
             <MoreVertIcon />
@@ -150,6 +141,19 @@ function Rewards() {
 
   const handleMenuClose = () => setMenuAnchor(null);
 
+  const getData = async () => {
+    try {
+      const response = await api.get("rewards");
+      setData(response.data.data);
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
   return (
     <div className="container-fluid mb-4 px-0">
       <ol
@@ -177,15 +181,17 @@ function Rewards() {
               <span className="database_name">Rewards</span>
             </span>
           </div>
-          <Link to="/reward/add">
-            <button
-              type="button"
-              className="btn btn-button btn-sm me-2"
-              style={{ fontWeight: "600px !important" }}
-            >
-              &nbsp; Add &nbsp;&nbsp; <i className="bi bi-plus-lg"></i>
-            </button>
-          </Link>
+          {storedScreens?.data[12]?.can_create && (
+            <Link to="/reward/add">
+              <button
+                type="button"
+                className="btn btn-button btn-sm me-2"
+                style={{ fontWeight: "600px !important" }}
+              >
+                &nbsp; Add &nbsp;&nbsp; <i className="bi bi-plus-lg"></i>
+              </button>
+            </Link>
+          )}
         </div>
         <>
           <ThemeProvider theme={theme}>
@@ -204,10 +210,15 @@ function Rewards() {
                   updated_at: false,
                 },
               }}
-              muiTableBodyRowProps={() => ({
-                onClick: () => navigate(`/reward/view`),
-                style: { cursor: "pointer" },
-              })}
+              muiTableBodyRowProps={({ row }) =>
+                storedScreens?.data[12]?.can_view
+                  ? {
+                      onClick: () =>
+                        navigate(`/reward/view/${row.original.id}`),
+                      style: { cursor: "pointer" },
+                    }
+                  : {}
+              }
             />
           </ThemeProvider>
           <Menu
@@ -216,9 +227,19 @@ function Rewards() {
             open={Boolean(menuAnchor)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={() => navigate(`/reward/edit`)}>Edit</MenuItem>
+            {storedScreens?.data[12]?.can_edit && (
+              <MenuItem
+                onClick={() => navigate(`/reward/edit/${selectedId}`)}
+              >
+                Edit
+              </MenuItem>
+            )}
             <MenuItem>
-              <Delete path={`admin/reward/delete`} onOpen={handleMenuClose} />
+              <Delete
+                path={`reward/delete/${selectedId}`}
+                onOpen={handleMenuClose}
+                onDeleteSuccess={getData}
+              />
             </MenuItem>
           </Menu>
         </>

@@ -23,6 +23,7 @@ function Grade() {
   const [data, setData] = useState([]);
   const [showView, setShowView] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
+  const storedScreens = JSON.parse(localStorage.getItem("schoolCMS_Permissions") || "{}");
 
   const columns = useMemo(
     () => [
@@ -170,7 +171,9 @@ function Grade() {
               <span className="database_name">Grade</span>
             </span>
           </div>
+          {storedScreens?.data[2]?.can_create && (
           <GradeAdd onSuccess={fetchData} />
+        )}
         </div>
         {loading ? (
           <div className="loader-container">
@@ -234,13 +237,17 @@ function Grade() {
                 />
               </MenuItem>
             </Menu>
+            {storedScreens?.data[2]?.can_edit && (
             <GradeEdit
               show={showEdit}
               setShow={setShowEdit}
               id={selectedId}
               onSuccess={fetchData}
             />
+            )}
+            {storedScreens?.data[2]?.can_view && (
             <GradeView show={showView} setShow={setShowView} id={selectedId} />
+          )}
           </>
         )}
       </div>
