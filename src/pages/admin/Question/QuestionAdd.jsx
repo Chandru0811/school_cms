@@ -53,23 +53,17 @@ function QuestionAdd() {
       question: "",
       upload: null,
       ques_type: [],
-      answer: [
-        {
-          fillable: "",
-          multichoice: "",
-          short_answer: "",
-          closed: ""
-        }
-      ],
+      answer: [],
+      answer_upload: null,
       options: [
         { id: Date.now(), value: "" },
         { id: Date.now() + 1, value: "" },
       ],
-      answer_upload: "",
       hint: "",
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
+      console.log("values:", values)
       setLoadIndicator(true);
       try {
         const formData = new FormData();
@@ -110,6 +104,10 @@ function QuestionAdd() {
           }
         });
 
+        if (values.answer_upload) {
+          formData.append("answer[answer_upload]", values.answer_upload, values.answer_upload.name);
+        }
+
         values.options.forEach((option) => {
           if (option.value.trim()) {
             formData.append("options[]", option.value.trim());
@@ -117,10 +115,12 @@ function QuestionAdd() {
         });
 
         if (values.upload) {
-          formData.append("upload", values.upload);
+          formData.append("upload", values.upload, values.upload.name);
         }
-        if (values.answer_upload) {
-          formData.append("answer_upload", values.answer_upload);
+
+        // Log FormData entries for debugging
+        for (let [key, value] of formData.entries()) {
+          console.log(key, value);
         }
 
         const response = await api.post("question", formData, {
@@ -487,6 +487,9 @@ function QuestionAdd() {
                     ? "is-invalid"
                     : ""
                     }`}
+                  onChange={(event) => {
+                    formik.setFieldValue("upload", event.currentTarget.files[0]);
+                  }}
                   {...formik.getFieldProps("upload")}
                 ></input>
                 {formik.touched.upload && formik.errors.upload && (
@@ -506,7 +509,7 @@ function QuestionAdd() {
                   { id: "closed", label: "Closed" },
                   { id: "multichoice", label: "Multi choice" },
                   { id: "shortCheckbox", label: "Short Answer" },
-                  { id: "uploadCheckbox", label: "Upload" },
+                  { id: "uploadCheckbox", label: "Answer Upload" },
                 ].map(({ id, label }) => (
                   <div className="form-check form-check-inline" key={id}>
                     <input
@@ -561,11 +564,19 @@ function QuestionAdd() {
                           type="radio"
                           name="closed"
                           value="yes"
-                          onChange={formik.handleChange}
+                          onChange={(e) => {
+                            // Create or update the first object in the answer array with closed value
+                            const currentAnswer = formik.values.answer?.[0] || {};
+                            formik.setFieldValue("answer", [
+                              { ...currentAnswer, closed: e.target.value },
+                            ]);
+                          }}
                           onBlur={formik.handleBlur}
-                          checked={formik.values.closed === "yes"}
+                          checked={formik.values.answer?.[0]?.closed === "yes"}
                         />
-                        <label className="form-check-label">Yes</label>
+                        <label className="form-check-label" htmlFor="closedYes">
+                          Yes
+                        </label>
                       </div>
                       <div className="form-check">
                         <input
@@ -573,16 +584,23 @@ function QuestionAdd() {
                           type="radio"
                           name="closed"
                           value="no"
-                          onChange={formik.handleChange}
+                          onChange={(e) => {
+                            const currentAnswer = formik.values.answer?.[0] || {};
+                            formik.setFieldValue("answer", [
+                              { ...currentAnswer, closed: e.target.value },
+                            ]);
+                          }}
                           onBlur={formik.handleBlur}
-                          checked={formik.values.closed === "no"}
+                          checked={formik.values.answer?.[0]?.closed === "no"}
                         />
-                        <label className="form-check-label">No</label>
+                        <label className="form-check-label" htmlFor="closedNo">
+                          No
+                        </label>
                       </div>
                     </div>
-                    {formik.touched.closed && formik.errors.closed && (
+                    {formik.touched.answer?.[0]?.closed && formik.errors.answer?.[0]?.closed && (
                       <div className="invalid-feedback d-block">
-                        {formik.errors.closed}
+                        {formik.errors.answer[0]?.closed}
                       </div>
                     )}
                   </div>
@@ -712,7 +730,7 @@ function QuestionAdd() {
                 )}
                 {formik.values.ques_type.includes("uploadCheckbox") && (
                   <div className="mt-2">
-                    <label className="form-label">Answer Upload File:</label>
+                    <label className="form-label">Answer Upload</label>
                     <input
                       type="file"
                       className={`form-control form-control-sm ${formik.touched.answer_upload &&
@@ -721,9 +739,11 @@ function QuestionAdd() {
                         : ""
                         }`}
                       name="answer_upload"
-                       accept="image/*"
+                      accept="image/*"
                       value={formik.values.answer_upload}
-                      onChange={formik.handleChange}
+                      onChange={(event) => {
+                        formik.setFieldValue("answer_upload", event.currentTarget.files[0]);
+                      }}
                     />
                     {formik.touched.answer_upload &&
                       formik.errors.answer_upload && (

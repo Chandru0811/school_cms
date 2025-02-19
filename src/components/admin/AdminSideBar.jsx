@@ -19,11 +19,6 @@ import { PiNotePencilDuotone } from "react-icons/pi";
 import { SlBookOpen } from "react-icons/sl";
 import { BsPerson } from "react-icons/bs";
 
-
-
-
-
-
 function AdminSidebar() {
   // const navigate = useNavigate();
 
@@ -31,6 +26,7 @@ function AdminSidebar() {
   //   handleLogout();
   //   navigate("/");
   // };
+  const storedScreens = JSON.parse(localStorage.getItem("schoolCMS_Permissions") || "{}");
 
   const [leadMenuOpen] = useState(false);
 
@@ -80,126 +76,150 @@ function AdminSidebar() {
                 Dashboard
               </NavLink>
             </li>
-            <li className="nav-item px-3">
-              <NavLink
-                className="nav-link"
-                style={{ borderRadius: "5px" }}
-                to="/center"
-              >
-                <IoGridOutline className="sidebar_icon" />
-                Center
-              </NavLink>
-            </li>
-            <li className="nav-item px-3">
-              <NavLink
-                className="nav-link"
-                style={{ borderRadius: "5px" }}
-                to="/employee"
-              >
-                <BsPerson className="sidebar_icon" />
-                Employee
-              </NavLink>
-            </li>
-            <li className="nav-item px-3">
-              <NavLink
-                className="nav-link"
-                style={{ borderRadius: "5px" }}
-                to="/grade"
-              >
-                <LiaAwardSolid className="sidebar_icon" />
-                Grade
-              </NavLink>
-            </li>
-            <li className="nav-item px-3">
-              <NavLink
-                className="nav-link"
-                style={{ borderRadius: "5px" }}
-                to="/subject"
-              >
-                <SlBookOpen className="sidebar_icon" />
-                Subject
-              </NavLink>
-            </li>
-            <li className="nav-item px-3">
-              <NavLink
-                className="nav-link"
-                style={{ borderRadius: "5px" }}
-                to="/topic"
-              >
-                <PiNotePencilDuotone className="sidebar_icon" />
-                Topic
-              </NavLink>
-            </li>
-            <li className="nav-item px-3">
-              <NavLink
-                className="nav-link"
-                style={{ borderRadius: "5px" }}
-                to="/student"
-              >
-                <PiStudentLight className="sidebar_icon" />
-                Student
-              </NavLink>
-            </li>
-            <li className="nav-item px-3">
-              <NavLink
-                className="nav-link"
-                style={{ borderRadius: "5px" }}
-                to="/question"
-              >
-                <IoHelpCircleOutline className="sidebar_icon" />
-                Question & Answer
-              </NavLink>
-            </li>
-            <li className="nav-item px-3">
-              <NavLink
-                className="nav-link"
-                style={{ borderRadius: "5px" }}
-                to="/challenges"
-              >
-                <IoTrophyOutline className="sidebar_icon" />
-                Challenges
-              </NavLink>
-            </li>
-            <li className="nav-item px-3">
-              <NavLink
-                className="nav-link"
-                style={{ borderRadius: "5px" }}
-                to="/worksheet"
-              >
-                <FaRegFileAlt className="sidebar_icon" />
-                Worksheet
-              </NavLink>
-            </li>
-            <li className="nav-item px-3">
-              <NavLink
-                className="nav-link"
-                style={{ borderRadius: "5px" }}
-                to="/homework"
-              >
-                <IoLibraryOutline className="sidebar_icon" />
-                Homework
-              </NavLink>
-            </li>      
-            <li className="nav-item px-3">
-              <NavLink
-                className="nav-link"
-                style={{ borderRadius: "5px" }}
-                to="/rewards"
-              >
-                <IoGiftOutline className="sidebar_icon" />
-                Rewards
-              </NavLink>
-            </li>
-            <li className="nav-item px-3">
-              <NavLink
-                className="nav-link"
-                style={{ borderRadius: "5px" }}
-                to="/subscriptions"
-              >
-                <IoCardOutline className="sidebar_icon" />
-                Subscriptions
-              </NavLink>
-            </li>
+            {storedScreens?.data[0]?.can_access === 1 &&
+              <li className="nav-item px-3">
+                <NavLink
+                  className="nav-link"
+                  style={{ borderRadius: "5px" }}
+                  to="/center"
+                >
+                  <IoGridOutline className="sidebar_icon" />
+                  Center
+                </NavLink>
+              </li>
+            }
+            {storedScreens?.data[1]?.can_access === 1 &&
+              <li className="nav-item px-3">
+                <NavLink
+                  className="nav-link"
+                  style={{ borderRadius: "5px" }}
+                  to="/employee"
+                >
+                  <BsPerson className="sidebar_icon" />
+                  Employee
+                </NavLink>
+              </li>
+            }
+            {storedScreens?.data[2]?.can_access === 1 &&
+              <li className="nav-item px-3">
+                <NavLink
+                  className="nav-link"
+                  style={{ borderRadius: "5px" }}
+                  to="/grade"
+                >
+                  <LiaAwardSolid className="sidebar_icon" />
+                  Grade
+                </NavLink>
+              </li>
+            }
+            {storedScreens?.data[4]?.can_access === 1 &&
+              <li className="nav-item px-3">
+                <NavLink
+                  className="nav-link"
+                  style={{ borderRadius: "5px" }}
+                  to="/subject"
+                >
+                  <SlBookOpen className="sidebar_icon" />
+                  Subject
+                </NavLink>
+              </li>
+            }
+            {storedScreens?.data[5]?.can_access === 1 &&
+              <li className="nav-item px-3">
+                <NavLink
+                  className="nav-link"
+                  style={{ borderRadius: "5px" }}
+                  to="/topic"
+                >
+                  <PiNotePencilDuotone className="sidebar_icon" />
+                  Topic
+                </NavLink>
+              </li>
+            }
+            {storedScreens?.data[3]?.can_access === 1 &&
+              <li className="nav-item px-3">
+                <NavLink
+                  className="nav-link"
+                  style={{ borderRadius: "5px" }}
+                  to="/student"
+                >
+                  <PiStudentLight className="sidebar_icon" />
+                  Student
+                </NavLink>
+              </li>
+            }
+            {storedScreens?.data[6]?.can_access === 1 &&
+              <li className="nav-item px-3">
+                <NavLink
+                  className="nav-link"
+                  style={{ borderRadius: "5px" }}
+                  to="/question"
+                >
+                  <IoHelpCircleOutline className="sidebar_icon" />
+                  Question & Answer
+                </NavLink>
+              </li>
+            }
+            {storedScreens?.data[7]?.can_access === 1 &&
+              <li className="nav-item px-3">
+                <NavLink
+                  className="nav-link"
+                  style={{ borderRadius: "5px" }}
+                  to="/challenges"
+                >
+                  <IoTrophyOutline className="sidebar_icon" />
+                  Challenges
+                </NavLink>
+              </li>
+            }
+            {storedScreens?.data[8]?.can_access === 1 &&
+              <li className="nav-item px-3">
+                <NavLink
+                  className="nav-link"
+                  style={{ borderRadius: "5px" }}
+                  to="/worksheet"
+                >
+                  <FaRegFileAlt className="sidebar_icon" />
+                  Worksheet
+                </NavLink>
+              </li>
+            }
+            {storedScreens?.data[10]?.can_access === 1 &&
+              <li className="nav-item px-3">
+                <NavLink
+                  className="nav-link"
+                  style={{ borderRadius: "5px" }}
+                  to="/homework"
+                >
+                  <IoLibraryOutline className="sidebar_icon" />
+                  Homework
+                </NavLink>
+              </li>
+            }
+            {storedScreens?.data[12]?.can_access === 1 &&
+              <li className="nav-item px-3">
+                <NavLink
+                  className="nav-link"
+                  style={{ borderRadius: "5px" }}
+                  to="/rewards"
+                >
+                  <IoGiftOutline className="sidebar_icon" />
+                  Rewards
+                </NavLink>
+              </li>
+            }
+            {storedScreens?.data[15]?.can_access === 1 &&
+              <li className="nav-item px-3">
+                <NavLink
+                  className="nav-link"
+                  style={{ borderRadius: "5px" }}
+                  to="/subscriptions"
+                >
+                  <IoCardOutline className="sidebar_icon" />
+                  Subscriptions
+                </NavLink>
+              </li>
+            }
             {/* <li className="nav-item px-3">
               <NavLink
                 className="nav-link"

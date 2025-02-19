@@ -1,5 +1,5 @@
-import { useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import { MaterialReactTable } from "material-react-table";
 import {
   ThemeProvider,
@@ -11,37 +11,13 @@ import {
 import Delete from "../../../components/common/Delete";
 import PropTypes from "prop-types";
 import { MoreVert as MoreVertIcon } from "@mui/icons-material";
+import toast from "react-hot-toast";
+import api from "../../../config/URL";
 
 function Challenges() {
   const [menuAnchor, setMenuAnchor] = useState(null);
-  const navigate = useNavigate();
-
-  const data = [
-    {
-      id: 1,
-      center_id: "SRDK",
-      grade_id: "8 Grade",
-      type: "Math",
-      title: "Solving for x",
-      description: "Solve for x in the equation 3x - 4 = 11.",
-      level: "Medium",
-      solution: "x = 5",
-      hint: "First, add 4 to both sides, then divide by 3.",
-      time_limit: 20,
-    },
-    {
-      id: 2,
-      center_id: "KVM",
-      grade_id: "8 Grade",
-      type: "Math",
-      title: "Solving for x",
-      description: "Solve for x in the equation 3x - 4 = 11.",
-      level: "Medium",
-      solution: "x = 5",
-      hint: "First, add 4 to both sides, then divide by 3.",
-      time_limit: 15,
-    },
-  ];
+  const [data, setData] = useState([]);
+  const [selectedId, setSelectedId] = useState(null);
 
   const columns = useMemo(
     () => [
@@ -61,11 +37,12 @@ function Challenges() {
         enableHiding: false,
         enableSorting: false,
         size: 20,
-        Cell: () => (
+        Cell: ({ cell }) => (
           <IconButton
             onClick={(e) => {
               e.stopPropagation();
               setMenuAnchor(e.currentTarget);
+              setSelectedId(cell.getValue());
             }}
           >
             <MoreVertIcon />
@@ -114,6 +91,20 @@ function Challenges() {
     ],
     []
   );
+
+
+  const getData = async () => {
+    try {
+      const response = await api.get("challenges");
+      setData(response.data.data);
+    } catch (e) {
+      toast.error("Error Fetching Data", e?.response?.data?.error);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   const theme = createTheme({
     components: {
@@ -217,8 +208,8 @@ function Challenges() {
                   updated_at: false,
                 },
               }}
-              muiTableBodyRowProps={() => ({
-                onClick: () => navigate(`/challenges/view`),
+              muiTableBodyRowProps={({ row }) => ({
+                onClick: () => navigate(`/challenges/view/${row.original.id}`),
                 style: { cursor: "pointer" },
               })}
             />
@@ -229,7 +220,7 @@ function Challenges() {
             open={Boolean(menuAnchor)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={() => navigate(`/challenges/edit`)}>
+            <MenuItem onClick={() => navigate(`/challenges/edit/${selectedId}`)}>
               Edit
             </MenuItem>
             <MenuItem>

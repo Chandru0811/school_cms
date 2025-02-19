@@ -83,19 +83,17 @@ const Login = ({ loginAsAdmin, loginAsSuperAdmin, loginAsStudent }) => {
             toast.error("Failed to fetch permissions");
           }
 
-          if (data.data.user.role_id === "2" || data.data.user.role_id === 2) {
-            loginAsAdmin();
-          } else if (data.data.user.role_id === "1" || data.data.user.role_id === 1) {
+          // if (data.data.user.role_id === "2" || data.data.user.role_id === 2) {
+          loginAsAdmin();
+          if (data.data.user.role_id === "1" || data.data.user.role_id === 1) {
             navigate("/");
             loginAsSuperAdmin();
-          } else if (data.data.user.role_id === "3" || data.data.user.role_id === 3) {
-            navigate("/");
-            loginAsStudent();
-          } else {
-            toast("Oops! You don't have access to this page, but feel free to check out our amazing website! 😊", {
-              icon: "😊",
-            });
           }
+          // else {
+          //   toast("Oops! You don't have access to this page, but feel free to check out our amazing website! 😊", {
+          //     icon: "😊",
+          //   });
+          // }
         } else {
           toast.error(response.data.message || "Invalid credentials");
         }

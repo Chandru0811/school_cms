@@ -142,11 +142,11 @@ function Admin({ handleLogout }) {
                     <Route path="/challenges" element={<Challenges />} />
                     <Route path="/challenges/add" element={<ChallengesAdd />} />
                     <Route
-                      path="/challenges/edit"
+                      path="/challenges/edit/:id"
                       element={<ChallengesEdit />}
                     />
                     <Route
-                      path="/challenges/view"
+                      path="/challenges/view/:id"
                       element={<ChallengesView />}
                     />
 
