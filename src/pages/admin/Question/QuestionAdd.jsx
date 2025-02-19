@@ -1,6 +1,6 @@
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaTrash } from "react-icons/fa";
 import { MultiSelect } from "react-multi-select-component";
 import { useEffect, useState } from "react";
@@ -8,6 +8,7 @@ import toast from "react-hot-toast";
 import api from "../../../config/URL";
 
 function QuestionAdd() {
+  const navigate = useNavigate();
   const [selectedCenter, setSelectedCenter] = useState([]);
   const [centerList, setCenterList] = useState([]);
   const [subjects, setSubjects] = useState([]);
@@ -130,7 +131,7 @@ function QuestionAdd() {
           toast.success(response.data.message);
           navigate("/question");
         } else {
-          toast.error(response.data.message || "An unexpected error occurred.");
+          toast.error(response.data.message);
         }
       } catch (error) {
         const errorMessage = error.response?.data?.message;
@@ -481,6 +482,7 @@ function QuestionAdd() {
                 <label className="form-label">Upload File</label>
                 <input
                   type="file"
+                  accept="image/*"
                   className={`form-control form-control-sm ${formik.touched.upload && formik.errors.upload
                     ? "is-invalid"
                     : ""
@@ -710,7 +712,7 @@ function QuestionAdd() {
                 )}
                 {formik.values.ques_type.includes("uploadCheckbox") && (
                   <div className="mt-2">
-                    <label className="form-label">Upload File:</label>
+                    <label className="form-label">Answer Upload File:</label>
                     <input
                       type="file"
                       className={`form-control form-control-sm ${formik.touched.answer_upload &&
@@ -719,6 +721,7 @@ function QuestionAdd() {
                         : ""
                         }`}
                       name="answer_upload"
+                       accept="image/*"
                       value={formik.values.answer_upload}
                       onChange={formik.handleChange}
                     />

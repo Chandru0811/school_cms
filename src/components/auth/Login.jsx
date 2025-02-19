@@ -15,6 +15,7 @@ const Login = ({ loginAsAdmin, loginAsSuperAdmin, loginAsStudent }) => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
+  const role_id = localStorage.getItem("schoolCMS_role");
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
@@ -60,7 +61,7 @@ const Login = ({ loginAsAdmin, loginAsSuperAdmin, loginAsStudent }) => {
         } else {
           response = await api.post(`login`, values);
         }
-    
+
         if (response?.status === 200) {
           const { data } = response;
           toast.success(data.message);
@@ -70,9 +71,19 @@ const Login = ({ loginAsAdmin, loginAsSuperAdmin, loginAsStudent }) => {
           localStorage.setItem("schoolCMS_email", data.data.user.email);
           localStorage.setItem("schoolCMS_role", data.data.user.role_id);
           localStorage.setItem("schoolCMS_mobile", data.data.user.mobile);
-    
-          console.log(data.data.user.role_id);
-    
+
+          const roleId = data.data.user.role_id;
+          const permissionsResponse = await api.get(`role_permission/${roleId}`);
+          if (permissionsResponse?.status === 200) {
+            const schoo_Permissions = permissionsResponse.data;
+            localStorage.setItem(
+              "schoo_Permissions",
+              JSON.stringify(schoo_Permissions)
+            );
+          } else {
+            toast.error("Failed to fetch permissions");
+          }
+
           if (data.data.user.role_id === "2" || data.data.user.role_id === 2) {
             loginAsAdmin();
           } else if (data.data.user.role_id === "1" || data.data.user.role_id === 1) {
@@ -103,7 +114,7 @@ const Login = ({ loginAsAdmin, loginAsSuperAdmin, loginAsStudent }) => {
         setLoadIndicator(false);
       }
     }
-    
+
   });
 
   return (
@@ -200,11 +211,10 @@ const Login = ({ loginAsAdmin, loginAsSuperAdmin, loginAsStudent }) => {
                 <input
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter password"
-                  className={`form-control ${
-                    formik.touched.password && formik.errors.password
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-control ${formik.touched.password && formik.errors.password
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   style={{
                     borderRadius: "3px",
                     borderRight: "none",

@@ -21,6 +21,7 @@ function Center() {
   const [loading, setLoading] = useState(true);
   const [selectedId, setSelectedId] = useState(null);
   const [data, setData] = useState([]);
+  const storedScreens = JSON.parse(localStorage.getItem("schoo_Permissions") || "{}");
 
   const columns = useMemo(
     () => [
@@ -87,7 +88,7 @@ function Center() {
     }
   };
 
-  
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -164,7 +165,9 @@ function Center() {
               <span className="database_name">Center</span>
             </span>
           </div>
-          <CenterAdd />
+          {storedScreens?.[0]?.can_create && (
+            <CenterAdd />
+          )}
         </div>
         {loading ? (
           <div className="loader-container">
@@ -205,19 +208,23 @@ function Center() {
               open={Boolean(menuAnchor)}
               onClose={handleMenuClose}
             >
-              <MenuItem>
-                <CenterEdit
-                  onSuccess={fetchData}
-                  id={selectedId}
-                  handleMenuClose={handleMenuClose}
-                />
-              </MenuItem>
-              <MenuItem>
-                <CenterView
-                  id={selectedId}
-                  handleMenuClose={handleMenuClose}
-                />
-              </MenuItem>
+              {storedScreens?.[0]?.can_edit && (
+                <MenuItem>
+                  <CenterEdit
+                    onSuccess={fetchData}
+                    id={selectedId}
+                    handleMenuClose={handleMenuClose}
+                  />
+                </MenuItem>
+              )}
+              {storedScreens?.[0]?.can_view && (
+                <MenuItem>
+                  <CenterView
+                    id={selectedId}
+                    handleMenuClose={handleMenuClose}
+                  />
+                </MenuItem>
+              )}
               <MenuItem>
                 <Delete
                   path={`/center/delete/${selectedId}`}
