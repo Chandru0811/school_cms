@@ -2,71 +2,50 @@ import * as yup from "yup";
 import { useFormik } from "formik";
 import { Link } from "react-router-dom";
 import { MultiSelect } from "react-multi-select-component";
-import { useMemo, useState } from "react";
-import { MaterialReactTable } from "material-react-table";
+import { useEffect, useMemo, useState } from "react";
+import {
+  MaterialReactTable,
+  useMaterialReactTable,
+} from "material-react-table";
 import { ThemeProvider } from "react-bootstrap";
 import { createTheme } from "@mui/material";
+import toast from "react-hot-toast";
+import api from "../../../config/URL";
 
 function WorkSheetAdd() {
-  const [selectedServices, setSelectedServices] = useState([]);
-  const [selectedSubject, setSelectedSubject] = useState([]);
+  const [selectedCenter, setSelectedCenter] = useState([]);
+  const [selectedSubjects, setSelectedSubjects] = useState([]);
+  const [selectedGrades, setSelectedGrades] = useState([]);
+  const [selectedTopics, setSelectedTopics] = useState([]);
   const [selectedQuestion, setSelectedQuestion] = useState([]);
-  const [selectedTopic, setSelectedTopic] = useState([]);
-
-  const serviceOption = [
-    { value: "1", label: "SRDK" },
-    { value: "2", label: "KVM" },
-    { value: "3", label: "KCS" },
-    { value: "4", label: "PAK" },
-  ];
-
-  const subjectOption = [
-    { value: "1", label: "English" },
-    { value: "2", label: "Tamil" },
-    { value: "3", label: "Maths" },
-  ];
-
+  const [centerList, setCenterList] = useState([]);
+  const [subjects, setSubjects] = useState([]);
+  const [grades, setGrades] = useState([]);
+  const [topics, setTopics] = useState([]);
+  const [filterDatas, setFilterDatas] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [rowSelection, setRowSelection] = useState({});
+  const [loadIndicator, setLoadIndicator] = useState(false);
   const questionOption = [
-    { value: "1", label: "Filled" },
-    { value: "2", label: "Closed" },
-    { value: "3", label: "Multi Choice" },
-    { value: "4", label: "Short Answer" },
-    { value: "5", label: "Upload" },
+    { value: "fillable", label: "Filled" },
+    { value: "closed", label: "Closed" },
+    { value: "multichoice", label: "Multi Choice" },
+    { value: "shortanswer", label: "Short Answer" },
+    { value: "upload", label: "Upload" },
   ];
-
-  const topicOption = [
-    { value: "1", label: "English" },
-    { value: "2", label: "Tamil" },
-    { value: "3", label: "Maths" },
-  ];
-
-  const data = [
-    {
-      id: 1,
-      question: "SRDK",
-    },
-    {
-      id: 4,
-      question: "SRDK",
-    },
-    {
-      id: 3,
-      question: "SRDK",
-    },
-    {
-      id: 2,
-      question: "SRDK",
-    },
-  ];
-
   const validationSchema = yup.object().shape({
-    centre_id: yup
+    type: yup.string().required("*Select a question type"),
+    title: yup.string().required("*Title is required"),
+    center_id: yup
       .array()
       .of(yup.string().required("*Select at least one centre"))
       .min(1, "*Select at least one centre")
       .required("*Select a centre name"),
-    grade_id: yup.string().required("*Select a grade"),
-    name: yup.string().required("*Title is required"),
+    grade_id: yup
+      .array()
+      .of(yup.string().required("*Select at least one subject"))
+      .min(1, "*Select at least one subject")
+      .required("*Select a subject name"),
     subject_id: yup
       .array()
       .of(yup.string().required("*Select at least one subject"))
@@ -77,16 +56,11 @@ function WorkSheetAdd() {
       .of(yup.string().required("*Select at least one subject"))
       .min(1, "*Select at least one subject")
       .required("*Select a subject name"),
-    type: yup.string().required("*Select a type"),
     ques_type: yup
       .array()
       .of(yup.string().required("*Select at least one question type"))
       .min(1, "*Select at least one question type")
       .required("*Select a question type name"),
-    difficult_level: yup.string().required("*Select a difficult level"),
-    questionType: yup.string().required("*Select a question type"),
-    difficult_type: yup.string().required("*Select a difficult type"),
-    question: yup.string().required("*Select a question"),
     target_score: yup
       .number()
       .typeError("*Target Score must be a number")
@@ -105,39 +79,59 @@ function WorkSheetAdd() {
       .required("*Reward field is required")
       .positive("*Reward must be a positive number")
       .integer("*Reward must be an integer"),
-    service_id: yup
-      .array()
-      .min(1, "*Select at least one question type")
-      .required("*Question types are required"),
+    difficult_level: yup.string().required("*Select a difficult level"),
+    ques_id_with_type: yup.array().of(
+      yup.object().shape({
+        id: yup.number().required("Question ID is required"),
+        ques_type: yup.string().required("Question type is required"),
+      })
+    ),
+    // .min(1, "At least one question type must be selected"),
   });
 
   const formik = useFormik({
     initialValues: {
-      centre_id: "",
-      grade_id: "",
-      topic_id: "",
-      name: "",
-      subject_id: "",
-      type: "",
+      type: "challenge",
+      title: "",
+      center_id: [],
+      grade_id: [],
+      subject_id: [],
+      topic_id: [],
+      ques_type: [],
       difficult_level: "",
-      ques_type: "",
-      target_score: "",
       total_score: "",
-      difficult_type:"",
+      target_score: "",
       reward: "",
-      question_id: "",
-      question: "",
-      questionType: "Challenge",
-      service_id: [],
+      // type: "",
+      // difficult_type: "",
+      ques_id_with_type: [],
+      question_id: [],
+      // question: "",
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
+      setLoadIndicator(true);
       console.log("Form Values:", values);
+      try {
+        const response = await api.post("worksheet", values);
+        if (response.status === 200) {
+          console.log("object", response);
+          toast.success(response.data?.message)
+        }
+      } catch (e) {
+        console.error("Error Fetching Data", e);
+        toast.error(
+          "Error Fetching Data",
+          e?.response?.data?.error || e.message
+        );
+      } finally {
+        setLoadIndicator(false);
+      }
     },
     validateOnChange: false,
     validateOnBlur: true,
   });
-
+  console.log("error", formik.errors);
   const columns = useMemo(
     () => [
       {
@@ -146,11 +140,79 @@ function WorkSheetAdd() {
         enableSorting: true,
         enableHiding: false,
         size: 40,
-        cell: ({ cell }) => (
+        Cell: ({ cell }) => (
           <span style={{ textAlign: "center" }}>{cell.getValue()}</span>
         ),
       },
       { accessorKey: "question", header: "Question" },
+      {
+        accessorKey: "ques_type",
+        header: "Question Type",
+        Cell: ({ row }) => {
+          let quesTypes = [];
+          try {
+            quesTypes = JSON.parse(row.original.ques_type) || [];
+          } catch (error) {
+            console.error("Error parsing ques_type:", error);
+            quesTypes = [];
+          }
+          // console.log("object",row)
+          return (
+            <div>
+              <div
+                style={{ display: "flex", alignItems: "center", gap: "10px" }}
+              >
+                {quesTypes.map((t, i) => (
+                  <label
+                    key={`${row.id}-${i}`}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "5px",
+                    }}
+                  >
+                    <input
+                      type="radio"
+                      name={`ques_id_with_type_${row.id}`}
+                      value={t}
+                      className="form-check"
+                      checked={
+                        formik.values.ques_id_with_type?.some(
+                          (q) => q.id === row.original.id && q.ques_type === t
+                        ) ||
+                        (!formik.values.ques_id_with_type?.some(
+                          (q) => q.id === row.original.id
+                        ) &&
+                          i === 0)
+                      }
+                      onChange={(e) => {
+                        const selectedValue = e.target.value;
+                        const updatedValues =
+                          formik.values.ques_id_with_type.map((q) =>
+                            q.id === row.original.id
+                              ? { ...q, ques_type: selectedValue }
+                              : q
+                          );
+                        formik.setFieldValue(
+                          "ques_id_with_type",
+                          updatedValues
+                        );
+                      }}
+                    />
+                    {cName(t)}
+                  </label>
+                ))}
+              </div>
+              {formik.errors.ques_id_with_type &&
+                formik.touched.ques_id_with_type && (
+                  <small className="text-danger">
+                    {formik.errors.ques_id_with_type}
+                  </small>
+                )}
+            </div>
+          );
+        },
+      },
       {
         accessorKey: "created_at",
         header: "Created At",
@@ -169,7 +231,22 @@ function WorkSheetAdd() {
     ],
     []
   );
-
+  const cName = (t) => {
+    switch (t) {
+      case "fillable":
+        return "Fillable";
+      case "multichoice":
+        return "Multi Choice";
+      case "short_answer":
+        return "Short Answer";
+      case "closed":
+        return "Closed";
+      case "upload":
+        return "Upload";
+      default:
+        return t;
+    }
+  };
   const theme = createTheme({
     components: {
       MuiTableCell: {
@@ -213,6 +290,161 @@ function WorkSheetAdd() {
     },
   });
 
+  const table = useMaterialReactTable({
+    columns,
+    data: filterDatas,
+    enableColumnActions: false,
+    enableColumnFilters: false,
+    enableDensityToggle: false,
+    enableFullScreenToggle: false,
+    initialState: {
+      columnVisibility: {
+        working_hrs: false,
+        citizenship: false,
+        nationality: false,
+        created_by: false,
+        created_at: false,
+        updated_by: false,
+        updated_at: false,
+      },
+    },
+    enableRowSelection: true,
+    getRowId: (row) => row.id,
+    state: { rowSelection },
+    onRowSelectionChange: setRowSelection,
+  });
+  useEffect(() => {
+    const selectedData = table
+      .getSelectedRowModel()
+      .flatRows.map((row) => row.original);
+    const uniqueIds = [...new Set(selectedData.map((row) => row.id))];
+    const uniqueData = selectedData.reduce((acc, row) => {
+      if (!acc.some((item) => item.id === row.id)) {
+        acc.push({ id: row.id, ques_type: JSON.parse(row.ques_type)[0] });
+      }
+      return acc;
+    }, []);
+    formik.setFieldValue("question_id", uniqueIds);
+    formik.setFieldValue("ques_id_with_type", uniqueData);
+
+    // console.log("uniqueIds", uniqueIds);
+    // console.log("formik.values.ques_id_with_type:", uniqueData);
+  }, [rowSelection]);
+  // console.log("rowSelection", rowSelection);
+
+  const getCenterList = async () => {
+    try {
+      const response = await api.get("centers/list");
+      const formattedCenters = response.data.data.map((center) => ({
+        value: center.id,
+        label: center.name,
+      }));
+      // console.log("center", formattedCenters);
+      setCenterList(formattedCenters);
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
+  };
+
+  const getSubjectList = async () => {
+    try {
+      const response = await api.get("subjects/list");
+      // console.log(response);
+      const formattedSubjects = response.data?.data?.map((subject) => ({
+        value: subject.id,
+        label: subject.name,
+      }));
+
+      setSubjects(formattedSubjects);
+    } catch (e) {
+      console.error("Error Fetching Data", e);
+      toast.error("Error Fetching Data", e?.response?.data?.error || e.message);
+    }
+  };
+
+  const getGradeList = async () => {
+    try {
+      const response = await api.get("grades/list");
+      // console.log(response);
+      const formattedGrades = response.data?.data?.map((grade) => ({
+        value: grade.id,
+        label: grade.name,
+      }));
+
+      setGrades(formattedGrades);
+    } catch (e) {
+      console.error("Error Fetching Data", e);
+      toast.error("Error Fetching Data", e?.response?.data?.error || e.message);
+    }
+  };
+
+  const topicList = async () => {
+    try {
+      const response = await api.get("topics/list");
+      // console.log(response);
+      const formattedTopics = response.data?.data?.map((topics) => ({
+        value: topics.id,
+        label: topics.name,
+      }));
+
+      setTopics(formattedTopics);
+    } catch (e) {
+      console.error("Error Fetching Data", e);
+      toast.error("Error Fetching Data", e?.response?.data?.error || e.message);
+    }
+  };
+  const filterData = async () => {
+    try {
+      const response = await api.get(`filter/worksheet/${formik.values.type}`, {
+        params: {
+          ...(formik.values.difficult_level && {
+            difficult_level: formik.values.difficult_level,
+          }),
+          ...(formik.values.ques_type && {
+            "ques_type[]": formik.values.ques_type,
+          }),
+          ...(formik.values.topic_id && {
+            "topic_id[]": formik.values.topic_id,
+          }),
+          ...(formik.values.grade_id && {
+            "grade_id[]": formik.values.grade_id,
+          }),
+          ...(formik.values.center_id && {
+            "center_id[]": formik.values.center_id,
+          }),
+          ...(formik.values.subject_id && {
+            "subject_id[]": formik.values.subject_id,
+          }),
+        },
+      });
+      if (response.status === 200) {
+        setFilterDatas(response.data.data);
+        // console.log(response);
+      }
+    } catch (e) {
+      console.error("Error Fetching Data", e);
+      toast.error("Error Fetching Data", e?.response?.data?.error || e.message);
+    }
+  };
+
+  useEffect(() => {
+    filterData();
+  }, [
+    selectedCenter,
+    selectedSubjects,
+    selectedGrades,
+    selectedTopics,
+    selectedQuestion,
+    formik.values.difficult_level,
+    formik.values.type,
+  ]);
+  useEffect(() => {
+    getCenterList();
+    getSubjectList();
+    getGradeList();
+    topicList();
+  }, []);
+  // console.log("formik.values", formik.values);
   return (
     <div className="container p-3">
       <ol
@@ -258,79 +490,38 @@ function WorkSheetAdd() {
                 </button>
               </Link>
               &nbsp;&nbsp;
-              <button type="submit" className="btn btn-button btn-sm">
+              <button
+                type="submit"
+                className="btn btn-button btn-sm"
+                disabled={loadIndicator}
+              >
+                {loadIndicator && (
+                  <span
+                    className="spinner-border spinner-border-sm me-2"
+                    aria-hidden="true"
+                  ></span>
+                )}
                 Save
               </button>
             </div>
           </div>
           <div className="container-fluid px-4">
             <div className="row py-4">
-              <div className="col-md-6 col-12 mb-4">
-                <label className="form-label">
-                  Centre<span className="text-danger">*</span>
-                </label>
-                <MultiSelect
-                  options={serviceOption}
-                  value={selectedServices}
-                  onChange={(selected) => {
-                    setSelectedServices(selected);
-                    formik.setFieldValue(
-                      "centre_id",
-                      selected.map((option) => option.value)
-                    );
-                  }}
-                  labelledBy="Select Service"
-                  className={`form-multi-select form-multi-select-sm ${
-                    formik.touched.centre_id && formik.errors.centre_id
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                />
-                {formik.touched.centre_id && formik.errors.centre_id && (
-                  <div className="invalid-feedback">
-                    {formik.errors.centre_id}
-                  </div>
-                )}
-              </div>
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
-                  Grade<span className="text-danger">*</span>
-                </label>
-                <select
-                  className={`form-select form-select-sm ${
-                    formik.touched.grade_id && formik.errors.grade_id
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  {...formik.getFieldProps("grade_id")}
-                >
-                  <option value=""></option>
-                  <option value="1">9 Grade</option>
-                  <option value="2">10 Grade</option>
-                  <option value="3">11 Grade</option>
-                </select>
-                {formik.touched.grade_id && formik.errors.grade_id && (
-                  <div className="invalid-feedback">
-                    {formik.errors.grade_id}
-                  </div>
-                )}
-              </div>
               <div className="col-md-6 col-12 mb-3">
                 <div className="d-flex gap-3">
                   <div className="form-check">
                     <input
                       type="radio"
-                      name="questionType"
-                      value="Challenge"
+                      name="type"
+                      value="challenge"
                       className={`form-check-input ${
-                        formik.touched.questionType &&
-                        formik.errors.questionType
+                        formik.touched.type && formik.errors.type
                           ? "is-invalid"
                           : ""
                       }`}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      checked={formik.values.questionType === "Challenge"}
+                      checked={formik.values.type === "challenge"}
                     />
                     <label className="form-check-label">Challenge</label>
                   </div>
@@ -338,23 +529,23 @@ function WorkSheetAdd() {
                   <div className="form-check">
                     <input
                       type="radio"
-                      name="questionType"
-                      value="Q/A"
+                      name="type"
+                      value="question"
                       className="form-check-input"
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
-                      checked={formik.values.questionType === "Q/A"}
+                      checked={formik.values.type === "question"}
                     />
                     <label className="form-check-label">Q/A</label>
                   </div>
                 </div>
               </div>
               <div className="col-md-6 col-12 mb-3">
-                {formik.values.questionType === "Challenge" ? (
+                {formik.values.type === "challenge" ? (
                   <label className="form-label">
                     Challenged Title<span className="text-danger">*</span>
                   </label>
-                ) : formik.values.questionType === "Q/A" ? (
+                ) : formik.values.type === "question" ? (
                   <label className="form-label">
                     Q/A Title<span className="text-danger">*</span>
                   </label>
@@ -362,87 +553,68 @@ function WorkSheetAdd() {
 
                 <input
                   className={`form-control form-control-sm ${
-                    formik.touched.name && formik.errors.name
+                    formik.touched.title && formik.errors.title
                       ? "is-invalid"
                       : ""
                   }`}
-                  {...formik.getFieldProps("name")}
+                  {...formik.getFieldProps("title")}
                 />
-                {formik.touched.name && formik.errors.name && (
-                  <div className="invalid-feedback">{formik.errors.name}</div>
-                )}
-              </div>
-              <div className="col-md-6 col-12 mb-3">
-                {formik.values.questionType === "Challenge" ? (
-                  <label className="form-label">
-                    Challenged Type<span className="text-danger">*</span>
-                  </label>
-                ) : formik.values.questionType === "Q/A" ? (
-                  <label className="form-label">
-                    Q/A Type<span className="text-danger">*</span>
-                  </label>
-                ) : null}
-                <select
-                  className={`form-select form-select-sm ${
-                    formik.touched.type && formik.errors.type
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  {...formik.getFieldProps("type")}
-                >
-                  <option value=""></option>
-                  <option value="Practical">Practical</option>
-                  <option value="Grammer">Grammer</option>
-                </select>
-                {formik.touched.type && formik.errors.type && (
-                  <div className="invalid-feedback">{formik.errors.type}</div>
-                )}
-              </div>
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
-                  Difficulty Type<span className="text-danger">*</span>
-                </label>
-                <select
-                  className={`form-select form-select-sm ${
-                    formik.touched.difficult_type && formik.errors.difficult_type
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  {...formik.getFieldProps("difficult_type")}
-                >
-                  <option value=""></option>
-                  <option value="Easy">Easy</option>
-                  <option value="Medium">Medium</option>
-                  <option value="Hard">Hard</option>
-                </select>
-                {formik.touched.difficult_type && formik.errors.difficult_type && (
-                  <div className="invalid-feedback">{formik.errors.difficult_type}</div>
+                {formik.touched.title && formik.errors.title && (
+                  <div className="invalid-feedback">{formik.errors.title}</div>
                 )}
               </div>
               <div className="col-md-6 col-12 mb-4">
                 <label className="form-label">
-                  Topic<span className="text-danger">*</span>
+                  Centre<span className="text-danger">*</span>
                 </label>
                 <MultiSelect
-                  options={topicOption}
-                  value={selectedTopic}
+                  options={centerList}
+                  value={selectedCenter}
                   onChange={(selected) => {
-                    setSelectedTopic(selected);
+                    setSelectedCenter(selected);
                     formik.setFieldValue(
-                      "topic_id",
+                      "center_id",
                       selected.map((option) => option.value)
                     );
                   }}
-                  labelledBy="Select Topic"
+                  labelledBy="Select Service"
                   className={`form-multi-select form-multi-select-sm ${
-                    formik.touched.topic_id && formik.errors.topic_id
+                    formik.touched.center_id && formik.errors.center_id
                       ? "is-invalid"
                       : ""
                   }`}
                 />
-                {formik.touched.topic_id && formik.errors.topic_id && (
+                {formik.touched.center_id && formik.errors.center_id && (
                   <div className="invalid-feedback">
-                    {formik.errors.topic_id}
+                    {formik.errors.center_id}
+                  </div>
+                )}
+              </div>
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Grade<span className="text-danger">*</span>
+                </label>
+                <MultiSelect
+                  options={grades}
+                  value={selectedGrades}
+                  onChange={(selected) => {
+                    setSelectedGrades(selected);
+                    formik.setFieldValue(
+                      "grade_id",
+                      selected.map((option) => option.value)
+                    );
+                  }}
+                  labelledBy="Select Service"
+                  className={`form-multi-select form-multi-select-sm ${
+                    formik.touched.grade_id && formik.errors.grade_id
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                />
+
+                {formik.touched.grade_id && formik.errors.grade_id && (
+                  <div className="invalid-feedback">
+                    {formik.errors.grade_id}
                   </div>
                 )}
               </div>
@@ -451,10 +623,10 @@ function WorkSheetAdd() {
                   Subject<span className="text-danger">*</span>
                 </label>
                 <MultiSelect
-                  options={subjectOption}
-                  value={selectedSubject}
+                  options={subjects}
+                  value={selectedSubjects}
                   onChange={(selected) => {
-                    setSelectedSubject(selected);
+                    setSelectedSubjects(selected);
                     formik.setFieldValue(
                       "subject_id",
                       selected.map((option) => option.value)
@@ -475,8 +647,41 @@ function WorkSheetAdd() {
               </div>
               <div className="col-md-6 col-12 mb-4">
                 <label className="form-label">
-                  Question Type<span className="text-danger">*</span>
+                  Topic<span className="text-danger">*</span>
                 </label>
+                <MultiSelect
+                  options={topics}
+                  value={selectedTopics}
+                  onChange={(selected) => {
+                    setSelectedTopics(selected);
+                    formik.setFieldValue(
+                      "topic_id",
+                      selected.map((option) => option.value)
+                    );
+                  }}
+                  labelledBy="Select Topic"
+                  className={`form-multi-select form-multi-select-sm ${
+                    formik.touched.topic_id && formik.errors.topic_id
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                />
+                {formik.touched.topic_id && formik.errors.topic_id && (
+                  <div className="invalid-feedback">
+                    {formik.errors.topic_id}
+                  </div>
+                )}
+              </div>
+              <div className="col-md-6 col-12 mb-4">
+                {formik.values.type === "challenge" ? (
+                  <label className="form-label">
+                    Challenged Type<span className="text-danger">*</span>
+                  </label>
+                ) : formik.values.type === "question" ? (
+                  <label className="form-label">
+                    Q/A Type<span className="text-danger">*</span>
+                  </label>
+                ) : null}
                 <MultiSelect
                   options={questionOption}
                   value={selectedQuestion}
@@ -499,6 +704,31 @@ function WorkSheetAdd() {
                     {formik.errors.ques_type}
                   </div>
                 )}
+              </div>
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Difficulty Type<span className="text-danger">*</span>
+                </label>
+                <select
+                  className={`form-select form-select-sm ${
+                    formik.touched.difficult_level &&
+                    formik.errors.difficult_level
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("difficult_level")}
+                >
+                  <option value=""></option>
+                  <option value="Easy">Easy</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Hard">Hard</option>
+                </select>
+                {formik.touched.difficult_level &&
+                  formik.errors.difficult_level && (
+                    <div className="invalid-feedback">
+                      {formik.errors.difficult_level}
+                    </div>
+                  )}
               </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">Total Score</label>
@@ -555,26 +785,7 @@ function WorkSheetAdd() {
             </div>
           </div>
           <ThemeProvider theme={theme}>
-            <MaterialReactTable
-              columns={columns}
-              data={data}
-              enableColumnActions={false}
-              enableColumnFilters={false}
-              enableDensityToggle={false}
-              enableFullScreenToggle={false}
-              initialState={{
-                columnVisibility: {
-                  working_hrs: false,
-                  citizenship: false,
-                  nationality: false,
-                  created_by: false,
-                  created_at: false,
-                  updated_by: false,
-                  updated_at: false,
-                },
-              }}
-              enableRowSelection={true}
-            />
+            <MaterialReactTable table={table} />
           </ThemeProvider>
         </div>
       </form>
