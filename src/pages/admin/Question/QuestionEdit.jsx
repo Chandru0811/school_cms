@@ -109,11 +109,11 @@ function QuestionEdit() {
         }
       });
 
-      if (values.upload) {
-        formData.append("upload", values.upload);
+      if (values.upload instanceof File) {
+        formData.append("upload", values.upload, values.upload.name);
       }
-      if (values.answer_upload) {
-        formData.append("answer_upload", values.answer_upload);
+      if (values.answer_upload instanceof File) {
+        formData.append("answer_upload", values.answer_upload, values.answer_upload.name);
       }
 
       try {
@@ -531,15 +531,18 @@ function QuestionEdit() {
                 <label className="form-label">Upload File</label>
                 <input
                   type="file"
-                  className={`form-control form-control-sm ${formik.touched.upload && formik.errors.upload
-                    ? "is-invalid"
-                    : ""
+                  className={`form-control form-control-sm ${formik.touched.upload && formik.errors.upload ? "is-invalid" : ""
                     }`}
-                ></input>
+                  accept="image/*"
+                  onChange={(event) => {
+                    const file = event.currentTarget.files[0];
+                    if (file) {
+                      formik.setFieldValue("upload", file);
+                    }
+                  }}
+                />
                 {formik.touched.upload && formik.errors.upload && (
-                  <div className="invalid-feedback">
-                    {formik.errors.upload}
-                  </div>
+                  <div className="invalid-feedback">{formik.errors.upload}</div>
                 )}
               </div>
               <div className="col-md-6 col-12 mb-3">
@@ -756,20 +759,20 @@ function QuestionEdit() {
                     <label className="form-label">Short Answer</label>
                     <textarea
                       rows={3}
-                      className={`form-control ${formik.touched.short_answer && formik.errors.short_answer
+                      className={`form-control ${formik.touched.answer?.[0]?.short_answer && formik.errors.answer?.[0]?.short_answer
                         ? "is-invalid"
                         : ""
                         }`}
-                      name="short_answer"
-                      value={formik.values.short_answer}
-                      onChange={formik.handleChange}
+                      name="answer"
+                      value={formik.values.answer[0]?.short_answer || ""}
+                      onChange={(e) => {
+                        const updatedAnswer = [{ ...formik.values.answer[0], short_answer: e.target.value }];
+                        formik.setFieldValue("answer", updatedAnswer);
+                      }}
                     />
-                    {formik.touched.short_answer &&
-                      formik.errors.short_answer && (
-                        <div className="text-danger">
-                          {formik.errors.short_answer}
-                        </div>
-                      )}
+                    {formik.touched.answer?.[0]?.short_answer && formik.errors.answer?.[0]?.short_answer && (
+                      <div className="text-danger">{formik.errors.answer[0]?.short_answer}</div>
+                    )}
                   </div>
                 )}
                 {formik.values.ques_type.includes("upload") && (
@@ -777,24 +780,22 @@ function QuestionEdit() {
                     <label className="form-label">Answer Upload</label>
                     <input
                       type="file"
-                      className={`form-control form-control-sm ${formik.touched.answer_upload &&
-                        formik.errors.answer_upload
+                      className={`form-control form-control-sm ${formik.touched.answer_upload && formik.errors.answer_upload
                         ? "is-invalid"
                         : ""
                         }`}
                       name="answer_upload"
                       accept="image/*"
-                      value={formik.values.answer_upload}
                       onChange={(event) => {
-                        formik.setFieldValue("answer_upload", event.currentTarget.files[0]);
+                        const file = event.currentTarget.files[0];
+                        if (file) {
+                          formik.setFieldValue("answer_upload", file);
+                        }
                       }}
                     />
-                    {formik.touched.answer_upload &&
-                      formik.errors.answer_upload && (
-                        <div className="text-danger">
-                          {formik.errors.answer_upload}
-                        </div>
-                      )}
+                    {formik.touched.answer_upload && formik.errors.answer_upload && (
+                      <div className="text-danger">{formik.errors.answer_upload}</div>
+                    )}
                   </div>
                 )}
               </div>

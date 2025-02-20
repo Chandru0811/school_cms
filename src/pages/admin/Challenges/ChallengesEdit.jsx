@@ -110,8 +110,8 @@ function ChallengesEdit() {
         }
       });
 
-      if (values.answer_upload) {
-        formData.append("answer[answer_upload]", values.answer_upload);
+      if (values.answer_upload instanceof File) {
+        formData.append("answer_upload", values.answer_upload, values.answer_upload.name);
       }
 
       values.options.forEach((option) => {
@@ -174,6 +174,7 @@ function ChallengesEdit() {
         topic_id: challenge.topic_id,
         difficult_level: challenge.difficult_level,
         title: challenge.title,
+        description: challenge.description,
         ques_type: parsedQuesType,
         options: initialMultiChoices,
         answer_upload: answer.answer_upload,
@@ -764,20 +765,20 @@ function ChallengesEdit() {
                     <label className="form-label">Short Answer</label>
                     <textarea
                       rows={3}
-                      className={`form-control ${formik.touched.short_answer && formik.errors.short_answer
+                      className={`form-control ${formik.touched.answer?.[0]?.short_answer && formik.errors.answer?.[0]?.short_answer
                         ? "is-invalid"
                         : ""
                         }`}
-                      name="short_answer"
-                      value={formik.values.short_answer}
-                      onChange={formik.handleChange}
+                      name="answer"
+                      value={formik.values.answer[0]?.short_answer || ""}
+                      onChange={(e) => {
+                        const updatedAnswer = [{ ...formik.values.answer[0], short_answer: e.target.value }];
+                        formik.setFieldValue("answer", updatedAnswer);
+                      }}
                     />
-                    {formik.touched.short_answer &&
-                      formik.errors.short_answer && (
-                        <div className="text-danger">
-                          {formik.errors.short_answer}
-                        </div>
-                      )}
+                    {formik.touched.answer?.[0]?.short_answer && formik.errors.answer?.[0]?.short_answer && (
+                      <div className="text-danger">{formik.errors.answer[0]?.short_answer}</div>
+                    )}
                   </div>
                 )}
                 {formik.values.ques_type.includes("upload") && (
@@ -785,24 +786,22 @@ function ChallengesEdit() {
                     <label className="form-label">Answer Upload</label>
                     <input
                       type="file"
-                      className={`form-control form-control-sm ${formik.touched.answer_upload &&
-                        formik.errors.answer_upload
+                      className={`form-control form-control-sm ${formik.touched.answer_upload && formik.errors.answer_upload
                         ? "is-invalid"
                         : ""
                         }`}
                       name="answer_upload"
                       accept="image/*"
-                      value={formik.values.answer_upload}
                       onChange={(event) => {
-                        formik.setFieldValue("answer_upload", event.currentTarget.files[0]);
+                        const file = event.currentTarget.files[0];
+                        if (file) {
+                          formik.setFieldValue("answer_upload", file);
+                        }
                       }}
                     />
-                    {formik.touched.answer_upload &&
-                      formik.errors.answer_upload && (
-                        <div className="text-danger">
-                          {formik.errors.answer_upload}
-                        </div>
-                      )}
+                    {formik.touched.answer_upload && formik.errors.answer_upload && (
+                      <div className="text-danger">{formik.errors.answer_upload}</div>
+                    )}
                   </div>
                 )}
               </div>

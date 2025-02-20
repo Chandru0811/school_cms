@@ -718,20 +718,20 @@ function QuestionAdd() {
                     <label className="form-label">Short Answer</label>
                     <textarea
                       rows={3}
-                      className={`form-control ${formik.touched.short_answer && formik.errors.short_answer
+                      className={`form-control form-control-sm ${formik.touched.answer?.[0]?.short_answer && formik.errors.answer?.[0]?.short_answer
                         ? "is-invalid"
                         : ""
                         }`}
-                      name="short_answer"
-                      value={formik.values.short_answer}
-                      onChange={formik.handleChange}
+                      name="answer"
+                      value={formik.values.answer[0]?.short_answer || ""}
+                      onChange={(e) => {
+                        const updatedAnswer = [{ ...formik.values.answer[0], short_answer: e.target.value }];
+                        formik.setFieldValue("answer", updatedAnswer);
+                      }}
                     />
-                    {formik.touched.short_answer &&
-                      formik.errors.short_answer && (
-                        <div className="text-danger">
-                          {formik.errors.short_answer}
-                        </div>
-                      )}
+                    {formik.touched.answer?.[0]?.short_answer && formik.errors.answer?.[0]?.short_answer && (
+                      <div className="text-danger">{formik.errors.answer[0]?.short_answer}</div>
+                    )}
                   </div>
                 )}
                 {formik.values.ques_type.includes("upload") && (
