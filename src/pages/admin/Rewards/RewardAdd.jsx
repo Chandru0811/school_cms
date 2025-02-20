@@ -47,7 +47,7 @@ function RewardAdd() {
       formData.append("reward_type", values.reward_type);
       formData.append("reward_value", values.reward_value);
       formData.append("image", values.image); 
-      values.center_id.forEach((id) => formData.append("center_id[]", id));
+      formData.append("center_id[]", values.center_id);
     
       try {
         const response = await api.post("reward", formData, {

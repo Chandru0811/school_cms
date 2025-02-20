@@ -31,7 +31,10 @@ function EmployeeAdd() {
     role_id: yup.string().required("*Select a role"),
     name: yup.string().required("*Employee name is required"),
     email: yup.string().required("*Employee email is required"),
-    mobile: yup.string().required("*Employee mobile is required"),
+    mobile: yup
+      .string()
+      .matches(/^[0-9]{8,10}$/, "Mobile number must be 8 or 10 digits")
+      .required("Mobile number is required!"),
     password: yup
       .string()
       .required("*Employee password is required")
@@ -160,7 +163,6 @@ function EmployeeAdd() {
                 type="submit"
                 className="btn btn-button btn-sm"
                 disabled={loadIndicator}
-                // disabled={formik.isSubmitting || loadIndicator}
               >
                 {loadIndicator && (
                   <span

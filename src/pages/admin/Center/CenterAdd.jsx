@@ -56,7 +56,7 @@ function CenterAdd({ onSuccess }) {
 
   return (
     <>
-      <div className="d-flex justify-content-end mb-3 me-2">
+      <div className="d-flex justify-content-end me-2">
         <button
           type="button"
           className="btn btn-button btn-sm"

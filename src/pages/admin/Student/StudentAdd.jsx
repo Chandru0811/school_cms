@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
+import { FiAlertTriangle } from "react-icons/fi";
 
 function StudentAdd() {
     const [roles, setRoles] = useState([]);
@@ -62,15 +63,23 @@ function StudentAdd() {
           toast.success(response.data.message);
           navigate("/student");
         }
-      } catch (e) {
-        if (e?.response?.data?.error) {
-          Object.values(e.response.data.error).forEach((errorMessages) => {
-            errorMessages.forEach((errorMessage) => {
-              toast.error(errorMessage);
+        else {
+          toast.error(response.data.message);
+        }
+      } catch (error) {
+        if (error.response && error.response.status === 422) {
+          const errors = error.response.data.errors;
+          if (errors) {
+            Object.keys(errors).forEach((key) => {
+              errors[key].forEach((errorMsg) => {
+                toast(errorMsg, {
+                  icon: <FiAlertTriangle className="text-warning" />,
+                });
+              });
             });
-          });
+          }
         } else {
-          toast.error("Error Fetching Data");
+          toast.error("An error occurred while deleting the record.");
         }
       } finally {
         setLoadIndicator(false);
@@ -168,10 +177,15 @@ function StudentAdd() {
               &nbsp;&nbsp;
               <button
                 type="submit"
-                className="btn btn-button btn-sm me-2"
+                className="btn btn-button btn-sm"
                 disabled={loadIndicator}
-                style={{ fontWeight: "600px !important" }}
               >
+                {loadIndicator && (
+                  <span
+                    className="spinner-border spinner-border-sm me-2"
+                    aria-hidden="true"
+                  ></span>
+                )}
                 Save
               </button>
             </div>

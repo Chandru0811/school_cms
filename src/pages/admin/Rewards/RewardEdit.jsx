@@ -37,7 +37,7 @@ function RewardEdit() {
       reward_type: "",
       reward_value: "",
       image: null,
-      center_id: "",
+      center_id: [],
       target_archieved: "",
     },
     validationSchema: validationSchema,
@@ -96,34 +96,43 @@ function RewardEdit() {
 
   const getData = async () => {
     try {
-      const response = await api.get(`reward/${id}`);
-      const data = response.data.data;
+        const response = await api.get(`reward/${id}`);
+        const { data } = response.data;
 
-      const parsedCenterIds = JSON.parse(data.center_id);
-      const parsedCenterNames = JSON.parse(data.center_names);
+        // Ensure center_id and center_names are parsed correctly
+        const parsedCenterIds = Array.isArray(data.center_id)
+            ? data.center_id
+            : JSON.parse(data.center_id || "[]");
 
-      const selectedCenters = parsedCenterIds.map((id, index) => ({
-        value: id,
-        label: parsedCenterNames[index] || "",
-      }));
+        const parsedCenterNames = Array.isArray(data.center_names)
+            ? data.center_names
+            : JSON.parse(data.center_names || "[]");
 
-      setSelectedCenter(selectedCenters);
-      
-      const formattedData = {
-        center_id: selectedCenters.map((center) => center.value),
-        name: data.name,
-        description: data.description,
-        reward_type: data.reward_type,
-        reward_value: data.reward_value,
-        target_archieved: String(data.target_archieved),
-        image: data.image ? `${ImageURL}${data.image}` : "",
-      };
-      formik.setValues(formattedData);
+        // Map parsed centers properly
+        const selectedCenters = parsedCenterIds.map((id, index) => ({
+            value: id,
+            label: parsedCenterNames[index] || "",
+        }));
+
+        setSelectedCenter(selectedCenters);
+
+        // Properly format the data for formik
+        formik.setValues({
+            center_id: selectedCenters.map((center) => center.value),
+            name: data.name,
+            description: data.description,
+            reward_type: data.reward_type,
+            reward_value: data.reward_value,
+            target_archieved: String(data.target_archieved),
+            image: data.image ? `${ImageURL}${data.image}` : "",
+        });
+
     } catch (error) {
-      console.error("Error fetching data:", error);
-      toast.error("Failed to fetch reward details.");
+        console.error("Error fetching data:", error);
+        toast.error("Failed to fetch reward details.");
     }
-  };
+};
+
 
   const getCenterList = async () => {
     try {
@@ -200,7 +209,7 @@ function RewardEdit() {
                     aria-hidden="true"
                   ></span>
                 )}
-                Save
+                Update
               </button>
             </div>
           </div>
@@ -209,8 +218,8 @@ function RewardEdit() {
               <div className="col-md-6 col-12 mb-4">
                 <label className="form-label">
                   Centre Name<span className="text-danger">*</span>
-                </label>
-                <MultiSelect
+                  </label>
+                  <MultiSelect
                   options={centerList}
                   value={selectedCenter}
                   onChange={(selected) => {
@@ -220,12 +229,11 @@ function RewardEdit() {
                       selected.map((option) => option.value)
                     );
                   }}
-                  labelledBy="Select Service"
-                  className={`form-multi-select form-multi-select-sm ${
-                    formik.touched.center_id && formik.errors.center_id
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  labelledBy="Select Center"
+                  className={`form-multi-select form-multi-select-sm ${formik.touched.center_id && formik.errors.center_id
+                    ? "is-invalid"
+                    : ""
+                    }`}
                 />
                 {formik.touched.center_id && formik.errors.center_id && (
                   <div className="invalid-feedback">

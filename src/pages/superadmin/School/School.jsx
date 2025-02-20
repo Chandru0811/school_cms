@@ -66,6 +66,19 @@ function School() {
         enableHiding: false,
         size: 40,
       },
+      {
+        accessorKey: "active",
+        header: "Status",
+        Cell: ({ cell }) => (
+          <span
+            className={`badge ${
+              cell.getValue() === 1 ? "bg-success" : "bg-warning"
+            }`}
+          >
+            {cell.getValue() === 1 ? "Active" : "Inactive"}
+          </span>
+        ),
+      },
       { accessorKey: "created_by", header: "Created By" },
       {
         accessorKey: "created_at",

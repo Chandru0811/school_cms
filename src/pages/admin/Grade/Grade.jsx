@@ -231,7 +231,7 @@ function Grade() {
               </MenuItem>
               <MenuItem>
                 <Delete
-                  path={`admin/grade/delete/${selectedId}`}
+                  path={`grade/delete/${selectedId}`}
                   onDeleteSuccess={fetchData}
                   onOpen={handleMenuClose}
                 />

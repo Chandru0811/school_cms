@@ -14,7 +14,9 @@ function SchoolEdit() {
 
   const validationSchema = Yup.object({
     name: Yup.string().required("*School Name is required"),
-    location: Yup.string().required("*School Location is required"),
+    location: Yup.string()
+      .max(255, "Location must be at most 255 characters") 
+      .required("*School Location is required"),
     // "users[0].name": Yup.string().required("*Admin Name is required"),
     // "users[0].mobile": Yup.string()
     //   .min(8, "Mobile number must be minimum 8")
@@ -27,9 +29,8 @@ function SchoolEdit() {
           .required("Admin Email is required"),
         name: Yup.string().required("*Admin Name is required"),
         mobile: Yup.string()
-          .min(8, "Mobile number must be minimum 8")
-          .max(10, "Mobile number must be maximun 10")
-          .required("Mobile number is required!"),
+             .matches(/^[0-9]{10}$/, "Mobile number must be exactly 10 digits")
+             .required("Mobile number is required!"),
       })
     ),
   });
@@ -213,7 +214,7 @@ function SchoolEdit() {
                     School Address<span className="text-danger">*</span>
                   </label>
                   <textarea
-                    rows={5}
+                    rows={3}
                     className={`form-control ${
                       formik.touched.location && formik.errors.location
                         ? "is-invalid"

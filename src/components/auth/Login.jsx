@@ -11,7 +11,7 @@ import api from "../../config/URL";
 // import toast from "react-hot-toast";
 import { FiAlertTriangle } from "react-icons/fi";
 
-const Login = ({ loginAsAdmin, loginAsSuperAdmin, loginAsStudent }) => {
+const Login = ({ loginAsAdmin, loginAsSuperAdmin }) => {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
@@ -82,9 +82,9 @@ const Login = ({ loginAsAdmin, loginAsSuperAdmin, loginAsStudent }) => {
           } else {
             toast.error("Failed to fetch permissions");
           }
-
-          // if (data.data.user.role_id === "2" || data.data.user.role_id === 2) {
-          loginAsAdmin();
+            if (data.data.user.role_id !== "1" && data.data.user.role_id !== 1) {
+              loginAsAdmin();
+          }          
           if (data.data.user.role_id === "1" || data.data.user.role_id === 1) {
             navigate("/");
             loginAsSuperAdmin();

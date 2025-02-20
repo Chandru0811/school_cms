@@ -6,6 +6,7 @@ import { MultiSelect } from "react-multi-select-component";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import api from "../../../config/URL";
+import { FiAlertTriangle } from "react-icons/fi";
 
 function QuestionAdd() {
   const navigate = useNavigate();
@@ -128,7 +129,20 @@ function QuestionAdd() {
           toast.error(response.data.message);
         }
       } catch (error) {
-        toast.error(error.response?.data?.message);
+        if (error.response && error.response.status === 422) {
+          const errors = error.response.data.errors;
+          if (errors) {
+            Object.keys(errors).forEach((key) => {
+              errors[key].forEach((errorMsg) => {
+                toast(errorMsg, {
+                  icon: <FiAlertTriangle className="text-warning" />,
+                });
+              });
+            });
+          }
+        } else {
+          toast.error("An error occurred while deleting the record.");
+        }
       } finally {
         setLoadIndicator(false);
       }

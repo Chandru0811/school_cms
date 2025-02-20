@@ -179,7 +179,8 @@ function Employee() {
               <button
                 type="button"
                 className="btn btn-button btn-sm me-2"
-                style={{ fontWeight: "600px !important" }}
+                style={{ fontWeight: "600px !important" }}           
+
               >
                 &nbsp; Add &nbsp;&nbsp; <i className="bi bi-plus-lg"></i>
               </button>

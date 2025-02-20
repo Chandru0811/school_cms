@@ -35,7 +35,7 @@ function GradeEdit({ show, setShow,id,onSuccess }) {
 
   const formik = useFormik({
     initialValues: {
-      center_id: "",
+      center_id: [],
       name: "",
       description: "",
     },

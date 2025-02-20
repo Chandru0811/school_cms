@@ -1,7 +1,6 @@
 import { useFormik } from "formik";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { FiAlertTriangle } from "react-icons/fi";
 import { IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
@@ -15,11 +14,12 @@ function SchoolAdd() {
 
   const validationSchema = Yup.object({
     school_name: Yup.string().required("*School Name is required"),
-    location: Yup.string().required("*School Location is required"),
+    location: Yup.string()
+      .max(255, "Location must be at most 255 characters")
+      .required("*School Location is required"),
     admin_name: Yup.string().required("*Admin Name is required"),
     mobile: Yup.string()
-      .min(8, "Mobile number must be minimum 8")
-      .max(10, "Mobile number must be maximun 10")
+      .matches(/^[0-9]{10}$/, "Mobile number must be exactly 10 digits")
       .required("Mobile number is required!"),
     email: Yup.string()
       .email("Invalid email address")
@@ -47,33 +47,32 @@ function SchoolAdd() {
       setLoadIndicator(true);
       try {
         const response = await api.post("superAdmin/school", values);
-        if (response.status === 200) {
-          toast.success(response.data.message);
+
+        if (response.status === 200 && response.data.success) {
+          toast.success(
+            response.data.message || "School created successfully!"
+          );
+          formik.resetForm();
           navigate("/school");
         } else {
-          toast.error(response.data.message);
+          toast.error(response.data.message || "An unexpected error occurred.");
         }
-      } catch (error) {
-        if (error.response && error.response.status === 422) {
-          const errors = error.response.data.errors;
-          if (errors) {
-            Object.keys(errors).forEach((key) => {
-              errors[key].forEach((errorMsg) => {
-                toast(errorMsg, {
-                  icon: <FiAlertTriangle className="text-warning" />,
-                });
-              });
-            });
-          }
+      } catch (e) {
+        console.error("Error Fetching Data:", e);
+
+        const errorData = e?.response?.data;
+
+        if (errorData?.errors) {
+          Object.values(errorData.errors).forEach((errorMessages) => {
+            errorMessages.forEach((message) => toast.error(message));
+          });
         } else {
-          toast.error("An error occurred while deleting the record.");
+          toast.error(errorData?.message || "An unexpected error occurred.");
         }
       } finally {
         setLoadIndicator(false);
       }
     },
-    validateOnChange: false,
-    validateOnBlur: true,
   });
 
   const togglePasswordVisibility = () => {
@@ -135,7 +134,7 @@ function SchoolAdd() {
               >
                 {loadIndicator && (
                   <span
-                    className="spinner-border spinner-border-sm me-2"
+                    className="spinner-border spinner-border-sm me-2 text-light"
                     aria-hidden="true"
                   ></span>
                 )}
@@ -169,7 +168,7 @@ function SchoolAdd() {
                   School Address<span className="text-danger">*</span>
                 </label>
                 <textarea
-                  rows={5}
+                  rows={3}
                   className={`form-control ${
                     formik.touched.location && formik.errors.location
                       ? "is-invalid"

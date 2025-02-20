@@ -6,6 +6,7 @@ import { MultiSelect } from "react-multi-select-component";
 import toast from "react-hot-toast";
 import api from "../../../config/URL";
 import PropTypes from "prop-types";
+import { FiAlertTriangle } from "react-icons/fi";
 
 function EmployeeEdit() {
   const [loadIndicator, setLoadIndicator] = useState(false);
@@ -49,15 +50,31 @@ function EmployeeEdit() {
     onSubmit: async (values) => {
       setLoadIndicator(true);
       try {
-        const response = await api.put(`admin/employee/update/${id}`, values);
+        const response = await api.put(`employee/update/${id}`, values);
 
         if (response.status === 200) {
           toast.success(response.data.message);
         
           navigate("/employee");
         }
-      } catch (e) {
-        toast.error("Error Fetching Data ", e?.response?.data?.error);
+        else {
+          toast.error(response.data.message);
+        }
+      } catch (error) {
+        if (error.response && error.response.status === 422) {
+          const errors = error.response.data.errors;
+          if (errors) {
+            Object.keys(errors).forEach((key) => {
+              errors[key].forEach((errorMsg) => {
+                toast(errorMsg, {
+                  icon: <FiAlertTriangle className="text-warning" />,
+                });
+              });
+            });
+          }
+        } else {
+          toast.error("An error occurred while deleting the record.");
+        }
       } finally {
         setLoadIndicator(false);
       }

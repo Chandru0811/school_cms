@@ -51,8 +51,8 @@ function Question() {
           </IconButton>
         ),
       },
-      { accessorKey: "centre_id", header: "Centre Name" },
-      { accessorKey: "topic_id", header: "Topic" },
+      { accessorKey: "centers", header: "Centre Name" },
+      { accessorKey: "topic.name", header: "Topic" },
       { accessorKey: "difficult_level", header: "Difficult Level" },
       { accessorKey: "created_by", header: "Created By" },
       {

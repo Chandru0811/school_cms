@@ -111,7 +111,7 @@ function QustionView() {
                   <p className="fw-medium text-sm">Grade</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.question?.grade_id}</p>
+                  <p className="text-muted text-sm">: {data.question?.grand_name}</p>
                 </div>
               </div>
             </div>

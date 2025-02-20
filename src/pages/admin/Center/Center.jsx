@@ -156,10 +156,10 @@ function Center() {
         </li>
       </ol>
       <div className="card">
-        <div className="d-flex justify-content-between align-items-center card_header p-1">
+        <div className="d-flex justify-content-between align-items-center card_header p-1 py-2 mb-3">
           <div className="d-flex align-items-center">
             <div className="d-flex">
-              <div className="dot"></div>
+              <div className="dot active"></div>
             </div>
             <span className="me-2 text-muted text-sm">
               This database shows the list of&nbsp;
@@ -167,7 +167,7 @@ function Center() {
             </span>
           </div>
           {storedScreens?.data[0]?.can_create === 1 && 
-          <CenterAdd />}
+          <CenterAdd onSuccess={fetchData}/>}
         </div>
         {loading ? (
           <div className="loader-container">

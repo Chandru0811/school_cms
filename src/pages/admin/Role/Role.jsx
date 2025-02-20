@@ -22,6 +22,8 @@ function Role() {
   const [showView, setShowView] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
 
   const columns = useMemo(
     () => [
@@ -126,11 +128,14 @@ function Role() {
   const handleMenuClose = () => setMenuAnchor(null);
 
   const getData = async () => {
+    setLoading(true);
     try {
       const response = await api.get("admin/roles");
       setData(response.data.data);
     } catch (e) {
       toast.error("Error Fetching Data ", e?.response?.data?.error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -144,6 +149,17 @@ function Role() {
         <div className=" d-flex justify-content-end">
           <RoleAdd onSuccess={getData} />
         </div>
+        {loading ? (
+          <div className="loader-container">
+            <div className="loader">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        ) : (
         <>
           <ThemeProvider theme={theme}>
             <MaterialReactTable
@@ -194,6 +210,7 @@ function Role() {
           <RoleEdit show={showEdit} setShow={setShowEdit}  id={selectedId}  onSuccess={getData}/>
           <RoleView show={showView} setShow={setShowView} id={selectedId} />
         </>
+      )}
       </div>
     </div>
   );
