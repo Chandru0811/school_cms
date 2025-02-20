@@ -18,6 +18,8 @@ function Worksheet() {
   const [menuAnchor, setMenuAnchor] = useState(null);
   const navigate = useNavigate();
   const [data, setData] = useState([]);
+  const [selectedId, setSelectedId] = useState(null);
+  const storedScreens = JSON.parse(localStorage.getItem("schoolCMS_Permissions") || "{}");
 
   const columns = useMemo(
     () => [
@@ -37,11 +39,12 @@ function Worksheet() {
         enableHiding: false,
         enableSorting: false,
         size: 20,
-        Cell: () => (
+        Cell: ({ cell }) => (
           <IconButton
             onClick={(e) => {
               e.stopPropagation();
               setMenuAnchor(e.currentTarget);
+              setSelectedId(cell.getValue());
             }}
           >
             <MoreVertIcon />
@@ -159,15 +162,17 @@ function Worksheet() {
               <span className="database_name">Worksheet</span>
             </span>
           </div>
-          <Link to="/worksheet/add">
-            <button
-              type="button"
-              className="btn btn-button btn-sm me-2"
-              style={{ fontWeight: "600px !important" }}
-            >
-              &nbsp; Add &nbsp;&nbsp; <i className="bi bi-plus-lg"></i>
-            </button>
-          </Link>
+          {storedScreens?.data[6]?.can_create && (
+            <Link to="/worksheet/add">
+              <button
+                type="button"
+                className="btn btn-button btn-sm me-2"
+                style={{ fontWeight: "600px !important" }}
+              >
+                &nbsp; Add &nbsp;&nbsp; <i className="bi bi-plus-lg"></i>
+              </button>
+            </Link>
+          )}
         </div>
         <>
           <ThemeProvider theme={theme}>
@@ -189,10 +194,15 @@ function Worksheet() {
                   updated_at: false,
                 },
               }}
-              muiTableBodyRowProps={() => ({
-                onClick: () => navigate(`/worksheet/view`),
-                style: { cursor: "pointer" },
-              })}
+              muiTableBodyRowProps={({ row }) =>
+                storedScreens?.data[9]?.can_view
+                  ? {
+                    onClick: () =>
+                      navigate(`/worksheet/view/${row.original.id}`),
+                    style: { cursor: "pointer" },
+                  }
+                  : {}
+              }
             />
           </ThemeProvider>
           <Menu
@@ -201,7 +211,7 @@ function Worksheet() {
             open={Boolean(menuAnchor)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={() => navigate(`/worksheet/edit`)}>
+            <MenuItem onClick={() => navigate(`/worksheet/edit/${selectedId}`)}>
               Edit
             </MenuItem>
             <MenuItem>
