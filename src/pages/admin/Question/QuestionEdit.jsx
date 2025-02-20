@@ -55,70 +55,68 @@ function QuestionEdit() {
       upload: null,
       ques_type: [],
       answer: [],
+      answer_upload: null,
       options: [
         { id: Date.now(), value: "" },
         { id: Date.now() + 1, value: "" },
       ],
-      answer_upload: "",
       hint: "",
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       setLoadIndicator(true);
+      const formData = new FormData();
+      const fieldsToConvert = ["center_id", "ques_type"];
+
+      fieldsToConvert.forEach((field) => {
+        if (Array.isArray(values[field])) {
+          values[field].forEach((item) => {
+            formData.append(`${field}[]`, item);
+          });
+        } else {
+          formData.append(`${field}[]`, values[field]);
+        }
+      });
+      formData.append("_method", "PUT");
+      formData.append("grade_id", values.grade_id);
+      formData.append("subject_id", values.subject_id);
+      formData.append("topic_id", values.topic_id);
+      formData.append("difficult_level", values.difficult_level);
+      formData.append("question", values.question);
+      formData.append("hint", values.hint);
+
+      let multichoiceAdded = false;
+
+      values.answer.forEach((ans) => {
+        if (ans.fillable) {
+          formData.append("answer[fillable]", ans.fillable);
+        }
+        if (ans.multichoice && !multichoiceAdded) {
+          formData.append("answer[multichoice]", ans.multichoice);
+          multichoiceAdded = true;
+        }
+        if (ans.short_answer) {
+          formData.append("answer[short_answer]", ans.short_answer);
+        }
+        if (ans.closed) {
+          formData.append("answer[closed]", ans.closed);
+        }
+      });
+
+      values.options.forEach((option) => {
+        if (option.value.trim()) {
+          formData.append("options[]", option.value.trim());
+        }
+      });
+
+      if (values.upload) {
+        formData.append("upload", values.upload);
+      }
+      if (values.answer_upload) {
+        formData.append("answer_upload", values.answer_upload);
+      }
+
       try {
-        const formData = new FormData();
-        const fieldsToConvert = ["center_id", "ques_type"];
-
-        fieldsToConvert.forEach((field) => {
-          if (Array.isArray(values[field])) {
-            values[field].forEach((item) => {
-              formData.append(`${field}[]`, item);
-            });
-          } else {
-            formData.append(`${field}[]`, values[field]);
-          }
-        });
-        formData.append("_method", "PUT");
-        formData.append("grade_id", values.grade_id);
-        formData.append("subject_id", values.subject_id);
-        formData.append("topic_id", values.topic_id);
-        formData.append("difficult_level", values.difficult_level);
-        formData.append("question", values.question);
-        formData.append("hint", values.hint);
-
-        let multichoiceAdded = false; // Flag to prevent duplicates
-
-        values.answer.forEach((ans) => {
-          if (ans.fillable) {
-            formData.append("answer[fillable]", ans.fillable);
-          }
-          if (ans.multichoice && !multichoiceAdded) {
-            formData.append("answer[multichoice]", ans.multichoice);
-            multichoiceAdded = true; // Ensure it's added only once
-          }
-          if (ans.short_answer) {
-            formData.append("answer[short_answer]", ans.short_answer);
-          }
-          if (ans.closed) {
-            formData.append("answer[closed]", ans.closed);
-          }
-        });
-
-        if (values.answer_upload) {
-          formData.append("answer[answer_upload]",values.answer_upload,
-            values.answer_upload.name
-          );
-        }
-
-        values.options.forEach((option) => {
-          if (option.value.trim()) {
-            formData.append("options[]", option.value.trim());
-          }
-        });
-
-        if (values.upload) {
-          formData.append("upload", values.upload, values.upload.name);
-        }
 
         const response = await api.post(`question/update/${id}`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
@@ -131,8 +129,7 @@ function QuestionEdit() {
           toast.error(response.data.message || "An unexpected error occurred.");
         }
       } catch (error) {
-        const errorMessage = error.response?.data?.message;
-        toast.error(errorMessage);
+        toast.error(error.response?.data?.message);
       } finally {
         setLoadIndicator(false);
       }
@@ -538,7 +535,6 @@ function QuestionEdit() {
                     ? "is-invalid"
                     : ""
                     }`}
-                  {...formik.getFieldProps("upload")}
                 ></input>
                 {formik.touched.upload && formik.errors.upload && (
                   <div className="invalid-feedback">
@@ -553,11 +549,11 @@ function QuestionEdit() {
                   </label>
                 </div>
                 {[
-                  { id: "fillable", label: "fillable" },
+                  { id: "fillable", label: "Fillable" },
                   { id: "closed", label: "Closed" },
                   { id: "multichoice", label: "Multi choice" },
-                  { id: "shortCheckbox", label: "Short Answer" },
-                  { id: "uploadCheckbox", label: "Upload" },
+                  { id: "short_answer", label: "Short Answer" },
+                  { id: "upload", label: "Answer Upload" },
                 ].map(({ id, label }) => (
                   <div className="form-check form-check-inline" key={id}>
                     <input
@@ -585,13 +581,13 @@ function QuestionEdit() {
                     <label className="form-label">Enter your answer:</label>
                     <input
                       type="text"
-                      placeholder="Your Answer"
+                      placeholder="Your Question & Answer"
                       className={`form-control form-control-sm ${formik.touched.answer?.[0]?.fillable && formik.errors.answer?.[0]?.fillable
                         ? "is-invalid"
                         : ""
                         }`}
                       name="answer"
-                      value={formik.values.answer?.[0]?.fillable || ""}
+                      value={formik.values.answer[0]?.fillable || ""}
                       onChange={(e) => {
                         const updatedAnswer = [{ ...formik.values.answer[0], fillable: e.target.value }];
                         formik.setFieldValue("answer", updatedAnswer);
@@ -659,36 +655,34 @@ function QuestionEdit() {
                     {formik.values.options.map((multiChoice, index) => (
                       <div
                         key={multiChoice.id}
-                        className="d-flex align-items-center justify-content-center mb-2"
+                        className="d-flex align-items-center justify-content-center"
                       >
                         <input
                           type="checkbox"
-                          className="form-check-input"
+                          className="form-check-input mb-2"
                           name={`options[${index}].selected`}
                           id={`multiChoice-${index}`}
                           checked={multiChoice.selected || false}
                           onChange={() => {
-                            // Toggle the selected state of the clicked option.
-                            // If selecting, unselect all others.
-                            const isSelecting = !multiChoice.selected;
-                            const updatedOptions = formik.values.options.map((opt, i) => ({
-                              ...opt,
-                              selected: i === index ? isSelecting : false,
-                            }));
+                            let updatedOptions = [...formik.values.options];
+                            let updatedAnswers = [...formik.values.answer];
 
-                            // If selecting, set answer to this option only.
-                            // If unselecting, clear the answer.
-                            const updatedAnswers = isSelecting
-                              ? [{ fillable: "", multichoice: multiChoice.value, short_answer: "", closed: "" }]
-                              : [];
-
+                            if (multiChoice.selected) {
+                              updatedAnswers = updatedAnswers.filter((ans) => ans.multichoice !== multiChoice.value);
+                            } else {
+                              updatedAnswers.push({ fillable: "", multichoice: multiChoice.value, short_answer: "", closed: "" });
+                            }
+                            updatedOptions[index] = {
+                              ...multiChoice,
+                              selected: !multiChoice.selected,
+                            };
                             formik.setFieldValue("options", updatedOptions);
                             formik.setFieldValue("answer", updatedAnswers);
                           }}
                           aria-label="Multi Choice"
                         />
                         &nbsp; &nbsp;
-                        <div className="input-group">
+                        <div className="input-group mb-2">
                           <input
                             type="text"
                             className={`form-control form-control-sm ${formik.errors.options &&
@@ -703,7 +697,7 @@ function QuestionEdit() {
                               let updatedOptions = [...formik.values.options];
                               updatedOptions[index].value = e.target.value.replace(/,/g, "");
 
-                              // Update answer if this option is currently selected
+                              // Update answer array if selected
                               let updatedAnswers = [...formik.values.answer];
                               if (multiChoice.selected) {
                                 updatedAnswers = updatedAnswers.map((ans) =>
@@ -725,6 +719,7 @@ function QuestionEdit() {
                               onClick={() => {
                                 let updatedOptions = formik.values.options.filter((opt) => opt.id !== multiChoice.id);
                                 let updatedAnswers = formik.values.answer.filter((ans) => ans.multichoice !== multiChoice.value);
+
                                 formik.setFieldValue("options", updatedOptions);
                                 formik.setFieldValue("answer", updatedAnswers);
                               }}
@@ -756,32 +751,30 @@ function QuestionEdit() {
                     </button>
                   </div>
                 )}
-                {formik.values.ques_type.includes("shortCheckbox") && (
+                {formik.values.ques_type.includes("short_answer") && (
                   <div className="mt-2">
                     <label className="form-label">Short Answer</label>
                     <textarea
-                      type="text"
                       rows={3}
-                      placeholder="Your Answer"
-                      className={`form-control form-control-sm ${formik.touched.answer?.[0]?.short_answer && formik.errors.answer?.[0]?.short_answer
+                      className={`form-control ${formik.touched.short_answer && formik.errors.short_answer
                         ? "is-invalid"
                         : ""
                         }`}
-                      name="answer"
-                      value={formik.values.answer?.[0]?.short_answer || ""}
-                      onChange={(e) => {
-                        const updatedAnswer = [{ ...formik.values.answer[0], short_answer: e.target.value }];
-                        formik.setFieldValue("answer", updatedAnswer);
-                      }}
+                      name="short_answer"
+                      value={formik.values.short_answer}
+                      onChange={formik.handleChange}
                     />
-                    {formik.touched.answer?.[0]?.short_answer && formik.errors.answer?.[0]?.short_answer && (
-                      <div className="text-danger">{formik.errors.answer[0]?.short_answer}</div>
-                    )}
+                    {formik.touched.short_answer &&
+                      formik.errors.short_answer && (
+                        <div className="text-danger">
+                          {formik.errors.short_answer}
+                        </div>
+                      )}
                   </div>
                 )}
-                {formik.values.ques_type.includes("uploadCheckbox") && (
+                {formik.values.ques_type.includes("upload") && (
                   <div className="mt-2">
-                    <label className="form-label">Upload File:</label>
+                    <label className="form-label">Answer Upload</label>
                     <input
                       type="file"
                       className={`form-control form-control-sm ${formik.touched.answer_upload &&
@@ -790,8 +783,11 @@ function QuestionEdit() {
                         : ""
                         }`}
                       name="answer_upload"
+                      accept="image/*"
                       value={formik.values.answer_upload}
-                      onChange={formik.handleChange}
+                      onChange={(event) => {
+                        formik.setFieldValue("answer_upload", event.currentTarget.files[0]);
+                      }}
                     />
                     {formik.touched.answer_upload &&
                       formik.errors.answer_upload && (

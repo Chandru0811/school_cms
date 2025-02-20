@@ -129,8 +129,8 @@ function Admin({ handleLogout }) {
                     {/* Work Sheet  */}
                     <Route path="/worksheet" element={<WorkSheet />} />
                     <Route path="/worksheet/add" element={<WorkSheetAdd />} />
-                    <Route path="/worksheet/edit" element={<WorkSheetEdit />} />
-                    <Route path="/worksheet/view" element={<WorkSheetView />} />
+                    <Route path="/worksheet/edit/:id" element={<WorkSheetEdit />} />
+                    <Route path="/worksheet/view/:id" element={<WorkSheetView />} />
 
                     {/* Home Work  */}
                     <Route path="/homework" element={<Homework />} />
@@ -174,8 +174,8 @@ function Admin({ handleLogout }) {
                     {/* Profile   */}
                     <Route path="/settings" element={<Settings />} />
 
-                      {/* Do Assessment   */}
-                      <Route path="/doassessment" element={<DoAssessment />} />
+                    {/* Do Assessment   */}
+                    <Route path="/doassessment" element={<DoAssessment />} />
 
                     <Route
                       path="/role_permission"

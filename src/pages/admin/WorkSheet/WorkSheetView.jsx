@@ -1,22 +1,42 @@
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import WorkSheetAsign from "./WorkSheetAsign";
+import { useEffect, useState } from "react";
+import api from "../../../config/URL";
+import toast from "react-hot-toast";
 
 function WorkSheetView() {
-  const data = {
-    centre_id: "SRDK",
-    grade_id: "10 Grade",
-    name: "A",
-    type: "Maths",
-    subject_id: "Problem",
-    ques_type: "Easy",
-    target_score: "10",
-    reward: "5",
-    question: "Dummy Content",
-    questionType: "Challenge",
-    topic_id:"Maths",
-    difficult_type:"Easy",
-    total_score:"75",
+  const [data, setData] = useState({});
+  const { id } = useParams();
+  const [centerList, setCenterList] = useState([]);
+  const assigned_id = id;
+  console.log("idddss", assigned_id)
+
+  const getData = async () => {
+    try {
+      const response = await api.get(`worksheet/${id}`);
+      setData(response.data.data);
+    } catch (e) {
+      const errorMessage =
+        e?.response?.data?.error || "Error Fetching Data. Please try again.";
+      toast.error(errorMessage);
+    }
   };
+
+  const getCenterList = async () => {
+    try {
+      const response = await api.get("centers/list");
+      setCenterList(response.data.data);
+    } catch (e) {
+      toast.error(
+        `Error Fetching Centers: ${e?.response?.data?.error || e.message}`
+      );
+    }
+  };
+
+  useEffect(() => {
+    getData();
+    getCenterList();
+  }, [id]);
 
   return (
     <div className="container-fluid px-0">
@@ -55,7 +75,10 @@ function WorkSheetView() {
               </button>
             </Link>
             &nbsp;&nbsp;
-            <WorkSheetAsign />
+            <WorkSheetAsign
+              grade_ids={data.grade_id ? JSON.parse(data.grade_id) : []}
+              assignedId={assigned_id}
+            />
             <button
               type="button"
               className="btn btn-success btn-sm me-2"
@@ -64,13 +87,13 @@ function WorkSheetView() {
               Activate
             </button>
             <Link to="/doassessment">
-            <button
-              type="button"
-              className="btn btn-success btn-sm me-2"
-              style={{ fontWeight: "600px !important" }}
-            >
-              Do Assessment
-            </button>
+              <button
+                type="button"
+                className="btn btn-success btn-sm me-2"
+                style={{ fontWeight: "600px !important" }}
+              >
+                Do Assessment
+              </button>
             </Link>
           </div>
         </div>
@@ -82,7 +105,9 @@ function WorkSheetView() {
                   <p className="fw-medium text-sm">Centre</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.centre_id}</p>
+                  <p className="text-muted text-sm">
+                    : {data.center_names || "--"}
+                  </p>
                 </div>
               </div>
             </div>
@@ -92,7 +117,9 @@ function WorkSheetView() {
                   <p className="fw-medium text-sm">Grade</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.grade_id}</p>
+                  <p className="text-muted text-sm">
+                    : {JSON.parse(data.grade_id || "[]").join(", ") || "--"}
+                  </p>
                 </div>
               </div>
             </div>
@@ -102,7 +129,9 @@ function WorkSheetView() {
                   <p className="fw-medium text-sm">Topic</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.topic_id}</p>
+                  <p className="text-muted text-sm">
+                    : {JSON.parse(data.topic_id || "[]").join(", ") || "--"}
+                  </p>
                 </div>
               </div>
             </div>
@@ -112,7 +141,7 @@ function WorkSheetView() {
                   <p className="fw-medium text-sm">Title</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.name}</p>
+                  <p className="text-muted text-sm">: {data.title}</p>
                 </div>
               </div>
             </div>
@@ -132,7 +161,9 @@ function WorkSheetView() {
                   <p className="fw-medium text-sm">Subject</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.subject_id}</p>
+                  <p className="text-muted text-sm">
+                    : {JSON.parse(data.subject_id || "[]").join(", ") || "--"}
+                  </p>
                 </div>
               </div>
             </div>
@@ -149,23 +180,11 @@ function WorkSheetView() {
             <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
-                  <p className="fw-medium text-sm">Question</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm text-break ">
-                    : {data.question}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
                   <p className="fw-medium text-sm">Difficult Level</p>
                 </div>
                 <div className="col-6">
                   <p className="text-muted text-sm text-break ">
-                    : {data.difficult_type}
+                    : {data.difficult_level}
                   </p>
                 </div>
               </div>
