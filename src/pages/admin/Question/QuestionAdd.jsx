@@ -65,64 +65,58 @@ function QuestionAdd() {
     onSubmit: async (values) => {
       console.log("values:", values)
       setLoadIndicator(true);
+      const formData = new FormData();
+      const fieldsToConvert = ["center_id", "ques_type"];
+
+      fieldsToConvert.forEach((field) => {
+        if (Array.isArray(values[field])) {
+          values[field].forEach((item) => {
+            formData.append(`${field}[]`, item);
+          });
+        } else {
+          formData.append(`${field}[]`, values[field]);
+        }
+      });
+
+      formData.append("grade_id", values.grade_id);
+      formData.append("subject_id", values.subject_id);
+      formData.append("topic_id", values.topic_id);
+      formData.append("difficult_level", values.difficult_level);
+      formData.append("question", values.question);
+      formData.append("hint", values.hint);
+
+      let multichoiceAdded = false;
+
+      values.answer.forEach((ans) => {
+        if (ans.fillable) {
+          formData.append("answer[fillable]", ans.fillable);
+        }
+        if (ans.multichoice && !multichoiceAdded) {
+          formData.append("answer[multichoice]", ans.multichoice);
+          multichoiceAdded = true;
+        }
+        if (ans.short_answer) {
+          formData.append("answer[short_answer]", ans.short_answer);
+        }
+        if (ans.closed) {
+          formData.append("answer[closed]", ans.closed);
+        }
+      });
+
+      values.options.forEach((option) => {
+        if (option.value.trim()) {
+          formData.append("options[]", option.value.trim());
+        }
+      });
+
+      if (values.upload) {
+        formData.append("upload", values.upload);
+      }
+      if (values.answer_upload) {
+        formData.append("answer_upload", values.answer_upload);
+      }
+
       try {
-        const formData = new FormData();
-        const fieldsToConvert = ["center_id", "ques_type"];
-
-        fieldsToConvert.forEach((field) => {
-          if (Array.isArray(values[field])) {
-            values[field].forEach((item) => {
-              formData.append(`${field}[]`, item);
-            });
-          } else {
-            formData.append(`${field}[]`, values[field]);
-          }
-        });
-
-        formData.append("grade_id", values.grade_id);
-        formData.append("subject_id", values.subject_id);
-        formData.append("topic_id", values.topic_id);
-        formData.append("difficult_level", values.difficult_level);
-        formData.append("question", values.question);
-        formData.append("hint", values.hint);
-
-        let multichoiceAdded = false; // Flag to prevent duplicates
-
-        values.answer.forEach((ans) => {
-          if (ans.fillable) {
-            formData.append("answer[fillable]", ans.fillable);
-          }
-          if (ans.multichoice && !multichoiceAdded) {
-            formData.append("answer[multichoice]", ans.multichoice);
-            multichoiceAdded = true; // Ensure it's added only once
-          }
-          if (ans.short_answer) {
-            formData.append("answer[short_answer]", ans.short_answer);
-          }
-          if (ans.closed) {
-            formData.append("answer[closed]", ans.closed);
-          }
-        });
-
-        if (values.answer_upload) {
-          formData.append("answer[answer_upload]", values.answer_upload, values.answer_upload.name);
-        }
-
-        values.options.forEach((option) => {
-          if (option.value.trim()) {
-            formData.append("options[]", option.value.trim());
-          }
-        });
-
-        if (values.upload) {
-          formData.append("upload", values.upload, values.upload.name);
-        }
-
-        // Log FormData entries for debugging
-        for (let [key, value] of formData.entries()) {
-          console.log(key, value);
-        }
-
         const response = await api.post("question", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
@@ -134,8 +128,7 @@ function QuestionAdd() {
           toast.error(response.data.message);
         }
       } catch (error) {
-        const errorMessage = error.response?.data?.message;
-        toast.error(errorMessage);
+        toast.error(error.response?.data?.message);
       } finally {
         setLoadIndicator(false);
       }
@@ -490,7 +483,6 @@ function QuestionAdd() {
                   onChange={(event) => {
                     formik.setFieldValue("upload", event.currentTarget.files[0]);
                   }}
-                  {...formik.getFieldProps("upload")}
                 ></input>
                 {formik.touched.upload && formik.errors.upload && (
                   <div className="invalid-feedback">
@@ -505,11 +497,11 @@ function QuestionAdd() {
                   </label>
                 </div>
                 {[
-                  { id: "fillable", label: "fillable" },
+                  { id: "fillable", label: "Fillable" },
                   { id: "closed", label: "Closed" },
                   { id: "multichoice", label: "Multi choice" },
-                  { id: "shortCheckbox", label: "Short Answer" },
-                  { id: "uploadCheckbox", label: "Answer Upload" },
+                  { id: "short_answer", label: "Short Answer" },
+                  { id: "upload", label: "Answer Upload" },
                 ].map(({ id, label }) => (
                   <div className="form-check form-check-inline" key={id}>
                     <input
@@ -707,7 +699,7 @@ function QuestionAdd() {
                     </button>
                   </div>
                 )}
-                {formik.values.ques_type.includes("shortCheckbox") && (
+                {formik.values.ques_type.includes("short_answer") && (
                   <div className="mt-2">
                     <label className="form-label">Short Answer</label>
                     <textarea
@@ -728,7 +720,7 @@ function QuestionAdd() {
                       )}
                   </div>
                 )}
-                {formik.values.ques_type.includes("uploadCheckbox") && (
+                {formik.values.ques_type.includes("upload") && (
                   <div className="mt-2">
                     <label className="form-label">Answer Upload</label>
                     <input
@@ -740,7 +732,6 @@ function QuestionAdd() {
                         }`}
                       name="answer_upload"
                       accept="image/*"
-                      value={formik.values.answer_upload}
                       onChange={(event) => {
                         formik.setFieldValue("answer_upload", event.currentTarget.files[0]);
                       }}

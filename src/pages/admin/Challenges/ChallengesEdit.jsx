@@ -70,62 +70,57 @@ function ChallengesEdit() {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       setLoadIndicator(true);
+      const formData = new FormData();
+      const fieldsToConvert = ["center_id", "ques_type"];
+
+      fieldsToConvert.forEach((field) => {
+        if (Array.isArray(values[field])) {
+          values[field].forEach((item) => {
+            formData.append(`${field}[]`, item);
+          });
+        } else {
+          formData.append(`${field}[]`, values[field]);
+        }
+      });
+      formData.append("_method", "PUT");
+      formData.append("grade_id", values.grade_id);
+      formData.append("subject_id", values.subject_id);
+      formData.append("topic_id", values.topic_id);
+      formData.append("difficult_level", values.difficult_level);
+      formData.append("title", values.title);
+      formData.append("description", values.description);
+      formData.append("time_limit", Number(values.time_limit));
+      formData.append("hint", values.hint);
+
+      let multichoiceAdded = false; // Flag to prevent duplicates
+
+      values.answer.forEach((ans) => {
+        if (ans.fillable) {
+          formData.append("answer[fillable]", ans.fillable);
+        }
+        if (ans.multichoice && !multichoiceAdded) {
+          formData.append("answer[multichoice]", ans.multichoice);
+          multichoiceAdded = true; // Ensure it's added only once
+        }
+        if (ans.short_answer) {
+          formData.append("answer[short_answer]", ans.short_answer);
+        }
+        if (ans.closed) {
+          formData.append("answer[closed]", ans.closed);
+        }
+      });
+
+      if (values.answer_upload) {
+        formData.append("answer[answer_upload]", values.answer_upload);
+      }
+
+      values.options.forEach((option) => {
+        if (option.value.trim()) {
+          formData.append("options[]", option.value.trim());
+        }
+      });
+
       try {
-        const formData = new FormData();
-        const fieldsToConvert = ["center_id", "ques_type"];
-
-        fieldsToConvert.forEach((field) => {
-          if (Array.isArray(values[field])) {
-            values[field].forEach((item) => {
-              formData.append(`${field}[]`, item);
-            });
-          } else {
-            formData.append(`${field}[]`, values[field]);
-          }
-        });
-        formData.append("_method", "PUT");
-        formData.append("grade_id", values.grade_id);
-        formData.append("subject_id", values.subject_id);
-        formData.append("topic_id", values.topic_id);
-        formData.append("difficult_level", values.difficult_level);
-        formData.append("title", values.title);
-        formData.append("description", values.description);
-        formData.append("time_limit", Number(values.time_limit));
-        formData.append("hint", values.hint);
-
-        let multichoiceAdded = false; // Flag to prevent duplicates
-
-        values.answer.forEach((ans) => {
-          if (ans.fillable) {
-            formData.append("answer[fillable]", ans.fillable);
-          }
-          if (ans.multichoice && !multichoiceAdded) {
-            formData.append("answer[multichoice]", ans.multichoice);
-            multichoiceAdded = true; // Ensure it's added only once
-          }
-          if (ans.short_answer) {
-            formData.append("answer[short_answer]", ans.short_answer);
-          }
-          if (ans.closed) {
-            formData.append("answer[closed]", ans.closed);
-          }
-        });
-
-        if (values.answer_upload) {
-          formData.append("answer[answer_upload]", values.answer_upload, values.answer_upload.name);
-        }
-
-        values.options.forEach((option) => {
-          if (option.value.trim()) {
-            formData.append("options[]", option.value.trim());
-          }
-        });
-
-        // Log FormData entries for debugging
-        for (let [key, value] of formData.entries()) {
-          console.log(key, value);
-        }
-
         const response = await api.post(`challenge/update/${id}`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
@@ -562,11 +557,11 @@ function ChallengesEdit() {
                   </label>
                 </div>
                 {[
-                  { id: "fillable", label: "fillable" },
+                  { id: "fillable", label: "Fillable" },
                   { id: "closed", label: "Closed" },
                   { id: "multichoice", label: "Multi choice" },
                   { id: "short_answer", label: "Short Answer" },
-                  { id: "uploadCheckbox", label: "Upload" },
+                  { id: "upload", label: "Answer Upload" },
                 ].map(({ id, label }) => (
                   <div className="form-check form-check-inline" key={id}>
                     <input
@@ -769,23 +764,23 @@ function ChallengesEdit() {
                     <label className="form-label">Short Answer</label>
                     <textarea
                       rows={3}
-                      className={`form-control form-control-sm ${formik.touched.answer?.[0]?.short_answer && formik.errors.answer?.[0]?.short_answer
+                      className={`form-control ${formik.touched.short_answer && formik.errors.short_answer
                         ? "is-invalid"
                         : ""
                         }`}
-                      name="answer"
-                      value={formik.values.answer[0]?.short_answer || ""}
-                      onChange={(e) => {
-                        const updatedAnswer = [{ ...formik.values.answer[0], short_answer: e.target.value }];
-                        formik.setFieldValue("answer", updatedAnswer);
-                      }}
+                      name="short_answer"
+                      value={formik.values.short_answer}
+                      onChange={formik.handleChange}
                     />
-                    {formik.touched.answer?.[0]?.short_answer && formik.errors.answer?.[0]?.short_answer && (
-                      <div className="text-danger">{formik.errors.answer[0]?.short_answer}</div>
-                    )}
+                    {formik.touched.short_answer &&
+                      formik.errors.short_answer && (
+                        <div className="text-danger">
+                          {formik.errors.short_answer}
+                        </div>
+                      )}
                   </div>
                 )}
-                {formik.values.ques_type.includes("uploadCheckbox") && (
+                {formik.values.ques_type.includes("upload") && (
                   <div className="mt-2">
                     <label className="form-label">Answer Upload</label>
                     <input
