@@ -11,13 +11,13 @@ import toast from "react-hot-toast";
 import api from "../../../config/URL";
 import { MultiSelect } from "react-multi-select-component";
 
-function WorkSheetAsign({grade_ids,assignedId}) {
+function WorkSheetAsign({ grade_ids, assignedId }) {
   const [show, setShow] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [grades, setGrades] = useState([]);
   const [studentsList, setStudentList] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState([]);
-  console.log("gradeID::",grade_ids)
+  console.log("gradeID::", grade_ids)
 
   const handleClose = () => {
     formik.resetForm();
@@ -148,7 +148,7 @@ function WorkSheetAsign({grade_ids,assignedId}) {
               </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
-                  Student ID<span className="text-danger">*</span>
+                  Student ID
                 </label>
                 <MultiSelect
                   options={studentsList}
@@ -176,7 +176,10 @@ function WorkSheetAsign({grade_ids,assignedId}) {
           </DialogContent>
           <hr className="m-0"></hr>
           <DialogActions className="mt-3">
-            <button className="btn btn-sm btn-back" onClick={handleClose}>
+            <button
+              type="button"
+              className="btn btn-sm btn-back"
+              onClick={handleClose}>
               Cancel
             </button>
             <button

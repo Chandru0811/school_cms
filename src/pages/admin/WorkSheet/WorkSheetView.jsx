@@ -86,11 +86,11 @@ function WorkSheetView() {
             >
               Activate
             </button>
-            <Link to="/doassessment">
+            <Link to={`/doassessment?assignedId=${assigned_id}`}>
               <button
                 type="button"
                 className="btn btn-success btn-sm me-2"
-                style={{ fontWeight: "600px !important" }}
+                style={{ fontWeight: "600 !important" }}
               >
                 Do Assessment
               </button>

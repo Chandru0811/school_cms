@@ -135,8 +135,8 @@ function Admin({ handleLogout }) {
                     {/* Home Work  */}
                     <Route path="/homework" element={<Homework />} />
                     <Route path="/homework/add" element={<HomeworkAdd />} />
-                    <Route path="/homework/edit" element={<HomeworkEdit />} />
-                    <Route path="/homework/view" element={<HomeworkView />} />
+                    <Route path="/homework/edit/:id" element={<HomeworkEdit />} />
+                    <Route path="/homework/view/:id" element={<HomeworkView />} />
 
                     {/* Challenges  */}
                     <Route path="/challenges" element={<Challenges />} />

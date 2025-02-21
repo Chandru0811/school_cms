@@ -27,7 +27,7 @@ function QuestionEdit() {
     grade_id: yup.string().required("*Select a grade"),
     subject_id: yup.string().required("*Select a subject"),
     topic_id: yup.string().required("*Select a topic"),
-    difficult_level: yup.string().required("*Select a difficult level"),
+    difficult_level: yup.string().max(255, "*Difficult Level must not exceed 255 characters").required("*Select a difficult level"),
     question: yup.string().required("*Question is required"),
     ques_type: yup
       .array()

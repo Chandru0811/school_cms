@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MaterialReactTable } from "material-react-table";
 import {
@@ -11,41 +11,15 @@ import {
 import Delete from "../../../components/common/Delete";
 import PropTypes from "prop-types";
 import { MoreVert as MoreVertIcon } from "@mui/icons-material";
+import api from "../../../config/URL";
+import toast from "react-hot-toast";
 
 function Homework() {
   const [menuAnchor, setMenuAnchor] = useState(null);
   const navigate = useNavigate();
-
-  const data = [
-    {
-      id: 1,
-      student_id: "Algebra Worksheet 1",
-      due_date: "2024-01-01",
-      target_score: "80",
-      grade_id: "10",
-    },
-    {
-      id: 4,
-      student_id: "Grammer Worksheet 1",
-      due_date: "2024-01-01",
-      target_score: "50",
-      grade_id: "20",
-    },
-    {
-      id: 3,
-      student_id: "Formula Worksheet 1",
-      due_date: "2024-12-31",
-      target_score: "25",
-      grade_id: "30",
-    },
-    {
-      id: 2,
-      student_id: "Biology Worksheet 1",
-      due_date: "2024-11-05",
-      target_score: "100",
-      grade_id: "40",
-    },
-  ];
+  const [data, setData] = useState([]);
+  const [selectedId, setSelectedId] = useState(null);
+  const storedScreens = JSON.parse(localStorage.getItem("schoolCMS_Permissions") || "{}");
 
   const columns = useMemo(
     () => [
@@ -65,20 +39,19 @@ function Homework() {
         enableHiding: false,
         enableSorting: false,
         size: 20,
-        Cell: () => (
+        Cell: ({ cell }) => (
           <IconButton
             onClick={(e) => {
               e.stopPropagation();
               setMenuAnchor(e.currentTarget);
+              setSelectedId(cell.getValue());
             }}
           >
             <MoreVertIcon />
           </IconButton>
         ),
       },
-      { accessorKey: "student_id", header: "Student" },
-      { accessorKey: "due_date", header: "Due Date" },
-      { accessorKey: "target_score", header: "Target Score" },
+      { accessorKey: "centre_id", header: "Centre name" },
       { accessorKey: "grade_id", header: "Grade" },
       { accessorKey: "created_by", header: "Created By" },
       {
@@ -99,6 +72,19 @@ function Homework() {
     ],
     []
   );
+
+  const getData = async () => {
+    try {
+      const response = await api.get("homeworks");
+      setData(response.data.data);
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   const theme = createTheme({
     components: {
@@ -172,15 +158,17 @@ function Homework() {
               <span className="database_name">Homework</span>
             </span>
           </div>
-          <Link to="/homework/add">
-            <button
-              type="button"
-              className="btn btn-button btn-sm me-2"
-              style={{ fontWeight: "600px !important" }}
-            >
-              &nbsp; Add &nbsp;&nbsp; <i className="bi bi-plus-lg"></i>
-            </button>
-          </Link>
+          {storedScreens?.data[10]?.can_create && (
+            <Link to="/homework/add">
+              <button
+                type="button"
+                className="btn btn-button btn-sm me-2"
+                style={{ fontWeight: "600px !important" }}
+              >
+                &nbsp; Add &nbsp;&nbsp; <i className="bi bi-plus-lg"></i>
+              </button>
+            </Link>
+          )}
         </div>
         <>
           <ThemeProvider theme={theme}>
@@ -202,10 +190,15 @@ function Homework() {
                   updated_at: false,
                 },
               }}
-              muiTableBodyRowProps={() => ({
-                onClick: () => navigate(`/homework/view`),
-                style: { cursor: "pointer" },
-              })}
+              muiTableBodyRowProps={({ row }) =>
+                storedScreens?.data[10]?.can_view
+                  ? {
+                    onClick: () =>
+                      navigate(`/homework/view/${row.original.id}`),
+                    style: { cursor: "pointer" },
+                  }
+                  : {}
+              }
             />
           </ThemeProvider>
           <Menu
@@ -214,9 +207,11 @@ function Homework() {
             open={Boolean(menuAnchor)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={() => navigate(`/homework/edit`)}>Edit</MenuItem>
+            <MenuItem onClick={() => navigate(`/homework/edit/${selectedId}`)}>
+              Edit
+            </MenuItem>
             <MenuItem>
-              <Delete path={`admin/company/delete`} onOpen={handleMenuClose} />
+              <Delete path={`homework/delete/${selectedId}`} onOpen={handleMenuClose} />
             </MenuItem>
           </Menu>
         </>
