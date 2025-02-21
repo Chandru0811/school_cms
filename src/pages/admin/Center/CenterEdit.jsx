@@ -17,8 +17,15 @@ function CenterEdit({ id, onSuccess, handleMenuClose }) {
   const [open, setOpen] = useState(false);
 
   const validationSchema = yup.object().shape({
-    name: yup.string().required("*Name is required"),
-    location: yup.string().required("*Location is required"),
+    name: yup
+      .string()
+      .max(255, "*Name must not exceed 255 characters")
+      .required("*Name is required"),
+
+    location: yup
+      .string()
+      .max(255, "*Location must not exceed 255 characters")
+      .required("*Location is required"),
   });
 
   const formik = useFormik({
@@ -234,6 +241,7 @@ function CenterEdit({ id, onSuccess, handleMenuClose }) {
           </DialogContent>
           <DialogActions>
             <Button
+             type="button" 
               className="btn btn-sm btn-border bg-light text-dark"
               onClick={handleClose}
               disabled={loadIndicator} // Disable close button during submission

@@ -17,6 +17,7 @@ import api from "../../../config/URL";
 function Employee() {
   const [menuAnchor, setMenuAnchor] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const navigate = useNavigate();
   const storedScreens = JSON.parse(
@@ -54,16 +55,19 @@ function Employee() {
         ),
       },
       {
-        accessorKey: "centers",
-        header: "Center Name",
+        accessorKey: "name",
+        header: "Employee Name",
       },
       {
         accessorKey: "role.name",
         header: "Role Name",
-      },
+        Cell: ({ cell }) => (
+          <span className="badge bg-primary">{cell.getValue()}</span>
+        ),
+      },      
       {
-        accessorKey: "name",
-        header: "Employee Name",
+        accessorKey: "centers",
+        header: "Center Name",
       },
       {
         accessorKey: "email",
@@ -136,10 +140,13 @@ function Employee() {
 
   const getData = async () => {
     try {
+      setLoading(true);
       const response = await api.get("employees");
       setData(response.data.data);
     } catch (e) {
       toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -187,6 +194,11 @@ function Employee() {
             </Link>
           )}
         </div>
+        {loading ? (
+          <div className="loader-container">
+            <div className="loader"></div>
+          </div>
+        ) : (
         <>
           <ThemeProvider theme={theme}>
             <MaterialReactTable
@@ -241,6 +253,7 @@ function Employee() {
             </MenuItem>
           </Menu>
         </>
+      )}
       </div>
     </div>
   );

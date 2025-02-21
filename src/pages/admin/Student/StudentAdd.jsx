@@ -7,30 +7,37 @@ import toast from "react-hot-toast";
 import { FiAlertTriangle } from "react-icons/fi";
 
 function StudentAdd() {
-    const [roles, setRoles] = useState([]);
-    const [center, setCenters] = useState([]);
-    const [grade, setGrades] = useState([]);
-    const [loadIndicator, setLoadIndicator] = useState(false);
-    const navigate = useNavigate();
+  const [roles, setRoles] = useState([]);
+  const [center, setCenters] = useState([]);
+  const [grade, setGrades] = useState([]);
+  const [loadIndicator, setLoadIndicator] = useState(false);
+  const navigate = useNavigate();
 
   const validationSchema = yup.object().shape({
     center_id: yup.string().required("*Select a center id"),
     role_id: yup.string().required("*Select a role"),
-  first_name: yup
+    first_name: yup.string().max(255, "*First Name must not exceed 255 characters").required("*Student first name is required"),
+    last_name: yup.string().max(255, "*Last Name must not exceed 255 characters").required("*Student last name is required"),
+    middle_name: yup.string().max(255, "*Middle Name must not exceed 255 characters"),
+    student_email: yup
       .string()
-      .required("*Student first name is required"),
-      last_name: yup
+      .email("*Email is Invalid")
+      .required("*Student email is required"),
+    student_mobile: yup
       .string()
-      .required("*Student last name is required"),
-    student_email: yup.string().required("*Student email is required"),
-    student_mobile: yup.string().required("*Student mobile is required"),
+      .matches(/^[0-9]{8,10}$/, "Mobile number must be 8 or 10 digits")
+      .required("Student Mobile number is required!"),
     parent_name: yup.string().required("*Parent name is required"),
     parent_email: yup.string().required("*Parent email is required"),
-    parent_mobile: yup.string().required("*Parent number is required"),
+    parent_mobile: yup
+      .string()
+      .matches(/^[0-9]{8,10}$/, "Mobile number must be 8 or 10 digits")
+      .required("Parent Mobile number is required!"),
     grade_id: yup.string().required("*Grader list is required"),
-    roll_no: yup.string().required("*Roll number is required"),
-    admission_no: yup.string().required("*Admission number is required"),
+    roll_no: yup.string().max(255, "*Roll No must not exceed 255 characters").required("*Roll number is required"),
+    admission_no: yup.string().max(255, "*Admission No must not exceed 255 characters").required("*Admission number is required"),
     date_of_birth: yup.string().required("*Date of Birth is required"),
+    admission_date: yup.string().max(255, "*Admission Date must not exceed 255 characters").required("*Admission date is required"),
   });
 
   const formik = useFormik({
@@ -62,8 +69,7 @@ function StudentAdd() {
         if (response.status === 200) {
           toast.success(response.data.message);
           navigate("/student");
-        }
-        else {
+        } else {
           toast.error(response.data.message);
         }
       } catch (error) {
@@ -105,7 +111,7 @@ function StudentAdd() {
     try {
       const response = await api.get("roles/list/limited");
 
-      setRoles( response.data.data);
+      setRoles(response.data.data);
     } catch (e) {
       toast.error("Error Fetching Data ", e?.response?.data?.error);
     }
@@ -230,7 +236,7 @@ function StudentAdd() {
                       ? "is-invalid"
                       : ""
                   }`}
-                  value={formik.values.center_id} 
+                  value={formik.values.center_id}
                   onChange={(e) =>
                     formik.setFieldValue("center_id", e.target.value)
                   }
@@ -260,7 +266,7 @@ function StudentAdd() {
                       ? "is-invalid"
                       : ""
                   }`}
-                  value={formik.values.name} 
+                  value={formik.values.name}
                   onChange={(e) =>
                     formik.setFieldValue("role_id", e.target.value)
                   }
@@ -287,19 +293,17 @@ function StudentAdd() {
                   type="text"
                   onKeyDown={(e) => e.stopPropagation()}
                   className={`form-control form-control-sm ${
-                    formik.touched.first_name &&
-                    formik.errors.first_name
+                    formik.touched.first_name && formik.errors.first_name
                       ? "is-invalid"
                       : ""
                   }`}
                   {...formik.getFieldProps("first_name")}
                 />
-                {formik.touched.first_name &&
-                  formik.errors.first_name && (
-                    <div className="invalid-feedback">
-                      {formik.errors.first_name}
-                    </div>
-                  )}
+                {formik.touched.first_name && formik.errors.first_name && (
+                  <div className="invalid-feedback">
+                    {formik.errors.first_name}
+                  </div>
+                )}
               </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">Student Middle Name</label>
@@ -307,8 +311,7 @@ function StudentAdd() {
                   type="text"
                   onKeyDown={(e) => e.stopPropagation()}
                   className={`form-control form-control-sm ${
-                    formik.touched.middle_name &&
-                    formik.errors.middle_name
+                    formik.touched.middle_name && formik.errors.middle_name
                       ? "is-invalid"
                       : ""
                   }`}
@@ -327,8 +330,7 @@ function StudentAdd() {
                   type="text"
                   onKeyDown={(e) => e.stopPropagation()}
                   className={`form-control form-control-sm ${
-                    formik.touched.last_name &&
-                    formik.errors.last_name
+                    formik.touched.last_name && formik.errors.last_name
                       ? "is-invalid"
                       : ""
                   }`}
@@ -476,7 +478,7 @@ function StudentAdd() {
                       ? "is-invalid"
                       : ""
                   }`}
-                  value={formik.values.grade_id} 
+                  value={formik.values.grade_id}
                   onChange={(e) =>
                     formik.setFieldValue("grade_id", e.target.value)
                   }

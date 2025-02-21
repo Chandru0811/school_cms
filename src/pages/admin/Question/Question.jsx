@@ -20,6 +20,8 @@ function Question() {
   const [data, setData] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
   const storedScreens = JSON.parse(localStorage.getItem("schoolCMS_Permissions") || "{}");
+  const [loading, setLoading] = useState(true);
+
 
   const columns = useMemo(
     () => [
@@ -51,8 +53,8 @@ function Question() {
           </IconButton>
         ),
       },
-      { accessorKey: "centers", header: "Centre Name" },
       { accessorKey: "topic.name", header: "Topic" },
+      { accessorKey: "centers", header: "Centre Name" },
       { accessorKey: "difficult_level", header: "Difficult Level" },
       { accessorKey: "created_by", header: "Created By" },
       {
@@ -119,10 +121,13 @@ function Question() {
 
   const getData = async () => {
     try {
+      setLoading(true);
       const response = await api.get("questions");
       setData(response.data.data);
     } catch (e) {
       toast.error("Error Fetching Data", e?.response?.data?.error);
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -171,6 +176,11 @@ function Question() {
           </Link>
         )}
         </div>
+        {loading ? (
+          <div className="loader-container">
+            <div className="loader"></div>
+          </div>
+        ) : (
         <>
           <ThemeProvider theme={theme}>
             <MaterialReactTable
@@ -214,10 +224,11 @@ function Question() {
             </MenuItem>
           )}
             <MenuItem>
-              <Delete path={`admin/company/delete`} onOpen={handleMenuClose} />
+              <Delete path={`/question/delete/${selectedId}`} onOpen={handleMenuClose} />
             </MenuItem>
           </Menu>
         </>
+      )}
       </div>
     </div>
   );

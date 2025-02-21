@@ -19,7 +19,10 @@ function Worksheet() {
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
-  const storedScreens = JSON.parse(localStorage.getItem("schoolCMS_Permissions") || "{}");
+  const [loading, setLoading] = useState(true);
+  const storedScreens = JSON.parse(
+    localStorage.getItem("schoolCMS_Permissions") || "{}"
+  );
 
   const columns = useMemo(
     () => [
@@ -79,10 +82,13 @@ function Worksheet() {
 
   const getData = async () => {
     try {
+      setLoading(true);
       const response = await api.get("worksheets");
       setData(response.data.data);
     } catch (e) {
       toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -162,7 +168,7 @@ function Worksheet() {
               <span className="database_name">Worksheet</span>
             </span>
           </div>
-          {storedScreens?.data[6]?.can_create && (
+          {storedScreens?.data[8]?.can_create && (
             <Link to="/worksheet/add">
               <button
                 type="button"
@@ -174,6 +180,11 @@ function Worksheet() {
             </Link>
           )}
         </div>
+        {loading ? (
+          <div className="loader-container">
+            <div className="loader"></div>
+          </div>
+        ) : (
         <>
           <ThemeProvider theme={theme}>
             <MaterialReactTable
@@ -195,12 +206,12 @@ function Worksheet() {
                 },
               }}
               muiTableBodyRowProps={({ row }) =>
-                storedScreens?.data[9]?.can_view
+                storedScreens?.data[8]?.can_view
                   ? {
-                    onClick: () =>
-                      navigate(`/worksheet/view/${row.original.id}`),
-                    style: { cursor: "pointer" },
-                  }
+                      onClick: () =>
+                        navigate(`/worksheet/view/${row.original.id}`),
+                      style: { cursor: "pointer" },
+                    }
                   : {}
               }
             />
@@ -211,14 +222,23 @@ function Worksheet() {
             open={Boolean(menuAnchor)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={() => navigate(`/worksheet/edit/${selectedId}`)}>
-              Edit
-            </MenuItem>
+            {storedScreens?.data[8]?.can_edit && (
+              <MenuItem
+                onClick={() => navigate(`/worksheet/edit/${selectedId}`)}
+              >
+                Edit
+              </MenuItem>
+            )}
             <MenuItem>
-              <Delete path={`admin/company/delete`} onOpen={handleMenuClose} />
+              <Delete
+                path={`worksheet/delete/${selectedId}`}
+                onDeleteSuccess={getData}
+                onOpen={handleMenuClose}
+              />
             </MenuItem>
           </Menu>
         </>
+      )}
       </div>
     </div>
   );

@@ -13,7 +13,6 @@ import PropTypes from "prop-types";
 import { MoreVert as MoreVertIcon } from "@mui/icons-material";
 import CenterAdd from "./CenterAdd";
 import CenterEdit from "./CenterEdit";
-import CenterView from "./CenterView";
 import api from "../../../config/URL";
 
 function Center() {
@@ -171,13 +170,7 @@ function Center() {
         </div>
         {loading ? (
           <div className="loader-container">
-            <div className="loader">
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
+            <div className="loader"></div>
           </div>
         ) : (
           <>
@@ -217,14 +210,14 @@ function Center() {
                   />
                 </MenuItem>
               )}
-              {storedScreens?.data[0]?.can_view && (
+              {/* {storedScreens?.data[0]?.can_view && (
                 <MenuItem>
                   <CenterView
                     id={selectedId}
                     handleMenuClose={handleMenuClose}
                   />
                 </MenuItem>
-              )}
+              )} */}
               <MenuItem>
                 <Delete
                   path={`/center/delete/${selectedId}`}

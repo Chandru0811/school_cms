@@ -28,9 +28,14 @@ function RoleEdit({ show, setShow, id, onSuccess }) {
       .array()
       .min(1, "*Select at least one center")
       .required("*Select a center id"),
-    name: yup.string().required("*Name is required"),
-    description: yup.string().required("*Description is required"),
-    access: yup.string().required("*Select a access"),
+    name: yup
+      .string()
+      .max(255, "*Name must not exceed 255 characters")
+      .required("*Name is required"),
+    access: yup
+      .string()
+      .max(255, "*Access must not exceed 255 characters")
+      .required("*Select a access"),
   });
 
   const formik = useFormik({
@@ -164,9 +169,7 @@ function RoleEdit({ show, setShow, id, onSuccess }) {
               )}
             </div>
             <div className="col-md-6 col-12 mb-3">
-              <label className="form-label">
-                Description<span className="text-danger">*</span>
-              </label>
+              <label className="form-label">Description</label>
               <textarea
                 className={`form-control form-control-sm ${
                   formik.touched.description && formik.errors.description
@@ -176,11 +179,6 @@ function RoleEdit({ show, setShow, id, onSuccess }) {
                 rows="4" // Adjust the rows for better visibility
                 {...formik.getFieldProps("description")}
               />
-              {formik.touched.description && formik.errors.description && (
-                <div className="invalid-feedback">
-                  {formik.errors.description}
-                </div>
-              )}
             </div>
             <div className="col-md-6 col-12 mb-3">
               <label className="form-label">
@@ -237,7 +235,11 @@ function RoleEdit({ show, setShow, id, onSuccess }) {
         </DialogContent>
         <hr className="m-0"></hr>
         <DialogActions className="mt-3">
-          <button className="btn btn-sm btn-back" onClick={handleClose}>
+          <button
+            type="button"
+            className="btn btn-sm btn-back"
+            onClick={handleClose}
+          >
             Cancel
           </button>
           <button
@@ -245,12 +247,12 @@ function RoleEdit({ show, setShow, id, onSuccess }) {
             className="btn btn-button btn-sm"
             disabled={loadIndicator}
           >
-           {loadIndicator && (
-                <span
-                  className="spinner-border spinner-border-sm me-2"
-                  aria-hidden="true"
-                ></span>
-              )}
+            {loadIndicator && (
+              <span
+                className="spinner-border spinner-border-sm me-2"
+                aria-hidden="true"
+              ></span>
+            )}
             Update
           </button>
         </DialogActions>

@@ -27,11 +27,13 @@ function SuperAdminHeader({ handleLogout }) {
   const [isChangingPassword, setIsChangingPassword] = useState(false);
 
   const handleChangePasswordClick = () => {
+    formik.resetForm();
     setIsChangingPassword(true);
   };
 
   const handleCancel = () => {
     setIsChangingPassword(false);
+    formik.resetForm();
   };
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
@@ -171,13 +173,13 @@ function SuperAdminHeader({ handleLogout }) {
                         <span>Profile</span>
                       </div>
                     </Link>
-                    <Link
+                    {/* <Link
                       to="/settings"
                       className="dropdown-item d-flex align-items-center"
                     >
                       <IoSettingsOutline className="me-2" />
                       <span>Settings</span>
-                    </Link>
+                    </Link> */}
                     <Link
                       className="dropdown-item d-flex align-items-center"
                       onClick={handelLogOutClick}

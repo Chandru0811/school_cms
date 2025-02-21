@@ -13,22 +13,24 @@ function SchoolAdd() {
   const [loadIndicator, setLoadIndicator] = useState(false);
 
   const validationSchema = Yup.object({
-    school_name: Yup.string().required("*School Name is required"),
+    school_name: Yup.string().max(255, "*School Name must not exceed 255 characters").required("*School Name is required"),
     location: Yup.string()
-      .max(255, "Location must be at most 255 characters")
+      .max(255, "*Location must be at most 255 characters")
       .required("*School Location is required"),
     admin_name: Yup.string().required("*Admin Name is required"),
     mobile: Yup.string()
-      .matches(/^[0-9]{10}$/, "Mobile number must be exactly 10 digits")
-      .required("Mobile number is required!"),
+      .matches(/^[0-9]{8,10}$/, "*Mobile number must be 8 or 10 digits")
+      .required("*Mobile number is required!"),
     email: Yup.string()
-      .email("Invalid email address")
-      .required("Admin Email is required"),
+      .email("*Invalid email address")
+      .max(255, "*Email must not exceed 255 characters")
+      .required("*Admin Email is required"),
+
     password: Yup.string()
-      .required("Admin Password is required")
-      .min(8, "Password must be at least 8 characters"),
+      .required("*Admin Password is required")
+      .min(8, "*Password must be at least 8 characters"),
     password_confirmation: Yup.string()
-      .required("Admin Confirm Password is required")
+      .required("*Admin Confirm Password is required")
       .oneOf([Yup.ref("password"), null], "Passwords must match"),
   });
 

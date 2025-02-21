@@ -24,7 +24,10 @@ function Topic() {
   const [showView, setShowView] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [data, setData] = useState([]);
-  const storedScreens = JSON.parse(localStorage.getItem("schoolCMS_Permissions") || "{}");
+  const storedScreens = JSON.parse(
+    localStorage.getItem("schoolCMS_Permissions") || "{}"
+  );
+  const [loading, setLoading] = useState(true);
 
   const columns = useMemo(
     () => [
@@ -112,10 +115,13 @@ function Topic() {
 
   const getData = async () => {
     try {
+      setLoading(true);
       const response = await api.get("topics");
       setData(response.data.data);
     } catch (e) {
       toast.error("Error Fetching Data", e?.response?.data?.error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -125,9 +131,14 @@ function Topic() {
 
   return (
     <div className="container-fluid mb-4 px-0">
-      <ol className="breadcrumb my-3 d-flex align-items-center" style={{ listStyle: "none", padding: 0, margin: 0 }}>
+      <ol
+        className="breadcrumb my-3 d-flex align-items-center"
+        style={{ listStyle: "none", padding: 0, margin: 0 }}
+      >
         <li>
-          <Link to="/" className="custom-breadcrumb text-sm">Home</Link>
+          <Link to="/" className="custom-breadcrumb text-sm">
+            Home
+          </Link>
           <span className="breadcrumb-separator"> &gt; </span>
         </li>
         <li className="breadcrumb-item active text-sm" aria-current="page">
@@ -146,39 +157,45 @@ function Topic() {
             </span>
           </div>
           {storedScreens?.data[5]?.can_create && (
-          <TopicAdd onSuccess={getData} />
-        )}
+            <TopicAdd onSuccess={getData} />
+          )}
         </div>
-
-        <ThemeProvider theme={theme}>
-          <MaterialReactTable
-            columns={columns}
-            data={data}
-            enableColumnActions={false}
-            enableColumnFilters={false}
-            enableDensityToggle={false}
-            enableFullScreenToggle={false}
-            initialState={{
-              columnVisibility: {
-                working_hrs: false,
-                citizenship: false,
-                nationality: false,
-                created_by: false,
-                created_at: false,
-                updated_by: false,
-                updated_at: false,
-              },
-            }}
-            muiTableBodyRowProps={({ row }) => ({
-              style: { cursor: "pointer" },
-              onClick: () => {
-                setSelectedId(row.original.id);
-                setShowView(true);
-              },
-            })}
-          />
-        </ThemeProvider>
-
+        {loading ? (
+          <div className="loader-container">
+            <div className="loader"></div>
+          </div>
+        ) : (
+          <>
+            <ThemeProvider theme={theme}>
+              <MaterialReactTable
+                columns={columns}
+                data={data}
+                enableColumnActions={false}
+                enableColumnFilters={false}
+                enableDensityToggle={false}
+                enableFullScreenToggle={false}
+                initialState={{
+                  columnVisibility: {
+                    working_hrs: false,
+                    citizenship: false,
+                    nationality: false,
+                    created_by: false,
+                    created_at: false,
+                    updated_by: false,
+                    updated_at: false,
+                  },
+                }}
+                muiTableBodyRowProps={({ row }) => ({
+                  style: { cursor: "pointer" },
+                  onClick: () => {
+                    setSelectedId(row.original.id);
+                    setShowView(true);
+                  },
+                })}
+              />
+            </ThemeProvider>
+          </>
+        )}
         <Menu
           id="action-menu"
           anchorEl={menuAnchor}
@@ -202,11 +219,16 @@ function Topic() {
           </MenuItem>
         </Menu>
         {storedScreens?.data[5]?.can_edit && (
-        <TopicEdit show={showEdit} setShow={setShowEdit} id={selectedId} onSuccess={getData} />
-      )}
-      {storedScreens?.data[5]?.can_view && (
-        <TopicView show={showView} setShow={setShowView} id={selectedId} />
-      )}
+          <TopicEdit
+            show={showEdit}
+            setShow={setShowEdit}
+            id={selectedId}
+            onSuccess={getData}
+          />
+        )}
+        {storedScreens?.data[5]?.can_view && (
+          <TopicView show={showView} setShow={setShowView} id={selectedId} />
+        )}
       </div>
     </div>
   );

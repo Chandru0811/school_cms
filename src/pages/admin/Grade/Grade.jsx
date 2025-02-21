@@ -177,13 +177,7 @@ function Grade() {
         </div>
         {loading ? (
           <div className="loader-container">
-            <div className="loader">
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
+            <div className="loader"></div>
           </div>
         ) : (
           <>

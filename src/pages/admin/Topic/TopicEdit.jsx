@@ -27,8 +27,7 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
       .required("*Select a center id"),
     // grade: yup.string().required("*Select a grade"),
     subject_id: yup.string().required("*Selected a subject"),
-    name: yup.string().required("*Name is required"),
-    description: yup.string().required("*Description is required"),
+    name: yup.string().max(255, "*Topic Name must not exceed 255 characters").required("*Topic Name is required"),
   });
 
   const formik = useFormik({
@@ -217,7 +216,7 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
 
             <div className="col-md-6 col-12 mb-3">
               <label className="form-label">
-                Description<span className="text-danger">*</span>
+                Description
               </label>
               <textarea
                 className={`form-control ${
@@ -228,11 +227,6 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
                 rows="4"
                 {...formik.getFieldProps("description")}
               />
-              {formik.touched.description && formik.errors.description && (
-                <div className="invalid-feedback">
-                  {formik.errors.description}
-                </div>
-              )}
             </div>
           </div>
         </DialogContent>

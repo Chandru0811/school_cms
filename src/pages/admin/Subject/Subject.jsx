@@ -23,6 +23,7 @@ function Subject() {
   const [showView, setShowView] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const storedScreens = JSON.parse(localStorage.getItem("schoolCMS_Permissions") || "{}");
 
   const columns = useMemo(
@@ -55,9 +56,9 @@ function Subject() {
           </IconButton>
         ),
       },
+      { accessorKey: "name", header: "Name" },
       { accessorKey: "centers", header: "Centre Name" },
       { accessorKey: "grade.name", header: "Grade" },
-      { accessorKey: "name", header: "Name" },
       { accessorKey: "created_by", header: "Created By" },
       {
         accessorKey: "created_at",
@@ -126,10 +127,13 @@ function Subject() {
   
   const getData = async () => {
     try {
+      setLoading(true);
       const response = await api.get("subjects");
       setData(response.data.data);
     } catch (e) {
       toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -168,6 +172,11 @@ function Subject() {
           <SubjectAdd  onSuccess={getData} />
         )}
         </div>
+        {loading ? (
+          <div className="loader-container">
+            <div className="loader"></div>
+          </div>
+        ) : (
         <>
           <ThemeProvider theme={theme}>
             <MaterialReactTable
@@ -225,6 +234,7 @@ function Subject() {
           <SubjectView show={showView} setShow={setShowView} id={selectedId} />
         )}
         </>
+      )}
       </div>
     </div>
   );

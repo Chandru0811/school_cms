@@ -18,11 +18,20 @@ function StudentEdit() {
     role_id: yup.string().required("*Select a role"),
     first_name: yup.string().required("*Student first name is required"),
     last_name: yup.string().required("*Student last name is required"),
-    student_email: yup.string().required("*Student email is required"),
-    student_mobile: yup.string().required("*Student mobile is required"),
+    student_email: yup
+      .string()
+      .email("*Email is Invlaid")
+      .required("*Student email is required"),
+    student_mobile: yup
+      .string()
+      .matches(/^[0-9]{8,10}$/, "Mobile number must be 8 or 10 digits")
+      .required("Student Mobile number is required!"),
     parent_name: yup.string().required("*Parent name is required"),
     parent_email: yup.string().required("*Parent email is required"),
-    parent_mobile: yup.string().required("*Parent number is required"),
+    parent_mobile: yup
+      .string()
+      .matches(/^[0-9]{8,10}$/, "Mobile number must be 8 or 10 digits")
+      .required("Parent Mobile number is required!"),
     grade_id: yup.string().required("*Grader list is required"),
     roll_no: yup.string().required("*Roll number is required"),
     admission_no: yup.string().required("*Admission number is required"),
@@ -72,7 +81,7 @@ function StudentEdit() {
       const data = response.data.data;
       const formatedData = {
         center_id: data.center_id,
-        role_id:  data.student.role_id,
+        role_id: data.student.role_id,
         first_name: data.first_name,
         last_name: data.last_name,
         middle_name: data.middle_name,
@@ -86,7 +95,7 @@ function StudentEdit() {
         admission_no: data.admission_no,
         date_of_birth: data.date_of_birth,
         admission_date: data.admission_date,
-      }
+      };
       formik.setValues(formatedData);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -112,7 +121,7 @@ function StudentEdit() {
     try {
       const response = await api.get("roles/list/limited");
 
-      setRoles( response.data.data);
+      setRoles(response.data.data);
     } catch (e) {
       toast.error("Error Fetching Data ", e?.response?.data?.error);
     }

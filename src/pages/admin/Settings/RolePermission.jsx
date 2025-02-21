@@ -13,13 +13,15 @@ function RolePermission() {
   console.log("roless", roleName)
   const [selectedRole, setSelectedRole] = useState("");
   const [selectedRoleId, setSelectedRoleId] = useState("");
+  const [loading, setLoading] = useState(true);
   const role_id = selectedRoleId;
   console.log("selectedRole", selectedRole);
   const [loadIndicator, setLoadIndicator] = useState(false);
 
   const fetchRole = async () => {
     try {
-      const response = await api.get("/admin/roles/list");
+      setLoading(true);
+      const response = await api.get("/admin/roles/list");   
       console.log("API Response: ", response);
       if (response.data.data && response.data.data.length > 0) {
         setRoleName(response.data.data);
@@ -27,6 +29,8 @@ function RolePermission() {
       }
     } catch (error) {
       toast.error(error.message);
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -259,9 +263,35 @@ function RolePermission() {
           }
         }}
       >
+      {loading ? (
+          <div className="loader-container">
+            <div className="loader">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        ) : (
         <div className="">
+        <div className="d-flex justify-content-end align-items-end">
+              <button
+                type="submit"
+                className="btn btn-button btn-sm"
+                disabled={loadIndicator}
+              >
+                {loadIndicator && (
+                  <span
+                    className="spinner-border spinner-border-sm me-2"
+                    aria-hidden="true"
+                  ></span>
+                )}
+                Save
+              </button>
+            </div>
           <div className="row d-flex align-items-start p-2">
-            <div className="col-md-7 col-12">
+            <div className="col-md-3 col-12">
               <label className="form-label">
                 User Role <span className="text-danger">*</span>
               </label>
@@ -281,24 +311,7 @@ function RolePermission() {
                 </select>
               </div>
             </div>
-            <div className="col-md-5 col-12 d-flex justify-content-end">
-              <button
-                type="submit"
-                className="btn btn-button btn-sm"
-                disabled={loadIndicator}
-              >
-                {loadIndicator && (
-                  <span
-                    className="spinner-border spinner-border-sm me-2"
-                    aria-hidden="true"
-                  ></span>
-                )}
-                Save
-              </button>
-            </div>
-          </div>
-          <div>
-            <div className="d-flex justify-content-start align-items-center p-2">
+            <div className="col-md-9 col-12 d-flex align-items-center my-5">
               <div
                 className="btn-group"
                 role="group"
@@ -355,6 +368,8 @@ function RolePermission() {
                 </button>
               </div>
             </div>
+          </div>
+          <div>
             <div className="row">
               <div className="clo-12">
                 <div className="table-responsive">
@@ -1073,6 +1088,7 @@ function RolePermission() {
             </div>
           </div>
         </div>
+        )}
       </form>
     </div>
   );
