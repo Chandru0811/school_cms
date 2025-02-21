@@ -16,13 +16,12 @@ function RewardAdd() {
     center_id: Yup.array()
       .min(1, "*Select at least one center")
       .required("*Select a center id"),
-    name: Yup.string().required("*Name is a required field"),
-    reward_type: Yup.string().required("*Reward Type is a required field"),
-    reward_value: Yup.string().required("*Reward Value is a required field"),
-    description: Yup.string()
-      .required()
-      .max(250, "*The maximum length is 250 characters"),
-    image: Yup.string().required("*Image is a required field"),
+    name: Yup.string().max(255, "*Name must not exceed 255 characters").required("*Name is a required field"),
+    reward_type: Yup.string().max(255, "*Reward Type must not exceed 255 characters").required("*Reward Type is a required field"),
+    reward_value: Yup.string().max(255, "*Reward Value must not exceed 255 characters").required("*Reward Value is a required field"),
+    target_archieved: Yup.string().required(
+      "*Target Achieved is a required field"
+    ),
   });
 
   const formik = useFormik({
@@ -327,7 +326,7 @@ function RewardAdd() {
               </div>
 
               <div className="col-12 mb-3">
-                <label className="form-label">Description <span className="text-danger">*</span></label>
+                <label className="form-label">Description</label>
                 <textarea
                   rows={5}
                   className={`form-control form-control-sm ${
@@ -338,11 +337,6 @@ function RewardAdd() {
                   {...formik.getFieldProps("description")}
                   maxLength={250}
                 />
-                {formik.touched.description && formik.errors.description && (
-                  <div className="invalid-feedback">
-                    {formik.errors.description}
-                  </div>
-                )}
               </div>
             </div>
           </div>

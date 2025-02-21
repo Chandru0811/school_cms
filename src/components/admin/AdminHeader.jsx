@@ -28,9 +28,11 @@ function AdminHeader({ handleLogout }) {
 
   const handleChangePasswordClick = () => {
     setIsChangingPassword(true);
-  };
+    formik.resetForm();
+    };
 
   const handleCancel = () => {
+    formik.resetForm();
     setIsChangingPassword(false);
   };
 
@@ -83,6 +85,17 @@ function AdminHeader({ handleLogout }) {
   const toggleDropdown = () => {
     setIsDropdownOpen((prev) => !prev);
   };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const fetchData = async () => {
     try {
@@ -312,7 +325,7 @@ function AdminHeader({ handleLogout }) {
                             </div>
                             {formik.touched.password &&
                               formik.errors.password && (
-                                <div className="invalid-feedback">
+                                <div className="text-danger text-start">
                                   {formik.errors.password}
                                 </div>
                               )}
@@ -353,7 +366,7 @@ function AdminHeader({ handleLogout }) {
                             </div>
                             {formik.touched.password_confirmation &&
                               formik.errors.password_confirmation && (
-                                <div className="invalid-feedback">
+                                <div className="text-danger text-start">
                                   {formik.errors.password_confirmation}
                                 </div>
                               )}

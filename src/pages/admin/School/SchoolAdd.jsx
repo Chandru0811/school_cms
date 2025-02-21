@@ -111,6 +111,7 @@ function SchoolAdd() {
           <hr className="m-0"></hr>
           <DialogActions className="mt-3">
             <Button
+            type="button" 
               className="btn btn-sm btn-back"
               onClick={handleClose}
             >

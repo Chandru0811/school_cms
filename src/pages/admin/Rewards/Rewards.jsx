@@ -22,6 +22,7 @@ function Rewards() {
   const storedScreens = JSON.parse(
     localStorage.getItem("schoolCMS_Permissions") || "{}"
   );
+  const [loading, setLoading] = useState(true);
 
   const columns = useMemo(
     () => [
@@ -143,10 +144,13 @@ function Rewards() {
 
   const getData = async () => {
     try {
+      setLoading(true);
       const response = await api.get("rewards");
       setData(response.data.data);
     } catch (e) {
       toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -193,6 +197,11 @@ function Rewards() {
             </Link>
           )}
         </div>
+        {loading ? (
+          <div className="loader-container">
+            <div className="loader"></div>
+          </div>
+        ) : (
         <>
           <ThemeProvider theme={theme}>
             <MaterialReactTable
@@ -243,6 +252,7 @@ function Rewards() {
             </MenuItem>
           </Menu>
         </>
+      )}
       </div>
     </div>
   );

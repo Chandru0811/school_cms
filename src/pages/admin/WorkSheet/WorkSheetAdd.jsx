@@ -116,17 +116,24 @@ function WorkSheetAdd() {
         const response = await api.post("worksheet", values);
         if (response.status === 200) {
           console.log("object", response);
-          toast.success(response.data?.message)
+          toast.success(response.data?.message);
         }
-      } catch (e) {
-        console.error("Error Fetching Data", e);
-        toast.error(
-          "Error Fetching Data",
-          e?.response?.data?.error || e.message
-        );
+      } catch (error) {
+        if (error.response?.data?.errors) {
+          const errors = error.response.data.errors;
+      
+          // Loop through errors and show each one in a toast
+          Object.keys(errors).forEach((key) => {
+            errors[key].forEach((errMsg) => {
+              toast.error(errMsg);
+            });
+          });
+        } else {
+          toast.error("An unexpected error occurred. Please try again.");
+        }
       } finally {
         setLoadIndicator(false);
-      }
+      }        
     },
     validateOnChange: false,
     validateOnBlur: true,

@@ -9,7 +9,7 @@ import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 
-function GradeView({ show, setShow ,id}) {
+function GradeView({ show, setShow, id }) {
   const [data, setData] = useState({});
   const [centerList, setCenterList] = useState([]);
 
@@ -58,9 +58,7 @@ function GradeView({ show, setShow ,id}) {
                 <p className="">Center</p>
               </div>
               <div className="col-6">
-              <p className="text-muted text-sm">
-                      : {centerList.map((center) => center.name).join(", ")}
-                    </p>
+                <p className="text-muted text-sm">:{data.center_names} </p>
               </div>
             </div>
           </div>
@@ -97,9 +95,9 @@ function GradeView({ show, setShow ,id}) {
 }
 
 GradeView.propTypes = {
-    show: PropTypes.bool.isRequired,
-    setShow: PropTypes.bool.isRequired,
-    id: PropTypes.number.isRequired,
+  show: PropTypes.bool.isRequired,
+  setShow: PropTypes.bool.isRequired,
+  id: PropTypes.number.isRequired,
 };
 
 export default GradeView;

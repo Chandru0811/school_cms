@@ -16,25 +16,30 @@ function EmployeeEdit() {
   const { id } = useParams();
   const [roles, setRoles] = useState();
 
-
   const validationSchema = yup.object().shape({
     center_id: yup
-         .array()
-         .min(1, "*Select at least one center")
-         .required("*Select a center id"),
-       role_id: yup.string().required("*Select a role"),
-       name: yup.string().required("*Employee name is required"),
-       email: yup.string().required("*Employee email is required"),
-       mobile: yup.string().required("*Employee mobile is required"),
-      //  password: yup
-      //    .string()
-      //    .required("*Employee password is required")
-      //    .min(6, "*Password must be at least 6 characters"),
-      //  password_confirmation: yup
-      //    .string()
-      //    .oneOf([yup.ref("password"), null], "*Passwords must match")
-      //    .required("*Employee confirm password is required"),
-     });
+      .array()
+      .min(1, "*Select at least one center")
+      .required("*Select a center id"),
+    role_id: yup.string().required("*Select a role"),
+    name: yup.string().required("*Employee name is required"),
+    email: yup
+      .string()
+      .email("*Email is Invalid")
+      .required("*Employee email is required"),
+    mobile: yup
+      .string()
+      .matches(/^[0-9]{8,10}$/, "Mobile number must be 8 or 10 digits")
+      .required("Mobile number is required!"),
+    //  password: yup
+    //    .string()
+    //    .required("*Employee password is required")
+    //    .min(6, "*Password must be at least 6 characters"),
+    //  password_confirmation: yup
+    //    .string()
+    //    .oneOf([yup.ref("password"), null], "*Passwords must match")
+    //    .required("*Employee confirm password is required"),
+  });
 
   const formik = useFormik({
     initialValues: {
@@ -54,10 +59,9 @@ function EmployeeEdit() {
 
         if (response.status === 200) {
           toast.success(response.data.message);
-        
+
           navigate("/employee");
-        }
-        else {
+        } else {
           toast.error(response.data.message);
         }
       } catch (error) {
@@ -189,12 +193,12 @@ function EmployeeEdit() {
                 style={{ fontWeight: "600px !important" }}
                 disabled={loadIndicator}
               >
-                 {loadIndicator && (
-              <span
-                className="spinner-border spinner-border-sm me-2"
-                aria-hidden="true"
-              ></span>
-            )}
+                {loadIndicator && (
+                  <span
+                    className="spinner-border spinner-border-sm me-2"
+                    aria-hidden="true"
+                  ></span>
+                )}
                 Update
               </button>
             </div>
@@ -238,7 +242,7 @@ function EmployeeEdit() {
                       ? "is-invalid"
                       : ""
                   }`}
-                  value={formik.values.role_id} 
+                  value={formik.values.role_id}
                   onChange={(e) =>
                     formik.setFieldValue("role_id", e.target.value)
                   }

@@ -157,7 +157,7 @@ const Login = ({ loginAsAdmin, loginAsSuperAdmin }) => {
                 {formik.errors.email}
               </Form.Control.Feedback>
             </Form.Group>
-
+{/* 
             <div className="d-flex justify-content-between align-items-center py-2">
               <Form.Label>Password</Form.Label>
               <Link
@@ -171,7 +171,7 @@ const Login = ({ loginAsAdmin, loginAsSuperAdmin }) => {
               >
                 Forgot Password?
               </Link>
-            </div>
+            </div> */}
             {/* <Form.Group controlId="formPassword" className="mb-3">
               <div style={{ position: "relative" }}>
                 <Form.Control

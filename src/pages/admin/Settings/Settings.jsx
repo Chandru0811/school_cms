@@ -27,7 +27,7 @@ function Settings() {
         </li>
       </ol>
       <div className="card">
-        <div className="d-flex justify-content-between align-items-center card_header mb-3 p-1">
+        {/* <div className="d-flex justify-content-between align-items-center card_header mb-3 p-1">
           <div className="d-flex align-items-center">
             <div className="d-flex">
               <div className="dot active"></div>
@@ -36,7 +36,7 @@ function Settings() {
               <span className="database_name">Settings</span>
             </span>
           </div>
-        </div>
+        </div> */}
         <div className="container-fuild">
           <Tabs
             id="controlled-tab-example"

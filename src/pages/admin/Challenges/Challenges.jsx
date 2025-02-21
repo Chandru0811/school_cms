@@ -18,6 +18,7 @@ function Challenges() {
   const [menuAnchor, setMenuAnchor] = useState(null);
   const [data, setData] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
+  const [loading, setLoading] = useState(true);
   const storedScreens = JSON.parse(localStorage.getItem("schoolCMS_Permissions") || "{}");
   const navigate = useNavigate()
   const columns = useMemo(
@@ -50,8 +51,8 @@ function Challenges() {
           </IconButton>
         ),
       },
-      { accessorKey: "centre_id", header: "Centre Name" },
-      { accessorKey: "topic_id", header: "Topic" },
+      { accessorKey: "centers", header: "Centre Name" },
+      { accessorKey: "topic.name", header: "Topic" },
       { accessorKey: "difficult_level", header: "Difficult Level" },
       { accessorKey: "created_by", header: "Created By" },
       {
@@ -118,10 +119,13 @@ function Challenges() {
 
   const getData = async () => {
     try {
+      setLoading(true);
       const response = await api.get("challenges");
       setData(response.data.data);
     } catch (e) {
       toast.error("Error Fetching Data", e?.response?.data?.error);
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -170,6 +174,11 @@ function Challenges() {
           </Link>
         )}
         </div>
+        {loading ? (
+          <div className="loader-container">
+            <div className="loader"></div>
+          </div>
+        ) : (
         <>
           <ThemeProvider theme={theme}>
             <MaterialReactTable
@@ -213,13 +222,20 @@ function Challenges() {
             </MenuItem>
           )}
             <MenuItem>
-              <Delete path={`admin/company/delete`} onOpen={handleMenuClose} />
+              <Delete path={`challenge/delete/${selectedId}`} onOpen={handleMenuClose} />
             </MenuItem>
           </Menu>
         </>
+      )}
       </div>
     </div>
   );
 }
+
+Challenges.propTypes = {
+  row: PropTypes.func.isRequired,
+  cell: PropTypes.func.isRequired,
+};
+
 
 export default Challenges;

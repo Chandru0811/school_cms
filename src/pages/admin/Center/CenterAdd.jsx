@@ -12,9 +12,26 @@ function CenterAdd({ onSuccess }) {
   const [show, setShow] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
 
+  const [loadingAdd, setLoadingAdd] = useState(false);
+
+  const handleShowWithLoading = () => {
+    setLoadingAdd(true);
+    setTimeout(() => {
+      handleShow(); 
+      setLoadingAdd(false);
+    }, 1500); 
+  };
+
   const validationSchema = yup.object().shape({
-    name: yup.string().required("*Name is required"),
-    location: yup.string().required("*Location is required"),
+    name: yup
+      .string()
+      .max(255, "*Name must not exceed 255 characters")
+      .required("*Name is required"),
+
+    location: yup
+      .string()
+      .max(255, "*Location must not exceed 255 characters")
+      .required("*Location is required"),
   });
 
   const handleShow = () => {
@@ -35,11 +52,11 @@ function CenterAdd({ onSuccess }) {
     onSubmit: async (values) => {
       setLoadIndicator(true);
       try {
-        const response = await api.post("center", values);    
+        const response = await api.post("center", values);
         if (response.status === 200) {
           toast.success(response.data.message);
-          if (onSuccess) onSuccess();  
-          if (handleClose) handleClose(); 
+          if (onSuccess) onSuccess();
+          if (handleClose) handleClose();
           formik.resetForm();
           navigate("/center");
         } else {
@@ -51,7 +68,7 @@ function CenterAdd({ onSuccess }) {
       } finally {
         setLoadIndicator(false);
       }
-    },   
+    },
   });
 
   return (
@@ -59,10 +76,24 @@ function CenterAdd({ onSuccess }) {
       <div className="d-flex justify-content-end me-2">
         <button
           type="button"
-          className="btn btn-button btn-sm"
-          onClick={handleShow}
+          className="btn btn-button btn-sm d-flex align-items-center"
+          onClick={handleShowWithLoading}
+          disabled={loadingAdd}
         >
-          &nbsp; Add &nbsp;&nbsp; <i className="bx bx-plus"></i>
+          {loadingAdd ? (
+            <>
+              <span
+                className="spinner-border spinner-border-sm me-2"
+                role="status"
+                aria-hidden="true"
+              ></span>
+              Add
+            </>
+          ) : (
+            <>
+              &nbsp; Add &nbsp;&nbsp; <i className="bx bx-plus"></i>
+            </>
+          )}
         </button>
       </div>
 
@@ -93,7 +124,7 @@ function CenterAdd({ onSuccess }) {
                 </div>
                 <div className="col-md-6 col-12 mb-3">
                   <label className="form-label">
-                  Location<span className="text-danger">*</span>
+                    Location<span className="text-danger">*</span>
                   </label>
                   <textarea
                     rows={5}

@@ -30,7 +30,7 @@ function EmployeeAdd() {
       .required("*Select a center id"),
     role_id: yup.string().required("*Select a role"),
     name: yup.string().required("*Employee name is required"),
-    email: yup.string().required("*Employee email is required"),
+    email: yup.string().email("*Email is Invlaid").required("*Employee email is required"),
     mobile: yup
       .string()
       .matches(/^[0-9]{8,10}$/, "Mobile number must be 8 or 10 digits")
@@ -311,7 +311,7 @@ function EmployeeAdd() {
                   </span>
                 </div>
                 {formik.touched.password && formik.errors.password && (
-                  <div className="invalid-feedback">
+                  <div className="text-danger">
                     {formik.errors.password}
                   </div>
                 )}
@@ -344,7 +344,7 @@ function EmployeeAdd() {
                 </div>
                 {formik.touched.password_confirmation &&
                   formik.errors.password_confirmation && (
-                    <div className="invalid-feedback">
+                    <div className="text-danger">
                       {formik.errors.password_confirmation}
                     </div>
                   )}

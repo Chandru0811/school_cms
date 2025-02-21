@@ -18,15 +18,21 @@ function Student() {
   const [menuAnchor, setMenuAnchor] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
   const navigate = useNavigate();
-  const [data,setData] = useState([]);
-  const storedScreens = JSON.parse(localStorage.getItem("schoolCMS_Permissions") || "{}");
+  const [data, setData] = useState([]);
+  const storedScreens = JSON.parse(
+    localStorage.getItem("schoolCMS_Permissions") || "{}"
+  );
+  const [loading, setLoading] = useState(true);
 
   const getData = async () => {
     try {
+      setLoading(true);
       const response = await api.get("students");
       setData(response.data.data);
     } catch (e) {
       toast.error("Error Fetching Data ", e?.response?.data?.error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -65,10 +71,6 @@ function Student() {
         ),
       },
       {
-        accessorKey: "center.name",
-        header: "Center List",
-      },
-      {
         accessorKey: "first_name",
         header: "Student Name",
       },
@@ -80,7 +82,10 @@ function Student() {
         accessorKey: "student.email",
         header: "Email",
       },
-      
+      {
+        accessorKey: "center.name",
+        header: "Center List",
+      },
       {
         accessorKey: "admission_no",
         header: "Admission Number",
@@ -104,7 +109,7 @@ function Student() {
     ],
     []
   );
-  
+
   const theme = createTheme({
     components: {
       MuiTableCell: {
@@ -178,62 +183,75 @@ function Student() {
             </span>
           </div>
           {storedScreens?.data[3]?.can_create && (
-          <Link to="/student/add">
-            <button
-              type="button"
-              className="btn btn-button btn-sm me-2"
-              style={{ fontWeight: "600px !important" }}
-            >
-              &nbsp; Add &nbsp;&nbsp; <i className="bi bi-plus-lg"></i>
-            </button>
-          </Link>
-        )}
-        </div>
-        <>
-          <ThemeProvider theme={theme}>
-            <MaterialReactTable
-              columns={columns}
-              data={data}
-              enableColumnActions={false}
-              enableColumnFilters={false}
-              enableDensityToggle={false}
-              enableFullScreenToggle={false}
-              initialState={{
-                columnVisibility: {
-                  working_hrs: false,
-                  citizenship: false,
-                  nationality: false,
-                  created_by: false,
-                  created_at: false,
-                  updated_by: false,
-                  updated_at: false,
-                },
-              }}
-              muiTableBodyRowProps={({ row }) =>
-                storedScreens?.data[3]?.can_view
-                  ? {
-                      onClick: () =>
-                        navigate(`/student/view/${row.original.id}`),
-                      style: { cursor: "pointer" },
-                    }
-                  : {}
-              }
-            />
-          </ThemeProvider>
-          <Menu
-            id="action-menu"
-            anchorEl={menuAnchor}
-            open={Boolean(menuAnchor)}
-            onClose={handleMenuClose}
-          >
-            {storedScreens?.data[3]?.can_edit && (
-            <MenuItem onClick={() => navigate(`/student/edit/${selectedId}`)}>Edit</MenuItem>
+            <Link to="/student/add">
+              <button
+                type="button"
+                className="btn btn-button btn-sm me-2"
+                style={{ fontWeight: "600px !important" }}
+              >
+                &nbsp; Add &nbsp;&nbsp; <i className="bi bi-plus-lg"></i>
+              </button>
+            </Link>
           )}
-            <MenuItem>
-              <Delete path={`/student/delete/${selectedId}`} onOpen={handleMenuClose} />
-            </MenuItem>
-          </Menu>
-        </>
+        </div>
+        {loading ? (
+          <div className="loader-container">
+            <div className="loader"></div>
+          </div>
+        ) : (
+          <>
+            <ThemeProvider theme={theme}>
+              <MaterialReactTable
+                columns={columns}
+                data={data}
+                enableColumnActions={false}
+                enableColumnFilters={false}
+                enableDensityToggle={false}
+                enableFullScreenToggle={false}
+                initialState={{
+                  columnVisibility: {
+                    working_hrs: false,
+                    citizenship: false,
+                    nationality: false,
+                    created_by: false,
+                    created_at: false,
+                    updated_by: false,
+                    updated_at: false,
+                  },
+                }}
+                muiTableBodyRowProps={({ row }) =>
+                  storedScreens?.data[3]?.can_view
+                    ? {
+                        onClick: () =>
+                          navigate(`/student/view/${row.original.id}`),
+                        style: { cursor: "pointer" },
+                      }
+                    : {}
+                }
+              />
+            </ThemeProvider>
+            <Menu
+              id="action-menu"
+              anchorEl={menuAnchor}
+              open={Boolean(menuAnchor)}
+              onClose={handleMenuClose}
+            >
+              {storedScreens?.data[3]?.can_edit && (
+                <MenuItem
+                  onClick={() => navigate(`/student/edit/${selectedId}`)}
+                >
+                  Edit
+                </MenuItem>
+              )}
+              <MenuItem>
+                <Delete
+                  path={`/student/delete/${selectedId}`}
+                  onOpen={handleMenuClose}
+                />
+              </MenuItem>
+            </Menu>
+          </>
+        )}
       </div>
     </div>
   );

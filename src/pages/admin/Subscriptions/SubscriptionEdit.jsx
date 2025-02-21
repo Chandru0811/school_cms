@@ -16,9 +16,6 @@ function SubscriptionEdit() {
   const validationSchema = Yup.object({
     grade_id: Yup.string().required("*Select a grade"),
     name: Yup.string().required("*Name is a required field"),
-    description: Yup.string()
-      .notRequired()
-      .max(250, "*The maximum length is 250 characters"),
     details: Yup.object().shape({
       start_date: Yup.string().required("*Start Date is a required field"),
       end_date: Yup.string().required("*End Date is a required field"),
@@ -270,11 +267,6 @@ function SubscriptionEdit() {
                   {...formik.getFieldProps("description")}
                   maxLength={250}
                 />
-                {formik.touched.description && formik.errors.description && (
-                  <div className="invalid-feedback">
-                    {formik.errors.description}
-                  </div>
-                )}
               </div>
             </div>
           </div>

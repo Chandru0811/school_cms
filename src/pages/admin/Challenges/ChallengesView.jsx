@@ -119,7 +119,7 @@ function ChallengesView() {
                   <p className="fw-medium text-sm">Grade</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.challenge?.grade_id}</p>
+                  <p className="text-muted text-sm">: {data.challenge?.grand_name}</p>
                 </div>
               </div>
             </div>
@@ -129,7 +129,7 @@ function ChallengesView() {
                   <p className="fw-medium text-sm">Subject</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.challenge?.subject_id}</p>
+                  <p className="text-muted text-sm">: {data.challenge?.subject_name}</p>
                 </div>
               </div>
             </div>
@@ -139,7 +139,7 @@ function ChallengesView() {
                   <p className="fw-medium text-sm">Topic</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.challenge?.topic_id}</p>
+                  <p className="text-muted text-sm">: {data.challenge?.topic_name}</p>
                 </div>
               </div>
             </div>

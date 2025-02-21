@@ -21,6 +21,16 @@ function TopicAdd({ onSuccess }) {
   const [centerList, setCenterList] = useState([]);
   const [subjects, setSubjects] = useState([]);
 
+  const [loadingAdd, setLoadingAdd] = useState(false);
+
+  const handleShowWithLoading = () => {
+    setLoadingAdd(true);
+    setTimeout(() => {
+      handleShow(); 
+      setLoadingAdd(false);
+    }, 1500); 
+  };
+
   const validationSchema = yup.object().shape({
     center_id: yup
       .array()
@@ -28,8 +38,7 @@ function TopicAdd({ onSuccess }) {
       .required("*Select a center id"),
     // grade: yup.string().required("*Select a grade"),
     subject_id: yup.string().required("*Select a subject"),
-    name: yup.string().required("*Name is required"),
-    description: yup.string().required("*Description is required"),
+    name: yup.string().max(255, "*Topic Name must not exceed 255 characters").required("*Topic Name is required"),
   });
 
   const handleShow = () => {
@@ -109,13 +118,27 @@ function TopicAdd({ onSuccess }) {
 
   return (
     <>
-      <button
-        type="button"
-        className="btn btn-button btn-sm me-2"
-        onClick={handleShow}
-      >
-        &nbsp; Add &nbsp;&nbsp; <i className="bi bi-plus-lg"></i>
-      </button>
+            <button
+          type="button"
+          className="btn btn-button btn-sm d-flex align-items-center"
+          onClick={handleShowWithLoading}
+          disabled={loadingAdd}
+        >
+          {loadingAdd ? (
+            <>
+              <span
+                className="spinner-border spinner-border-sm me-2"
+                role="status"
+                aria-hidden="true"
+              ></span>
+              Add
+            </>
+          ) : (
+            <>
+              &nbsp; Add &nbsp;&nbsp; <i className="bx bx-plus"></i>
+            </>
+          )}
+        </button>
       <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
         <form
           onSubmit={formik.handleSubmit}
@@ -204,7 +227,7 @@ function TopicAdd({ onSuccess }) {
               </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
-                  Description<span className="text-danger">*</span>
+                  Description
                 </label>
                 <textarea
                   className={`form-control ${
@@ -215,17 +238,12 @@ function TopicAdd({ onSuccess }) {
                   rows="4"
                   {...formik.getFieldProps("description")}
                 />
-                {formik.touched.description && formik.errors.description && (
-                  <div className="invalid-feedback">
-                    {formik.errors.description}
-                  </div>
-                )}
               </div>
             </div>
           </DialogContent>
           <hr className="m-0"></hr>
           <DialogActions className="mt-3">
-            <button className="btn btn-sm btn-back" onClick={handleClose}>
+            <button type="button" className="btn btn-sm btn-back" onClick={handleClose}>
               Cancel
             </button>
             <button

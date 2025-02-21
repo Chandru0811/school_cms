@@ -29,9 +29,8 @@ function GradeEdit({ show, setShow,id,onSuccess }) {
           .array()
           .min(1, "*Select at least one center")
           .required("*Select a center id"),
-    name: yup.string().required("*Name is required"),
-    description: yup.string().required("*Description is required"),
-  });
+          name: yup.string().max(255, "*Name must not exceed 255 characters").required("*Name is required"),
+        });
 
   const formik = useFormik({
     initialValues: {
@@ -164,7 +163,7 @@ function GradeEdit({ show, setShow,id,onSuccess }) {
             </div>
             <div className="col-md-6 col-12 mb-3">
               <label className="form-label">
-                Description<span className="text-danger">*</span>
+                Description
               </label>
               <textarea
                 className={`form-control form-control-sm ${
@@ -175,17 +174,12 @@ function GradeEdit({ show, setShow,id,onSuccess }) {
                 rows="4" // Adjust the rows for better visibility
                 {...formik.getFieldProps("description")}
               />
-              {formik.touched.description && formik.errors.description && (
-                <div className="invalid-feedback">
-                  {formik.errors.description}
-                </div>
-              )}
             </div>
           </div>
         </DialogContent>
         <hr className="m-0"></hr>
         <DialogActions className="mt-3">
-          <button className="btn btn-sm btn-back"  disabled={loadIndicator} onClick={handleClose}>
+          <button type="button" className="btn btn-sm btn-back"  disabled={loadIndicator} onClick={handleClose}>
             Cancel
           </button>
           <button

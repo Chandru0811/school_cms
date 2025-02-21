@@ -117,23 +117,29 @@ function EmployeeView() {
   return (
     <div className="container-fluid px-0">
       <ol
-        className="breadcrumb my-2 px-2"
-        style={{ listStyle: "none", padding: 0, margin: 0 }}
+        className="breadcrumb my-2 px-2 d-flex align-items-center"
+        style={{
+          listStyle: "none",
+          padding: 0,
+          margin: 0,
+          display: "flex",
+          alignItems: "center",
+        }}
       >
-        <li>
+        <li className="d-flex align-items-center">
           <Link to="/" className="custom-breadcrumb text-sm">
             Home
           </Link>
-          <span className="breadcrumb-separator"> &gt; </span>
+          <span className="breadcrumb-separator mx-1"> &gt; </span>
         </li>
-        <li>
+        <li className="d-flex align-items-center">
           <Link to="/employee" className="custom-breadcrumb text-sm">
-            &nbsp;Employee
+            Employee
           </Link>
-          <span className="breadcrumb-separator"> &gt; </span>
+          <span className="breadcrumb-separator mx-1"> &gt; </span>
         </li>
         <li className="breadcrumb-item active text-sm" aria-current="page">
-          &nbsp;Employee View
+          Employee View
         </li>
       </ol>
       <div className="card vh-100" style={{ border: "1px solid #dbd9d0" }}>

@@ -55,12 +55,12 @@ function Role() {
           </IconButton>
         ),
       },
+      { accessorKey: "name", header: "Name" },
+      { accessorKey: "description", header: "Description" },
       {
         accessorKey: "centers",
         header: "Center",
       },
-      { accessorKey: "name", header: "Name" },
-      { accessorKey: "description", header: "Description" },
       { accessorKey: "access", header: "Access" },
       { accessorKey: "created_by", header: "Created By" },
       {

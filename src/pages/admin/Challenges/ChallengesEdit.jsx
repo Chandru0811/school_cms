@@ -27,8 +27,8 @@ function ChallengesEdit() {
     grade_id: yup.string().required("*Select a grade"),
     subject_id: yup.string().required("*Select a subject"),
     topic_id: yup.string().required("*Select a topic"),
-    difficult_level: yup.string().required("*Select a difficult level"),
-    title: yup.string().required("*Title is required"),
+    difficult_level: yup.string().max(255, "*Difficult level must not exceed 255 characters").required("*Select a difficult level"),
+    title: yup.string().max(255, "*Title must not exceed 255 characters").required("*Title is required"),
     time_limit: yup
       .string()
       .matches(/^\d+$/, "*Time limit must be a number")
@@ -518,7 +518,7 @@ function ChallengesEdit() {
                 )}
               </div>
               <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">Challanges Description</label>
+                <label className="form-label">Challenges Description</label>
                 <textarea
                   rows={5}
                   className={`form-control ${formik.touched.description && formik.errors.description
@@ -528,11 +528,6 @@ function ChallengesEdit() {
                   {...formik.getFieldProps("description")}
                   maxLength={825}
                 />
-                {formik.touched.description && formik.errors.description && (
-                  <div className="invalid-feedback">
-                    {formik.errors.description}
-                  </div>
-                )}
               </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
