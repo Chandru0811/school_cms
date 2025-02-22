@@ -12,15 +12,15 @@ function CenterAdd({ onSuccess }) {
   const [show, setShow] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
 
-  const [loadingAdd, setLoadingAdd] = useState(false);
+  // const [loadingAdd, setLoadingAdd] = useState(false);
 
-  const handleShowWithLoading = () => {
-    setLoadingAdd(true);
-    setTimeout(() => {
-      handleShow(); 
-      setLoadingAdd(false);
-    }, 1500); 
-  };
+  // const handleShowWithLoading = () => {
+  //   setLoadingAdd(true);
+  //   setTimeout(() => {
+  //     handleShow();
+  //     setLoadingAdd(false);
+  //   }, 1500);
+  // };
 
   const validationSchema = yup.object().shape({
     name: yup
@@ -77,23 +77,9 @@ function CenterAdd({ onSuccess }) {
         <button
           type="button"
           className="btn btn-button btn-sm d-flex align-items-center"
-          onClick={handleShowWithLoading}
-          disabled={loadingAdd}
+          onClick={handleShow}
         >
-          {loadingAdd ? (
-            <>
-              <span
-                className="spinner-border spinner-border-sm me-2"
-                role="status"
-                aria-hidden="true"
-              ></span>
-              Add
-            </>
-          ) : (
-            <>
-              &nbsp; Add &nbsp;&nbsp; <i className="bx bx-plus"></i>
-            </>
-          )}
+          Add
         </button>
       </div>
 

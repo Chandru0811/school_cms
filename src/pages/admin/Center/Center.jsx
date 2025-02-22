@@ -13,12 +13,14 @@ import PropTypes from "prop-types";
 import { MoreVert as MoreVertIcon } from "@mui/icons-material";
 import CenterAdd from "./CenterAdd";
 import CenterEdit from "./CenterEdit";
+import CenterView from "./CenterView";
 import api from "../../../config/URL";
 
 function Center() {
   const [menuAnchor, setMenuAnchor] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedId, setSelectedId] = useState(null);
+  const [showView, setShowView] = useState(false);
   const [data, setData] = useState([]);
   const storedScreens = JSON.parse(
     localStorage.getItem("schoolCMS_Permissions") || "{}"
@@ -56,7 +58,15 @@ function Center() {
       },
       // { accessorKey: "school_id", header: "School ID" },
       { accessorKey: "name", header: "Name" },
-      { accessorKey: "location", header: "Location" },
+      {
+        accessorKey: "location",
+        header: "Location",
+        Cell: ({ cell }) => (
+          <span className="truncate-text" title={cell.getValue()}>
+            {cell.getValue()}
+          </span>
+        ),
+      },
       { accessorKey: "created_by", header: "Created By" },
       {
         accessorKey: "created_at",
@@ -165,8 +175,9 @@ function Center() {
               <span className="database_name">Center</span>
             </span>
           </div>
-          {storedScreens?.data[0]?.can_create === 1 && 
-          <CenterAdd onSuccess={fetchData}/>}
+          {storedScreens?.data[0]?.can_create === 1 && (
+            <CenterAdd onSuccess={fetchData} />
+          )}
         </div>
         {loading ? (
           <div className="loader-container">
@@ -193,6 +204,13 @@ function Center() {
                     updated_at: false,
                   },
                 }}
+                muiTableBodyRowProps={({ row }) => ({
+                  style: { cursor: "pointer" },
+                  onClick: () => {
+                    setSelectedId(row.original.id);
+                    setShowView(true);
+                  },
+                })}
               />
             </ThemeProvider>
             <Menu
@@ -226,6 +244,13 @@ function Center() {
                 />
               </MenuItem>
             </Menu>
+            {storedScreens?.data[2]?.can_view && (
+              <CenterView
+                show={showView}
+                setShow={setShowView}
+                id={selectedId}
+              />
+            )}
           </>
         )}
       </div>

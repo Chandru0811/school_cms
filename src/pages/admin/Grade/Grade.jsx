@@ -62,6 +62,11 @@ function Grade() {
       {
         accessorKey: "description",
         header: "Description",
+        Cell: ({ cell }) => (
+          <span className="truncate-text" title={cell.getValue()}>
+            {cell.getValue()}
+          </span>
+        ),
       },
       { accessorKey: "created_by", header: "Created By" },
       {

@@ -42,7 +42,12 @@ function RoleView({ show, setShow, id }) {
                 <p className="fw-medium text-sm">Centre</p>
               </div>
               <div className="col-6">
-                <p className="text-muted text-sm">: {data.center_names}</p>
+                <p className="text-muted text-sm">
+                  :{" "}
+                  {data.center_names
+                    ? JSON.parse(data.center_names).join(", ")
+                    : ""}
+                </p>{" "}
               </div>
             </div>
           </div>

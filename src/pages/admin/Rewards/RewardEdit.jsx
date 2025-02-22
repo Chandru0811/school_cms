@@ -22,9 +22,6 @@ function RewardEdit() {
     name: Yup.string().max(255, "*Name must not exceed 255 characters").required("*Name is a required field"),
     reward_type: Yup.string().max(255, "*Reward Type must not exceed 255 characters").required("*Reward Type is a required field"),
     reward_value: Yup.string().max(255, "*Reward Value must not exceed 255 characters").required("*Reward Value is a required field"),
-    target_archieved: Yup.string().required(
-      "*Target Achieved is a required field"
-    ),
   });
 
   const formik = useFormik({

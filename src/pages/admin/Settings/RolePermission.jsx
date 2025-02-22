@@ -21,7 +21,7 @@ function RolePermission() {
   const fetchRole = async () => {
     try {
       setLoading(true);
-      const response = await api.get("/admin/roles/list");   
+      const response = await api.get("admin/roles/list");   
       console.log("API Response: ", response);
       if (response.data.data && response.data.data.length > 0) {
         setRoleName(response.data.data);
@@ -290,7 +290,7 @@ function RolePermission() {
                 Save
               </button>
             </div>
-          <div className="row d-flex align-items-start p-2">
+          <div className="row d-flex align-items-start">
             <div className="col-md-3 col-12">
               <label className="form-label">
                 User Role <span className="text-danger">*</span>
@@ -311,9 +311,9 @@ function RolePermission() {
                 </select>
               </div>
             </div>
-            <div className="col-md-9 col-12 d-flex align-items-center my-5">
+            <div className="col-md-9 col-12 d-flex align-items-center py-3">
               <div
-                className="btn-group"
+                className="btn-group btn-group-sm my-5"
                 role="group"
                 aria-label="Basic example"
               >

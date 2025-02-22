@@ -56,8 +56,15 @@ function Topic() {
         ),
       },
       { accessorKey: "name", header: "Name" },
-      { accessorKey: "description", header: "Description" },
       {
+        accessorKey: "description",
+        header: "Description",
+        Cell: ({ cell }) => (
+          <span className="truncate-text" title={cell.getValue()}>
+            {cell.getValue()}
+          </span>
+        ),
+      },      {
         accessorKey: "created_at",
         header: "Created At",
         Cell: ({ cell }) => cell.getValue()?.substring(0, 10),

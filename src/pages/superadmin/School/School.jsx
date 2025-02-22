@@ -53,6 +53,11 @@ function School() {
       {
         accessorKey: "name",
         enableHiding: false,
+        Cell: ({ cell }) => (
+          <span className="truncate-text" title={cell.getValue()}>
+            {cell.getValue()}
+          </span>
+        ),
         header: "School Name",
       },
       {

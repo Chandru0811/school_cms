@@ -24,7 +24,9 @@ function Subject() {
   const [selectedId, setSelectedId] = useState(null);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const storedScreens = JSON.parse(localStorage.getItem("schoolCMS_Permissions") || "{}");
+  const storedScreens = JSON.parse(
+    localStorage.getItem("schoolCMS_Permissions") || "{}"
+  );
 
   const columns = useMemo(
     () => [
@@ -44,7 +46,7 @@ function Subject() {
         enableHiding: false,
         enableSorting: false,
         size: 20,
-        Cell: ({row}) => (
+        Cell: ({ row }) => (
           <IconButton
             onClick={(e) => {
               e.stopPropagation();
@@ -57,7 +59,11 @@ function Subject() {
         ),
       },
       { accessorKey: "name", header: "Name" },
-      { accessorKey: "centers", header: "Centre Name" },
+      {
+        accessorKey: "centers",
+        header: "Center Name",
+        Cell: ({ cell }) => cell.getValue()?.join(", ") || "",
+      },
       { accessorKey: "grade.name", header: "Grade" },
       { accessorKey: "created_by", header: "Created By" },
       {
@@ -124,7 +130,6 @@ function Subject() {
 
   const handleMenuClose = () => setMenuAnchor(null);
 
-  
   const getData = async () => {
     try {
       setLoading(true);
@@ -132,7 +137,7 @@ function Subject() {
       setData(response.data.data);
     } catch (e) {
       toast.error("Error Fetching Data ", e?.response?.data?.error);
-    }finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -169,72 +174,81 @@ function Subject() {
             </span>
           </div>
           {storedScreens?.data[4]?.can_create && (
-          <SubjectAdd  onSuccess={getData} />
-        )}
+            <SubjectAdd onSuccess={getData} />
+          )}
         </div>
         {loading ? (
           <div className="loader-container">
             <div className="loader"></div>
           </div>
         ) : (
-        <>
-          <ThemeProvider theme={theme}>
-            <MaterialReactTable
-              columns={columns}
-              data={data}
-              enableColumnActions={false}
-              enableColumnFilters={false}
-              enableDensityToggle={false}
-              enableFullScreenToggle={false}
-              initialState={{
-                columnVisibility: {
-                  working_hrs: false,
-                  citizenship: false,
-                  nationality: false,
-                  created_by: false,
-                  created_at: false,
-                  updated_by: false,
-                  updated_at: false,
-                },
-              }}
-              muiTableBodyRowProps={({ row }) => ({
-                style: { cursor: "pointer" },
-                onClick: () => {
-                  setSelectedId(row.original.id);
-                  setShowView(true);
-                },
-              })}
-            />
-          </ThemeProvider>
-          <Menu
-            id="action-menu"
-            anchorEl={menuAnchor}
-            open={Boolean(menuAnchor)}
-            onClose={handleMenuClose}
-          >
-            <MenuItem
-              onClick={() => {
-                setShowEdit(true);
-                handleMenuClose();
-              }}
+          <>
+            <ThemeProvider theme={theme}>
+              <MaterialReactTable
+                columns={columns}
+                data={data}
+                enableColumnActions={false}
+                enableColumnFilters={false}
+                enableDensityToggle={false}
+                enableFullScreenToggle={false}
+                initialState={{
+                  columnVisibility: {
+                    working_hrs: false,
+                    citizenship: false,
+                    nationality: false,
+                    created_by: false,
+                    created_at: false,
+                    updated_by: false,
+                    updated_at: false,
+                  },
+                }}
+                muiTableBodyRowProps={({ row }) => ({
+                  style: { cursor: "pointer" },
+                  onClick: () => {
+                    setSelectedId(row.original.id);
+                    setShowView(true);
+                  },
+                })}
+              />
+            </ThemeProvider>
+            <Menu
+              id="action-menu"
+              anchorEl={menuAnchor}
+              open={Boolean(menuAnchor)}
+              onClose={handleMenuClose}
             >
-              Edit
-            </MenuItem>
-            <MenuItem>
-              <Delete
-               path={`subject/delete/${selectedId}`}
-               onDeleteSuccess={getData}
-               />
-            </MenuItem>
-          </Menu>
-          {storedScreens?.data[4]?.can_edit && (
-          <SubjectEdit show={showEdit} setShow={setShowEdit}  id={selectedId}  onSuccess={getData}/>
+              <MenuItem
+                onClick={() => {
+                  setShowEdit(true);
+                  handleMenuClose();
+                }}
+              >
+                Edit
+              </MenuItem>
+              <MenuItem>
+                <Delete
+                  path={`subject/delete/${selectedId}`}
+                  onDeleteSuccess={getData}
+                />
+              </MenuItem>
+            </Menu>
+            {storedScreens?.data[4]?.can_edit && (
+              <SubjectEdit
+                show={showEdit}
+                setShow={setShowEdit}
+                id={selectedId}
+                onSuccess={getData}
+              />
+            )}
+            {storedScreens?.data[4]?.can_view && (
+              <SubjectView
+                show={showView}
+                setShow={setShowView}
+                id={selectedId}
+              />
+            )}
+          </>
         )}
-        {storedScreens?.data[4]?.can_view && (
-          <SubjectView show={showView} setShow={setShowView} id={selectedId} />
-        )}
-        </>
-      )}
       </div>
     </div>
   );

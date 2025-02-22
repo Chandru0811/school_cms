@@ -43,15 +43,17 @@ function AdminHeader({ handleLogout }) {
   const validationSchema = yup.object().shape({
     password: yup
       .string()
-      .min(8, "Password must be at least 8 characters")
-      .required("Password is required"),
+      .min(8, "*Password must be at least 8 characters")
+      .required("*Password is required"),
     password_confirmation: yup
       .string()
-      .oneOf([yup.ref("password"), null], "Passwords must match")
-      .required("Confirm your password"),
+      .oneOf([yup.ref("password"), null], "*Passwords must match")
+      .required("*Confirm your password"),
   });
 
-  const handleClose = () => setShow(false);
+  const handleClose = () => {
+    formik.resetForm();
+    setShow(false);}
   const handleShow = () => setShow(true);
 
   const formik = useFormik({

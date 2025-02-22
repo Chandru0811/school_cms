@@ -21,23 +21,16 @@ function TopicAdd({ onSuccess }) {
   const [centerList, setCenterList] = useState([]);
   const [grades, setGrades] = useState([]);
 
-  const [loadingAdd, setLoadingAdd] = useState(false);
-
-  const handleShowWithLoading = () => {
-    setLoadingAdd(true);
-    setTimeout(() => {
-      handleShow(); 
-      setLoadingAdd(false);
-    }, 1500); 
-  };
-
   const validationSchema = yup.object().shape({
     center_id: yup
       .array()
       .min(1, "*Select at least one center")
       .required("*Select a center id"),
     grade_id: yup.string().required("*Select a subject"),
-    name: yup.string().max(255, "*Subject Name must not exceed 255 characters").required("*Subject Name is required"),
+    name: yup
+      .string()
+      .max(255, "*Subject Name must not exceed 255 characters")
+      .required("*Subject Name is required"),
   });
 
   const handleShow = () => {
@@ -48,6 +41,7 @@ function TopicAdd({ onSuccess }) {
   const handleClose = () => {
     setShow(false);
     formik.resetForm();
+    setSelectedCenter([]);
   };
 
   const formik = useFormik({
@@ -96,12 +90,12 @@ function TopicAdd({ onSuccess }) {
   const getGradeList = async () => {
     try {
       const response = await api.get("grades/list");
-      console.log(response); 
+      console.log(response);
       const formattedGrades = response.data?.data?.map((grade) => ({
         value: grade.id,
         label: grade.name,
       }));
-  
+
       setGrades(formattedGrades);
     } catch (e) {
       console.error("Error Fetching Data", e);
@@ -116,27 +110,13 @@ function TopicAdd({ onSuccess }) {
 
   return (
     <>
-            <button
-          type="button"
-          className="btn btn-button btn-sm d-flex align-items-center"
-          onClick={handleShowWithLoading}
-          disabled={loadingAdd}
-        >
-          {loadingAdd ? (
-            <>
-              <span
-                className="spinner-border spinner-border-sm me-2"
-                role="status"
-                aria-hidden="true"
-              ></span>
-              Add
-            </>
-          ) : (
-            <>
-              &nbsp; Add &nbsp;&nbsp; <i className="bx bx-plus"></i>
-            </>
-          )}
-        </button>
+      <button
+        type="button"
+        className="btn btn-button btn-sm d-flex align-items-center"
+        onClick={handleShow}
+      >
+        Add
+      </button>
       <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
         <form
           onSubmit={formik.handleSubmit}
@@ -150,7 +130,7 @@ function TopicAdd({ onSuccess }) {
           <hr className="m-0"></hr>
           <DialogContent>
             <div className="row">
-              <div className="col-md-6 col-12 mb-4">
+              <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
                   Centre Name<span className="text-danger">*</span>
                 </label>
@@ -165,7 +145,7 @@ function TopicAdd({ onSuccess }) {
                     );
                   }}
                   labelledBy="Select Center"
-                  className={`form-multi-select form-multi-select-sm ${
+                  className={`form-multi-select form-multi-select-sm mb-5${
                     formik.touched.center_id && formik.errors.center_id
                       ? "is-invalid"
                       : ""
@@ -224,9 +204,7 @@ function TopicAdd({ onSuccess }) {
                 )}
               </div>
               <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
-                  Description
-                </label>
+                <label className="form-label">Description</label>
                 <textarea
                   className={`form-control ${
                     formik.touched.description && formik.errors.description
@@ -241,7 +219,11 @@ function TopicAdd({ onSuccess }) {
           </DialogContent>
           <hr className="m-0"></hr>
           <DialogActions className="mt-3">
-            <button type="button" className="btn btn-sm btn-back" onClick={handleClose}>
+            <button
+              type="button"
+              className="btn btn-sm btn-back"
+              onClick={handleClose}
+            >
               Cancel
             </button>
             <button

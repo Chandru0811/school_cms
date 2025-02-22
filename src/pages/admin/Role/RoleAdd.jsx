@@ -12,25 +12,15 @@ import { MultiSelect } from "react-multi-select-component";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { FaEye } from "react-icons/fa";
-
-function RoleAdd({onSuccess}) {
+function RoleAdd({ onSuccess }) {
   const [show, setShow] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [selectedCenter, setSelectedCenter] = useState([]);
 
-  const [loadingAdd, setLoadingAdd] = useState(false);
-
-  const handleShowWithLoading = () => {
-    setLoadingAdd(true);
-    setTimeout(() => {
-      handleShow(); 
-      setLoadingAdd(false);
-    }, 1500); 
-  };
   const navigate = useNavigate();
   const handleClose = () => {
     formik.resetForm();
+    setSelectedCenter([]);
     setShow(false);
   };
 
@@ -45,8 +35,14 @@ function RoleAdd({onSuccess}) {
       .array()
       .min(1, "*Select at least one center")
       .required("*Select a center id"),
-    name: yup.string().max(255, "*Name must not exceed 255 characters").required("*Name is required"),
-    access: yup.string().max(255, "*Access must not exceed 255 characters").required("*Select a access"),
+    name: yup
+      .string()
+      .max(255, "*Name must not exceed 255 characters")
+      .required("*Name is required"),
+    access: yup
+      .string()
+      .max(255, "*Access must not exceed 255 characters")
+      .required("*Select a access"),
   });
 
   const formik = useFormik({
@@ -61,7 +57,7 @@ function RoleAdd({onSuccess}) {
       setLoadIndicator(true);
       try {
         const response = await api.post("admin/role", values);
-        console.log(response.status)
+        console.log(response.status);
 
         if (response.status === 200) {
           toast.success(response.data.message);
@@ -73,7 +69,7 @@ function RoleAdd({onSuccess}) {
       } catch (e) {
         toast.error("Error Fetching Data ", e?.response?.data?.error);
       } finally {
-        setLoadIndicator(false); 
+        setLoadIndicator(false);
       }
     },
   });
@@ -98,29 +94,14 @@ function RoleAdd({onSuccess}) {
 
   return (
     <>
-        <button
-          type="button"
-          className="btn btn-button btn-sm me-2 m-3"
-          onClick={handleShowWithLoading}
-          disabled={loadingAdd}
-          style={{ fontWeight: "600px !important" }}
-
-        >
-          {loadingAdd ? (
-            <>
-              <span
-                className="spinner-border spinner-border-sm me-2"
-                role="status"
-                aria-hidden="true"
-              ></span>
-              Add
-            </>
-          ) : (
-            <>
-              &nbsp; Add &nbsp;&nbsp; <i className="bx bx-plus"></i>
-            </>
-          )}
-        </button>
+      <button
+        type="button"
+        className="btn btn-button btn-sm me-2 m-3"
+        style={{ fontWeight: "600px !important" }}
+        onClick={handleShow}
+      >
+        Add
+      </button>
 
       <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
         <form
@@ -137,7 +118,7 @@ function RoleAdd({onSuccess}) {
           <hr className="m-0"></hr>
           <DialogContent>
             <div className="row">
-              <div className="col-md-6 col-12 mb-4">
+              <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
                   Centre Name<span className="text-danger">*</span>
                 </label>
@@ -151,8 +132,8 @@ function RoleAdd({onSuccess}) {
                       selected.map((option) => option.value)
                     );
                   }}
-                  labelledBy="Select Center"
-                  className={`form-multi-select form-multi-select-sm${
+                  labelledBy="Select Service"
+                  className={`form-multi-select form-multi-select-sm ${
                     formik.touched.center_id && formik.errors.center_id
                       ? "is-invalid"
                       : ""
@@ -183,16 +164,11 @@ function RoleAdd({onSuccess}) {
                 )}
               </div>
               <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
-                  Description
-                </label>
+                <label className="form-label">Description</label>
                 <textarea
                   type="text"
                   onKeyDown={(e) => e.stopPropagation()}
-                  className={`form-control form-control-sm ${
-                    formik.touched.description && formik.errors.description
-                      ? "is-invalid"
-                      : ""
+                  className={`form-control form-control-sm
                   }`}
                   rows={4}
                   {...formik.getFieldProps("description")}
@@ -200,7 +176,7 @@ function RoleAdd({onSuccess}) {
               </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
-                 <FaEye/> Access<span className="text-danger">*</span>           
+                   Access<span className="text-danger">*</span>
                 </label>
                 <div className="d-flex gap-3">
                   <div className="form-check">
@@ -253,7 +229,11 @@ function RoleAdd({onSuccess}) {
           </DialogContent>
           <hr className="m-0"></hr>
           <DialogActions className="mt-3">
-            <button type="button" className="btn btn-sm btn-back" onClick={handleClose}>
+            <button
+              type="button"
+              className="btn btn-sm btn-back"
+              onClick={handleClose}
+            >
               Cancel
             </button>
             <button

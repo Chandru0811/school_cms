@@ -60,6 +60,7 @@ function Role() {
       {
         accessorKey: "centers",
         header: "Center",
+        Cell: ({ cell }) => cell.getValue()?.join(", ") || "",
       },
       { accessorKey: "access", header: "Access" },
       { accessorKey: "created_by", header: "Created By" },
@@ -151,13 +152,7 @@ function Role() {
         </div>
         {loading ? (
           <div className="loader-container">
-            <div className="loader">
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
+            <div className="loader"></div>
           </div>
         ) : (
         <>

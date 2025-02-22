@@ -61,8 +61,12 @@ function Rewards() {
       },
       {
         accessorKey: "description",
-        enableHiding: false,
         header: "Description",
+        Cell: ({ cell }) => (
+          <span className="truncate-text" title={cell.getValue()}>
+            {cell.getValue()}
+          </span>
+        ),
       },
       {
         accessorKey: "target_archieved",

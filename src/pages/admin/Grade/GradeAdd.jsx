@@ -20,16 +20,6 @@ function GradeAdd({ onSuccess }) {
   const [show, setShow] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
 
-  const [loadingAdd, setLoadingAdd] = useState(false);
-
-  const handleShowWithLoading = () => {
-    setLoadingAdd(true);
-    setTimeout(() => {
-      handleShow(); 
-      setLoadingAdd(false);
-    }, 1500); 
-  };
-
   const validationSchema = yup.object().shape({
     center_id: yup
       .array()
@@ -107,27 +97,13 @@ function GradeAdd({ onSuccess }) {
 
   return (
     <>
-        <button
-          type="button"
-          className="btn btn-button btn-sm d-flex align-items-center"
-          onClick={handleShowWithLoading}
-          disabled={loadingAdd}
-        >
-          {loadingAdd ? (
-            <>
-              <span
-                className="spinner-border spinner-border-sm me-2"
-                role="status"
-                aria-hidden="true"
-              ></span>
-              Add
-            </>
-          ) : (
-            <>
-              &nbsp; Add &nbsp;&nbsp; <i className="bx bx-plus"></i>
-            </>
-          )}
-        </button>
+      <button
+        type="button"
+        className="btn btn-button btn-sm d-flex align-items-center"
+        onClick={handleShow}
+      >
+        Add
+      </button>
 
       <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
         <form
@@ -142,7 +118,7 @@ function GradeAdd({ onSuccess }) {
           <hr className="m-0"></hr>
           <DialogContent>
             <div className="row">
-              <div className="col-md-6 col-12 mb-4">
+              <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
                   Centre Name<span className="text-danger">*</span>
                 </label>
@@ -157,7 +133,7 @@ function GradeAdd({ onSuccess }) {
                     );
                   }}
                   labelledBy="Select Center"
-                  className={`form-multi-select form-multi-select-sm ${
+                  className={`form-multi-select form-multi-select-sm mb-5 ${
                     formik.touched.center_id && formik.errors.center_id
                       ? "is-invalid"
                       : ""

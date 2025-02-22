@@ -46,6 +46,9 @@ function GradeView({ show, setShow, id }) {
     }
   }, [id, show]);
 
+  const truncateText = (text, length = 30) =>
+    text?.length > length ? text.substring(0, length) + "..." : text;
+
   return (
     <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
       <DialogTitle>View Grade</DialogTitle>
@@ -58,7 +61,12 @@ function GradeView({ show, setShow, id }) {
                 <p className="">Center</p>
               </div>
               <div className="col-6">
-                <p className="text-muted text-sm">:{data.center_names} </p>
+                <p className="text-muted text-sm">
+                  :{" "}
+                  {data.center_names
+                    ? JSON.parse(data.center_names).join(", ")
+                    : ""}
+                </p>
               </div>
             </div>
           </div>
@@ -68,7 +76,7 @@ function GradeView({ show, setShow, id }) {
                 <p className="">Name</p>
               </div>
               <div className="col-6">
-                <p className="text-muted text-sm">: {data.name}</p>
+                <p className="text-muted text-sm">:{truncateText(data.name)}</p>
               </div>
             </div>
           </div>
@@ -78,7 +86,12 @@ function GradeView({ show, setShow, id }) {
                 <p className="">Description</p>
               </div>
               <div className="col-6">
-                <p className="text-muted text-sm">: {data.description}</p>
+                <p
+                  className="text-muted text-sm text-truncate"
+                  style={{ maxWidth: "200px" }}
+                >
+                  : {truncateText(data.description)}
+                </p>{" "}
               </div>
             </div>
           </div>

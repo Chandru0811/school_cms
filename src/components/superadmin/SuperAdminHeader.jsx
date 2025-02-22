@@ -3,7 +3,7 @@ import user from "../../assets/images/user_profile.svg";
 import { Link, useNavigate } from "react-router-dom";
 import { IoIosArrowDown } from "react-icons/io";
 import PropTypes from "prop-types";
-import { IoHomeOutline, IoSettingsOutline } from "react-icons/io5";
+import { IoHomeOutline } from "react-icons/io5";
 import { TbLogout2 } from "react-icons/tb";
 import { GoPencil } from "react-icons/go";
 import { Modal } from "react-bootstrap";

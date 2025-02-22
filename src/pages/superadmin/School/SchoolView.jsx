@@ -29,12 +29,12 @@ function SchoolView() {
   const validationSchema = yup.object().shape({
     password: yup
       .string()
-      .min(8, "Password must be at least 8 characters")
-      .required("Password is required"),
+      .min(8, "*Password must be at least 8 characters")
+      .required("*Password is required"),
     password_confirmation: yup
       .string()
-      .oneOf([yup.ref("password"), null], "Passwords must match")
-      .required("Confirm your password"),
+      .oneOf([yup.ref("password"), null], "*Passwords must match")
+      .required("*Confirm your password"),
   });
 
   const handleShow = () => {
@@ -198,7 +198,7 @@ function SchoolView() {
                     </button>
                   </div>
                   {formik.touched.password && formik.errors.password && (
-                    <div className="invalid-feedback">
+                    <div className="text-danger text-start">
                       {formik.errors.password}
                     </div>
                   )}
@@ -230,7 +230,7 @@ function SchoolView() {
                   </div>
                   {formik.touched.password_confirmation &&
                     formik.errors.password_confirmation && (
-                      <div className="invalid-feedback">
+                      <div className="text-danger text-start">
                         {formik.errors.password_confirmation}
                       </div>
                     )}

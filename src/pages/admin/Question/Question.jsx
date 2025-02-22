@@ -224,7 +224,12 @@ function Question() {
             </MenuItem>
           )}
             <MenuItem>
-              <Delete path={`/question/delete/${selectedId}`} onOpen={handleMenuClose} />
+            <Delete
+                  path={`question/delete/${selectedId}`}
+                  onDeleteSuccess={getData}
+                  onOpen={handleMenuClose}
+                />
+              {/* <Delete path={`/question/delete/${selectedId}`} onOpen={handleMenuClose} /> */}
             </MenuItem>
           </Menu>
         </>

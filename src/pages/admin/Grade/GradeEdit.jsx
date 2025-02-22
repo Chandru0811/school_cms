@@ -119,7 +119,7 @@ function GradeEdit({ show, setShow,id,onSuccess }) {
         <hr className="m-0"></hr>
         <DialogContent>
           <div className="row">
-            <div className="col-md-6 col-12 mb-4">
+            <div className="col-md-6 col-12 mb-3">
               <label className="form-label">
                 Centre Name<span className="text-danger">*</span>
               </label>
@@ -134,7 +134,7 @@ function GradeEdit({ show, setShow,id,onSuccess }) {
                   );
                 }}
                 labelledBy="Select Service"
-                className={`form-multi-select form-multi-select-sm ${
+                className={`form-multi-select form-multi-select-sm mb-5 ${
                   formik.touched.center_id && formik.errors.center_id
                     ? "is-invalid"
                     : ""

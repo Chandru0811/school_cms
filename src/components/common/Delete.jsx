@@ -23,7 +23,7 @@ function Delete({ path, onDeleteSuccess, onOpen }) {
     if (typeof onOpen === "function") onOpen();
     setDeleteDialogOpen(false);
     document.body.style.overflow = "";
-  };
+  };                   
 
   const handleDelete = async () => {
     try {
@@ -35,21 +35,28 @@ function Delete({ path, onDeleteSuccess, onOpen }) {
         if (typeof onOpen === "function") onOpen();
       }
     } catch (error) {
-      if (error.response && error.response.status === 422) {
-        const errors = error.response.data.errors;
-        if (errors) {
-          Object.keys(errors).forEach((key) => {
-            errors[key].forEach((errorMsg) => {
-              toast(errorMsg, {
-                icon: <FiAlertTriangle className="text-warning" />,
+      if (error.response) {
+        if (error.response.status === 422) {
+          const errors = error.response.data.errors;
+          if (errors) {
+            Object.keys(errors).forEach((key) => {
+              errors[key].forEach((errorMsg) => {
+                toast.error(errorMsg, {
+                  icon: <FiAlertTriangle className="text-warning" />,
+                });
               });
             });
-          });
+          }
+        } else if (error.response.status === 400) {
+          toast.error(error.response.data.message || "Bad request. Please try again.");
+        } else {
+          toast.error("An error occurred while deleting the record.");
         }
       } else {
-        toast.error("An error occurred while deleting the record.");
+        toast.error("Network error. Please check your connection.");
       }
-    } finally {
+    }
+     finally {
       handleCloseDialog();
       setLoadIndicator(false);
     }

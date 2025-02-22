@@ -262,6 +262,18 @@
   }
 }
 
+.truncate-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px; 
+  display: block;
+}
+
+.dropdown-content{
+  padding-bottom: 20px !important;
+}
+
 .MuiTableBody-root tr td {
   padding: 7px 10px !important;
   font-family: "Poppins", serif;

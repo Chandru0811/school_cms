@@ -29,23 +29,23 @@ function StudentView() {
   const validationSchema = yup.object().shape({
     password: yup
       .string()
-      .min(8, "Password must be at least 8 characters")
-      .required("Password is required"),
+      .min(8, "*Password must be at least 8 characters")
+      .required("*Password is required"),
     password_confirmation: yup
       .string()
-      .oneOf([yup.ref("password"), null], "Passwords must match")
-      .required("Confirm your password"),
+      .oneOf([yup.ref("password"), null], "*Passwords must match")
+      .required("*Confirm your password"),
   });
 
   const validationParentSchema = yup.object().shape({
     password: yup
       .string()
-      .min(8, "Password must be at least 8 characters")
-      .required("Password is required"),
+      .min(8, "*Password must be at least 8 characters")
+      .required("*Password is required"),
     password_confirmation: yup
       .string()
-      .oneOf([yup.ref("password"), null], "Passwords must match")
-      .required("Confirm your password"),
+      .oneOf([yup.ref("password"), null], "*Passwords must match")
+      .required("*Confirm your password"),
   });
   const handleShow = () => {
     setShow(true);
@@ -219,7 +219,7 @@ function StudentView() {
                     </button>
                   </div>
                   {formik.touched.password && formik.errors.password && (
-                    <div className="invalid-feedback">
+                    <div className="text-danger">
                       {formik.errors.password}
                     </div>
                   )}
@@ -250,7 +250,7 @@ function StudentView() {
                   </div>
                   {formik.touched.password_confirmation &&
                     formik.errors.password_confirmation && (
-                      <div className="invalid-feedback">
+                      <div className="text-danger">
                         {formik.errors.password_confirmation}
                       </div>
                     )}
@@ -322,7 +322,7 @@ function StudentView() {
                   </div>
                   {parentFormik.touched.password &&
                     parentFormik.errors.password && (
-                      <div className="invalid-feedback">
+                      <div className="text-danger">
                         {parentFormik.errors.password}
                       </div>
                     )}
@@ -353,7 +353,7 @@ function StudentView() {
                   </div>
                   {parentFormik.touched.password_confirmation &&
                     parentFormik.errors.password_confirmation && (
-                      <div className="invalid-feedback">
+                      <div className="text-danger">
                         {parentFormik.errors.password_confirmation}
                       </div>
                     )}

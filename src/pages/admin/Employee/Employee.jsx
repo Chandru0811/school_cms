@@ -20,6 +20,7 @@ function Employee() {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
   const navigate = useNavigate();
+
   const storedScreens = JSON.parse(
     localStorage.getItem("schoolCMS_Permissions") || "{}"
   );
@@ -64,10 +65,11 @@ function Employee() {
         Cell: ({ cell }) => (
           <span className="badge bg-primary">{cell.getValue()}</span>
         ),
-      },      
+      },
       {
         accessorKey: "centers",
         header: "Center Name",
+        Cell: ({ cell }) => cell.getValue()?.join(", ") || "",
       },
       {
         accessorKey: "email",
@@ -145,7 +147,7 @@ function Employee() {
       setData(response.data.data);
     } catch (e) {
       toast.error("Error Fetching Data ", e?.response?.data?.error);
-    }finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -199,61 +201,61 @@ function Employee() {
             <div className="loader"></div>
           </div>
         ) : (
-        <>
-          <ThemeProvider theme={theme}>
-            <MaterialReactTable
-              columns={columns}
-              data={data}
-              enableColumnActions={false}
-              enableColumnFilters={false}
-              enableDensityToggle={false}
-              enableFullScreenToggle={false}
-              initialState={{
-                columnVisibility: {
-                  working_hrs: false,
-                  citizenship: false,
-                  nationality: false,
-                  created_by: false,
-                  created_at: false,
-                  updated_by: false,
-                  updated_at: false,
-                },
-              }}
-              muiTableBodyRowProps={({ row }) =>
-                storedScreens?.data[1]?.can_view
-                  ? {
-                      onClick: () =>
-                        navigate(`/employee/view/${row.original.id}`),
-                      style: { cursor: "pointer" },
-                    }
-                  : {}
-              }
-            />
-          </ThemeProvider>
-
-          <Menu
-            id="action-menu"
-            anchorEl={menuAnchor}
-            open={Boolean(menuAnchor)}
-            onClose={handleMenuClose}
-          >
-            {storedScreens?.data[1]?.can_edit && (
-              <MenuItem
-                onClick={() => navigate(`/employee/edit/${selectedId}`)}
-              >
-                Edit
-              </MenuItem>
-            )}
-            <MenuItem>
-              <Delete
-                path={`employee/delete/${selectedId}`}
-                onOpen={handleMenuClose}
-                onDeleteSuccess={getData}
+          <>
+            <ThemeProvider theme={theme}>
+              <MaterialReactTable
+                columns={columns}
+                data={data}
+                enableColumnActions={false}
+                enableColumnFilters={false}
+                enableDensityToggle={false}
+                enableFullScreenToggle={false}
+                initialState={{
+                  columnVisibility: {
+                    working_hrs: false,
+                    citizenship: false,
+                    nationality: false,
+                    created_by: false,
+                    created_at: false,
+                    updated_by: false,
+                    updated_at: false,
+                  },
+                }}
+                muiTableBodyRowProps={({ row }) =>
+                  storedScreens?.data[1]?.can_view
+                    ? {
+                        onClick: () =>
+                          navigate(`/employee/view/${row.original.id}`),
+                        style: { cursor: "pointer" },
+                      }
+                    : {}
+                }
               />
-            </MenuItem>
-          </Menu>
-        </>
-      )}
+            </ThemeProvider>
+
+            <Menu
+              id="action-menu"
+              anchorEl={menuAnchor}
+              open={Boolean(menuAnchor)}
+              onClose={handleMenuClose}
+            >
+              {storedScreens?.data[1]?.can_edit && (
+                <MenuItem
+                  onClick={() => navigate(`/employee/edit/${selectedId}`)}
+                >
+                  Edit
+                </MenuItem>
+              )}
+              <MenuItem>
+                <Delete
+                  path={`employee/delete/${selectedId}`}
+                  onOpen={handleMenuClose}
+                  onDeleteSuccess={getData}
+                />
+              </MenuItem>
+            </Menu>
+          </>
+        )}
       </div>
     </div>
   );

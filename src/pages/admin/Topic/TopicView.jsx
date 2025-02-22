@@ -49,6 +49,9 @@ function TopicView({ show, setShow, id }) {
     }
   }, [id, show]);
 
+  const truncateText = (text, length = 30) =>
+    text?.length > length ? text.substring(0, length) + "..." : text;
+
   return (
     <>
       <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
@@ -61,12 +64,13 @@ function TopicView({ show, setShow, id }) {
                 <div className="col-6">
                   <p>Centre Names</p>
                 </div>
-                <div className="col-6">
                   <div className="col-6">
-                    <p className="text-muted text-sm">
-                      : {centerList.map((center) => center.name).join(", ")}
+                  <p className="text-muted text-sm">
+                      :{" "}
+                  {data.center_names
+                    ? JSON.parse(data.center_names).join(", ")
+                    : ""}
                     </p>
-                  </div>
                 </div>
               </div>
             </div>
@@ -74,10 +78,12 @@ function TopicView({ show, setShow, id }) {
             <div className="col-md-6 col-12">
               <div className="row mt-3 mb-2">
                 <div className="col-6">
-                  <p>Grade</p>
+                  <p>Subject Name</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.subject_name}</p>
+                  <p className="text-muted text-sm">
+                    : {truncateText(data.subject_name)}
+                  </p>
                 </div>
               </div>
             </div>
@@ -85,10 +91,12 @@ function TopicView({ show, setShow, id }) {
             <div className="col-md-6 col-12">
               <div className="row mt-3 mb-2">
                 <div className="col-6">
-                  <p>Name</p>
+                  <p>Topic Name</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.name}</p>
+                  <p className="text-muted text-sm">
+                    : {truncateText(data.name)}
+                  </p>
                 </div>
               </div>
             </div>
@@ -99,7 +107,11 @@ function TopicView({ show, setShow, id }) {
                   <p>Description</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.description}</p>
+                  <p
+                    className="text-muted text-sm text-truncate"
+                  >
+                    : {truncateText(data.description)}
+                  </p>
                 </div>
               </div>
             </div>

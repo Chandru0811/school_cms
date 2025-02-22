@@ -16,17 +16,20 @@ function RewardAdd() {
     center_id: Yup.array()
       .min(1, "*Select at least one center")
       .required("*Select a center id"),
-    name: Yup.string().max(255, "*Name must not exceed 255 characters").required("*Name is a required field"),
-    reward_type: Yup.string().max(255, "*Reward Type must not exceed 255 characters").required("*Reward Type is a required field"),
-    reward_value: Yup.string().max(255, "*Reward Value must not exceed 255 characters").required("*Reward Value is a required field"),
-    target_archieved: Yup.string().required(
-      "*Target Achieved is a required field"
-    ),
+    name: Yup.string()
+      .max(255, "*Name must not exceed 255 characters")
+      .required("*Name is a required field"),
+    reward_type: Yup.string()
+      .max(255, "*Reward Type must not exceed 255 characters")
+      .required("*Reward Type is a required field"),
+    reward_value: Yup.string()
+      .max(255, "*Reward Value must not exceed 255 characters")
+      .required("*Reward Value is a required field"),
   });
 
   const formik = useFormik({
     initialValues: {
-      target_archieved: "",
+      target_archieved: 0,
       name: "",
       description: "",
       reward_type: "",
@@ -37,7 +40,7 @@ function RewardAdd() {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       setLoadIndicator(true);
-      
+
       // Create FormData
       const formData = new FormData();
       formData.append("target_archieved", values.target_archieved);
@@ -45,33 +48,41 @@ function RewardAdd() {
       formData.append("description", values.description);
       formData.append("reward_type", values.reward_type);
       formData.append("reward_value", values.reward_value);
-      formData.append("image", values.image); 
+      formData.append("image", values.image);
       formData.append("center_id[]", values.center_id);
-    
+
       try {
         const response = await api.post("reward", formData, {
           headers: { "Content-Type": "multipart/form-data" }, // Set correct headers
         });
-    
+
         if (response.status === 200) {
           toast.success(response.data.message);
           navigate("/rewards");
         }
       } catch (e) {
-        if (e?.response?.data?.error) {
-          Object.values(e.response.data.error).forEach((errorMessages) => {
-            errorMessages.forEach((errorMessage) => {
-              toast.error(errorMessage);
+        if (e.response) {
+          if (e.response.status === 422 && e.response.data?.errors) {
+            // Handle validation errors
+            Object.values(e.response.data.errors).forEach((errorMessages) => {
+              errorMessages.forEach((errorMessage) => {
+                toast.error(errorMessage);
+              });
             });
-          });
+          } else if (e.response.data?.message) {
+            // Display general error message from the API
+            toast.error(e.response.data.message);
+          } else {
+            toast.error("Something went wrong. Please try again.");
+          }
         } else {
-          toast.error("Error Fetching Data");
+          // Handle network errors
+          toast.error("Network error. Please check your connection.");
         }
       } finally {
         setLoadIndicator(false);
       }
     },
-    
   });
 
   const getCenterList = async () => {
@@ -318,11 +329,6 @@ function RewardAdd() {
                     Target Achieved
                   </label>
                 </div>
-                {formik.touched.target_archieved && formik.errors.target_archieved && (
-                  <div className="invalid-feedback d-block">
-                    {formik.errors.target_archieved}
-                  </div>
-                )}
               </div>
 
               <div className="col-12 mb-3">
