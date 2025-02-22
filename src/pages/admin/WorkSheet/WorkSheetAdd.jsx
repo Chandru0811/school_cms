@@ -23,14 +23,13 @@ function WorkSheetAdd() {
   const [grades, setGrades] = useState([]);
   const [topics, setTopics] = useState([]);
   const [filterDatas, setFilterDatas] = useState([]);
-  const [selectedRows, setSelectedRows] = useState([]);
   const [rowSelection, setRowSelection] = useState({});
   const [loadIndicator, setLoadIndicator] = useState(false);
   const questionOption = [
     { value: "fillable", label: "Filled" },
     { value: "closed", label: "Closed" },
     { value: "multichoice", label: "Multi Choice" },
-    { value: "shortanswer", label: "Short Answer" },
+    { value: "short_answer", label: "Short Answer" },
     { value: "upload", label: "Upload" },
   ];
   const validationSchema = yup.object().shape({
@@ -80,13 +79,18 @@ function WorkSheetAdd() {
       .positive("*Reward must be a positive number")
       .integer("*Reward must be an integer"),
     difficult_level: yup.string().required("*Select a difficult level"),
-    ques_id_with_type: yup.array().of(
+    ques_id_with_type: yup
+    .array()
+    .min(1, "*Please select a question")
+    .of(
       yup.object().shape({
-        id: yup.number().required("Question ID is required"),
-        ques_type: yup.string().required("Question type is required"),
+        id: yup.number().required(),
+        questype: yup
+          .string()
+          // .oneOf(questionOption, "*Invalid question type")
+          .required("*Please select a question type"),
       })
     ),
-    // .min(1, "At least one question type must be selected"),
   });
 
   const formik = useFormik({
@@ -138,7 +142,27 @@ function WorkSheetAdd() {
     validateOnChange: false,
     validateOnBlur: true,
   });
-  console.log("error", formik.errors);
+
+  const handleRadioChange = (rowId, value) => {
+    const updatedValues = [...formik.values.ques_id_with_type];
+    const rowIndex = updatedValues.findIndex((q) => q.id === rowId);
+    if (rowIndex >= 0) {
+      updatedValues[rowIndex].questype = value;
+    } else {
+      updatedValues.push({ id: rowId, questype: value });
+    }
+    formik.setFieldValue("ques_id_with_type", updatedValues);
+    setRowSelection((prev) => {
+      const newSelection = { ...prev };
+
+      if (!newSelection[rowId]) {
+        newSelection[rowId] = true;
+      }
+
+      return newSelection;
+    });
+  };
+  // console.log("error", formik.errors);
   const columns = useMemo(
     () => [
       {
@@ -163,59 +187,38 @@ function WorkSheetAdd() {
             console.error("Error parsing ques_type:", error);
             quesTypes = [];
           }
-          // console.log("object",row)
+          const selectedRow = formik.values.ques_id_with_type.find(
+            (q) => q.id === row.original.id
+          );
           return (
             <div>
               <div
-                style={{ display: "flex", alignItems: "center", gap: "10px" }}
+                className="d-flex gap-3"
               >
                 {quesTypes.map((t, i) => (
-                  <label
-                    key={`${row.id}-${i}`}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "5px",
-                    }}
-                  >
-                    <input
+                  <div className="form-check"  key={`${row.id}-${i}`}> 
+                  <label className="form-check-label">
+                   <input
                       type="radio"
-                      name={`ques_id_with_type_${row.id}`}
+                      // name={`ques_id_with_type_${row.id}`}
                       value={t}
-                      className="form-check"
-                      checked={
-                        formik.values.ques_id_with_type?.some(
-                          (q) => q.id === row.original.id && q.ques_type === t
-                        ) ||
-                        (!formik.values.ques_id_with_type?.some(
-                          (q) => q.id === row.original.id
-                        ) &&
-                          i === 0)
+                      className="form-check-input position-relative" style={{top:"-2px"}}
+                      checked={selectedRow?.questype === t || ""}
+                      onChange={(e) =>
+                        handleRadioChange(row.original.id, e.target.value)
                       }
-                      onChange={(e) => {
-                        const selectedValue = e.target.value;
-                        const updatedValues =
-                          formik.values.ques_id_with_type.map((q) =>
-                            q.id === row.original.id
-                              ? { ...q, ques_type: selectedValue }
-                              : q
-                          );
-                        formik.setFieldValue(
-                          "ques_id_with_type",
-                          updatedValues
-                        );
-                      }}
                     />
                     {cName(t)}
                   </label>
+                  </div>
                 ))}
               </div>
-              {formik.errors.ques_id_with_type &&
+              {/* {formik.errors.ques_id_with_type &&
                 formik.touched.ques_id_with_type && (
                   <small className="text-danger">
                     {formik.errors.ques_id_with_type}
                   </small>
-                )}
+                )} */}
             </div>
           );
         },
@@ -236,7 +239,7 @@ function WorkSheetAdd() {
         Cell: ({ cell }) => cell.getValue()?.substring(0, 10) || "",
       },
     ],
-    []
+    [formik.values]
   );
   const cName = (t) => {
     switch (t) {
@@ -318,26 +321,37 @@ function WorkSheetAdd() {
     enableRowSelection: true,
     getRowId: (row) => row.id,
     state: { rowSelection },
-    onRowSelectionChange: setRowSelection,
+    onRowSelectionChange: (updatedSelection) => {
+      setRowSelection(updatedSelection);
+    },
   });
-  useEffect(() => {
-    const selectedData = table
-      .getSelectedRowModel()
-      .flatRows.map((row) => row.original);
-    const uniqueIds = [...new Set(selectedData.map((row) => row.id))];
-    const uniqueData = selectedData.reduce((acc, row) => {
-      if (!acc.some((item) => item.id === row.id)) {
-        acc.push({ id: row.id, ques_type: JSON.parse(row.ques_type)[0] });
-      }
-      return acc;
-    }, []);
-    formik.setFieldValue("question_id", uniqueIds);
-    formik.setFieldValue("ques_id_with_type", uniqueData);
 
-    // console.log("uniqueIds", uniqueIds);
-    // console.log("formik.values.ques_id_with_type:", uniqueData);
-  }, [rowSelection]);
-  // console.log("rowSelection", rowSelection);
+  const handleRowSelectionChange = (selectedData) => {
+    const selectedRowIds = selectedData.map((row) => row.original.id);
+    const updatedSelectedRows = selectedRowIds.map((id) => {
+      const existingEntry = formik.values.ques_id_with_type.find(
+        (q) => q.id === id
+      );
+      let quesTypes = [];
+      const rowData = filterDatas.find((q) => q.id === id);
+      try {
+        quesTypes = rowData ? JSON.parse(rowData.ques_type) : [];
+      } catch (error) {
+        console.error("Error parsing ques_type:", error);
+      }
+      return (
+        existingEntry || {
+          id,
+          questype: quesTypes.length > 0 ? quesTypes[0] : "",
+        }
+      );
+    });
+    formik.setFieldValue("question_id", selectedRowIds);
+    formik.setFieldValue("ques_id_with_type", updatedSelectedRows);
+  };
+  useEffect(() => {
+    handleRowSelectionChange(table.getSelectedRowModel().rows);
+  }, [table.getSelectedRowModel().rows]);
 
   const getCenterList = async () => {
     try {
@@ -793,6 +807,12 @@ function WorkSheetAdd() {
           </div>
           <ThemeProvider theme={theme}>
             <MaterialReactTable table={table} />
+            {formik.touched.ques_id_with_type &&
+              formik.errors.ques_id_with_type && (
+                <small className="text-danger ps-2 py-2">
+                  {formik.errors.ques_id_with_type}
+                </small>
+              )}
           </ThemeProvider>
         </div>
       </form>
