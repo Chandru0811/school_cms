@@ -65,6 +65,7 @@ function WorkSheetAsign({ grade_ids, assignedId }) {
         value: student.id,
         label: student.first_name,
       }));
+      await new Promise((resolve) => setTimeout(resolve, 0));
       console.log("studrnt \\", formattedStudent)
       setStudentList(formattedStudent);
     } catch (e) {
@@ -82,6 +83,8 @@ function WorkSheetAsign({ grade_ids, assignedId }) {
           value: grade.id,
           label: grade.name,
         }));
+        await new Promise((resolve) => setTimeout(resolve, 0));
+        console.log("grade list of id",formattedGrades)
       setGrades(formattedGrades);
     } catch (e) {
       console.error("Error Fetching Data", e);

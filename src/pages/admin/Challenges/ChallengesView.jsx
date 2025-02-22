@@ -80,7 +80,7 @@ function ChallengesView() {
             <div className="d-flex">
               <div className="dot active"></div>
             </div>
-            <span className="me-2 text-muted text-sm">View Challenges</span>
+            <span className="me-2 text-muted">View Challenges</span>
           </div>
           <div className="my-2 pe-3 d-flex align-items-center">
             <Link to="/challenges">
@@ -89,14 +89,6 @@ function ChallengesView() {
               </button>
             </Link>
             &nbsp;&nbsp;
-            <ChallengesAssign />
-            <button
-              type="button"
-              className="btn btn-success btn-sm me-2"
-              style={{ fontWeight: "600px !important" }}
-            >
-              Activate
-            </button>
           </div>
         </div>
         <div className="container-fluid px-4">

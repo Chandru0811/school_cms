@@ -273,20 +273,6 @@ function QuestionEdit() {
     }
   };
 
-  const addMultiChoice = () => {
-    formik.setFieldValue("options", [
-      ...formik.values.options,
-      { id: Date.now(), value: "" },
-    ]);
-  };
-
-  const removeMultiChoice = (id) => {
-    const updatedMultiChoices = formik.values.options.filter(
-      (multiChoice) => multiChoice.id !== id
-    );
-    formik.setFieldValue("options", updatedMultiChoices);
-  };
-
   useEffect(() => {
     getData();
     getCenterList();

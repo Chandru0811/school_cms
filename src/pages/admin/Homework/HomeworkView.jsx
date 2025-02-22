@@ -1,8 +1,8 @@
 import { Link, useParams } from "react-router-dom";
-import WorkSheetAsign from "../WorkSheet/WorkSheetAsign";
 import { useEffect, useState } from "react";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
+import HomeworkAssign from "./HomeworkAssign";
 
 function HomeworkView() {
   const [data, setData] = useState({});
@@ -75,7 +75,7 @@ function HomeworkView() {
               </button>
             </Link>
             &nbsp;&nbsp;
-            <WorkSheetAsign
+            <HomeworkAssign
               grade_ids={data.grade_id ? JSON.parse(data.grade_id) : []}
               assignedId={assigned_id}
             />
@@ -87,9 +87,7 @@ function HomeworkView() {
               Activate
             </button>
             <Link
-              to={`/doassessment?grade_ids=${encodeURIComponent(
-                JSON.stringify(data.grade_id ? JSON.parse(data.grade_id) : [])
-              )}&assignedId=${assigned_id}`}
+              to={`/homedoassessment?assignedId=${assigned_id}`}
             >
               <button
                 type="button"

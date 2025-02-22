@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import api from "../../config/URL";
 import { useLocation } from "react-router-dom";
+import api from "../../../config/URL";
 
-const DoAssessment = () => {
+const HomeDoAssessment = () => {
   const [data, setData] = useState({});
   const [answers, setAnswers] = useState({});
   const location = useLocation();
@@ -15,9 +15,8 @@ const DoAssessment = () => {
 
   const getData = async () => {
     try {
-      const response = await api.get(`worksheet/assessment/${assignedId}`);
+      const response = await api.get(`homework/assessment/${assignedId}`);
       setData(response.data.data);
-      // await new Promise((resolve) => setTimeout(resolve, 0));
       // Set the initial time limit for the first question if it exists
       if (response.data.data.questions && response.data.data.questions.length > 0) {
         const firstQuestion = response.data.data.questions[0];
@@ -268,4 +267,4 @@ const DoAssessment = () => {
   );
 };
 
-export default DoAssessment;
+export default HomeDoAssessment;

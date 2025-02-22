@@ -92,7 +92,7 @@ function QuestionAdd() {
         if (ans.fillable) {
           formData.append("answer[fillable]", ans.fillable);
         }
-        if (ans.multichoice && !multichoiceAdded) {
+        if (ans.multichoice) {
           formData.append("answer[multichoice]", ans.multichoice);
           multichoiceAdded = true;
         }
@@ -624,6 +624,11 @@ function QuestionAdd() {
                               ...multiChoice,
                               selected: !multiChoice.selected,
                             };
+                            console.log("multichoice", updatedOptions[index] = {
+                              ...multiChoice,
+                              selected: !multiChoice.selected,
+                            });
+                            console.log("answer",updatedAnswers)
                             formik.setFieldValue("options", updatedOptions);
                             formik.setFieldValue("answer", updatedAnswers);
                           }}
@@ -678,9 +683,9 @@ function QuestionAdd() {
                         </div>
                         {formik.errors.options &&
                           formik.touched.options &&
-                          formik.errors.options[index]?.value && (
+                          formik.errors.options[index]?.values && (
                             <div className="text-danger mt-1">
-                              {formik.errors.options[index]?.value}
+                              {formik.errors.options[index]?.values}
                             </div>
                           )}
                       </div>

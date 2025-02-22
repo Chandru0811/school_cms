@@ -58,6 +58,7 @@ import DoAssessment from "../pages/admin/DoAssessment";
 import CenterAdd from "../pages/admin/Center/CenterAdd";
 import CenterEdit from "../pages/admin/Center/CenterEdit";
 import CenterView from "../pages/admin/Center/CenterView";
+import HomeDoAssessment from "../pages/admin/Homework/HomeDoAssessment";
 
 function Admin({ handleLogout }) {
   return (
@@ -131,6 +132,7 @@ function Admin({ handleLogout }) {
                     <Route path="/worksheet/add" element={<WorkSheetAdd />} />
                     <Route path="/worksheet/edit/:id" element={<WorkSheetEdit />} />
                     <Route path="/worksheet/view/:id" element={<WorkSheetView />} />
+                    <Route path="/homedoassessment" element={<HomeDoAssessment />} />
 
                     {/* Home Work  */}
                     <Route path="/homework" element={<Homework />} />
