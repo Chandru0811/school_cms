@@ -1,6 +1,6 @@
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MultiSelect } from "react-multi-select-component";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -13,6 +13,7 @@ import toast from "react-hot-toast";
 import api from "../../../config/URL";
 
 function WorkSheetAdd() {
+  const navigate=useNavigate();
   const [selectedCenter, setSelectedCenter] = useState([]);
   const [selectedSubjects, setSelectedSubjects] = useState([]);
   const [selectedGrades, setSelectedGrades] = useState([]);
@@ -121,6 +122,8 @@ function WorkSheetAdd() {
         if (response.status === 200) {
           console.log("object", response);
           toast.success(response.data?.message);
+          formik.resetForm();
+          navigate("/worksheet");
         }
       } catch (error) {
         if (error.response?.data?.errors) {
