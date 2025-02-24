@@ -63,7 +63,6 @@ const Login = ({ loginAsAdmin, loginAsSuperAdmin }) => {
 
         if (response?.status === 200) {
           const { data } = response;
-          toast.success(data.message);
           localStorage.setItem("schoolCMS_token", data.data.token);
           localStorage.setItem("schoolCMS_name", data.data.user.name);
           localStorage.setItem("schoolCMS_id", data.data.user.id);
@@ -82,13 +81,15 @@ const Login = ({ loginAsAdmin, loginAsSuperAdmin }) => {
           } else {
             toast.error("Failed to fetch permissions");
           }
-            if (data.data.user.role_id !== "1" && data.data.user.role_id !== 1) {
-              loginAsAdmin();
-          }          
+          if (data.data.user.role_id !== "1" && data.data.user.role_id !== 1) {
+            navigate("/dashboard");
+            loginAsAdmin();
+          }
           if (data.data.user.role_id === "1" || data.data.user.role_id === 1) {
-            navigate("/");
+            navigate("/dashboard");
             loginAsSuperAdmin();
           }
+          toast.success(data.message);
           // else {
           //   toast("Oops! You don't have access to this page, but feel free to check out our amazing website! 😊", {
           //     icon: "😊",
@@ -157,7 +158,7 @@ const Login = ({ loginAsAdmin, loginAsSuperAdmin }) => {
                 {formik.errors.email}
               </Form.Control.Feedback>
             </Form.Group>
-{/* 
+            {/* 
             <div className="d-flex justify-content-between align-items-center py-2">
               <Form.Label>Password</Form.Label>
               <Link

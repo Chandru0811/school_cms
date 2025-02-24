@@ -34,6 +34,8 @@ function Topic() {
       {
         accessorFn: (row, index) => index + 1,
         header: "S.NO",
+        enableSorting: true,
+        enableHiding: false,
         size: 40,
         cell: ({ cell }) => (
           <span style={{ textAlign: "center" }}>{cell.getValue()}</span>
@@ -42,6 +44,8 @@ function Topic() {
       {
         accessorKey: "id",
         header: "",
+        enableSorting: true,
+        enableHiding: false,
         size: 20,
         Cell: ({ row }) => (
           <IconButton
@@ -55,7 +59,23 @@ function Topic() {
           </IconButton>
         ),
       },
-      { accessorKey: "name", header: "Name" },
+      {
+        accessorKey: "center_id",
+        header: "Centre Name",
+        enableSorting: true,
+        enableHiding: false,
+      },
+      {
+        accessorKey: "name", header: "Name",
+        enableSorting: true,
+        enableHiding: false,
+      },
+      {
+        accessorKey: "subject_id",
+        header: "Subject Name",
+        enableSorting: true,
+        enableHiding: false,
+      },
       {
         accessorKey: "description",
         header: "Description",
@@ -64,7 +84,7 @@ function Topic() {
             {cell.getValue()}
           </span>
         ),
-      },      {
+      }, {
         accessorKey: "created_at",
         header: "Created At",
         Cell: ({ cell }) => cell.getValue()?.substring(0, 10),

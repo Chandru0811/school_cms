@@ -25,7 +25,7 @@ function TopicAdd({ onSuccess }) {
     center_id: yup
       .array()
       .min(1, "*Select at least one center")
-      .required("*Select a center id"),
+      .required("*Select a center"),
     // grade: yup.string().required("*Select a grade"),
     subject_id: yup.string().required("*Select a subject"),
     name: yup
@@ -132,7 +132,7 @@ function TopicAdd({ onSuccess }) {
           <hr className="m-0"></hr>
           <DialogContent>
             <div className="row">
-              <div className="col-md-6 col-12 mb-3">
+            <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
                   Centre Name<span className="text-danger">*</span>
                 </label>
@@ -147,11 +147,10 @@ function TopicAdd({ onSuccess }) {
                     );
                   }}
                   labelledBy="Select Center"
-                  className={`form-multi-select form-multi-select-sm mb-5${
-                    formik.touched.center_id && formik.errors.center_id
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-multi-select form-multi-select-sm ${formik.touched.center_id && formik.errors.center_id
+                    ? "is-invalid"
+                    : ""
+                    }`}
                 />
                 {formik.touched.center_id && formik.errors.center_id && (
                   <div className="invalid-feedback">

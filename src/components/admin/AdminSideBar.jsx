@@ -84,7 +84,7 @@ function AdminSidebar() {
                   to="/center"
                 >
                   <IoGridOutline className="sidebar_icon" />
-                  Center
+                  Centre
                 </NavLink>
               </li>
             }

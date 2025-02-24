@@ -141,34 +141,33 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
         <hr className="m-0" />
         <DialogContent>
           <div className="row">
-            <div className="col-md-6 col-12 mb-3">
+          <div className="col-md-6 col-12 mb-3">
               <label className="form-label">
                 Centre Name<span className="text-danger">*</span>
               </label>
               <MultiSelect
-                  options={centerList}
-                  value={selectedCenter}
-                  onChange={(selected) => {
-                    setSelectedCenter(selected);
-                    formik.setFieldValue(
-                      "center_id",
-                      selected.map((option) => option.value)
-                    );
-                  }}
-                  labelledBy="Select Center"
-                  className={`form-multi-select form-multi-select-sm mb-5${
-                    formik.touched.center_id && formik.errors.center_id
-                      ? "is-invalid"
-                      : ""
+                options={centerList}
+                value={selectedCenter}
+                onChange={(selected) => {
+                  setSelectedCenter(selected);
+                  formik.setFieldValue(
+                    "center_id",
+                    selected.map((option) => option.value)
+                  );
+                }}
+                labelledBy="Select Center"
+                className={
+                  `form-multi-select form-multi-select-sm mb-5${formik.touched.center_id && formik.errors.center_id
+                    ? "is-invalid"
+                    : ""
                   }`}
-                />
+              />
               {formik.touched.center_id && formik.errors.center_id && (
                 <div className="invalid-feedback">
                   {formik.errors.center_id}
                 </div>
               )}
             </div>
-
             <div className="col-md-6 col-12 mb-3">
               <label className="form-label">
                 Subject<span className="text-danger">*</span>

@@ -229,6 +229,7 @@ function Subject() {
                 <Delete
                   path={`subject/delete/${selectedId}`}
                   onDeleteSuccess={getData}
+                  onOpen={handleMenuClose}
                 />
               </MenuItem>
             </Menu>

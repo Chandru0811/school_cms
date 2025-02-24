@@ -29,7 +29,7 @@ function AdminHeader({ handleLogout }) {
   const handleChangePasswordClick = () => {
     setIsChangingPassword(true);
     formik.resetForm();
-    };
+  };
 
   const handleCancel = () => {
     formik.resetForm();
@@ -53,7 +53,10 @@ function AdminHeader({ handleLogout }) {
 
   const handleClose = () => {
     formik.resetForm();
-    setShow(false);}
+    setIsChangingPassword(false);
+    setShow(false);
+  }
+  
   const handleShow = () => setShow(true);
 
   const formik = useFormik({
@@ -201,7 +204,11 @@ function AdminHeader({ handleLogout }) {
                   </div>
                 )}
 
-                <Modal show={show} onHide={handleClose} centered>
+                <Modal
+                  show={show}
+                  onHide={handleClose}
+                  centered
+                  backdrop="static">
                   <Modal.Body className="text-center position-relative">
                     {/* Close button at the top-right */}
                     <button
@@ -230,7 +237,7 @@ function AdminHeader({ handleLogout }) {
                                 objectFit: "cover",
                               }}
                             />
-                            <button
+                            {/* <button
                               className="btn btn-sm btn-button position-absolute"
                               style={{
                                 top: "6px",
@@ -243,7 +250,7 @@ function AdminHeader({ handleLogout }) {
                               }}
                             >
                               <GoPencil />
-                            </button>
+                            </button> */}
                           </div>
 
                           <button
@@ -294,27 +301,26 @@ function AdminHeader({ handleLogout }) {
                       </>
                     ) : (
                       <form onSubmit={formik.handleSubmit}>
-                      <div className="text-center">
-                        <p>{data.email}</p>
-                      </div>
+                        <div className="text-center">
+                          <p>{data.email}</p>
+                        </div>
                         <div className="row py-4">
                           {/* New Password Field */}
                           <div className="col-12 mb-3">
-                          <div className="text-start">
-                            <label className="form-label">
-                              New Password
-                              <span className="text-danger">*</span>
-                            </label>
+                            <div className="text-start">
+                              <label className="form-label">
+                                New Password
+                                <span className="text-danger">*</span>
+                              </label>
                             </div>
                             <div className="input-group">
                               <input
                                 type={showPassword ? "text" : "password"}
-                                className={`form-control form-control-sm ${
-                                  formik.touched.password &&
+                                className={`form-control form-control-sm ${formik.touched.password &&
                                   formik.errors.password
-                                    ? "is-invalid"
-                                    : ""
-                                }`}
+                                  ? "is-invalid"
+                                  : ""
+                                  }`}
                                 {...formik.getFieldProps("password")}
                               />
                               <button
@@ -322,7 +328,7 @@ function AdminHeader({ handleLogout }) {
                                 className="input-group-text"
                                 onClick={togglePasswordVisibility} // Toggle visibility
                               >
-                                {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                {showPassword ? <FaEye /> : <FaEyeSlash />}
                               </button>
                             </div>
                             {formik.touched.password &&
@@ -335,21 +341,20 @@ function AdminHeader({ handleLogout }) {
 
                           {/* Confirm Password Field */}
                           <div className="col-12 mb-3">
-                          <div className="text-start">
-                            <label className="form-label">
-                              Confirm Password
-                              <span className="text-danger">*</span>
-                            </label>
+                            <div className="text-start">
+                              <label className="form-label">
+                                Confirm Password
+                                <span className="text-danger">*</span>
+                              </label>
                             </div>
                             <div className="input-group">
                               <input
                                 type={showConfirmPassword ? "text" : "password"} // Toggle between text and password
-                                className={`form-control form-control-sm ${
-                                  formik.touched.password_confirmation &&
+                                className={`form-control form-control-sm ${formik.touched.password_confirmation &&
                                   formik.errors.password_confirmation
-                                    ? "is-invalid"
-                                    : ""
-                                }`}
+                                  ? "is-invalid"
+                                  : ""
+                                  }`}
                                 {...formik.getFieldProps(
                                   "password_confirmation"
                                 )}
@@ -360,9 +365,9 @@ function AdminHeader({ handleLogout }) {
                                 onClick={toggleConfirmPasswordVisibility} // Toggle visibility
                               >
                                 {showConfirmPassword ? (
-                                  <FaEyeSlash />
-                                ) : (
                                   <FaEye />
+                                ) : (
+                                  <FaEyeSlash />
                                 )}
                               </button>
                             </div>

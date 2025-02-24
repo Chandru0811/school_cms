@@ -56,6 +56,10 @@ function Grade() {
         ),
       },
       {
+        accessorKey: "center_id",
+        header: "Centre Name",
+      },
+      {
         accessorKey: "name",
         header: "Name",
       },

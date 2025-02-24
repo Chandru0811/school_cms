@@ -19,6 +19,7 @@ function GradeAdd({ onSuccess }) {
   const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
+  const [isModified, setIsModified] = useState(false);
 
   const validationSchema = yup.object().shape({
     center_id: yup
@@ -33,10 +34,13 @@ function GradeAdd({ onSuccess }) {
 
   const handleShow = () => {
     setShow(true);
+    formik.resetForm();
+    setIsModified(false);
   };
 
   const handleClose = () => {
     formik.resetForm();
+    setSelectedCenter([]);
     setShow(false);
   };
 
@@ -56,8 +60,8 @@ function GradeAdd({ onSuccess }) {
         if (response.status === 200) {
           toast.success(response.data.message);
           onSuccess();
-          handleClose();
           formik.resetForm();
+          handleClose();
           navigate("/grade");
         }
       } catch (e) {
@@ -73,6 +77,20 @@ function GradeAdd({ onSuccess }) {
         }
       } finally {
         setLoadIndicator(false);
+      }
+    },
+    enableReinitialize: true,
+    validateOnChange: true,
+    validateOnBlur: true,
+    validate: (values) => {
+      if (
+        Object.values(values).some(
+          (value) => typeof value === "string" && value.trim() !== ""
+        )
+      ) {
+        setIsModified(true);
+      } else {
+        setIsModified(false);
       }
     },
   });
@@ -105,7 +123,12 @@ function GradeAdd({ onSuccess }) {
         Add
       </button>
 
-      <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
+      <Dialog
+        open={show}
+        onClose={handleClose}
+        disableBackdropClick={isModified}
+        disableEscapeKeyDown={isModified}
+        maxWidth="md" fullWidth>
         <form
           onSubmit={formik.handleSubmit}
           onKeyDown={(e) => {
@@ -133,11 +156,10 @@ function GradeAdd({ onSuccess }) {
                     );
                   }}
                   labelledBy="Select Center"
-                  className={`form-multi-select form-multi-select-sm mb-5 ${
-                    formik.touched.center_id && formik.errors.center_id
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-multi-select form-multi-select-sm ${formik.touched.center_id && formik.errors.center_id
+                    ? "is-invalid"
+                    : ""
+                    }`}
                 />
                 {formik.touched.center_id && formik.errors.center_id && (
                   <div className="invalid-feedback">
@@ -152,11 +174,10 @@ function GradeAdd({ onSuccess }) {
                 <input
                   type="text"
                   onKeyDown={(e) => e.stopPropagation()}
-                  className={`form-control form-control-sm ${
-                    formik.touched.name && formik.errors.name
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-control form-control-sm ${formik.touched.name && formik.errors.name
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   {...formik.getFieldProps("name")}
                 />
                 {formik.touched.name && formik.errors.name && (
@@ -166,11 +187,10 @@ function GradeAdd({ onSuccess }) {
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">Description</label>
                 <textarea
-                  className={`form-control form-control-sm ${
-                    formik.touched.description && formik.errors.description
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-control form-control-sm ${formik.touched.description && formik.errors.description
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   rows="4" // Adjust the rows for better visibility
                   {...formik.getFieldProps("description")}
                 />

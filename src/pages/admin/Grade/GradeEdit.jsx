@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
 
-function GradeEdit({ show, setShow,id,onSuccess }) {
+function GradeEdit({ show, setShow, id, onSuccess }) {
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [selectedCenter, setSelectedCenter] = useState([]);
   const [centerList, setCenterList] = useState([]);
@@ -25,12 +25,12 @@ function GradeEdit({ show, setShow,id,onSuccess }) {
   };
 
   const validationSchema = yup.object().shape({
-     center_id: yup
-          .array()
-          .min(1, "*Select at least one center")
-          .required("*Select a center id"),
-          name: yup.string().max(255, "*Name must not exceed 255 characters").required("*Name is required"),
-        });
+    center_id: yup
+      .array()
+      .min(1, "*Select at least one center")
+      .required("*Select a center id"),
+    name: yup.string().max(255, "*Name must not exceed 255 characters").required("*Name is required"),
+  });
 
   const formik = useFormik({
     initialValues: {
@@ -134,11 +134,10 @@ function GradeEdit({ show, setShow,id,onSuccess }) {
                   );
                 }}
                 labelledBy="Select Service"
-                className={`form-multi-select form-multi-select-sm mb-5 ${
-                  formik.touched.center_id && formik.errors.center_id
-                    ? "is-invalid"
-                    : ""
-                }`}
+                className={`form-multi-select form-multi-select-sm mb-5 ${formik.touched.center_id && formik.errors.center_id
+                  ? "is-invalid"
+                  : ""
+                  }`}
               />
               {formik.touched.center_id && formik.errors.center_id && (
                 <div className="invalid-feedback">
@@ -152,9 +151,8 @@ function GradeEdit({ show, setShow,id,onSuccess }) {
               </label>
               <input
                 type="text"
-                className={`form-control form-control-sm ${
-                  formik.touched.name && formik.errors.name ? "is-invalid" : ""
-                }`}
+                className={`form-control form-control-sm ${formik.touched.name && formik.errors.name ? "is-invalid" : ""
+                  }`}
                 {...formik.getFieldProps("name")}
               />
               {formik.touched.name && formik.errors.name && (
@@ -166,11 +164,10 @@ function GradeEdit({ show, setShow,id,onSuccess }) {
                 Description
               </label>
               <textarea
-                className={`form-control form-control-sm ${
-                  formik.touched.description && formik.errors.description
-                    ? "is-invalid"
-                    : ""
-                }`}
+                className={`form-control form-control-sm ${formik.touched.description && formik.errors.description
+                  ? "is-invalid"
+                  : ""
+                  }`}
                 rows="4" // Adjust the rows for better visibility
                 {...formik.getFieldProps("description")}
               />
@@ -179,7 +176,9 @@ function GradeEdit({ show, setShow,id,onSuccess }) {
         </DialogContent>
         <hr className="m-0"></hr>
         <DialogActions className="mt-3">
-          <button type="button" className="btn btn-sm btn-back"  disabled={loadIndicator} onClick={handleClose}>
+          <button type="button"
+            className="btn btn-sm btn-back"
+            disabled={loadIndicator} onClick={handleClose}>
             Cancel
           </button>
           <button

@@ -32,6 +32,11 @@ const Register = () => {
     password_confirmation: Yup.string()
       .required("Confirm Password is required")
       .oneOf([Yup.ref("password"), null], "Passwords must match"),
+    mobile: Yup.string()
+      .matches(/^[0-9]+$/, "Phone number must contain only digits")
+      .min(10, "Mobile number must be at least 10 digits")
+      .max(10, "Mobile number must be at most 10 digits")
+      .required("Mobile number is required"),
   });
 
   const formik = useFormik({
@@ -235,11 +240,10 @@ const Register = () => {
                 <input
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter password"
-                  className={`form-control ${
-                    formik.touched.password && formik.errors.password
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-control ${formik.touched.password && formik.errors.password
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   style={{
                     borderRadius: "3px",
                     borderRight: "none",
@@ -273,12 +277,11 @@ const Register = () => {
                 <input
                   type={showcPassword ? "text" : "password"}
                   placeholder="Enter password"
-                  className={`form-control ${
-                    formik.touched.password_confirmation &&
+                  className={`form-control ${formik.touched.password_confirmation &&
                     formik.errors.password_confirmation
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   style={{
                     borderRadius: "3px",
                     borderRight: "none",

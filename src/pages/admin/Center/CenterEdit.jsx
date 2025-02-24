@@ -205,11 +205,10 @@ function CenterEdit({ id, onSuccess, handleMenuClose }) {
                     Name<span className="text-danger">*</span>
                   </label>
                   <input
-                    className={`form-control ${
-                      formik.touched.name && formik.errors.name
+                    className={`form-control ${formik.touched.name && formik.errors.name
                         ? "is-invalid"
                         : ""
-                    }`}
+                      }`}
                     {...formik.getFieldProps("name")}
                   />
                   {formik.touched.name && formik.errors.name && (
@@ -222,11 +221,10 @@ function CenterEdit({ id, onSuccess, handleMenuClose }) {
                   </label>
                   <textarea
                     rows={5}
-                    className={`form-control ${
-                      formik.touched.location && formik.errors.location
+                    className={`form-control ${formik.touched.location && formik.errors.location
                         ? "is-invalid"
                         : ""
-                    }`}
+                      }`}
                     {...formik.getFieldProps("location")}
                     maxLength={825}
                   />
@@ -240,14 +238,14 @@ function CenterEdit({ id, onSuccess, handleMenuClose }) {
             </div>
           </DialogContent>
           <DialogActions>
-            <Button
-             type="button" 
-              className="btn btn-sm btn-border bg-light text-dark"
+            <button
+              type="button"
+              className="btn btn-sm btn-back"
               onClick={handleClose}
               disabled={loadIndicator} // Disable close button during submission
             >
               Cancel
-            </Button>
+            </button>
             <button
               type="submit"
               className="btn btn-button"

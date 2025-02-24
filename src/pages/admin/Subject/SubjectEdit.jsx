@@ -96,7 +96,7 @@ function SubjectEdit({ id, show, setShow, onSuccess }) {
       toast.error(`Error Fetching Data: ${e?.response?.data?.error || e.message}`);
     }
   };
-  
+
   const getGradeList = async () => {
     try {
       const response = await api.get("grades/list");
@@ -155,10 +155,9 @@ function SubjectEdit({ id, show, setShow, onSuccess }) {
                 }}
                 labelledBy="Select Center"
                 className={
-                 `form-multi-select form-multi-select-sm mb-5${
-                    formik.touched.center_id && formik.errors.center_id
-                      ? "is-invalid"
-                      : ""
+                  `form-multi-select form-multi-select-sm mb-5${formik.touched.center_id && formik.errors.center_id
+                    ? "is-invalid"
+                    : ""
                   }`}
               />
               {formik.touched.center_id && formik.errors.center_id && (
@@ -172,11 +171,10 @@ function SubjectEdit({ id, show, setShow, onSuccess }) {
                 Grade<span className="text-danger">*</span>
               </label>
               <select
-                className={`form-select form-select-sm ${
-                  formik.touched.grade_id && formik.errors.grade_id
+                className={`form-select form-select-sm ${formik.touched.grade_id && formik.errors.grade_id
                     ? "is-invalid"
                     : ""
-                }`}
+                  }`}
                 value={formik.values.grade_id}
                 onChange={(e) =>
                   formik.setFieldValue("grade_id", e.target.value)
@@ -201,9 +199,8 @@ function SubjectEdit({ id, show, setShow, onSuccess }) {
               </label>
               <input
                 type="text"
-                className={`form-control form-control-sm ${
-                  formik.touched.name && formik.errors.name ? "is-invalid" : ""
-                }`}
+                className={`form-control form-control-sm ${formik.touched.name && formik.errors.name ? "is-invalid" : ""
+                  }`}
                 {...formik.getFieldProps("name")}
               />
               {formik.touched.name && formik.errors.name && (
@@ -215,11 +212,10 @@ function SubjectEdit({ id, show, setShow, onSuccess }) {
                 Description
               </label>
               <textarea
-                className={`form-control ${
-                  formik.touched.description && formik.errors.description
+                className={`form-control ${formik.touched.description && formik.errors.description
                     ? "is-invalid"
                     : ""
-                }`}
+                  }`}
                 rows="4"
                 {...formik.getFieldProps("description")}
               />

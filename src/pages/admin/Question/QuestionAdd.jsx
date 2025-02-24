@@ -618,7 +618,7 @@ function QuestionAdd() {
                             if (multiChoice.selected) {
                               updatedAnswers = updatedAnswers.filter((ans) => ans.multichoice !== multiChoice.value);
                             } else {
-                              updatedAnswers.push({ fillable: "", multichoice: multiChoice.value, short_answer: "", closed: "" });
+                              updatedAnswers.push({ multichoice: multiChoice.value});
                             }
                             updatedOptions[index] = {
                               ...multiChoice,

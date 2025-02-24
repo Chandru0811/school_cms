@@ -28,17 +28,26 @@ function StudentAdd() {
       .matches(/^[0-9]{8,10}$/, "Mobile number must be 8 or 10 digits")
       .required("Student Mobile number is required!"),
     parent_name: yup.string().required("*Parent name is required"),
-    parent_email: yup.string().required("*Parent email is required"),
+    parent_email: yup
+      .string()
+      .email("*Email is Invalid")
+      .required("*Parent email is required")
+      .test("unique-email", "Student and Parent email must be different", function (value) {
+        return value !== this.parent.student_email;
+      }),
     parent_mobile: yup
       .string()
       .matches(/^[0-9]{8,10}$/, "Mobile number must be 8 or 10 digits")
-      .required("Parent Mobile number is required!"),
+      .required("Parent Mobile number is required!")
+      .test("unique-mobile", "Student and Parent mobile number must be different", function (value) {
+        return value !== this.parent.student_mobile;
+      }),
     grade_id: yup.string().required("*Grader list is required"),
     roll_no: yup.string().max(255, "*Roll No must not exceed 255 characters").required("*Roll number is required"),
     admission_no: yup.string().max(255, "*Admission No must not exceed 255 characters").required("*Admission number is required"),
     date_of_birth: yup.string().required("*Date of Birth is required"),
     admission_date: yup.string().max(255, "*Admission Date must not exceed 255 characters").required("*Admission date is required"),
-  });
+  });  
 
   const formik = useFormik({
     initialValues: {
@@ -349,6 +358,7 @@ function StudentAdd() {
                 </label>
                 <input
                   type="date"
+                  max={new Date().toISOString().split("T")[0]} 
                   onKeyDown={(e) => e.stopPropagation()}
                   className={`form-control form-control-sm ${
                     formik.touched.date_of_birth && formik.errors.date_of_birth

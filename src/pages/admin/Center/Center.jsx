@@ -161,7 +161,7 @@ function Center() {
           <span className="breadcrumb-separator"> &gt; </span>
         </li>
         <li className="breadcrumb-item active text-sm" aria-current="page">
-          &nbsp;Center
+          &nbsp;Centre
         </li>
       </ol>
       <div className="card">
@@ -172,7 +172,7 @@ function Center() {
             </div>
             <span className="me-2 text-muted text-sm">
               This database shows the list of&nbsp;
-              <span className="database_name">Center</span>
+              <span className="database_name">Centre</span>
             </span>
           </div>
           {storedScreens?.data[0]?.can_create === 1 && (
