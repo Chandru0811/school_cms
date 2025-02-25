@@ -244,7 +244,7 @@ function Center() {
                 />
               </MenuItem>
             </Menu>
-            {storedScreens?.data[2]?.can_view && (
+            {storedScreens?.data[0]?.can_view && (
               <CenterView
                 show={showView}
                 setShow={setShowView}

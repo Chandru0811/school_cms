@@ -1,28 +1,103 @@
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import api from "../../config/URL";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useFormik } from "formik";
 
 const DoAssessment = () => {
   const [data, setData] = useState({});
+  const navigate = useNavigate();
   const [answers, setAnswers] = useState({});
   const location = useLocation();
+  const [loadIndicator, setLoadIndicator] = useState(false);
   const queryParams = new URLSearchParams(location.search);
   const assignedId = queryParams.get("assignedId");
+  console.log("assesmentID:", assignedId);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [timeLeft, setTimeLeft] = useState(null); // Initialize as null
+  const [timeLeft, setTimeLeft] = useState(null);
   const [timeSpent, setTimeSpent] = useState(0);
+
+  const formik = useFormik({
+    initialValues: {
+      assessment_id: assignedId,
+      question_id: [],
+      answer: [],
+    },
+    onSubmit: async (values) => {
+      if (!validateAnswers()) {
+        toast.error("Please answer questions before submitting.");
+        return;
+      }
+
+      setLoadIndicator(true);
+      console.log("values", values);
+      const formData = new FormData();
+      formData.append("assessment_id", assignedId);
+
+      // Sort the answers by question ID
+      const sortedAnswers = Object.keys(answers)
+        .sort((a, b) => a - b)
+        .map((key) => ({
+          question_id: key,
+          answer: answers[key],
+        }));
+      sortedAnswers.forEach((item) => {
+        formData.append(`question_id[${item.question_id}]`, item.question_id);
+        if (item.answer.upload) {
+          formData.append(`answer[${item.question_id}]`, item.answer.upload);
+        } else if (item.answer.fillable) {
+          formData.append(`answer[${item.question_id}]`, item.answer.fillable);
+        } else if (item.answer.closed) {
+          formData.append(`answer[${item.question_id}]`, item.answer.closed);
+        } else if (item.answer.multichoice) {
+          formData.append(`answer[${item.question_id}]`, item.answer.multichoice);
+        } else if (item.answer.short_answer) {
+          formData.append(`answer[${item.question_id}]`, item.answer.short_answer);
+        }
+      });
+
+      try {
+        const response = await api.post("worksheet/assessment", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        if (response.status === 200) {
+          toast.success(response.data.message);
+          navigate(`/worksheet/view/${assignedId}`);
+        }
+      } catch (e) {
+        console.error("Error Fetching Data", e);
+        toast.error("Error Fetching Data", e?.response?.data?.error || e.message);
+      } finally {
+        setLoadIndicator(false);
+      }
+    },
+  });
+
+  const validateAnswers = () => {
+    if (!data.questions) return false;
+
+    for (let i = 0; i < data.questions.length; i++) {
+      const question = data.questions[i];
+      if (!answers[question.id]) {
+        return false;
+      }
+    }
+    return true;
+  };
 
   const getData = async () => {
     try {
       const response = await api.get(`worksheet/assessment/${assignedId}`);
       setData(response.data.data);
-      // await new Promise((resolve) => setTimeout(resolve, 0));
-      // Set the initial time limit for the first question if it exists
       if (response.data.data.questions && response.data.data.questions.length > 0) {
         const firstQuestion = response.data.data.questions[0];
-        if (firstQuestion.time_limit) {
+        if (firstQuestion.time_limit && firstQuestion.time_limit > 0) {
           setTimeLeft(firstQuestion.time_limit);
+        } else {
+          setTimeLeft(null);
         }
       }
     } catch (e) {
@@ -150,11 +225,10 @@ const DoAssessment = () => {
     if (currentQuestionIndex < data.questions.length - 1) {
       setCurrentQuestionIndex((prev) => prev + 1);
       const nextQuestion = data.questions[currentQuestionIndex + 1];
-      // Set time limit for the next question if it exists
       if (nextQuestion.time_limit) {
         setTimeLeft(nextQuestion.time_limit);
       } else {
-        setTimeLeft(null); // Hide timer if no time limit
+        setTimeLeft(null);
       }
       setTimeSpent(0);
     }
@@ -164,19 +238,13 @@ const DoAssessment = () => {
     if (currentQuestionIndex > 0) {
       setCurrentQuestionIndex((prev) => prev - 1);
       const previousQuestion = data.questions[currentQuestionIndex - 1];
-      // Set time limit for the previous question if it exists
       if (previousQuestion.time_limit) {
         setTimeLeft(previousQuestion.time_limit);
       } else {
-        setTimeLeft(null); // Hide timer if no time limit
+        setTimeLeft(null);
       }
       setTimeSpent(0);
     }
-  };
-
-  const handleSubmit = () => {
-    console.log("Submitted Answers:", answers);
-    // You can add an API call here to submit the answers to the server
   };
 
   useEffect(() => {
@@ -187,7 +255,7 @@ const DoAssessment = () => {
       }, 1000);
       return () => clearInterval(timer);
     } else if (timeLeft === 0) {
-      handleNext(); // Automatically move to the next question when time runs out
+      handleNext();
     }
   }, [timeLeft, currentQuestionIndex]);
 
@@ -200,15 +268,14 @@ const DoAssessment = () => {
   const quesIdWithType = JSON.parse(data.ques_id_with_type);
   const currentQuestion = data.questions[currentQuestionIndex];
   const matchedQues = quesIdWithType.find((q) => q.id === currentQuestion.id);
-
   let questionTypes = [];
   if (matchedQues) {
     try {
-      questionTypes = JSON.parse(matchedQues.ques_type);
+      questionTypes = Array.isArray(matchedQues.questype)
+        ? matchedQues.questype
+        : [matchedQues.questype];
     } catch (e) {
-      questionTypes = Array.isArray(matchedQues.ques_type)
-        ? matchedQues.ques_type
-        : [matchedQues.ques_type];
+      questionTypes = [matchedQues.questype];
     }
   }
 
@@ -253,9 +320,16 @@ const DoAssessment = () => {
                   className={`btn btn-sm ${currentQuestionIndex === data.questions.length - 1 ? "btn-primary" : "btn-secondary"
                     }`}
                   onClick={() =>
-                    currentQuestionIndex === data.questions.length - 1 ? handleSubmit() : handleNext()
+                    currentQuestionIndex === data.questions.length - 1 ? formik.handleSubmit() : handleNext()
                   }
+                  disabled={loadIndicator}
                 >
+                  {loadIndicator && (
+                    <span
+                      className="spinner-border spinner-border-sm me-2"
+                      aria-hidden="true"
+                    ></span>
+                  )}
                   {currentQuestionIndex === data.questions.length - 1 ? "Submit" : "Next"}
                 </button>
               </div>

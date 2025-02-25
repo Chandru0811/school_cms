@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import {
@@ -59,35 +59,54 @@ function HomeworkAssign({ grade_ids, assignedId }) {
   });
 
   const getStudentList = async (selectId) => {
+    if (!selectId) return;
+    
+    setLoadIndicator(true);
+    
     try {
       const response = await api.get(`filter/students?grade_id=${selectId}`);
-      const formattedStudent = response.data?.data?.map((student) => ({
-        value: student.id,
-        label: student.first_name,
-      }));
-      console.log("studrnt \\", formattedStudent)
-      setStudentList(formattedStudent);
+      setStudentList(
+        response.data?.data?.map((student) => ({
+          value: student.id,
+          label: student.first_name,
+        }))
+      );
     } catch (e) {
       console.error("Error Fetching Data", e);
       toast.error("Error Fetching Data", e?.response?.data?.error || e.message);
+    } finally {
+      setLoadIndicator(false);
     }
-  };
+  };  
 
   const getGradeList = async () => {
     try {
+      setLoadIndicator(true);
       const response = await api.get("grades/list");
-      const formattedGrades = response.data?.data
-        ?.filter((grade) => grade_ids.includes(grade.id))
-        .map((grade) => ({
-          value: grade.id,
-          label: grade.name,
-        }));
-      setGrades(formattedGrades);
+      if (response.data?.data) {
+        const gradeMap = new Map(response.data.data.map(grade => [grade.id, grade]));
+        const formattedGrades = grade_ids
+          .map(id => gradeMap.get(id))
+          .filter(Boolean)
+          .map(grade => ({
+            value: grade.id,
+            label: grade.name,
+          }));
+        console.log("grade list of id", formattedGrades);
+        setGrades(formattedGrades);
+      }
     } catch (e) {
       console.error("Error Fetching Data", e);
       toast.error("Error Fetching Data", e?.response?.data?.error || e.message);
+    } finally {
+      setLoadIndicator(false);
     }
   };
+  
+  const memoizedGrades = useMemo(() => {
+    return grades.filter(grade => grade_ids.includes(grade.value));
+  }, [grades, grade_ids]);
+  
 
   useEffect(() => {
     getGradeList();
