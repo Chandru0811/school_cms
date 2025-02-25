@@ -56,8 +56,9 @@ function Grade() {
         ),
       },
       {
-        accessorKey: "center_id",
+        accessorKey: "centers",
         header: "Centre Name",
+        Cell: ({ cell }) => cell.getValue()?.join(", ") || "",
       },
       {
         accessorKey: "name",

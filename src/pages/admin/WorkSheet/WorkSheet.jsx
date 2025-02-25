@@ -54,9 +54,15 @@ function Worksheet() {
           </IconButton>
         ),
       },
-      { accessorKey: "centre_id", header: "Centre name" },
-      { accessorKey: "grade_id", header: "Grade" },
-      { accessorKey: "name", header: "Topic" },
+      {
+        accessorKey: "center_names",
+        header: "Centre name",
+        Cell: ({ cell }) => cell.getValue()?.join(", ") || "",
+      },
+      { accessorKey: "grade_names", header: "Grade", Cell: ({ cell }) => cell.getValue()?.join(", ") || "",
+    },
+      { accessorKey: "topic_names", header: "Topic",Cell: ({ cell }) => cell.getValue()?.join(", ") || "",
+    },
       { accessorKey: "type", header: "Subject" },
       { accessorKey: "target_score", header: "Difficult Level" },
       { accessorKey: "reward", header: "Reward" },
@@ -87,7 +93,7 @@ function Worksheet() {
       setData(response.data.data);
     } catch (e) {
       toast.error("Error Fetching Data ", e?.response?.data?.error);
-    }finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -185,60 +191,60 @@ function Worksheet() {
             <div className="loader"></div>
           </div>
         ) : (
-        <>
-          <ThemeProvider theme={theme}>
-            <MaterialReactTable
-              columns={columns}
-              data={data}
-              enableColumnActions={false}
-              enableColumnFilters={false}
-              enableDensityToggle={false}
-              enableFullScreenToggle={false}
-              initialState={{
-                columnVisibility: {
-                  working_hrs: false,
-                  citizenship: false,
-                  nationality: false,
-                  created_by: false,
-                  created_at: false,
-                  updated_by: false,
-                  updated_at: false,
-                },
-              }}
-              muiTableBodyRowProps={({ row }) =>
-                storedScreens?.data[8]?.can_view
-                  ? {
-                      onClick: () =>
-                        navigate(`/worksheet/view/${row.original.id}`),
-                      style: { cursor: "pointer" },
-                    }
-                  : {}
-              }
-            />
-          </ThemeProvider>
-          <Menu
-            id="action-menu"
-            anchorEl={menuAnchor}
-            open={Boolean(menuAnchor)}
-            onClose={handleMenuClose}
-          >
-            {storedScreens?.data[8]?.can_edit && (
-              <MenuItem
-                onClick={() => navigate(`/worksheet/edit/${selectedId}`)}
-              >
-                Edit
-              </MenuItem>
-            )}
-            <MenuItem>
-              <Delete
-                path={`worksheet/delete/${selectedId}`}
-                onDeleteSuccess={getData}
-                onOpen={handleMenuClose}
+          <>
+            <ThemeProvider theme={theme}>
+              <MaterialReactTable
+                columns={columns}
+                data={data}
+                enableColumnActions={false}
+                enableColumnFilters={false}
+                enableDensityToggle={false}
+                enableFullScreenToggle={false}
+                initialState={{
+                  columnVisibility: {
+                    working_hrs: false,
+                    citizenship: false,
+                    nationality: false,
+                    created_by: false,
+                    created_at: false,
+                    updated_by: false,
+                    updated_at: false,
+                  },
+                }}
+                muiTableBodyRowProps={({ row }) =>
+                  storedScreens?.data[8]?.can_view
+                    ? {
+                        onClick: () =>
+                          navigate(`/worksheet/view/${row.original.id}`),
+                        style: { cursor: "pointer" },
+                      }
+                    : {}
+                }
               />
-            </MenuItem>
-          </Menu>
-        </>
-      )}
+            </ThemeProvider>
+            <Menu
+              id="action-menu"
+              anchorEl={menuAnchor}
+              open={Boolean(menuAnchor)}
+              onClose={handleMenuClose}
+            >
+              {storedScreens?.data[8]?.can_edit && (
+                <MenuItem
+                  onClick={() => navigate(`/worksheet/edit/${selectedId}`)}
+                >
+                  Edit
+                </MenuItem>
+              )}
+              <MenuItem>
+                <Delete
+                  path={`worksheet/delete/${selectedId}`}
+                  onDeleteSuccess={getData}
+                  onOpen={handleMenuClose}
+                />
+              </MenuItem>
+            </Menu>
+          </>
+        )}
       </div>
     </div>
   );

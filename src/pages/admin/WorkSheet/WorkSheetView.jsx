@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import WorkSheetAsign from "./WorkSheetAsign";
 import { useEffect, useState } from "react";
 import api from "../../../config/URL";
@@ -8,17 +8,23 @@ function WorkSheetView() {
   const [data, setData] = useState({});
   const { id } = useParams();
   const [centerList, setCenterList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
   const assigned_id = id;
-  console.log("idddss", assigned_id)
+  console.log("idddss", assigned_id);
 
   const getData = async () => {
     try {
+      setLoading(true);
       const response = await api.get(`worksheet/${id}`);
       setData(response.data.data);
     } catch (e) {
       const errorMessage =
         e?.response?.data?.error || "Error Fetching Data. Please try again.";
       toast.error(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -95,138 +101,191 @@ function WorkSheetView() {
                 Do Assessment
               </button>
             </Link>
+            &nbsp;&nbsp;
+            <button
+              type="button"
+              className="btn btn-sm btn-button"
+              onClick={() => navigate(`/worksheet/edit/${id}`)}
+            >
+              Edit
+            </button>
           </div>
         </div>
-        <div className="container-fluid px-4">
-          <div className="row pb-3">
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Centre</p>
+        <>
+          {loading ? (
+            <div className="loader-container">
+              <div className="loader"></div>
+            </div>
+          ) : (
+            <div className="container-fluid px-4">
+              <div className="row pb-3">
+                <div className="col-md-6 col-12 my-2">
+                  <div className="row">
+                    <div className="col-6">
+                      <p className="fw-medium text-sm">Centre</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm">
+                        : {data.center_names}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">
-                    : {data.center_names || "--"}
-                  </p>
+                <div className="col-md-6 col-12 my-2">
+                  <div className="row">
+                    <div className="col-6">
+                      <p className="fw-medium text-sm">Grade</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm">: {data.grade_names}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12 my-2">
+                  <div className="row">
+                    <div className="col-6">
+                      <p className="fw-medium text-sm">Topic</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm">
+                        :{" "}
+                        {Array.isArray(data.topic_names)
+                          ? data.topic_names.join(", ")
+                          : data.topic_names}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12 my-2">
+                  <div className="row">
+                    <div className="col-6">
+                      <p className="fw-medium text-sm">Title</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm">: {data.title}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12 my-2">
+                  <div className="row">
+                    <div className="col-6">
+                      <p className="fw-medium text-sm">Type</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm">: {data.type}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12 my-2">
+                  <div className="row">
+                    <div className="col-6">
+                      <p className="fw-medium text-sm">Subject</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm">
+                        :{" "}
+                        {Array.isArray(data.subject_names)
+                          ? data.subject_names.join(", ")
+                          : data.subject_names}{" "}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12 my-2">
+                  <div className="row">
+                    <div className="col-6">
+                      <p className="fw-medium text-sm">Question Type</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm">: {data.ques_type}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12 my-2">
+                  <div className="row">
+                    <div className="col-6">
+                      <p className="fw-medium text-sm">Difficult Level</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm text-break ">
+                        : {data.difficult_level}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12 my-2">
+                  <div className="row">
+                    <div className="col-6">
+                      <p className="fw-medium text-sm">Total Score</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm text-break ">
+                        : {data.total_score}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12 my-2">
+                  <div className="row">
+                    <div className="col-6">
+                      <p className="fw-medium text-sm">Traget Score</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm text-break ">
+                        : {data.target_score}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12 my-2">
+                  <div className="row">
+                    <div className="col-6">
+                      <p className="fw-medium text-sm">Reward</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm text-break ">
+                        : {data.reward}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Grade</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">
-                    : {JSON.parse(data.grade_id || "[]").join(", ") || "--"}
-                  </p>
-                </div>
+
+              <div class="container-fluid mt-4">
+                {/* <h3 class="mb-3">Questions Table</h3> */}
+                <table className="table">
+                  <thead className="table-dark">
+                    <tr>
+                      <th>Question</th>
+                      <th>Quest Type</th>
+                      <th>Options</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.questions.map((question, index) => {
+                      // Parse ques_id_with_type JSON and find the matching question type based on ID
+                      const quesIdWithType = JSON.parse(data.ques_id_with_type);
+                      const questionTypeObj = quesIdWithType.find(
+                        (q) => q.id === question.id
+                      );
+                      const questionType = questionTypeObj
+                        ? questionTypeObj.questype
+                        : "N/A"; // Default fallback
+
+                      return (
+                        <tr key={question.id}>
+                          <td>{question.question}</td>
+                          <td>{questionType}</td>
+                          <td>{question.options ? question.options : "N/A"}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
               </div>
             </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Topic</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">
-                    : {JSON.parse(data.topic_id || "[]").join(", ") || "--"}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Title</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.title}</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Type</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.type}</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Subject</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">
-                    : {JSON.parse(data.subject_id || "[]").join(", ") || "--"}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Question Type</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.ques_type}</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Difficult Level</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm text-break ">
-                    : {data.difficult_level}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Total Score</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm text-break ">
-                    : {data.total_score}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Traget Score</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm text-break ">
-                    : {data.target_score}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Reward</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm text-break ">
-                    : {data.reward}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+          )}
+        </>
       </div>
     </div>
   );

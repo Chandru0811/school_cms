@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import PropTypes from "prop-types";
@@ -8,15 +8,21 @@ function QustionView() {
   const [data, setData] = useState({});
   const { id } = useParams();
   const [centerList, setCenterList] = useState([]);
+  const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(true);
 
   const getData = async () => {
     try {
+      setLoading(true);
       const response = await api.get(`question/${id}`);
       setData(response.data.data);
     } catch (e) {
       const errorMessage =
         e?.response?.data?.error || "Error Fetching Data. Please try again.";
       toast.error(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -89,8 +95,20 @@ function QustionView() {
               </button>
             </Link>
             &nbsp;&nbsp;
+            <button
+              type="button"
+              className="btn btn-sm btn-button"
+              onClick={() => navigate(`/question/edit/${id}`)}
+            >
+              Edit
+            </button>
           </div>
         </div>
+        {loading ? (
+          <div className="loader-container">
+            <div className="loader"></div>
+          </div>
+        ) : (
         <div className="container-fluid px-4">
           <div className="row pb-3">
             <div className="col-md-6 col-12 my-2">
@@ -121,7 +139,7 @@ function QustionView() {
                   <p className="fw-medium text-sm">Subject</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.question?.subject_id}</p>
+                  <p className="text-muted text-sm">: {data.question?.subject_name}</p>
                 </div>
               </div>
             </div>
@@ -131,7 +149,7 @@ function QustionView() {
                   <p className="fw-medium text-sm">Topic</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.question?.topic_id}</p>
+                  <p className="text-muted text-sm">: {data.question?.topic_name}</p>
                 </div>
               </div>
             </div>
@@ -207,6 +225,7 @@ function QustionView() {
             </div>
           </div>
         </div>
+        )}
       </div>
     </div>
   );

@@ -14,6 +14,8 @@ function RewardEdit() {
   const [centerList, setCenterList] = useState([]);
   const [selectedCenter, setSelectedCenter] = useState([]);
   const { id } = useParams();
+  const [loading, setLoading] = useState(true);
+
 
   const validationSchema = Yup.object({
     center_id: Yup.array()
@@ -90,6 +92,7 @@ function RewardEdit() {
 
   const getData = async () => {
     try {
+      setLoading(true);
         const response = await api.get(`reward/${id}`);
         const { data } = response.data;
 
@@ -124,6 +127,8 @@ function RewardEdit() {
     } catch (error) {
         console.error("Error fetching data:", error);
         toast.error("Failed to fetch reward details.");
+    }finally {
+      setLoading(false);
     }
 };
 
@@ -207,6 +212,11 @@ function RewardEdit() {
               </button>
             </div>
           </div>
+          {loading ? (
+          <div className="loader-container">
+            <div className="loader"></div>
+          </div>
+        ) : (
           <div className="container-fluid px-4">
             <div className="row py-4">
               <div className="col-md-6 col-12 mb-4">
@@ -390,6 +400,7 @@ function RewardEdit() {
               </div>
             </div>
           </div>
+        )}
         </div>
       </form>
     </div>

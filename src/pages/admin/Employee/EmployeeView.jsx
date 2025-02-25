@@ -23,6 +23,7 @@ function EmployeeView() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
   const toggleConfirmPasswordVisibility = () =>
@@ -73,29 +74,33 @@ function EmployeeView() {
 
   const getEmployeeData = async () => {
     try {
+      setLoading(true);
       const response = await api.get(`employee/${id}`);
       setData(response.data.data);
     } catch (e) {
       const errorMessage =
         e?.response?.data?.error || "Error Fetching Data. Please try again.";
       toast.error(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const getCenterList = async () => {
-    try {
-      const response = await api.get("centers/list");
-      setCenterList(response.data.data);
-    } catch (e) {
-      toast.error(
-        `Error Fetching Centers: ${e?.response?.data?.error || e.message}`
-      );
-    }
-  };
+  // const getCenterList = async () => {
+  //   try {
+
+  //     const response = await api.get("centers/list");
+  //     setCenterList(response.data.data);
+  //   } catch (e) {
+  //     toast.error(
+  //       `Error Fetching Centers: ${e?.response?.data?.error || e.message}`
+  //     );
+  //   }
+  // };
 
   useEffect(() => {
     getEmployeeData();
-    getCenterList();
+    // getCenterList();
   }, [id]);
 
   const centerFind = (name) => {
@@ -156,7 +161,7 @@ function EmployeeView() {
                 Back
               </button>
             </Link>
-            &nbsp;&nbsp; &nbsp;&nbsp;
+            &nbsp;&nbsp;
             <button
               type="button"
               className="btn btn-sm btn-button"
@@ -164,7 +169,7 @@ function EmployeeView() {
             >
               Change Password
             </button>
-            &nbsp;&nbsp; &nbsp;&nbsp;
+            &nbsp;&nbsp; 
             <button
               type="button"
               className="btn btn-sm btn-button"
@@ -180,72 +185,74 @@ function EmployeeView() {
           <form onSubmit={formik.handleSubmit}>
             <DialogTitle>Change Password</DialogTitle>
             <DialogContent>
-              <div className="row">
-                {/* New Password Field */}
-                <div className="text-center">
-                  <p>{data.email}</p>
-                </div>
-                <div className="col-12 mb-3">
-                  <label className="form-label">
-                    New Password<span className="text-danger">*</span>
-                  </label>
-                  <div className="input-group">
-                    <input
-                      type={showPassword ? "text" : "password"} // Toggle between text and password
-                      className={`form-control form-control-sm ${
-                        formik.touched.password && formik.errors.password
-                          ? "is-invalid"
-                          : ""
-                      }`}
-                      {...formik.getFieldProps("password")}
-                    />
-                    <button
-                      type="button"
-                      className="input-group-text"
-                      onClick={togglePasswordVisibility} // Toggle visibility
-                    >
-                      {showPassword ? <FaEyeSlash /> : <FaEye />}
-                    </button>
+              <>
+                <div className="row">
+                  {/* New Password Field */}
+                  <div className="text-center">
+                    <p>{data.email}</p>
                   </div>
-                  {formik.touched.password && formik.errors.password && (
-                    <div className="text-danger">
-                      {formik.errors.password}
+                  <div className="col-12 mb-3">
+                    <label className="form-label">
+                      New Password<span className="text-danger">*</span>
+                    </label>
+                    <div className="input-group">
+                      <input
+                        type={showPassword ? "text" : "password"} // Toggle between text and password
+                        className={`form-control form-control-sm ${
+                          formik.touched.password && formik.errors.password
+                            ? "is-invalid"
+                            : ""
+                        }`}
+                        {...formik.getFieldProps("password")}
+                      />
+                      <button
+                        type="button"
+                        className="input-group-text"
+                        onClick={togglePasswordVisibility} // Toggle visibility
+                      >
+                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                      </button>
                     </div>
-                  )}
-                </div>
-
-                {/* Confirm Password Field */}
-                <div className="col-12 mb-3">
-                  <label className="form-label">
-                    Confirm Password<span className="text-danger">*</span>
-                  </label>
-                  <div className="input-group">
-                    <input
-                      type={showConfirmPassword ? "text" : "password"} // Toggle between text and password
-                      className={`form-control form-control-sm ${
-                        formik.touched.password_confirmation &&
-                        formik.errors.password_confirmation
-                          ? "is-invalid"
-                          : ""
-                      }`}
-                      {...formik.getFieldProps("password_confirmation")}
-                    />
-                    <button
-                      type="button"
-                      className="input-group-text"
-                      onClick={toggleConfirmPasswordVisibility} // Toggle visibility
-                    >
-                      {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
-                    </button>
-                  </div>
-                  {formik.touched.password_confirmation &&
-                    formik.errors.password_confirmation && (
+                    {formik.touched.password && formik.errors.password && (
                       <div className="text-danger">
-                        {formik.errors.password_confirmation}
+                        {formik.errors.password}
                       </div>
                     )}
+                  </div>
+
+                  {/* Confirm Password Field */}
+                  <div className="col-12 mb-3">
+                    <label className="form-label">
+                      Confirm Password<span className="text-danger">*</span>
+                    </label>
+                    <div className="input-group">
+                      <input
+                        type={showConfirmPassword ? "text" : "password"} // Toggle between text and password
+                        className={`form-control form-control-sm ${
+                          formik.touched.password_confirmation &&
+                          formik.errors.password_confirmation
+                            ? "is-invalid"
+                            : ""
+                        }`}
+                        {...formik.getFieldProps("password_confirmation")}
+                      />
+                      <button
+                        type="button"
+                        className="input-group-text"
+                        onClick={toggleConfirmPasswordVisibility} // Toggle visibility
+                      >
+                        {showConfirmPassword ? <FaEyeSlash /> : <FaEye />}
+                      </button>
+                    </div>
+                    {formik.touched.password_confirmation &&
+                      formik.errors.password_confirmation && (
+                        <div className="text-danger">
+                          {formik.errors.password_confirmation}
+                        </div>
+                      )}
+                  </div>
                 </div>
-              </div>
+              </>
             </DialogContent>
             <DialogActions>
               <button
@@ -271,53 +278,61 @@ function EmployeeView() {
             </DialogActions>
           </form>
         </Dialog>
-
-        <div className="container-fluid px-4">
-          <div className="row pb-3">
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Centre</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">
-                    : {centerFind(data.center_id) || "--"}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Role</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.role_name}</p>
+        {loading ? (
+          <div className="loader-container">
+            <div className="loader"></div>
+          </div>
+        ) : (
+          <div className="container-fluid px-4">
+            <div className="row pb-3">
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Centre</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">
+                    :{" "}
+                    {data.center_names
+                      ? JSON.parse(data.center_names).join(", ")
+                      : ""}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Employee Name</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.name}</p>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Role</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">: {data.role_name}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Employee Email</p>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Employee Name</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">: {data.name}</p>
+                  </div>
                 </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.email}</p>
+              </div>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Employee Email</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">: {data.email}</p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

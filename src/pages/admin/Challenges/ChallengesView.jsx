@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import ChallengesAssign from "./ChallengesAssign";
 import { useEffect, useState } from "react";
 import api from "../../../config/URL";
@@ -8,15 +8,20 @@ function ChallengesView() {
   const [data, setData] = useState({});
   const { id } = useParams();
   const [centerList, setCenterList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   const getData = async () => {
     try {
+      setLoading(true);
       const response = await api.get(`challenge/${id}`);
       setData(response.data.data);
     } catch (e) {
       const errorMessage =
         e?.response?.data?.error || "Error Fetching Data. Please try again.";
       toast.error(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -89,8 +94,20 @@ function ChallengesView() {
               </button>
             </Link>
             &nbsp;&nbsp;
+            <button
+              type="button"
+              className="btn btn-sm btn-button"
+              onClick={() => navigate(`/challenges/edit/${id}`)}
+            >
+              Edit
+            </button>
           </div>
         </div>
+        {loading ? (
+          <div className="loader-container">
+            <div className="loader"></div>
+          </div>
+        ) : (
         <div className="container-fluid px-4">
           <div className="row pb-3">
             <div className="col-md-6 col-12 my-2">
@@ -227,6 +244,7 @@ function ChallengesView() {
             </div>
           </div>
         </div>
+        )}
       </div>
     </div>
   );

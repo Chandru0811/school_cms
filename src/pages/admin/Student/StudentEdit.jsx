@@ -12,6 +12,7 @@ function StudentEdit() {
   const [grade, setGrades] = useState([]);
   const navigate = useNavigate();
   const { id } = useParams();
+  const [loading, setLoading] = useState(true);
 
   const validationSchema = yup.object().shape({
     center_id: yup.string().required("*Select a center id"),
@@ -24,13 +25,13 @@ function StudentEdit() {
       .required("*Student email is required"),
     student_mobile: yup
       .string()
-      .matches(/^[0-9]{8,10}$/, "Mobile number must be 8 or 10 digits")
+      .matches(/^(?:\d{8}|\d{10})$/, "*Mobile number must be either 8 or 10 digits")
       .required("Student Mobile number is required!"),
     parent_name: yup.string().required("*Parent name is required"),
     parent_email: yup.string().required("*Parent email is required"),
     parent_mobile: yup
       .string()
-      .matches(/^[0-9]{8,10}$/, "Mobile number must be 8 or 10 digits")
+      .matches(/^(?:\d{8}|\d{10})$/, "*Mobile number must be either 8 or 10 digits")
       .required("Parent Mobile number is required!"),
     grade_id: yup.string().required("*Grader list is required"),
     roll_no: yup.string().required("*Roll number is required"),
@@ -77,6 +78,7 @@ function StudentEdit() {
 
   const getData = async () => {
     try {
+      setLoading(true);
       const response = await api.get(`student/${id}`);
       const data = response.data.data;
       const formatedData = {
@@ -100,6 +102,8 @@ function StudentEdit() {
     } catch (error) {
       console.error("Error fetching data:", error);
       toast.error("Failed to fetch payment type details.");
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -202,6 +206,11 @@ function StudentEdit() {
               </button>
             </div>
           </div>
+          {loading ? (
+          <div className="loader-container">
+            <div className="loader"></div>
+          </div>
+        ) : (
           <div className="container-fluid px-4">
             <div className="row">
               <div className="col-md-6 col-12 mb-3">
@@ -523,6 +532,7 @@ function StudentEdit() {
               </div>
             </div>
           </div>
+        )}
         </div>
       </form>
     </div>

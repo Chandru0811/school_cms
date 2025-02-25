@@ -18,6 +18,7 @@ function GradeEdit({ show, setShow, id, onSuccess }) {
   const [selectedCenter, setSelectedCenter] = useState([]);
   const [centerList, setCenterList] = useState([]);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   const handleClose = () => {
     setShow(false);
@@ -62,6 +63,7 @@ function GradeEdit({ show, setShow, id, onSuccess }) {
 
   const getGradeData = async () => {
     try {
+      setLoading(true);
       const response = await api.get(`grade/${id}`);
       const { data } = response.data;
 
@@ -81,6 +83,8 @@ function GradeEdit({ show, setShow, id, onSuccess }) {
       });
     } catch (e) {
       toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -118,6 +122,11 @@ function GradeEdit({ show, setShow, id, onSuccess }) {
         <DialogTitle>Edit Grade</DialogTitle>
         <hr className="m-0"></hr>
         <DialogContent>
+        {loading ? (
+          <div className="loader-container">
+            <div className="loader"></div>
+          </div>
+        ) : (
           <div className="row">
             <div className="col-md-6 col-12 mb-3">
               <label className="form-label">
@@ -173,6 +182,7 @@ function GradeEdit({ show, setShow, id, onSuccess }) {
               />
             </div>
           </div>
+                      )}
         </DialogContent>
         <hr className="m-0"></hr>
         <DialogActions className="mt-3">

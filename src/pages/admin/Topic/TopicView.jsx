@@ -8,10 +8,15 @@ import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import api from "../../../config/URL";
+import TopicEdit from "./TopicEdit";
+
 
 function TopicView({ show, setShow, id }) {
   const [data, setData] = useState({});
   const [centerList, setCenterList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [showEdit, setShowEdit] = useState(false);
+
 
   const handleClose = () => {
     setShow(false);
@@ -19,33 +24,36 @@ function TopicView({ show, setShow, id }) {
 
   const getTopicData = async () => {
     try {
+      setLoading(true);
       const response = await api.get(`topic/${id}`);
       setData(response.data.data);
     } catch (e) {
       toast.error(
         `Error Fetching Topic Data: ${e?.response?.data?.error || e.message}`
       );
+    }finally {
+      setLoading(false);
     }
   };
 
-  const getCenterList = async () => {
-    try {
-      const response = await api.get("centers/list");
-      const centerNames = response.data.data.map((center) => ({
-        name: center.name,
-      }));
-      setCenterList(centerNames);
-    } catch (e) {
-      toast.error(
-        `Error Fetching Centers: ${e?.response?.data?.error || e.message}`
-      );
-    }
-  };
+  // const getCenterList = async () => {
+  //   try {
+  //     const response = await api.get("centers/list");
+  //     const centerNames = response.data.data.map((center) => ({
+  //       name: center.name,
+  //     }));
+  //     setCenterList(centerNames);
+  //   } catch (e) {
+  //     toast.error(
+  //       `Error Fetching Centers: ${e?.response?.data?.error || e.message}`
+  //     );
+  //   }
+  // };
 
   useEffect(() => {
     if (show) {
       getTopicData();
-      getCenterList();
+      // getCenterList();
     }
   }, [id, show]);
 
@@ -58,6 +66,11 @@ function TopicView({ show, setShow, id }) {
         <DialogTitle>View Topic</DialogTitle>
         <hr className="m-0" />
         <DialogContent>
+        {loading ? (
+          <div className="loader-container">
+            <div className="loader"></div>
+          </div>
+        ) : (
           <div className="row">
             <div className="col-md-6 col-12">
               <div className="row mt-3 mb-2">
@@ -116,12 +129,27 @@ function TopicView({ show, setShow, id }) {
               </div>
             </div>
           </div>
+        )}
         </DialogContent>
         <hr className="m-0" />
         <DialogActions>
           <button className="btn btn-sm btn-back" onClick={handleClose}>
             Close
           </button>
+           <button
+                    className="btn btn-sm btn-primary"
+                    type="button"
+                    onClick={() => setShowEdit(true)}
+                  >
+                    Edit
+                  </button>
+          
+                  <TopicEdit
+                    show={showEdit}
+                    setShow={setShowEdit}
+                    id={id}
+                    onSuccess={getTopicData}
+                  />
         </DialogActions>
       </Dialog>
     </>

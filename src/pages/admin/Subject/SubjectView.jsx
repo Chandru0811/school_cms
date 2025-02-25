@@ -11,16 +11,20 @@ import { useEffect, useState } from "react";
 
 function SubjectView({ show, setShow, id }) {
   const [data, setData] = useState({});
+  const [loading, setLoading] = useState(true);
 
   const handleClose = () => {
     setShow(false);
   };
   const getSubjectData = async () => {
     try {
+      setLoading(true);
       const response = await api.get(`subject/${id}`);
       setData(response.data.data);
     } catch (e) {
       toast.error("Error Fetching Data ", e?.response?.data?.error);
+    } finally {
+      setLoading(false);
     }
   };
   const truncateText = (text, length = 30) =>
@@ -37,60 +41,70 @@ function SubjectView({ show, setShow, id }) {
       <DialogTitle>View Subject</DialogTitle>
       <hr className="m-0"></hr>
       <DialogContent>
-        <div className="row">
-          <div className="col-md-6 col-12">
-            <div className="row mt-3  mb-2">
-              <div className="col-6 ">
-                <p className="">Centre Name</p>
+        {loading ? (
+          <div className="loader-container">
+            <div className="loader"></div>
+          </div>
+        ) : (
+          <div className="row">
+            <div className="col-md-6 col-12">
+              <div className="row mt-3  mb-2">
+                <div className="col-6 ">
+                  <p className="">Centre Name</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">
+                    :{" "}
+                    {data.center_names
+                      ? JSON.parse(data.center_names).join(", ")
+                      : ""}
+                  </p>
+                </div>
               </div>
-              <div className="col-6">
-                <p className="text-muted text-sm">
-                  :{" "}
-                  {data.center_names
-                    ? JSON.parse(data.center_names).join(", ")
-                    : ""}
-                </p>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="row mt-3  mb-2">
+                <div className="col-6 ">
+                  <p className="">Grade</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">
+                    : {truncateText(data.grand_name)}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="row mt-3  mb-2">
+                <div className="col-6 ">
+                  <p className="">Name</p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm">
+                    : {truncateText(data.name)}
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-6 col-12">
+              <div className="row mt-3  mb-2">
+                <div className="col-6 ">
+                  <p
+                    className="text-muted text-sm text-truncate"
+                    style={{ maxWidth: "200px" }}
+                  >
+                    Description
+                  </p>
+                </div>
+                <div className="col-6">
+                  <p className="text-muted text-sm text-truncate">
+                    :{truncateText(data.description)}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
-          <div className="col-md-6 col-12">
-            <div className="row mt-3  mb-2">
-              <div className="col-6 ">
-                <p className="">Grade</p>
-              </div>
-              <div className="col-6">
-                <p className="text-muted text-sm">: {truncateText(data.grand_name)}</p>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-6 col-12">
-            <div className="row mt-3  mb-2">
-              <div className="col-6 ">
-                <p className="">Name</p>
-              </div>
-              <div className="col-6">
-                <p className="text-muted text-sm">: {truncateText(data.name)}</p>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-6 col-12">
-            <div className="row mt-3  mb-2">
-              <div className="col-6 ">
-                <p
-                  className="text-muted text-sm text-truncate"
-                  style={{ maxWidth: "200px" }}
-                >
-                  Description
-                </p>
-              </div>
-              <div className="col-6">
-                <p className="text-muted text-sm text-truncate">
-                  :{truncateText(data.description)}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+        )}
       </DialogContent>
       <hr className="m-0"></hr>
       <DialogActions className="mt-3">

@@ -54,7 +54,8 @@ function Question() {
         ),
       },
       { accessorKey: "topic.name", header: "Topic" },
-      { accessorKey: "centers", header: "Centre Name" },
+      { accessorKey: "centers", header: "Centre Name" ,Cell: ({ cell }) => cell.getValue()?.join(", ") || "",
+    },
       { accessorKey: "difficult_level", header: "Difficult Level" },
       { accessorKey: "created_by", header: "Created By" },
       {

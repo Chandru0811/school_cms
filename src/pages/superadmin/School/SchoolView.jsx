@@ -146,6 +146,14 @@ function SchoolView() {
             </Link>
             &nbsp;&nbsp;
             <button
+              type="button"
+              className="btn btn-sm btn-button"
+              onClick={() => navigate(`/school/edit/${id}`)}
+            >
+              Edit
+            </button>
+              &nbsp;&nbsp;
+            <button
               className={`btn btn-sm ${
                 data.active === 1 ? "btn-danger" : "btn-success"
               }`}

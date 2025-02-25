@@ -60,10 +60,9 @@ function Topic() {
         ),
       },
       {
-        accessorKey: "center_id",
+        accessorKey: "centers",
         header: "Centre Name",
-        enableSorting: true,
-        enableHiding: false,
+        Cell: ({ cell }) => cell.getValue()?.join(", ") || "",
       },
       {
         accessorKey: "name", header: "Name",
@@ -71,7 +70,7 @@ function Topic() {
         enableHiding: false,
       },
       {
-        accessorKey: "subject_id",
+        accessorKey: "subject.name",
         header: "Subject Name",
         enableSorting: true,
         enableHiding: false,

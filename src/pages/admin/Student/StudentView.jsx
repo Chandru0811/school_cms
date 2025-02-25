@@ -7,7 +7,7 @@ import {
   DialogTitle,
   DialogContent,
 } from "@mui/material";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import PropTypes from "prop-types";
@@ -22,6 +22,8 @@ function StudentView() {
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
   const toggleConfirmPasswordVisibility = () =>
@@ -117,12 +119,15 @@ function StudentView() {
 
   const getData = async () => {
     try {
+      setLoading(true);
       const response = await api.get(`student/${id}`);
       const studentData = response.data.data; // Get student data
       setData(studentData); // Set student data to state
     } catch (error) {
       console.error("Error fetching data:", error);
       toast.error("Failed to fetch student details.");
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -182,6 +187,14 @@ function StudentView() {
               onClick={handleParentShow}
             >
               Change Parent Password
+            </button>
+            &nbsp;&nbsp; 
+            <button
+              type="button"
+              className="btn btn-sm btn-button"
+              onClick={() => navigate(`/student/edit/${id}`)}
+            >
+              Edit
             </button>
           </div>
         </div>
@@ -384,6 +397,11 @@ function StudentView() {
             </DialogActions>
           </form>
         </Dialog>
+        {loading ? (
+          <div className="loader-container">
+            <div className="loader"></div>
+          </div>
+        ) : (
         <div className="container-fluid px-4">
           <div className="row pb-3">
             <div className="col-md-6 col-12 my-2">
@@ -508,6 +526,7 @@ function StudentView() {
             </div>
           </div>
         </div>
+        )}
       </div>
     </div>
   );

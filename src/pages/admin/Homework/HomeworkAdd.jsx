@@ -33,6 +33,7 @@ function HomeworkAdd() {
     { value: "short_answer", label: "Short Answer" },
     { value: "upload", label: "Upload" },
   ];
+  const today = new Date().toISOString().split("T")[0];
   const validationSchema = yup.object().shape({
     title: yup.string().required("*Title is required"),
     center_id: yup
@@ -60,8 +61,13 @@ function HomeworkAdd() {
       .of(yup.string().required("*Select at least one question type"))
       .min(1, "*Select at least one question type")
       .required("*Select a question type name"),
-    due_date: yup.string().required("*Due Date is required"),
-    total_score: yup
+      due_date: yup
+      .string()
+      .required("*Due Date is required")
+      .test("future-date", "*Past dates are not allowed", value => {
+        return value >= today;
+      }),
+      total_score: yup
       .number()
       .typeError("*Totle Score must be a number")
       .required("*Totle Score field is required")
@@ -693,6 +699,7 @@ function HomeworkAdd() {
                     : ""
                     }`}
                   {...formik.getFieldProps("due_date")}
+                  min={today}
                 />
                 {formik.touched.due_date && formik.errors.due_date && (
                   <div className="invalid-feedback">

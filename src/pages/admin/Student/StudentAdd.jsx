@@ -23,10 +23,9 @@ function StudentAdd() {
       .string()
       .email("*Email is Invalid")
       .required("*Student email is required"),
-    student_mobile: yup
-      .string()
-      .matches(/^[0-9]{8,10}$/, "Mobile number must be 8 or 10 digits")
-      .required("Student Mobile number is required!"),
+      student_mobile: yup.string()
+      .matches(/^(?:\d{8}|\d{10})$/, "*Mobile number must be either 8 or 10 digits")
+      .required("*Student Mobile number is required!"),    
     parent_name: yup.string().required("*Parent name is required"),
     parent_email: yup
       .string()
@@ -37,7 +36,7 @@ function StudentAdd() {
       }),
     parent_mobile: yup
       .string()
-      .matches(/^[0-9]{8,10}$/, "Mobile number must be 8 or 10 digits")
+      .matches(/^(?:\d{8}|\d{10})$/, "*Mobile number must be either 8 or 10 digits")
       .required("Parent Mobile number is required!")
       .test("unique-mobile", "Student and Parent mobile number must be different", function (value) {
         return value !== this.parent.student_mobile;

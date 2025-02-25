@@ -19,6 +19,7 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
   const [centerList, setCenterList] = useState([]);
   const [subjects, setSubjects] = useState([]);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   const validationSchema = yup.object().shape({
     center_id: yup
@@ -61,6 +62,7 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
 
   const getTopicData = async () => {
     try {
+      setLoading(true);
       const response = await api.get(`topic/${id}`);
       const { data } = response.data;
       const centerIds = JSON.parse(data.center_id);
@@ -82,6 +84,8 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
       toast.error(
         `Error Fetching Data: ${e?.response?.data?.error || e.message}`
       );
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -140,6 +144,11 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
         <DialogTitle>Edit Topic</DialogTitle>
         <hr className="m-0" />
         <DialogContent>
+        {loading ? (
+          <div className="loader-container">
+            <div className="loader"></div>
+          </div>
+        ) : (
           <div className="row">
           <div className="col-md-6 col-12 mb-3">
               <label className="form-label">
@@ -228,6 +237,7 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
               />
             </div>
           </div>
+        )}
         </DialogContent>
         <hr className="m-0" />
         <DialogActions className="mt-3">

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import api from "../../../config/URL";
 import PropTypes from "prop-types";
 import ImageURL from "../../../config/ImageURL";
@@ -9,15 +9,20 @@ function RewardView() {
   const [data, setData] = useState({});
   const [centerList, setCenterList] = useState([]);
   const { id } = useParams();
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   // console.log("Image URL:", `${ImageURL}/${data.image}`);
 
   const getRewardData = async () => {
     try {
+      setLoading(true);
       const response = await api.get(`reward/${id}`);
       setData(response.data.data);
     } catch (e) {
       toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -83,8 +88,20 @@ function RewardView() {
             >
               Activate
             </button>
+            <button
+              type="button"
+              className="btn btn-sm btn-button"
+              onClick={() => navigate(`/reward/edit/${id}`)}
+            >
+              Edit
+            </button>
           </div>
         </div>
+        {loading ? (
+          <div className="loader-container">
+            <div className="loader"></div>
+          </div>
+        ) : (
         <div className="container-fluid px-4">
           <div className="row pb-3">
             <div className="col-md-6 col-12 my-2">
@@ -177,6 +194,7 @@ function RewardView() {
             </div>
           </div>
         </div>
+        )}
       </div>
     </div>
   );

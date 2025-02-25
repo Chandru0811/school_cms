@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
@@ -9,16 +9,22 @@ function HomeworkView() {
   const { id } = useParams();
   const [centerList, setCenterList] = useState([]);
   const assigned_id = id;
-  console.log("idddss", assigned_id)
+  console.log("idddss", assigned_id);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+
 
   const getData = async () => {
     try {
+      setLoading(true);
       const response = await api.get(`homework/${id}`);
       setData(response.data.data);
     } catch (e) {
       const errorMessage =
         e?.response?.data?.error || "Error Fetching Data. Please try again.";
       toast.error(errorMessage);
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -86,9 +92,7 @@ function HomeworkView() {
             >
               Activate
             </button>
-            <Link
-              to={`/homedoassessment?assignedId=${assigned_id}`}
-            >
+            <Link to={`/homedoassessment?assignedId=${assigned_id}`}>
               <button
                 type="button"
                 className="btn btn-success btn-sm me-2"
@@ -97,8 +101,22 @@ function HomeworkView() {
                 Do Assessment
               </button>
             </Link>
+            &nbsp;&nbsp;
+            <button
+              type="button"
+              className="btn btn-sm btn-button"
+              onClick={() => navigate(`/homework/edit/${id}`)}
+            >
+              Edit
+            </button>
           </div>
         </div>
+        {loading ? (
+          <div className="loader-container">
+            <div className="loader"></div>
+          </div>
+        ) : (
+        <>
         <div className="container-fluid px-4">
           <div className="row pb-3">
             <div className="col-md-6 col-12 my-2">
@@ -120,7 +138,7 @@ function HomeworkView() {
                 </div>
                 <div className="col-6">
                   <p className="text-muted text-sm">
-                    : {JSON.parse(data.grade_id || "[]").join(", ") || "--"}
+                    : {data.grade_names || "--"}
                   </p>
                 </div>
               </div>
@@ -131,9 +149,7 @@ function HomeworkView() {
                   <p className="fw-medium text-sm">Topic</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">
-                    : {JSON.parse(data.topic_id || "[]").join(", ") || "--"}
-                  </p>
+                  <p className="text-muted text-sm">: {data.topic_names}</p>
                 </div>
               </div>
             </div>
@@ -154,7 +170,10 @@ function HomeworkView() {
                 </div>
                 <div className="col-6">
                   <p className="text-muted text-sm">
-                    : {JSON.parse(data.subject_id || "[]").join(", ") || "--"}
+                    :{" "}
+                    {data.subject_names && data.subject_names.length > 0
+                      ? data.subject_names.join(", ")
+                      : "N/A"}
                   </p>
                 </div>
               </div>
@@ -207,6 +226,8 @@ function HomeworkView() {
             </div>
           </div>
         </div>
+        </>
+        )}
       </div>
     </div>
   );

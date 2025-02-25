@@ -16,10 +16,13 @@ import toast from "react-hot-toast";
 
 function Homework() {
   const [menuAnchor, setMenuAnchor] = useState(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
-  const storedScreens = JSON.parse(localStorage.getItem("schoolCMS_Permissions") || "{}");
+  const storedScreens = JSON.parse(
+    localStorage.getItem("schoolCMS_Permissions") || "{}"
+  );
 
   const columns = useMemo(
     () => [
@@ -51,8 +54,16 @@ function Homework() {
           </IconButton>
         ),
       },
-      { accessorKey: "centre_id", header: "Centre name" },
-      { accessorKey: "grade_id", header: "Grade" },
+      {
+        accessorKey: "centers",
+        header: "Centre name",
+        Cell: ({ cell }) => cell.getValue()?.join(", ") || "",
+      },
+      {
+        accessorKey: "grade_names",
+        header: "Grade",
+        Cell: ({ cell }) => cell.getValue()?.join(", ") || "",
+      },
       { accessorKey: "created_by", header: "Created By" },
       {
         accessorKey: "created_at",
@@ -75,10 +86,13 @@ function Homework() {
 
   const getData = async () => {
     try {
+      setLoading(true);
       const response = await api.get("homeworks");
       setData(response.data.data);
     } catch (e) {
       toast.error("Error Fetching Data ", e?.response?.data?.error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -170,51 +184,62 @@ function Homework() {
             </Link>
           )}
         </div>
-        <>
-          <ThemeProvider theme={theme}>
-            <MaterialReactTable
-              columns={columns}
-              data={data}
-              enableColumnActions={false}
-              enableColumnFilters={false}
-              enableDensityToggle={false}
-              enableFullScreenToggle={false}
-              initialState={{
-                columnVisibility: {
-                  working_hrs: false,
-                  citizenship: false,
-                  nationality: false,
-                  created_by: false,
-                  created_at: false,
-                  updated_by: false,
-                  updated_at: false,
-                },
-              }}
-              muiTableBodyRowProps={({ row }) =>
-                storedScreens?.data[10]?.can_view
-                  ? {
-                    onClick: () =>
-                      navigate(`/homework/view/${row.original.id}`),
-                    style: { cursor: "pointer" },
-                  }
-                  : {}
-              }
-            />
-          </ThemeProvider>
-          <Menu
-            id="action-menu"
-            anchorEl={menuAnchor}
-            open={Boolean(menuAnchor)}
-            onClose={handleMenuClose}
-          >
-            <MenuItem onClick={() => navigate(`/homework/edit/${selectedId}`)}>
-              Edit
-            </MenuItem>
-            <MenuItem>
-              <Delete path={`homework/delete/${selectedId}`} onOpen={handleMenuClose} />
-            </MenuItem>
-          </Menu>
-        </>
+        {loading ? (
+          <div className="loader-container">
+            <div className="loader"></div>
+          </div>
+        ) : (
+          <>
+            <ThemeProvider theme={theme}>
+              <MaterialReactTable
+                columns={columns}
+                data={data}
+                enableColumnActions={false}
+                enableColumnFilters={false}
+                enableDensityToggle={false}
+                enableFullScreenToggle={false}
+                initialState={{
+                  columnVisibility: {
+                    working_hrs: false,
+                    citizenship: false,
+                    nationality: false,
+                    created_by: false,
+                    created_at: false,
+                    updated_by: false,
+                    updated_at: false,
+                  },
+                }}
+                muiTableBodyRowProps={({ row }) =>
+                  storedScreens?.data[10]?.can_view
+                    ? {
+                        onClick: () =>
+                          navigate(`/homework/view/${row.original.id}`),
+                        style: { cursor: "pointer" },
+                      }
+                    : {}
+                }
+              />
+            </ThemeProvider>
+            <Menu
+              id="action-menu"
+              anchorEl={menuAnchor}
+              open={Boolean(menuAnchor)}
+              onClose={handleMenuClose}
+            >
+              <MenuItem
+                onClick={() => navigate(`/homework/edit/${selectedId}`)}
+              >
+                Edit
+              </MenuItem>
+              <MenuItem>
+                <Delete
+                  path={`homework/delete/${selectedId}`}
+                  onOpen={handleMenuClose}
+                />
+              </MenuItem>
+            </Menu>
+          </>
+        )}
       </div>
     </div>
   );

@@ -16,6 +16,7 @@ function ChallengesEdit() {
   const [topics, setTopics] = useState([]);
   const [loadIndicator, setLoadIndicator] = useState(false);
   const { id } = useParams();
+  const [loading, setLoading] = useState(true);
 
 
   const validationSchema = yup.object().shape({
@@ -141,6 +142,7 @@ function ChallengesEdit() {
   });
   const getData = async () => {
     try {
+      setLoading(true);
       const response = await api.get(`challenge/${id}`);
       const { challenge, answer } = response.data.data;
 
@@ -191,6 +193,8 @@ function ChallengesEdit() {
       });
     } catch (e) {
       toast.error("Error Fetching Data ", e?.response?.data?.error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -348,6 +352,11 @@ function ChallengesEdit() {
               </button>
             </div>
           </div>
+          {loading ? (
+          <div className="loader-container">
+            <div className="loader"></div>
+          </div>
+        ) : (
           <div className="container-fluid px-4">
             <div className="row">
               <div className="col-md-6 col-12 mb-4">
@@ -810,6 +819,7 @@ function ChallengesEdit() {
               </div>
             </div>
           </div>
+        )}
         </div>
       </form >
     </div >

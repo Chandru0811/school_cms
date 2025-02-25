@@ -15,6 +15,7 @@ function EmployeeEdit() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [roles, setRoles] = useState();
+  const [loading, setLoading] = useState(true);
 
   const validationSchema = yup.object().shape({
     center_id: yup
@@ -27,10 +28,9 @@ function EmployeeEdit() {
       .string()
       .email("*Email is Invalid")
       .required("*Employee email is required"),
-    mobile: yup
-      .string()
-      .matches(/^[0-9]{8,10}$/, "Mobile number must be 8 or 10 digits")
-      .required("Mobile number is required!"),
+    mobile: yup.string()
+    .matches(/^(?:\d{8}|\d{10})$/, "*Mobile number must be either 8 or 10 digits")
+    .required("*Mobile number is required!"), 
     //  password: yup
     //    .string()
     //    .required("*Employee password is required")
@@ -85,8 +85,9 @@ function EmployeeEdit() {
     },
   });
 
-  const getRoleData = async () => {
+  const getEmployeeData = async () => {
     try {
+      setLoading(true);
       const response = await api.get(`employee/${id}`);
       const { data } = response.data;
 
@@ -106,6 +107,8 @@ function EmployeeEdit() {
       });
     } catch (e) {
       toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -139,7 +142,7 @@ function EmployeeEdit() {
   useEffect(() => {
     getCenterList();
     getRoleList();
-    getRoleData();
+    getEmployeeData();
   }, [id]);
 
   return (
@@ -203,6 +206,17 @@ function EmployeeEdit() {
               </button>
             </div>
           </div>
+          {loading ? (
+            <div className="loader-container">
+              <div className="loader">
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+          ) : (
           <div className="container-fluid px-4">
             <div className="row">
               <div className="col-md-6 col-12 mb-4">
@@ -359,6 +373,7 @@ function EmployeeEdit() {
               </div> */}
             </div>
           </div>
+                      )}
         </div>
       </form>
     </div>

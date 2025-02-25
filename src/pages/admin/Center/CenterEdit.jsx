@@ -15,6 +15,7 @@ import { Button } from "react-bootstrap";
 function CenterEdit({ id, onSuccess, handleMenuClose }) {
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   const validationSchema = yup.object().shape({
     name: yup
@@ -68,6 +69,7 @@ function CenterEdit({ id, onSuccess, handleMenuClose }) {
   // Fetch existing data
   const getData = async () => {
     try {
+      setLoading(true);
       const response = await api.get(`center/${id}`);
       if (response?.data?.data) {
         formik.setValues(response.data.data);
@@ -75,6 +77,8 @@ function CenterEdit({ id, onSuccess, handleMenuClose }) {
     } catch (error) {
       console.error("Error fetching data:", error);
       toast.error("Failed to fetch payment type details.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -198,44 +202,54 @@ function CenterEdit({ id, onSuccess, handleMenuClose }) {
         >
           <DialogTitle>Edit Centre</DialogTitle>
           <DialogContent>
-            <div className="container">
-              <div className="row">
-                <div className="col-md-6 col-12 mb-3">
-                  <label className="form-label">
-                    Name<span className="text-danger">*</span>
-                  </label>
-                  <input
-                    className={`form-control ${formik.touched.name && formik.errors.name
-                        ? "is-invalid"
-                        : ""
+            {loading ? (
+              <div className="loader-container">
+                <div className="loader"></div>
+              </div>
+            ) : (
+              <div className="container">
+                <div className="row">
+                  <div className="col-md-6 col-12 mb-3">
+                    <label className="form-label">
+                      Name<span className="text-danger">*</span>
+                    </label>
+                    <input
+                      className={`form-control ${
+                        formik.touched.name && formik.errors.name
+                          ? "is-invalid"
+                          : ""
                       }`}
-                    {...formik.getFieldProps("name")}
-                  />
-                  {formik.touched.name && formik.errors.name && (
-                    <div className="invalid-feedback">{formik.errors.name}</div>
-                  )}
-                </div>
-                <div className="col-md-6 col-12 mb-3">
-                  <label className="form-label">
-                    Location<span className="text-danger">*</span>
-                  </label>
-                  <textarea
-                    rows={5}
-                    className={`form-control ${formik.touched.location && formik.errors.location
-                        ? "is-invalid"
-                        : ""
+                      {...formik.getFieldProps("name")}
+                    />
+                    {formik.touched.name && formik.errors.name && (
+                      <div className="invalid-feedback">
+                        {formik.errors.name}
+                      </div>
+                    )}
+                  </div>
+                  <div className="col-md-6 col-12 mb-3">
+                    <label className="form-label">
+                      Location<span className="text-danger">*</span>
+                    </label>
+                    <textarea
+                      rows={5}
+                      className={`form-control ${
+                        formik.touched.location && formik.errors.location
+                          ? "is-invalid"
+                          : ""
                       }`}
-                    {...formik.getFieldProps("location")}
-                    maxLength={825}
-                  />
-                  {formik.touched.location && formik.errors.location && (
-                    <div className="invalid-feedback">
-                      {formik.errors.location}
-                    </div>
-                  )}
+                      {...formik.getFieldProps("location")}
+                      maxLength={825}
+                    />
+                    {formik.touched.location && formik.errors.location && (
+                      <div className="invalid-feedback">
+                        {formik.errors.location}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </DialogContent>
           <DialogActions>
             <button
