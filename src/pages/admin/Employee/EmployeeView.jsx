@@ -316,16 +316,6 @@ function EmployeeView() {
                 </div>
               </div>
             </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Employee Email</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.email}</p>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>

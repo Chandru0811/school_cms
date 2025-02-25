@@ -79,8 +79,8 @@ function StudentView() {
           values
         );
         if (response.status === 200) {
-          toast.success("Password changed successfully!");
           handleClose();
+          toast.success("Password changed successfully!");
         }
       } catch (e) {
         toast.error("Error changing password", e?.response?.data?.error);
