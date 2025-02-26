@@ -12,7 +12,6 @@ import GradeEdit from "./GradeEdit";
 
 function GradeView({ show, setShow, id }) {
   const [data, setData] = useState({});
-  const [centerList, setCenterList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showEdit, setShowEdit] = useState(false);
 
@@ -88,7 +87,7 @@ function GradeView({ show, setShow, id }) {
                 </div>
                 <div className="col-6">
                   <p className="text-muted text-sm">
-                    :{truncateText(data.name)}
+                    : {truncateText(data.name)}
                   </p>
                 </div>
               </div>

@@ -66,16 +66,16 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
       setLoading(true);
       const response = await api.get(`topic/${id}`);
       const { data } = response.data;
-      const centerIds = JSON.parse(data.center_id);
-      await getCenterList();
-
-      const selectedCenters = centerList.filter((center) =>
-        centerIds.includes(center.value)
-      );
+      const parsedCenterIds = JSON.parse(data.center_id);
+      const parsedCenterNames = JSON.parse(data.center_names);
+      const selectedCenters = parsedCenterIds.map((id, index) => ({
+        value: id,
+        label: parsedCenterNames[index] || "",
+      }));
 
       setSelectedCenter(selectedCenters);
       formik.setValues({
-        center_id: centerIds,
+        center_id: selectedCenters.map((center) => center.value),
         grade_id: data.grade_id || "",
         subject_id: data.subject_id || "",
         name: data.name || "",
@@ -236,9 +236,9 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
                 }
               >
                 <option value="">Select Grade</option>
-                {subjects?.map((subject) => (
-                  <option key={subject.value} value={subject.value}>
-                    {subject.label}
+                {grades?.map((grade) => (
+                  <option key={grade.value} value={grade.value}>
+                    {grade.label}
                   </option>
                 ))}
               </select>

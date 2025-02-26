@@ -1,6 +1,6 @@
 import * as yup from "yup";
 import { useFormik } from "formik";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { MultiSelect } from "react-multi-select-component";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -28,6 +28,7 @@ function WorkSheetEdit() {
   const [rowSelection, setRowSelection] = useState({});
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const questionOption = [
     { value: "fillable", label: "Filled" },
     { value: "closed", label: "Closed" },
@@ -122,6 +123,7 @@ function WorkSheetEdit() {
           console.log("object", response);
           fetchData();
           toast.success(response.data?.message);
+          navigate("/worksheet");
         }
       } catch (e) {
         console.error("Error Fetching Data", e);

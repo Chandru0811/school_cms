@@ -51,7 +51,8 @@ function Challenges() {
           </IconButton>
         ),
       },
-      { accessorKey: "centers", header: "Centre Name" },
+      { accessorKey: "centers", header: "Centre Name",Cell: ({ cell }) => cell.getValue()?.join(", ") || "",
+    },
       { accessorKey: "topic.name", header: "Topic" },
       { accessorKey: "difficult_level", header: "Difficult Level" },
       { accessorKey: "created_by", header: "Created By" },
