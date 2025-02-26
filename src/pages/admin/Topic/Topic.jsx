@@ -34,8 +34,6 @@ function Topic() {
       {
         accessorFn: (row, index) => index + 1,
         header: "S.NO",
-        enableSorting: true,
-        enableHiding: false,
         size: 40,
         cell: ({ cell }) => (
           <span style={{ textAlign: "center" }}>{cell.getValue()}</span>
@@ -61,11 +59,14 @@ function Topic() {
       },
       {
         accessorKey: "centers",
+        enableSorting: true,
+        enableHiding: false,
         header: "Centre Name",
         Cell: ({ cell }) => cell.getValue()?.join(", ") || "",
       },
       {
-        accessorKey: "name", header: "Name",
+        accessorKey: "name",
+        header: "Name",
         enableSorting: true,
         enableHiding: false,
       },
@@ -83,7 +84,8 @@ function Topic() {
             {cell.getValue()}
           </span>
         ),
-      }, {
+      },
+      {
         accessorKey: "created_at",
         header: "Created At",
         Cell: ({ cell }) => cell.getValue()?.substring(0, 10),
@@ -154,7 +156,19 @@ function Topic() {
   useEffect(() => {
     getData();
   }, []);
-
+  useEffect(() => {
+    if (
+      storedScreens?.data?.[5]?.can_edit === 0 &&
+      storedScreens?.data?.[5]?.can_delete === 0
+    ) {
+      const targetTds = document.querySelectorAll(
+        'td[data-index="1"],th[data-index="1"]'
+      );
+      targetTds.forEach((td) => {
+        td.textContent = "";
+      });
+    }
+  }, [storedScreens]);
   return (
     <div className="container-fluid mb-4 px-0">
       <ol
@@ -182,7 +196,7 @@ function Topic() {
               <span className="database_name">Topic</span>
             </span>
           </div>
-          {storedScreens?.data[5]?.can_create && (
+          {storedScreens?.data[5]?.can_create === 1 && (
             <TopicAdd onSuccess={getData} />
           )}
         </div>
@@ -211,13 +225,17 @@ function Topic() {
                     updated_at: false,
                   },
                 }}
-                muiTableBodyRowProps={({ row }) => ({
-                  style: { cursor: "pointer" },
-                  onClick: () => {
-                    setSelectedId(row.original.id);
-                    setShowView(true);
-                  },
-                })}
+                muiTableBodyRowProps={({ row }) =>
+                  storedScreens?.data[5]?.can_view === 1
+                    ? {
+                        style: { cursor: "pointer" },
+                        onClick: () => {
+                          setSelectedId(row.original.id);
+                          setShowView(true);
+                        },
+                      }
+                    : {}
+                }
               />
             </ThemeProvider>
           </>
@@ -228,33 +246,33 @@ function Topic() {
           open={Boolean(menuAnchor)}
           onClose={handleMenuClose}
         >
-          <MenuItem
-            onClick={() => {
-              setShowEdit(true);
-              handleMenuClose();
-            }}
-          >
-            Edit
-          </MenuItem>
-          <MenuItem>
-            <Delete
-              path={`topic/delete/${selectedId}`}
-              onDeleteSuccess={getData}
-              onOpen={handleMenuClose}
-            />
-          </MenuItem>
+          {storedScreens?.data[5]?.can_edit === 1 && (
+            <MenuItem
+              onClick={() => {
+                setShowEdit(true);
+                handleMenuClose();
+              }}
+            >
+              Edit
+            </MenuItem>
+          )}
+          {storedScreens?.data[5]?.can_delete === 1 && (
+            <MenuItem>
+              <Delete
+                path={`topic/delete/${selectedId}`}
+                onDeleteSuccess={getData}
+                onOpen={handleMenuClose}
+              />
+            </MenuItem>
+          )}
         </Menu>
-        {storedScreens?.data[5]?.can_edit && (
-          <TopicEdit
-            show={showEdit}
-            setShow={setShowEdit}
-            id={selectedId}
-            onSuccess={getData}
-          />
-        )}
-        {storedScreens?.data[5]?.can_view && (
-          <TopicView show={showView} setShow={setShowView} id={selectedId} />
-        )}
+        <TopicEdit
+          show={showEdit}
+          setShow={setShowEdit}
+          id={selectedId}
+          onSuccess={getData}
+        />
+        <TopicView show={showView} setShow={setShowView} id={selectedId} />
       </div>
     </div>
   );

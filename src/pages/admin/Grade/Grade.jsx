@@ -153,7 +153,14 @@ function Grade() {
   });
 
   const handleMenuClose = () => setMenuAnchor(null);
-
+  useEffect(() => {
+    if (storedScreens?.data?.[2]?.can_edit === 0 && storedScreens?.data?.[2]?.can_delete === 0) {
+      const targetTds = document.querySelectorAll('td[data-index="1"],th[data-index="1"]'); 
+      targetTds.forEach(td => {
+        td.textContent = "";
+      });
+    }
+  }, [storedScreens]);
   return (
     <div className="container-fluid mb-4 px-0">
       <ol
@@ -181,7 +188,7 @@ function Grade() {
               <span className="database_name">Grade</span>
             </span>
           </div>
-          {storedScreens?.data[2]?.can_create && (
+          {storedScreens?.data[2]?.can_create === 1 && (
           <GradeAdd onSuccess={fetchData} />
         )}
         </div>
@@ -225,6 +232,8 @@ function Grade() {
               open={Boolean(menuAnchor)}
               onClose={handleMenuClose}
             >
+             
+            {storedScreens?.data[2]?.can_edit ===1 && ( 
               <MenuItem
                 onClick={() => {
                   setShowEdit(true);
@@ -232,24 +241,23 @@ function Grade() {
                 }}
               >
                 Edit
-              </MenuItem>
-              <MenuItem>
+              </MenuItem>)}
+              {storedScreens?.data[2]?.can_delete ===1 && ( <MenuItem>
                 <Delete
                   path={`grade/delete/${selectedId}`}
                   onDeleteSuccess={fetchData}
                   onOpen={handleMenuClose}
                 />
               </MenuItem>
+              )}
             </Menu>
-            {storedScreens?.data[2]?.can_edit && (
             <GradeEdit
               show={showEdit}
               setShow={setShowEdit}
               id={selectedId}
               onSuccess={fetchData}
             />
-            )}
-            {storedScreens?.data[2]?.can_view && (
+            {storedScreens?.data[2]?.can_view ===1 && (
             <GradeView show={showView} setShow={setShowView} id={selectedId} />
           )}
           </>

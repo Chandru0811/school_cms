@@ -144,7 +144,14 @@ function Homework() {
   });
 
   const handleMenuClose = () => setMenuAnchor(null);
-
+  useEffect(() => {
+    if (storedScreens?.data?.[10]?.can_edit === 0 && storedScreens?.data?.[10]?.can_delete === 0) {
+      const targetTds = document.querySelectorAll('td[data-index="1"],th[data-index="1"]'); 
+      targetTds.forEach(td => {
+        td.textContent = "";
+      });
+    }
+  }, [storedScreens]);
   return (
     <div className="container-fluid mb-4 px-0">
       <ol
@@ -172,7 +179,7 @@ function Homework() {
               <span className="database_name">Homework</span>
             </span>
           </div>
-          {storedScreens?.data[10]?.can_create && (
+          {storedScreens?.data[10]?.can_create === 1 && (
             <Link to="/homework/add">
               <button
                 type="button"
@@ -210,7 +217,7 @@ function Homework() {
                   },
                 }}
                 muiTableBodyRowProps={({ row }) =>
-                  storedScreens?.data[10]?.can_view
+                  storedScreens?.data[10]?.can_view === 1
                     ? {
                         onClick: () =>
                           navigate(`/homework/view/${row.original.id}`),
@@ -226,17 +233,19 @@ function Homework() {
               open={Boolean(menuAnchor)}
               onClose={handleMenuClose}
             >
+              {storedScreens?.data[10]?.can_edit === 1 && (
               <MenuItem
                 onClick={() => navigate(`/homework/edit/${selectedId}`)}
               >
                 Edit
-              </MenuItem>
+              </MenuItem>)}
+              {storedScreens?.data[10]?.can_delete === 1 && (
               <MenuItem>
                 <Delete
                   path={`homework/delete/${selectedId}`}
                   onOpen={handleMenuClose}
                 />
-              </MenuItem>
+              </MenuItem>)}
             </Menu>
           </>
         )}

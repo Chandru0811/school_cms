@@ -12,6 +12,7 @@ import { MultiSelect } from "react-multi-select-component";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { BsFillInfoCircleFill } from "react-icons/bs";
 function RoleAdd({ onSuccess }) {
   const [show, setShow] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
@@ -176,7 +177,7 @@ function RoleAdd({ onSuccess }) {
               </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
-                   Access<span className="text-danger">*</span>
+                  Access<span className="text-danger">*</span>
                 </label>
                 <div className="d-flex gap-3">
                   <div className="form-check">
@@ -224,6 +225,24 @@ function RoleAdd({ onSuccess }) {
                     {formik.errors.access}
                   </div>
                 )}
+                <div className="row m-0">
+                  <div className="col-12">
+                    {formik.values.access && (
+                      <>
+                        <small className="text-muted">
+                          <BsFillInfoCircleFill style={{ marginBottom: "2px" }} />{" "}
+                          {formik.values.access === "Full Access"
+                            ? "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi culpa, debitis accusantium cupiditate."
+                            : formik.values.access === "Minimal Access"
+                            ? "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi culpa, debitis accusantium cupiditate."
+                            : formik.values.access === "Limited Access"
+                            ? "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi culpa, debitis accusantium cupiditate."
+                            : null}
+                        </small>
+                      </>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
           </DialogContent>

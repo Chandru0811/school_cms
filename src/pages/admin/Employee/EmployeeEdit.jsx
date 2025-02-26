@@ -128,7 +128,7 @@ function EmployeeEdit() {
 
   const getRoleList = async () => {
     try {
-      const response = await api.get("admin/roles/list");
+      const response = await api.get("roles/list/full_and_minimal");
       const formattedRoles = response.data.data.map((role) => ({
         value: role.id,
         label: role.name,

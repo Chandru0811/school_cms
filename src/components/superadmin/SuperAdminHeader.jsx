@@ -249,18 +249,27 @@ function SuperAdminHeader({ handleLogout }) {
 
                         {/* User details displayed */}
                         <div className="row pb-2 justify-content-center">
-                          <div className="col-6 p-0 text-center">
-                            <p className="text-muted text-sm">{data.name}</p>
+                          <div className="col-6 text-start pe-2">
+                            <p className="text-muted text-sm">Name</p>
+                          </div>
+                          <div className="col-6 text-start ps-2">
+                            <p className="text-muted text-sm">: {data.name}</p>
                           </div>
                         </div>
                         <div className="row pb-2 justify-content-center">
-                          <div className="col-6 p-0 text-center">
-                            <p className="text-muted text-sm">{data.email}</p>
+                          <div className="col-6 text-start pe-2">
+                            <p className="text-muted text-sm">Email</p>
+                          </div>
+                          <div className="col-6 text-start ps-2">
+                            <p className="text-muted text-sm">: {data.email}</p>
                           </div>
                         </div>
                         <div className="row pb-2 justify-content-center">
-                          <div className="col-6 p-0 text-center">
-                            <p className="text-muted text-sm">{data.mobile}</p>
+                          <div className="col-6 text-start pe-2">
+                            <p className="text-muted text-sm">Mobile</p>
+                          </div>
+                          <div className="col-6 text-start ps-2">
+                            <p className="text-muted text-sm">: {data.mobile}</p>
                           </div>
                         </div>
                       </>

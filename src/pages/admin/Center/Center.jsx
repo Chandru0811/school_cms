@@ -102,6 +102,14 @@ function Center() {
   useEffect(() => {
     fetchData();
   }, []);
+  useEffect(() => {
+    if (storedScreens?.data[0]?.can_edit === 0 && storedScreens?.data[0]?.can_delete === 0) {
+      const targetTds = document.querySelectorAll('td[data-index="1"],th[data-index="1"]'); 
+      targetTds.forEach(td => {
+        td.textContent = "";
+      });
+    }
+  }, [storedScreens]);
 
   const theme = createTheme({
     components: {
@@ -213,13 +221,14 @@ function Center() {
                 })}
               />
             </ThemeProvider>
+            
             <Menu
               id="action-menu"
               anchorEl={menuAnchor}
               open={Boolean(menuAnchor)}
               onClose={handleMenuClose}
             >
-              {storedScreens?.data[0]?.can_edit && (
+              {storedScreens?.data[0]?.can_edit === 1 && (
                 <MenuItem>
                   <CenterEdit
                     onSuccess={fetchData}
@@ -228,23 +237,15 @@ function Center() {
                   />
                 </MenuItem>
               )}
-              {/* {storedScreens?.data[0]?.can_view && (
-                <MenuItem>
-                  <CenterView
-                    id={selectedId}
-                    handleMenuClose={handleMenuClose}
-                  />
-                </MenuItem>
-              )} */}
-              <MenuItem>
+            {storedScreens?.data[0]?.can_delete === 1 && (  <MenuItem>
                 <Delete
                   path={`/center/delete/${selectedId}`}
                   onDeleteSuccess={fetchData}
                   onOpen={handleMenuClose}
                 />
-              </MenuItem>
+              </MenuItem>)}
             </Menu>
-            {storedScreens?.data[0]?.can_view && (
+            {storedScreens?.data[0]?.can_view === 1 && (
               <CenterView
                 show={showView}
                 setShow={setShowView}

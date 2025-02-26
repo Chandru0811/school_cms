@@ -3,11 +3,14 @@ import WorkSheetAsign from "./WorkSheetAsign";
 import { useEffect, useState } from "react";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
+import { useMemo } from "react";
+import { MaterialReactTable } from "material-react-table";
+import { ThemeProvider, createTheme } from "@mui/material";
 
 function WorkSheetView() {
   const [data, setData] = useState({});
   const { id } = useParams();
-  const [centerList, setCenterList] = useState([]);
+  // const [centerList, setCenterList] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
@@ -27,25 +30,89 @@ function WorkSheetView() {
       setLoading(false);
     }
   };
+  //Question table
+  const theme = createTheme({
+    components: {
+      MuiTableCell: {
+        styleOverrides: {
+          head: {
+            color: "#535454 !important",
+            backgroundColor: "#e6edf7 !important",
+            fontWeight: "400 !important",
+            fontSize: "13px !important",
+            textAlign: "center !important",
+          },
+        },
+      },
+    },
+  });
 
-  const getCenterList = async () => {
+  const columns = useMemo(
+    () => [
+      {
+        accessorFn: (row, index) => index + 1,
+        header: "S.NO",
+        enableSorting: true,
+        size: 40,
+      },
+      {
+        accessorKey: "question",
+        header: "Question",
+      },
+      {
+        accessorKey: "questype",
+        header: "Quest Type",
+        Cell: ({ row }) => {
+          const quesIdWithType = JSON.parse(data.ques_id_with_type);
+          const questionTypeObj = quesIdWithType.find(
+            (q) => q.id === row.original.id
+          );
+          return questionTypeObj ? questionTypeObj.questype : "N/A";
+        },
+      },
+      {
+        accessorKey: "options",
+        header: "Options",
+        Cell: ({ row }) => {
+          const quesIdWithType = JSON.parse(data.ques_id_with_type);
+          const questionTypeObj = quesIdWithType.find(
+            (q) => q.id === row.original.id
+          );
+
+          // Check if question type is "closed"
+          if (questionTypeObj?.questype.toLowerCase() === "closed") {
+            return "Yes/No";
+          }
+          return row.original.options || "N/A";
+        },
+      },
+    ],
+    [data]
+  );
+
+  // Function to Toggle Status
+  const handleStatusToggle = async () => {
     try {
-      const response = await api.get("centers/list");
-      setCenterList(response.data.data);
-    } catch (e) {
-      toast.error(
-        `Error Fetching Centers: ${e?.response?.data?.error || e.message}`
-      );
+      const response = await api.post(`worksheet/status/${id}`);
+      if (response.status === 200) {
+        toast.success("Status updated successfully!");
+        setData((prevData) => ({
+          ...prevData,
+          active: prevData.active === 1 ? 0 : 1,
+        }));
+      }
+    } catch (error) {
+      toast.error("Error updating status!");
+      console.error("Status Update Error:", error);
     }
   };
 
   useEffect(() => {
     getData();
-    getCenterList();
   }, [id]);
 
   return (
-    <div className="container-fluid px-0">
+    <div className="container-fluid px-0 vh-100 mb-4">
       <ol
         className="breadcrumb my-2 px-2 d-flex align-items-center"
         style={{ listStyle: "none", padding: 0, margin: 0 }}
@@ -66,7 +133,7 @@ function WorkSheetView() {
           &nbsp;Worksheet View
         </li>
       </ol>
-      <div className="card vh-100" style={{ border: "1px solid #dbd9d0" }}>
+      <div className="card" style={{ border: "1px solid #dbd9d0" }}>
         <div className="d-flex px-4 justify-content-between align-items-center card_header p-1 mb-4">
           <div className="d-flex align-items-center">
             <div className="d-flex">
@@ -86,12 +153,14 @@ function WorkSheetView() {
               assignedId={assigned_id}
             />
             <button
-              type="button"
-              className="btn btn-success btn-sm me-2"
-              style={{ fontWeight: "600px !important" }}
+              className={`btn btn-sm ${
+                data.active === 1 ? "btn-danger" : "btn-success"
+              }`}
+              onClick={handleStatusToggle}
             >
-              Activate
+              {data.active === 1 ? "Deactivate" : "Activate"}
             </button>
+            &nbsp;&nbsp;
             <Link to={`/doassessment?assignedId=${assigned_id}`}>
               <button
                 type="button"
@@ -101,7 +170,7 @@ function WorkSheetView() {
                 Do Assessment
               </button>
             </Link>
-            &nbsp;&nbsp;
+            {/* &nbsp;&nbsp; */}
             <button
               type="button"
               className="btn btn-sm btn-button"
@@ -117,7 +186,7 @@ function WorkSheetView() {
               <div className="loader"></div>
             </div>
           ) : (
-            <div className="container-fluid px-4">
+            <div className="container-fluid px-4 mb-5">
               <div className="row pb-3">
                 <div className="col-md-6 col-12 my-2">
                   <div className="row">
@@ -197,7 +266,12 @@ function WorkSheetView() {
                       <p className="fw-medium text-sm">Question Type</p>
                     </div>
                     <div className="col-6">
-                      <p className="text-muted text-sm">: {data.ques_type}</p>
+                      <p className="text-muted text-sm">
+                        :{" "}
+                        {data.ques_type
+                          ? JSON.parse(data.ques_type).join(", ")
+                          : ""}
+                      </p>{" "}
                     </div>
                   </div>
                 </div>
@@ -249,40 +323,47 @@ function WorkSheetView() {
                     </div>
                   </div>
                 </div>
+                {data.student_assigned && data.student_assigned.length > 0 && (
+                  <div className="col-md-12 col-12">
+                    <h5 className="fw-bold mb-2">Student Assigned</h5>
+                    <div className="row">
+                      {data.student_assigned.map((student, index) => (
+                        <div key={index}>
+                          <div className="col-md-6 col-12 my-2">
+                            <div className="row">
+                              <div className="col-6">
+                                <p className="fw-medium text-sm">
+                                  Student Name
+                                </p>
+                              </div>
+                              <div className="col-6">
+                                <p className="text-muted text-sm text-break ">
+                                  : {student.student_names.join(", ")}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="col-md-6 col-12 my-2">
+                            <div className="row">
+                              <div className="col-6">
+                                <p className="fw-medium text-sm">Grade</p>
+                              </div>
+                              <div className="col-6">
+                                <p className="text-muted text-sm text-break ">
+                                  : {student.grade_name}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
-
-              <div class="container-fluid mt-4">
-                {/* <h3 class="mb-3">Questions Table</h3> */}
-                <table className="table">
-                  <thead className="table-dark">
-                    <tr>
-                      <th>Question</th>
-                      <th>Quest Type</th>
-                      <th>Options</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {data.questions.map((question, index) => {
-                      // Parse ques_id_with_type JSON and find the matching question type based on ID
-                      const quesIdWithType = JSON.parse(data.ques_id_with_type);
-                      const questionTypeObj = quesIdWithType.find(
-                        (q) => q.id === question.id
-                      );
-                      const questionType = questionTypeObj
-                        ? questionTypeObj.questype
-                        : "N/A"; // Default fallback
-
-                      return (
-                        <tr key={question.id}>
-                          <td>{question.question}</td>
-                          <td>{questionType}</td>
-                          <td>{question.options ? question.options : "N/A"}</td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
+              <ThemeProvider theme={theme}>
+                <MaterialReactTable columns={columns} data={data.questions} />
+              </ThemeProvider>
             </div>
           )}
         </>

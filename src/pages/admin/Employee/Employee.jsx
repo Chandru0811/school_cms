@@ -155,7 +155,14 @@ function Employee() {
   useEffect(() => {
     getData();
   }, []);
-
+  useEffect(() => {
+    if (storedScreens?.data?.[1]?.can_edit === 0 && storedScreens?.data?.[1]?.can_delete === 0) {
+      const targetTds = document.querySelectorAll('td[data-index="1"],th[data-index="1"]'); 
+      targetTds.forEach(td => {
+        td.textContent = "";
+      });
+    }
+  }, [storedScreens]);
   return (
     <div className="container-fluid mb-4 px-0">
       <ol
@@ -183,7 +190,7 @@ function Employee() {
               <span className="database_name">Employee</span>
             </span>
           </div>
-          {storedScreens?.data[1]?.can_create && (
+          {storedScreens?.data[1]?.can_create === 1 && (
             <Link to="/employee/add">
               <button
                 type="button"
@@ -239,20 +246,21 @@ function Employee() {
               open={Boolean(menuAnchor)}
               onClose={handleMenuClose}
             >
-              {storedScreens?.data[1]?.can_edit && (
+              {storedScreens?.data[1]?.can_edit === 1 && (
                 <MenuItem
                   onClick={() => navigate(`/employee/edit/${selectedId}`)}
                 >
                   Edit
                 </MenuItem>
               )}
+              {storedScreens?.data[1]?.can_delete === 1 && (
               <MenuItem>
                 <Delete
                   path={`employee/delete/${selectedId}`}
                   onOpen={handleMenuClose}
                   onDeleteSuccess={getData}
                 />
-              </MenuItem>
+              </MenuItem>)}
             </Menu>
           </>
         )}

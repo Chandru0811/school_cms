@@ -17,7 +17,8 @@ function SchoolAdd() {
     location: Yup.string()
       .max(255, "*Location must be at most 255 characters")
       .required("*School Location is required"),
-    admin_name: Yup.string().required("*Admin Name is required"),
+    admin_name: Yup.string().max(255, "*Admin Name must be at most 255 characters").
+    required("*Admin Name is required"),
     mobile: Yup.string()
     .matches(/^(?:\d{8}|\d{10})$/, "*Mobile number must be either 8 or 10 digits")
     .required("*Mobile number is required!"),  
