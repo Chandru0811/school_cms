@@ -110,7 +110,7 @@ function HomeworkAssign({ grade_ids, assignedId }) {
 
   useEffect(() => {
     getGradeList();
-  }, []);
+  }, [grade_ids]);
 
   return (
     <>
