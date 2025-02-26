@@ -1,5 +1,5 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
-import ChallengesAssign from "./ChallengesAssign";
+// import ChallengesAssign from "./ChallengesAssign";
 import { useEffect, useState } from "react";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
@@ -168,7 +168,11 @@ function ChallengesView() {
                   <p className="fw-medium text-sm">challenge Type</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.challenge?.ques_type}</p>
+                  <p className="text-muted text-sm"> :{" "}
+                      {data.challenge?.ques_type
+                        ? JSON.parse(data.challenge?.ques_type).join(", ")
+                        : ""}
+                    </p>{" "}
                 </div>
               </div>
             </div>
@@ -228,7 +232,11 @@ function ChallengesView() {
                   <p className="fw-medium text-sm">Answer Type</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.answer?.answer_type}</p>
+                  <p className="text-muted text-sm"> :{" "}
+                      {data.answer?.answer_type
+                        ? JSON.parse(data.answer?.answer_type).join(", ")
+                        : ""}
+                    </p>{" "}
                 </div>
               </div>
             </div>
@@ -238,7 +246,11 @@ function ChallengesView() {
                   <p className="fw-medium text-sm">Answer</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.answer?.answer}</p>
+                  <p className="text-muted text-sm">: {" "}
+                      {data.answer?.answer &&
+                        Object.entries(JSON.parse(data.answer.answer))
+                          .map(([key, value]) => `${key}: ${value}`)
+                          .join(", ")}</p>
                 </div>
               </div>
             </div>

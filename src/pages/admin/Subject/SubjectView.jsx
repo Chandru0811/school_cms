@@ -8,13 +8,17 @@ import PropTypes from "prop-types";
 import toast from "react-hot-toast";
 import api from "../../../config/URL";
 import { useEffect, useState } from "react";
+import SubjectEdit from "./SubjectEdit";
 
 function SubjectView({ show, setShow, id }) {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(true);
-
+const[editModal,setEditModal] = useState(false);
   const handleClose = () => {
     setShow(false);
+  };
+  const handleEdit = () => {
+    setEditModal(true); // Open edit modal when "Edit" button is clicked
   };
   const getSubjectData = async () => {
     try {
@@ -37,6 +41,7 @@ function SubjectView({ show, setShow, id }) {
   }, [id, show]);
 
   return (
+    <>
     <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
       <DialogTitle>View Subject</DialogTitle>
       <hr className="m-0"></hr>
@@ -111,8 +116,20 @@ function SubjectView({ show, setShow, id }) {
         <button className="btn btn-sm btn-back" onClick={handleClose}>
           Back
         </button>
+        <button className="btn btn-sm btn-primary" onClick={handleEdit}>
+            Edit
+          </button>
       </DialogActions>
     </Dialog>
+    {editModal && (
+        <SubjectEdit
+          id={id}
+          show={editModal}
+          setShow={setEditModal}
+          onSuccess={getSubjectData} // Refresh data after successful edit
+        />
+      )}
+    </>
   );
 }
 

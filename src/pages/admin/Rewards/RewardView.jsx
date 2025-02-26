@@ -26,6 +26,23 @@ function RewardView() {
     }
   };
 
+    // Function to Toggle Status
+    const handleStatusToggle = async () => {
+      try {
+        const response = await api.post(`reward/status/${id}`);
+        if (response.status === 200) {
+          toast.success("Status updated successfully!");
+          setData((prevData) => ({
+            ...prevData,
+            active: prevData.active === 1 ? 0 : 1,
+          }));
+        }
+      } catch (error) {
+        toast.error("Error updating status!");
+        console.error("Status Update Error:", error);
+      }
+    };
+
   const getCenterList = async () => {
     try {
       const response = await api.get("centers/list");
@@ -82,12 +99,14 @@ function RewardView() {
             </Link>
             &nbsp;&nbsp;
             <button
-              type="button"
-              className="btn btn-success btn-sm me-2"
-              style={{ fontWeight: "600px !important" }}
+              className={`btn btn-sm ${
+                data.active === 1 ? "btn-danger" : "btn-success"
+              }`}
+              onClick={handleStatusToggle}
             >
-              Activate
+              {data.active === 1 ? "Deactivate" : "Activate"}
             </button>
+            &nbsp;&nbsp;
             <button
               type="button"
               className="btn btn-sm btn-button"

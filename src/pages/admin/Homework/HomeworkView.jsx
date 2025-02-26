@@ -3,16 +3,18 @@ import { useEffect, useState } from "react";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import HomeworkAssign from "./HomeworkAssign";
+import { useMemo } from "react";
+import { MaterialReactTable } from "material-react-table";
+import { ThemeProvider, createTheme } from "@mui/material";
 
 function HomeworkView() {
   const [data, setData] = useState({});
   const { id } = useParams();
-  const [centerList, setCenterList] = useState([]);
+  // const [centerList, setCenterList] = useState([]);
   const assigned_id = id;
   console.log("idddss", assigned_id);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
 
   const getData = async () => {
     try {
@@ -23,25 +25,102 @@ function HomeworkView() {
       const errorMessage =
         e?.response?.data?.error || "Error Fetching Data. Please try again.";
       toast.error(errorMessage);
-    }finally {
+    } finally {
       setLoading(false);
     }
   };
 
-  const getCenterList = async () => {
+  //Question table
+  const theme = createTheme({
+    components: {
+      MuiTableCell: {
+        styleOverrides: {
+          head: {
+            color: "#535454 !important",
+            backgroundColor: "#e6edf7 !important",
+            fontWeight: "400 !important",
+            fontSize: "13px !important",
+            textAlign: "center !important",
+          },
+        },
+      },
+    },
+  });
+
+  const columns = useMemo(
+    () => [
+      {
+        accessorFn: (row, index) => index + 1,
+        header: "S.NO",
+        enableSorting: true,
+        size: 40,
+      },
+      {
+        accessorKey: "question",
+        header: "Question",
+      },
+      {
+        accessorKey: "questype",
+        header: "Quest Type",
+        Cell: ({ row }) => {
+          const quesIdWithType = JSON.parse(data.ques_id_with_type);
+          const questionTypeObj = quesIdWithType.find(
+            (q) => q.id === row.original.id
+          );
+          return questionTypeObj ? questionTypeObj.questype : "N/A";
+        },
+      },
+      {
+        accessorKey: "options",
+        header: "Options",
+        Cell: ({ row }) => {
+          const quesIdWithType = JSON.parse(data.ques_id_with_type);
+          const questionTypeObj = quesIdWithType.find(
+            (q) => q.id === row.original.id
+          );
+
+          // Check if question type is "closed"
+          if (questionTypeObj?.questype.toLowerCase() === "closed") {
+            return "Yes/No";
+          }
+          return row.original.options || "N/A";
+        },
+      },
+    ],
+    [data]
+  );
+
+  // Function to Toggle Status
+  const handleStatusToggle = async () => {
     try {
-      const response = await api.get("centers/list");
-      setCenterList(response.data.data);
-    } catch (e) {
-      toast.error(
-        `Error Fetching Centers: ${e?.response?.data?.error || e.message}`
-      );
+      const response = await api.post(`homework/status/${id}`);
+      if (response.status === 200) {
+        toast.success("Status updated successfully!");
+        setData((prevData) => ({
+          ...prevData,
+          active: prevData.active === 1 ? 0 : 1,
+        }));
+      }
+    } catch (error) {
+      toast.error("Error updating status!");
+      console.error("Status Update Error:", error);
     }
   };
 
+  // const getCenterList = async () => {
+  //   try {
+  //     const response = await api.get("centers/list");
+  //     setCenterList(response.data.data);
+  //   } catch (e) {
+  //     toast.error(
+  //       `Error Fetching Centers: ${e?.response?.data?.error || e.message}`
+  //     );
+  //   }
+  // };
+
   useEffect(() => {
     getData();
-    getCenterList();
+    // getCenterList();
   }, [id]);
 
   return (
@@ -86,12 +165,14 @@ function HomeworkView() {
               assignedId={assigned_id}
             />
             <button
-              type="button"
-              className="btn btn-success btn-sm me-2"
-              style={{ fontWeight: "600px !important" }}
+              className={`btn btn-sm ${
+                data.active === 1 ? "btn-danger" : "btn-success"
+              }`}
+              onClick={handleStatusToggle}
             >
-              Activate
+              {data.active === 1 ? "Deactivate" : "Activate"}
             </button>
+            &nbsp;&nbsp;
             <Link to={`/homedoassessment?assignedId=${assigned_id}`}>
               <button
                 type="button"
@@ -101,7 +182,6 @@ function HomeworkView() {
                 Do Assessment
               </button>
             </Link>
-            &nbsp;&nbsp;
             <button
               type="button"
               className="btn btn-sm btn-button"
@@ -116,117 +196,160 @@ function HomeworkView() {
             <div className="loader"></div>
           </div>
         ) : (
-        <>
-        <div className="container-fluid px-4">
-          <div className="row pb-3">
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Centre</p>
+          <>
+            <div className="container-fluid px-4 mb-2">
+              <div className="row pb-3">
+                <div className="col-md-6 col-12 my-2">
+                  <div className="row">
+                    <div className="col-6">
+                      <p className="fw-medium text-sm">Centre</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm">
+                        : {data.center_names || "--"}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">
-                    : {data.center_names || "--"}
-                  </p>
+                <div className="col-md-6 col-12 my-2">
+                  <div className="row">
+                    <div className="col-6">
+                      <p className="fw-medium text-sm">Grade</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm">
+                        : {data.grade_names || "--"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12 my-2">
+                  <div className="row">
+                    <div className="col-6">
+                      <p className="fw-medium text-sm">Topic</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm">: {data.topic_names}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12 my-2">
+                  <div className="row">
+                    <div className="col-6">
+                      <p className="fw-medium text-sm">Title</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm">: {data.title}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12 my-2">
+                  <div className="row">
+                    <div className="col-6">
+                      <p className="fw-medium text-sm">Subject</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm">
+                        :{" "}
+                        {data.subject_names && data.subject_names.length > 0
+                          ? data.subject_names.join(", ")
+                          : "N/A"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12 my-2">
+                  <div className="row">
+                    <div className="col-6">
+                      <p className="fw-medium text-sm">Question Type</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm">
+                        :{" "}
+                        {data.ques_type
+                          ? JSON.parse(data.ques_type).join(", ")
+                          : ""}
+                      </p>{" "}
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12 my-2">
+                  <div className="row">
+                    <div className="col-6">
+                      <p className="fw-medium text-sm">Difficult Level</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm text-break ">
+                        : {data.difficult_level}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12 my-2">
+                  <div className="row">
+                    <div className="col-6">
+                      <p className="fw-medium text-sm">Due Date</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm text-break ">
+                        : {data.due_date}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12 my-2">
+                  <div className="row">
+                    <div className="col-6">
+                      <p className="fw-medium text-sm">Total Score</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm text-break ">
+                        : {data.total_score}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
+              {data.student_assigned && data.student_assigned.length > 0 && (
+                <div className="col-md-12 col-12">
+                  <h5 className="fw-bold mb-2">Student Assigned</h5>
+                  <div className="row">
+                    {data.student_assigned.map((student, index) => (
+                      <div key={index}>
+                        <div className="col-md-6 col-12 my-2">
+                          <div className="row">
+                            <div className="col-6">
+                              <p className="fw-medium text-sm">Student Name</p>
+                            </div>
+                            <div className="col-6">
+                              <p className="text-muted text-sm text-break ">
+                                : {student.student_names.join(", ")}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="col-md-6 col-12 my-2">
+                          <div className="row">
+                            <div className="col-6">
+                              <p className="fw-medium text-sm">Grade</p>
+                            </div>
+                            <div className="col-6">
+                              <p className="text-muted text-sm text-break ">
+                                : {student.grade_name}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Grade</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">
-                    : {data.grade_names || "--"}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Topic</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.topic_names}</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Title</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.title}</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Subject</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">
-                    :{" "}
-                    {data.subject_names && data.subject_names.length > 0
-                      ? data.subject_names.join(", ")
-                      : "N/A"}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Question Type</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.ques_type}</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Difficult Level</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm text-break ">
-                    : {data.difficult_level}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Due Date</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm text-break ">
-                    : {data.due_date}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Total Score</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm text-break ">
-                    : {data.total_score}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        </>
+            <ThemeProvider theme={theme}>
+              <MaterialReactTable columns={columns} data={data.questions} />
+            </ThemeProvider>
+          </>
         )}
       </div>
     </div>
