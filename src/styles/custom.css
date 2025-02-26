@@ -274,7 +274,8 @@
 }
 
 .MuiTableBody-root tr td {
-  padding: 7px 10px !important;
+  height: 57px !important;
+  padding: 8px 17px !important;
   font-family: "Poppins", serif;
 }
 
@@ -290,4 +291,8 @@
 
 .btn-button:focus {
   box-shadow: none;
+}
+
+.css-1tbggly {
+  z-index: 0 !important;
 }

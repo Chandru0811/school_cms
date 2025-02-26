@@ -161,7 +161,14 @@ function Rewards() {
   useEffect(() => {
     getData();
   }, []);
-
+  useEffect(() => {
+    if (storedScreens?.data?.[12]?.can_edit === 0 && storedScreens?.data?.[12]?.can_delete === 0) {
+      const targetTds = document.querySelectorAll('td[data-index="1"],th[data-index="1"]'); 
+      targetTds.forEach(td => {
+        td.textContent = "";
+      });
+    }
+  }, [storedScreens]);
   return (
     <div className="container-fluid mb-4 px-0">
       <ol
@@ -189,7 +196,7 @@ function Rewards() {
               <span className="database_name">Rewards</span>
             </span>
           </div>
-          {storedScreens?.data[12]?.can_create && (
+          {storedScreens?.data[12]?.can_create === 1 && (
             <Link to="/reward/add">
               <button
                 type="button"
@@ -224,7 +231,7 @@ function Rewards() {
                 },
               }}
               muiTableBodyRowProps={({ row }) =>
-                storedScreens?.data[12]?.can_view
+                storedScreens?.data[12]?.can_view === 1
                   ? {
                       onClick: () =>
                         navigate(`/reward/view/${row.original.id}`),
@@ -240,20 +247,21 @@ function Rewards() {
             open={Boolean(menuAnchor)}
             onClose={handleMenuClose}
           >
-            {storedScreens?.data[12]?.can_edit && (
+            {storedScreens?.data[12]?.can_edit === 1 && (
               <MenuItem
                 onClick={() => navigate(`/reward/edit/${selectedId}`)}
               >
                 Edit
               </MenuItem>
             )}
+            {storedScreens?.data[12]?.can_delete === 1 && (
             <MenuItem>
               <Delete
                 path={`reward/delete/${selectedId}`}
                 onOpen={handleMenuClose}
                 onDeleteSuccess={getData}
               />
-            </MenuItem>
+            </MenuItem>)}
           </Menu>
         </>
       )}

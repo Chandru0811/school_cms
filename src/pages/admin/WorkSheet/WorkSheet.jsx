@@ -85,6 +85,14 @@ function Worksheet() {
     ],
     []
   );
+  useEffect(() => {
+    if (storedScreens?.data?.[8]?.can_edit === 0 && storedScreens?.data?.[8]?.can_delete === 0) {
+      const targetTds = document.querySelectorAll('td[data-index="1"],th[data-index="1"]'); 
+      targetTds.forEach(td => {
+        td.textContent = "";
+      });
+    }
+  }, [storedScreens]);
 
   const getData = async () => {
     try {
@@ -174,7 +182,7 @@ function Worksheet() {
               <span className="database_name">Worksheet</span>
             </span>
           </div>
-          {storedScreens?.data[8]?.can_create && (
+          {storedScreens?.data[8]?.can_create === 1 && (
             <Link to="/worksheet/add">
               <button
                 type="button"
@@ -212,7 +220,7 @@ function Worksheet() {
                   },
                 }}
                 muiTableBodyRowProps={({ row }) =>
-                  storedScreens?.data[8]?.can_view
+                  storedScreens?.data[8]?.can_view === 1
                     ? {
                         onClick: () =>
                           navigate(`/worksheet/view/${row.original.id}`),
@@ -228,20 +236,21 @@ function Worksheet() {
               open={Boolean(menuAnchor)}
               onClose={handleMenuClose}
             >
-              {storedScreens?.data[8]?.can_edit && (
+              {storedScreens?.data[8]?.can_edit ===1 && (
                 <MenuItem
                   onClick={() => navigate(`/worksheet/edit/${selectedId}`)}
                 >
                   Edit
                 </MenuItem>
               )}
+              {storedScreens?.data[8]?.can_delete ===1 &&(
               <MenuItem>
                 <Delete
                   path={`worksheet/delete/${selectedId}`}
                   onDeleteSuccess={getData}
                   onOpen={handleMenuClose}
                 />
-              </MenuItem>
+              </MenuItem>)}
             </Menu>
           </>
         )}

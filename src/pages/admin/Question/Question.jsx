@@ -137,7 +137,14 @@ function Question() {
   }, []);
 
   const handleMenuClose = () => setMenuAnchor(null);
-
+  useEffect(() => {
+    if (storedScreens?.data?.[6]?.can_edit === 0 && storedScreens?.data?.[6]?.can_delete === 0) {
+      const targetTds = document.querySelectorAll('td[data-index="1"],th[data-index="1"]'); 
+      targetTds.forEach(td => {
+        td.textContent = "";
+      });
+    }
+  }, [storedScreens]);
   return (
     <div className="container-fluid mb-4 px-0">
       <ol
@@ -165,7 +172,7 @@ function Question() {
               <span className="database_name">Question</span>
             </span>
           </div>
-          {storedScreens?.data[6]?.can_create && (
+          {storedScreens?.data[6]?.can_create ===1&& (
           <Link to="/question/add">
             <button
               type="button"
@@ -203,7 +210,7 @@ function Question() {
                 },
               }}
               muiTableBodyRowProps={({ row }) =>
-                storedScreens?.data[6]?.can_view
+                storedScreens?.data[6]?.can_view ===1 
                   ? {
                       onClick: () =>
                         navigate(`/question/view/${row.original.id}`),
@@ -219,11 +226,12 @@ function Question() {
             open={Boolean(menuAnchor)}
             onClose={handleMenuClose}
           >
-          {storedScreens?.data[6]?.can_edit && (
+          {storedScreens?.data[6]?.can_edit === 1 && (
             <MenuItem onClick={() => navigate(`/question/edit/${selectedId}`)}>
               Edit
             </MenuItem>
           )}
+          {storedScreens?.data[6]?.can_delete === 1 && (
             <MenuItem>
             <Delete
                   path={`question/delete/${selectedId}`}
@@ -231,7 +239,7 @@ function Question() {
                   onOpen={handleMenuClose}
                 />
               {/* <Delete path={`/question/delete/${selectedId}`} onOpen={handleMenuClose} /> */}
-            </MenuItem>
+            </MenuItem>)}
           </Menu>
         </>
       )}

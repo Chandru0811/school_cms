@@ -145,7 +145,14 @@ function Subject() {
   useEffect(() => {
     getData();
   }, []);
-
+  useEffect(() => {
+    if (storedScreens?.data?.[4]?.can_edit === 0 && storedScreens?.data?.[4]?.can_delete === 0) {
+      const targetTds = document.querySelectorAll('td[data-index="1"],th[data-index="1"]'); 
+      targetTds.forEach(td => {
+        td.textContent = "";
+      });
+    }
+  }, [storedScreens]);
   return (
     <div className="container-fluid mb-4 px-0">
       <ol
@@ -173,7 +180,7 @@ function Subject() {
               <span className="database_name">Subject</span>
             </span>
           </div>
-          {storedScreens?.data[4]?.can_create && (
+          {storedScreens?.data[4]?.can_create === 1 && (
             <SubjectAdd onSuccess={getData} />
           )}
         </div>
@@ -202,13 +209,16 @@ function Subject() {
                     updated_at: false,
                   },
                 }}
-                muiTableBodyRowProps={({ row }) => ({
-                  style: { cursor: "pointer" },
-                  onClick: () => {
-                    setSelectedId(row.original.id);
-                    setShowView(true);
-                  },
-                })}
+                muiTableBodyRowProps={({ row }) => 
+                  storedScreens?.data[4]?.can_view === 1 ? {
+
+                    style: { cursor: "pointer" },
+                    onClick: () => {
+                      setSelectedId(row.original.id);
+                      setShowView(true);
+                    },
+                  }
+                :{}}
               />
             </ThemeProvider>
             <Menu
@@ -217,6 +227,8 @@ function Subject() {
               open={Boolean(menuAnchor)}
               onClose={handleMenuClose}
             >
+              
+            {storedScreens?.data[4]?.can_edit === 1 && (
               <MenuItem
                 onClick={() => {
                   setShowEdit(true);
@@ -225,29 +237,27 @@ function Subject() {
               >
                 Edit
               </MenuItem>
+            )}
+              {storedScreens?.data[4]?.can_delete === 1 && (
               <MenuItem>
                 <Delete
                   path={`subject/delete/${selectedId}`}
                   onDeleteSuccess={getData}
                   onOpen={handleMenuClose}
                 />
-              </MenuItem>
+              </MenuItem>)}
             </Menu>
-            {storedScreens?.data[4]?.can_edit && (
               <SubjectEdit
                 show={showEdit}
                 setShow={setShowEdit}
                 id={selectedId}
                 onSuccess={getData}
               />
-            )}
-            {storedScreens?.data[4]?.can_view && (
               <SubjectView
                 show={showView}
                 setShow={setShowView}
                 id={selectedId}
               />
-            )}
           </>
         )}
       </div>
