@@ -335,36 +335,40 @@ const DoAssessment = () => {
                   </div>
                 )}
               </div>
-              <div className="d-flex align-items-center justify-content-between mt-auto ms-auto">
-                {currentQuestionIndex !== 0 &&
+              <div className="row">
+                <div className="col-4">
+                  {currentQuestionIndex !== 0 &&
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-light"
+                      onClick={handlePrevious}
+                      disabled={currentQuestionIndex === 0}
+                    >
+                      Previous
+                    </button>}
+                </div>
+                <div className="col-4">
+                  {timeLeft !== null && <p className="text-danger">Time Left: {timeLeft} sec</p>}
+                </div>
+                <div className="col-4 text-end">
                   <button
                     type="button"
-                    className="btn btn-sm btn-light"
-                    onClick={handlePrevious}
-                    disabled={currentQuestionIndex === 0}
+                    className={`btn btn-sm ${currentQuestionIndex === data.questions.length - 1 ? "btn-primary" : "btn-secondary"
+                      }`}
+                    onClick={() =>
+                      currentQuestionIndex === data.questions.length - 1 ? formik.handleSubmit() : handleNext()
+                    }
+                    disabled={loadIndicator}
                   >
-                    Previous
-                  </button>}
-
-                {timeLeft !== null && <p className="text-danger">Time Left: {timeLeft} sec</p>}
-
-                <button
-                  type="button"
-                  className={`btn btn-sm ${currentQuestionIndex === data.questions.length - 1 ? "btn-primary" : "btn-secondary"
-                    }`}
-                  onClick={() =>
-                    currentQuestionIndex === data.questions.length - 1 ? formik.handleSubmit() : handleNext()
-                  }
-                  disabled={loadIndicator}
-                >
-                  {loadIndicator && (
-                    <span
-                      className="spinner-border spinner-border-sm me-2"
-                      aria-hidden="true"
-                    ></span>
-                  )}
-                  {currentQuestionIndex === data.questions.length - 1 ? "Submit" : "Next"}
-                </button>
+                    {loadIndicator && (
+                      <span
+                        className="spinner-border spinner-border-sm me-2"
+                        aria-hidden="true"
+                      ></span>
+                    )}
+                    {currentQuestionIndex === data.questions.length - 1 ? "Submit" : "Next"}
+                  </button>
+                </div>
               </div>
             </div>
           </div>

@@ -27,7 +27,7 @@ function TopicAdd({ onSuccess }) {
       .array()
       .min(1, "*Select at least one center")
       .required("*Select a center"),
-    grade_id: yup.string().required("*Select a Grade"),
+    // grade_id: yup.string().required("*Select a Grade"),
     subject_id: yup.string().required("*Select a Subject"),
     name: yup
       .string()
@@ -49,7 +49,7 @@ function TopicAdd({ onSuccess }) {
   const formik = useFormik({
     initialValues: {
       center_id: [],
-      grade_id: "",
+      // grade_id: "",
       subject_id: "",
       name: "",
       description: "",
@@ -175,7 +175,7 @@ function TopicAdd({ onSuccess }) {
                   </div>
                 )}
               </div>
-              <div className="col-md-6 col-12 mb-3">
+              {/* <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
                   Grade<span className="text-danger">*</span>
                 </label>
@@ -202,7 +202,7 @@ function TopicAdd({ onSuccess }) {
                     {formik.errors.grade_id}
                   </div>
                 )}
-              </div>
+              </div> */}
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
                   Subject<span className="text-danger">*</span>
