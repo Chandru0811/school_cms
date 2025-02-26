@@ -18,6 +18,7 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
   const [selectedCenter, setSelectedCenter] = useState([]);
   const [centerList, setCenterList] = useState([]);
   const [subjects, setSubjects] = useState([]);
+  const [grades, setGrades] = useState([]);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
 
@@ -26,7 +27,7 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
       .array()
       .min(1, "*Select at least one center")
       .required("*Select a center id"),
-    // grade: yup.string().required("*Select a grade"),
+    grade_id: yup.string().required("*Select a grade"),
     subject_id: yup.string().required("*Selected a subject"),
     name: yup.string().max(255, "*Topic Name must not exceed 255 characters").required("*Topic Name is required"),
   });
@@ -75,7 +76,7 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
       setSelectedCenter(selectedCenters);
       formik.setValues({
         center_id: centerIds,
-        // grade: data.grade || "",
+        grade_id: data.grade_id || "",
         subject_id: data.subject_id || "",
         name: data.name || "",
         description: data.description || "",
@@ -101,8 +102,21 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
       toast.error(`Error Fetching Data: ${e?.response?.data?.error || e.message}`);
     }
   };
-  
 
+  const getGradeList = async () => {
+    try {
+      const response = await api.get("grades/list");
+      const formattedGrade = response.data.data.map((grade) => ({
+        value: grade.id,
+        label: grade.name,
+      }));
+      setGrades(formattedGrade);
+    } catch (e) {
+      toast.error(
+        `Error Fetching Data: ${e?.response?.data?.error || e.message}`
+      );
+    }
+  };
   const getSubjectList = async () => {
     try {
       const response = await api.get("subjects/list");
@@ -122,6 +136,7 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
     if (show) {
       getTopicData();
       getCenterList();
+      getGradeList();
       getSubjectList();
     }
   }, [id, show]);
@@ -205,6 +220,34 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
                 </div>
               )}
             </div>
+            <div className="col-md-6 col-12 mb-3">
+              <label className="form-label">
+                Grade<span className="text-danger">*</span>
+              </label>
+              <select
+                className={`form-select form-select-sm ${
+                  formik.touched.grade_id && formik.errors.grade_id
+                    ? "is-invalid"
+                    : ""
+                }`}
+                value={formik.values.grade_id}
+                onChange={(e) =>
+                  formik.setFieldValue("grade_id", e.target.value)
+                }
+              >
+                <option value="">Select Grade</option>
+                {subjects?.map((subject) => (
+                  <option key={subject.value} value={subject.value}>
+                    {subject.label}
+                  </option>
+                ))}
+              </select>
+              {formik.touched.grade_id && formik.errors.grade_id && (
+                <div className="invalid-feedback">
+                  {formik.errors.grade_id}
+                </div>
+              )}
+            </div>
 
             <div className="col-md-6 col-12 mb-3">
               <label className="form-label">
@@ -232,7 +275,7 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
                     ? "is-invalid"
                     : ""
                 }`}
-                rows="4"
+                rows="3"
                 {...formik.getFieldProps("description")}
               />
             </div>

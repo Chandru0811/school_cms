@@ -15,7 +15,21 @@ const DoAssessment = () => {
   console.log("assesmentID:", assignedId);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [timeLeft, setTimeLeft] = useState(null);
-  const [timeSpent, setTimeSpent] = useState(0);
+  const [timeSpentPerQuestion, setTimeSpentPerQuestion] = useState({});
+  const [timeUpQuestions, setTimeUpQuestions] = useState({});
+
+  const validateAnswers = () => {
+    if (!data.questions) return false;
+
+    for (let i = 0; i < data.questions.length; i++) {
+      const question = data.questions[i];
+      // Skip validation if the question's time is up
+      if (!timeUpQuestions[question.id] && !answers[question.id]) {
+        return false;
+      }
+    }
+    return true;
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -41,6 +55,17 @@ const DoAssessment = () => {
           question_id: key,
           answer: answers[key],
         }));
+
+      // Include empty answers for time-up questions
+      data.questions.forEach((question) => {
+        if (timeUpQuestions[question.id] && !answers[question.id]) {
+          sortedAnswers.push({
+            question_id: question.id,
+            answer: { empty: true }, // Indicate that the answer is empty due to time-up
+          });
+        }
+      });
+
       sortedAnswers.forEach((item) => {
         formData.append(`question_id[${item.question_id}]`, item.question_id);
         if (item.answer.upload) {
@@ -53,6 +78,8 @@ const DoAssessment = () => {
           formData.append(`answer[${item.question_id}]`, item.answer.multichoice);
         } else if (item.answer.short_answer) {
           formData.append(`answer[${item.question_id}]`, item.answer.short_answer);
+        } else if (item.answer.empty) {
+          formData.append(`answer[${item.question_id}]`, "Not attend Question"); // Send empty answer for time-up questions
         }
       });
 
@@ -76,18 +103,6 @@ const DoAssessment = () => {
     },
   });
 
-  const validateAnswers = () => {
-    if (!data.questions) return false;
-
-    for (let i = 0; i < data.questions.length; i++) {
-      const question = data.questions[i];
-      if (!answers[question.id]) {
-        return false;
-      }
-    }
-    return true;
-  };
-
   const getData = async () => {
     try {
       const response = await api.get(`worksheet/assessment/${assignedId}`);
@@ -108,6 +123,8 @@ const DoAssessment = () => {
   };
 
   const renderInputField = (quesType, id, options) => {
+    const isDisabled = timeUpQuestions[id];
+
     switch (quesType) {
       case "fillable":
         return (
@@ -122,6 +139,7 @@ const DoAssessment = () => {
                 [id]: { ...answers[id], fillable: e.target.value },
               })
             }
+            disabled={isDisabled}
           />
         );
 
@@ -141,6 +159,7 @@ const DoAssessment = () => {
                     [id]: { ...answers[id], closed: e.target.value },
                   })
                 }
+                disabled={isDisabled}
               />
               Yes
             </label>
@@ -157,6 +176,7 @@ const DoAssessment = () => {
                     [id]: { ...answers[id], closed: e.target.value },
                   })
                 }
+                disabled={isDisabled}
               />
               No
             </label>
@@ -179,6 +199,7 @@ const DoAssessment = () => {
                       [id]: { ...answers[id], multichoice: option },
                     });
                   }}
+                  disabled={isDisabled}
                 />
                 <label className="ms-2">{option}</label>
               </div>
@@ -199,6 +220,7 @@ const DoAssessment = () => {
                 [id]: { ...answers[id], short_answer: e.target.value },
               })
             }
+            disabled={isDisabled}
           />
         );
 
@@ -213,6 +235,7 @@ const DoAssessment = () => {
                 [id]: { ...answers[id], upload: e.target.files[0] },
               })
             }
+            disabled={isDisabled}
           />
         );
 
@@ -226,11 +249,10 @@ const DoAssessment = () => {
       setCurrentQuestionIndex((prev) => prev + 1);
       const nextQuestion = data.questions[currentQuestionIndex + 1];
       if (nextQuestion.time_limit) {
-        setTimeLeft(nextQuestion.time_limit);
+        setTimeLeft(nextQuestion.time_limit - (timeSpentPerQuestion[nextQuestion.id] || 0));
       } else {
         setTimeLeft(null);
       }
-      setTimeSpent(0);
     }
   };
 
@@ -239,11 +261,10 @@ const DoAssessment = () => {
       setCurrentQuestionIndex((prev) => prev - 1);
       const previousQuestion = data.questions[currentQuestionIndex - 1];
       if (previousQuestion.time_limit) {
-        setTimeLeft(previousQuestion.time_limit);
+        setTimeLeft(previousQuestion.time_limit - (timeSpentPerQuestion[previousQuestion.id] || 0));
       } else {
         setTimeLeft(null);
       }
-      setTimeSpent(0);
     }
   };
 
@@ -251,11 +272,17 @@ const DoAssessment = () => {
     if (timeLeft !== null && timeLeft > 0) {
       const timer = setInterval(() => {
         setTimeLeft((prev) => prev - 1);
-        setTimeSpent((prev) => prev + 1);
+        setTimeSpentPerQuestion((prev) => ({
+          ...prev,
+          [data.questions[currentQuestionIndex].id]: (prev[data.questions[currentQuestionIndex].id] || 0) + 1,
+        }));
       }, 1000);
       return () => clearInterval(timer);
     } else if (timeLeft === 0) {
-      handleNext();
+      setTimeUpQuestions((prev) => ({
+        ...prev,
+        [data.questions[currentQuestionIndex].id]: true,
+      }));
     }
   }, [timeLeft, currentQuestionIndex]);
 
@@ -302,18 +329,24 @@ const DoAssessment = () => {
                 {questionTypes.map((quesType) =>
                   renderInputField(quesType, currentQuestion.id, options)
                 )}
+                {timeUpQuestions[currentQuestion.id] && (
+                  <div className="text-danger my-2">
+                    Time's up! You can not answer this question.
+                  </div>
+                )}
               </div>
-              <div className="d-flex align-items-center justify-content-between mt-auto">
-                <button
-                  type="button"
-                  className="btn btn-sm btn-light"
-                  onClick={handlePrevious}
-                  disabled={currentQuestionIndex === 0}
-                >
-                  Previous
-                </button>
+              <div className="d-flex align-items-center justify-content-between mt-auto ms-auto">
+                {currentQuestionIndex !== 0 &&
+                  <button
+                    type="button"
+                    className="btn btn-sm btn-light"
+                    onClick={handlePrevious}
+                    disabled={currentQuestionIndex === 0}
+                  >
+                    Previous
+                  </button>}
 
-                {timeLeft !== null && <span className="text-danger">Time Left: {timeLeft} sec</span>}
+                {timeLeft !== null && <p className="text-danger">Time Left: {timeLeft} sec</p>}
 
                 <button
                   type="button"

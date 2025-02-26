@@ -20,14 +20,15 @@ function TopicAdd({ onSuccess }) {
   const navigate = useNavigate();
   const [centerList, setCenterList] = useState([]);
   const [subjects, setSubjects] = useState([]);
+  const [grades, setGrades] = useState([]);
 
   const validationSchema = yup.object().shape({
     center_id: yup
       .array()
       .min(1, "*Select at least one center")
       .required("*Select a center"),
-    // grade: yup.string().required("*Select a grade"),
-    subject_id: yup.string().required("*Select a subject"),
+    grade_id: yup.string().required("*Select a Grade"),
+    subject_id: yup.string().required("*Select a Subject"),
     name: yup
       .string()
       .max(255, "*Topic Name must not exceed 255 characters")
@@ -48,7 +49,7 @@ function TopicAdd({ onSuccess }) {
   const formik = useFormik({
     initialValues: {
       center_id: [],
-      // grade: "",
+      grade_id: "",
       subject_id: "",
       name: "",
       description: "",
@@ -89,6 +90,21 @@ function TopicAdd({ onSuccess }) {
     }
   };
 
+  const getGradeList = async () => {
+    try {
+      const response = await api.get("grades/list");
+      console.log(response);
+      const formattedGrades = response.data?.data?.map((grade) => ({
+        value: grade.id,
+        label: grade.name,
+      }));
+
+      setGrades(formattedGrades);
+    } catch (e) {
+      console.error("Error Fetching Data", e);
+      toast.error("Error Fetching Data", e?.response?.data?.error || e.message);
+    }
+  };
   const getSubjectList = async () => {
     try {
       const response = await api.get("subjects/list");
@@ -107,6 +123,7 @@ function TopicAdd({ onSuccess }) {
 
   useEffect(() => {
     getCenterList();
+    getGradeList();
     getSubjectList();
   }, []);
 
@@ -155,6 +172,34 @@ function TopicAdd({ onSuccess }) {
                 {formik.touched.center_id && formik.errors.center_id && (
                   <div className="invalid-feedback">
                     {formik.errors.center_id}
+                  </div>
+                )}
+              </div>
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Grade<span className="text-danger">*</span>
+                </label>
+                <select
+                  className={`form-select form-select-sm ${
+                    formik.touched.grade_id && formik.errors.grade_id
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  value={formik.values.grade_id}
+                  onChange={(e) =>
+                    formik.setFieldValue("grade_id", e.target.value)
+                  }
+                >
+                  <option value="">Select grade</option>
+                  {grades.map((grade) => (
+                    <option key={grade.value} value={grade.value}>
+                      {grade.label}
+                    </option>
+                  ))}
+                </select>
+                {formik.touched.grade_id && formik.errors.grade_id && (
+                  <div className="invalid-feedback">
+                    {formik.errors.grade_id}
                   </div>
                 )}
               </div>
@@ -212,7 +257,7 @@ function TopicAdd({ onSuccess }) {
                       ? "is-invalid"
                       : ""
                   }`}
-                  rows="4"
+                  rows="3"
                   {...formik.getFieldProps("description")}
                 />
               </div>

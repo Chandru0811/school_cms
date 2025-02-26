@@ -124,7 +124,7 @@ const Login = ({ loginAsAdmin, loginAsSuperAdmin }) => {
         className="d-flex justify-content-center align-items-center m-0 pt-5"
         style={{ backgroundColor: "rgb(242, 242, 242)" }}
       >
-        <img src={headerlogo} className="img-fluid" alt="school" />
+        <img src={headerlogo} className="img-fluid mt-5" alt="school" />
       </div>
       <div className="d-flex justify-content-center align-items-center mt-5">
         <div
@@ -252,7 +252,7 @@ const Login = ({ loginAsAdmin, loginAsSuperAdmin }) => {
               Login
             </Button>
 
-            <div className="text-center mt-4">
+            {/* <div className="text-center mt-4">
               <p className="mb-3">or</p>
               <Link to="/register">
                 <Button
@@ -263,7 +263,7 @@ const Login = ({ loginAsAdmin, loginAsSuperAdmin }) => {
                   Register
                 </Button>
               </Link>
-            </div>
+            </div> */}
           </Form>
         </div>
       </div>
