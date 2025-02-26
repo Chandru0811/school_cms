@@ -110,7 +110,7 @@ function WorkSheetAsign({ grade_ids, assignedId }) {
 
   useEffect(() => {
     getGradeList();
-  }, []);
+  }, [grade_ids]);
 
   return (
     <>

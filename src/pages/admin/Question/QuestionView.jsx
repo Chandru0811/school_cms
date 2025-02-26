@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
-import PropTypes from "prop-types";
+// import PropTypes from "prop-types";
 
 function QustionView() {
   const [data, setData] = useState({});
@@ -109,122 +109,155 @@ function QustionView() {
             <div className="loader"></div>
           </div>
         ) : (
-        <div className="container-fluid px-4">
-          <div className="row pb-3">
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Centre</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">
-                    : {centerFind(data.question?.center_id) || "--"}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Grade</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.question?.grand_name}</p>
+          <div className="container-fluid px-4">
+            <div className="row pb-3">
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Centre</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">
+                      : {centerFind(data.question?.center_id) || "--"}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Subject</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.question?.subject_name}</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Topic</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.question?.topic_name}</p>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Grade</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">
+                      : {data.question?.grand_name}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Question Type</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.question?.ques_type}</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Question</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.question?.question}</p>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Subject</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">
+                      : {data.question?.subject_name}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Options</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.question?.options}</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Difficulty Level</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.question?.difficult_level}</p>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Topic</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">
+                      : {data.question?.topic_name}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Hint</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.question?.hint}</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Answer Type</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.answer?.answer_type}</p>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Question Type</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">
+                      :{" "}
+                      {data.question?.ques_type
+                        ? JSON.parse(data.question?.ques_type).join(", ")
+                        : ""}
+                    </p>{" "}
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Answer</p>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Question</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">
+                      : {data.question?.question}
+                    </p>
+                  </div>
                 </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.answer?.answer}</p>
+              </div>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Options</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">
+                      :{" "}
+                      {data.question?.options
+                        ? JSON.parse(data.question?.options).join(", ")
+                        : ""}
+                    </p>{" "}
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Difficulty Level</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">
+                      : {data.question?.difficult_level}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Hint</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">
+                      : {data.question?.hint}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Answer Type</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">
+                      :{" "}
+                      {data.answer?.answer_type
+                        ? JSON.parse(data.answer?.answer_type).join(", ")
+                        : ""}
+                    </p>{" "}
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Answer</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">
+                      :{" "}
+                      {data.answer?.answer &&
+                        Object.entries(JSON.parse(data.answer.answer))
+                          .map(([key, value]) => `${key}: ${value}`)
+                          .join(", ")}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
         )}
       </div>
     </div>

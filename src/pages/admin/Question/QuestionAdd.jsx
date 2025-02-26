@@ -705,7 +705,7 @@ function QuestionAdd() {
                   </div>
                 )}
                 {formik.values.ques_type.includes("short_answer") && (
-                  <div className="mt-2">
+                  <div className="mt-2 mb-3">
                     <label className="form-label">Short Answer</label>
                     <textarea
                       rows={3}
@@ -726,7 +726,7 @@ function QuestionAdd() {
                   </div>
                 )}
                 {formik.values.ques_type.includes("upload") && (
-                  <div className="mt-2">
+                  <div className="mt-2 mb-3">
                     <label className="form-label">Answer Upload</label>
                     <input
                       type="file"
@@ -750,7 +750,7 @@ function QuestionAdd() {
                   </div>
                 )}
               </div>
-              <div className="col-md-6 col-12 mb-3">
+              <div className="col-md-6 col-12 mb-3 mt-2">
                 <label className="form-label">Hint</label>
                 <input
                   type="text"

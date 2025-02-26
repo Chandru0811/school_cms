@@ -13,7 +13,9 @@ function SchoolEdit() {
   const [loading, setLoading] = useState(true);
 
   const validationSchema = Yup.object({
-    name: Yup.string().max(255, "*School Name must not exceed 255 characters").required("*School Name is required"),
+    name: Yup.string()
+      .max(255, "*School Name must not exceed 255 characters")
+      .required("*School Name is required"),
     location: Yup.string()
       .max(255, "Location must be at most 255 characters")
       .required("*School Location is required"),
@@ -29,10 +31,15 @@ function SchoolEdit() {
           .max(255, "*Email must not exceed 255 characters")
           .required("*Admin Email is required"),
 
-        name: Yup.string().required("*Admin Name is required"),
+        name: Yup.string()
+          .max(255, "*Admin Name must be at most 255 characters")
+          .required("*Admin Name is required"),
         mobile: Yup.string()
-        .matches(/^(?:\d{8}|\d{10})$/, "*Mobile number must be either 8 or 10 digits")
-        .required("*Mobile number is required!"),      
+          .matches(
+            /^(?:\d{8}|\d{10})$/,
+            "*Mobile number must be either 8 or 10 digits"
+          )
+          .required("*Mobile number is required!"),
       })
     ),
   });
