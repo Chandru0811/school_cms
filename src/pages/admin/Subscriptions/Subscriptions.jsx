@@ -91,7 +91,13 @@ function Subscriptions() {
         header: "Duration",
         size: 40,
       },
-      { accessorKey: "created_by", header: "Created By" },
+      {
+        accessorKey: "created_by.name",
+        header: "Created By",
+        enableSorting: true,
+        enableHiding: false,        
+        Cell: ({ cell }) => cell.getValue() || " ",
+      },
       {
         accessorKey: "created_at",
         header: "Created At",
@@ -103,9 +109,11 @@ function Subscriptions() {
         Cell: ({ cell }) => cell.getValue() || "",
       },
       {
-        accessorKey: "updated_at",
-        header: "Updated At",
-        Cell: ({ cell }) => cell.getValue()?.substring(0, 10) || "",
+        accessorKey: "updated_by.name",
+        header: "Updated By",
+        enableSorting: true,
+        enableHiding: false,
+          Cell: ({ cell }) => cell.getValue() || " ",
       },
     ],
     []

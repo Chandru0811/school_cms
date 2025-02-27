@@ -90,7 +90,13 @@ function Student() {
         accessorKey: "admission_no",
         header: "Admission Number",
       },
-      { accessorKey: "created_by", header: "Created By" },
+      {
+        accessorKey: "created_by.name",
+        header: "Created By",
+        enableSorting: true,
+        enableHiding: false,        
+        Cell: ({ cell }) => cell.getValue() || " ",
+      },
       {
         accessorKey: "created_at",
         header: "Created At",
@@ -102,9 +108,11 @@ function Student() {
         Cell: ({ cell }) => cell.getValue() || "",
       },
       {
-        accessorKey: "updated_at",
-        header: "Updated At",
-        Cell: ({ cell }) => cell.getValue()?.substring(0, 10) || "",
+        accessorKey: "updated_by.name",
+        header: "Updated By",
+        enableSorting: true,
+        enableHiding: false,
+          Cell: ({ cell }) => cell.getValue() || " ",
       },
     ],
     []
@@ -154,14 +162,7 @@ function Student() {
   });
 
   const handleMenuClose = () => setMenuAnchor(null);
-  useEffect(() => {
-    if (storedScreens?.data?.[3]?.can_edit === 0 && storedScreens?.data?.[3]?.can_delete === 0) {
-      const targetTds = document.querySelectorAll('td[data-index="1"],th[data-index="1"]'); 
-      targetTds.forEach(td => {
-        td.textContent = "";
-      });
-    }
-  }, [storedScreens]);
+
   return (
     <div className="container-fluid mb-4 px-0">
       <ol
@@ -217,6 +218,7 @@ function Student() {
                 enableFullScreenToggle={false}
                 initialState={{
                   columnVisibility: {
+                    id:!(storedScreens?.data?.[3]?.can_edit === 0 && storedScreens?.data?.[3]?.can_delete === 0),
                     working_hrs: false,
                     citizenship: false,
                     nationality: false,

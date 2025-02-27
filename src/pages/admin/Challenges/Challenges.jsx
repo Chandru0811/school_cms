@@ -55,7 +55,13 @@ function Challenges() {
     },
       { accessorKey: "topic.name", header: "Topic" },
       { accessorKey: "difficult_level", header: "Difficult Level" },
-      { accessorKey: "created_by", header: "Created By" },
+      {
+        accessorKey: "created_by.name",
+        header: "Created By",
+        enableSorting: true,
+        enableHiding: false,        
+        Cell: ({ cell }) => cell.getValue() || " ",
+      },
       {
         accessorKey: "created_at",
         header: "Created At",
@@ -67,9 +73,11 @@ function Challenges() {
         Cell: ({ cell }) => cell.getValue() || "",
       },
       {
-        accessorKey: "updated_at",
-        header: "Updated At",
-        Cell: ({ cell }) => cell.getValue()?.substring(0, 10) || "",
+        accessorKey: "updated_by.name",
+        header: "Updated By",
+        enableSorting: true,
+        enableHiding: false,
+          Cell: ({ cell }) => cell.getValue() || " ",
       },
     ],
     []
@@ -163,7 +171,7 @@ function Challenges() {
               <span className="database_name">Challenges</span>
             </span>
           </div>
-          {storedScreens?.data[7]?.can_create && (
+          {storedScreens?.data[7]?.can_create === 1 && (
           <Link to="/challenges/add">
             <button
               type="button"
@@ -191,6 +199,7 @@ function Challenges() {
               enableFullScreenToggle={false}
               initialState={{
                 columnVisibility: {
+                  id:!(storedScreens?.data?.[7]?.can_edit === 0 && storedScreens?.data?.[7]?.can_delete === 0),
                   working_hrs: false,
                   citizenship: false,
                   nationality: false,
@@ -201,7 +210,7 @@ function Challenges() {
                 },
               }}
               muiTableBodyRowProps={({ row }) =>
-                storedScreens?.data[7]?.can_view
+                storedScreens?.data[7]?.can_view === 1
                   ? {
                       onClick: () =>
                         navigate(`/challenges/view/${row.original.id}`),
@@ -217,14 +226,16 @@ function Challenges() {
             open={Boolean(menuAnchor)}
             onClose={handleMenuClose}
           >
-          {storedScreens?.data[7]?.can_edit && (
+          {storedScreens?.data[7]?.can_edit === 1 && (
             <MenuItem onClick={() => navigate(`/challenges/edit/${selectedId}`)}>
               Edit
             </MenuItem>
           )}
+          {storedScreens?.data[7]?.delete === 1 && (
             <MenuItem>
               <Delete path={`challenge/delete/${selectedId}`} onOpen={handleMenuClose} />
             </MenuItem>
+          )}
           </Menu>
         </>
       )}

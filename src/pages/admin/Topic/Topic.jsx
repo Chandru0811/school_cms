@@ -156,19 +156,7 @@ function Topic() {
   useEffect(() => {
     getData();
   }, []);
-  useEffect(() => {
-    if (
-      storedScreens?.data?.[5]?.can_edit === 0 &&
-      storedScreens?.data?.[5]?.can_delete === 0
-    ) {
-      const targetTds = document.querySelectorAll(
-        'td[data-index="1"],th[data-index="1"]'
-      );
-      targetTds.forEach((td) => {
-        td.textContent = "";
-      });
-    }
-  }, [storedScreens]);
+
   return (
     <div className="container-fluid mb-4 px-0">
       <ol
@@ -216,6 +204,7 @@ function Topic() {
                 enableFullScreenToggle={false}
                 initialState={{
                   columnVisibility: {
+                    id:!(storedScreens?.data?.[5]?.can_edit === 0 && storedScreens?.data?.[5]?.can_delete === 0),
                     working_hrs: false,
                     citizenship: false,
                     nationality: false,
