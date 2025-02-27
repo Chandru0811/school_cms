@@ -168,10 +168,8 @@ function SuperAdminHeader({ handleLogout }) {
                       onClick={handleShow} // Open modal when clicked
                       style={{ cursor: "pointer" }}
                     >
-                      <div className="d-flex w-100">
                         <GoPencil className="me-2" />
                         <span>Profile</span>
-                      </div>
                     </Link>
                     {/* <Link
                       to="/settings"

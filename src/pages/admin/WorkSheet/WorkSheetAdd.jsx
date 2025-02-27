@@ -96,7 +96,7 @@ function WorkSheetAdd() {
 
   const formik = useFormik({
     initialValues: {
-      type: "challenge",
+      type: "question",
       title: "",
       center_id: [],
       grade_id: [],

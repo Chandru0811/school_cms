@@ -38,10 +38,10 @@ const DoAssessment = () => {
       answer: [],
     },
     onSubmit: async (values) => {
-      if (!validateAnswers()) {
-        toast.error("Please answer questions before submitting.");
-        return;
-      }
+      // if (!validateAnswers()) {
+      //   toast.error("Please answer questions before submitting.");
+      //   return;
+      // }
 
       setLoadIndicator(true);
       console.log("values", values);
@@ -95,8 +95,21 @@ const DoAssessment = () => {
           navigate(`/worksheet/view/${assignedId}`);
         }
       } catch (e) {
-        toast.error(e?.response?.data?.error || e.message);
-      } finally {
+        let errorMessage = "Error submitting assessment. Please try again.";
+      
+        if (e?.response?.data?.errors) {
+          errorMessage = Object.values(e.response.data.errors)
+            .flat()
+            .join("\n");
+        } else if (e?.response?.data?.error) {
+          errorMessage = e.response.data.error;
+        } else if (e.message) {
+          errorMessage = e.message;
+        }
+      
+        toast.error(errorMessage);
+      }
+       finally {
         setLoadIndicator(false);
       }
     },
@@ -127,8 +140,8 @@ const DoAssessment = () => {
     switch (quesType) {
       case "fillable":
         return (
-          <input
-            type="text"
+          <textarea
+          rows={4}
             className="form-control form-control-sm"
             placeholder="Your answer"
             value={answers[id]?.fillable || ""}
@@ -316,7 +329,7 @@ const DoAssessment = () => {
             className="col-md-8 col-12 d-flex align-items-center justify-content-center flex-column"
             style={{ minHeight: "80vh" }}
           >
-            <h4 className="text-center my-4">Worksheet</h4>
+            <h4 className="text-center my-4">{data.title}</h4>
             <div
               className="card custom-card p-3 m-5 d-flex flex-column"
               style={{ width: "100%", minHeight: "50vh" }}
