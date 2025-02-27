@@ -133,23 +133,32 @@ function StudentEdit() {
 
   const getGradeList = async () => {
     try {
-      const response = await api.get("grades/list");
-      const formattedGrades = response.data.data.map((grade) => ({
+      if (!formik.values.center_id) {
+        setGrades([]);
+        formik.setFieldValue("grade_id", "");
+        return;
+      }
+      const response = await api.get(`filter/grades?center_id[]=${formik.values.center_id}`);
+      const formattedGrades = response.data?.data?.map((grade) => ({
         value: grade.id,
         label: grade.name,
       }));
-
       setGrades(formattedGrades);
+      if (!formattedGrades.some((s) => s.value === formik.values.grade_id)) {
+        formik.setFieldValue("grade_id", "");
+      }
     } catch (e) {
-      toast.error("Error Fetching Data ", e?.response?.data?.error);
+      toast.error("Error Fetching Data", e?.response?.data?.error || e.message);
     }
   };
   useEffect(() => {
     getCenterList();
     getRoleList();
-    getGradeList();
     getData();
   }, [id]);
+  useEffect(() => {
+    getGradeList();
+  }, [formik.values.center_id]);
 
   return (
     <div className="container card p-3">
@@ -239,6 +248,35 @@ function StudentEdit() {
                 {formik.touched.center_id && formik.errors.center_id && (
                   <div className="invalid-feedback">
                     {formik.errors.center_id}
+                  </div>
+                )}
+              </div>
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Grader List<span className="text-danger">*</span>
+                </label>
+                <select
+                  className={`form-select form-select-sm ${
+                    formik.touched.grade_id && formik.errors.grade_id
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  value={formik.values?.grade_id}
+                  onChange={(e) =>
+                    formik.setFieldValue("grade_id", e.target.value)
+                  }
+                >
+                  <option value="">Select Grade</option>
+                  {grade.map((grade) => (
+                    <option key={grade.value} value={grade.value}>
+                      {grade.label}
+                    </option>
+                  ))}
+                </select>
+
+                {formik.touched.grade_id && formik.errors.grade_id && (
+                  <div className="invalid-feedback">
+                    {formik.errors.grade_id}
                   </div>
                 )}
               </div>
@@ -441,35 +479,6 @@ function StudentEdit() {
                       {formik.errors.parent_mobile}
                     </div>
                   )}
-              </div>
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
-                  Grader List<span className="text-danger">*</span>
-                </label>
-                <select
-                  className={`form-select form-select-sm ${
-                    formik.touched.grade_id && formik.errors.grade_id
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  value={formik.values?.grade_id}
-                  onChange={(e) =>
-                    formik.setFieldValue("grade_id", e.target.value)
-                  }
-                >
-                  <option value="">Select Grade</option>
-                  {grade.map((grade) => (
-                    <option key={grade.value} value={grade.value}>
-                      {grade.label}
-                    </option>
-                  ))}
-                </select>
-
-                {formik.touched.grade_id && formik.errors.grade_id && (
-                  <div className="invalid-feedback">
-                    {formik.errors.grade_id}
-                  </div>
-                )}
               </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">

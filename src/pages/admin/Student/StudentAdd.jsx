@@ -23,9 +23,9 @@ function StudentAdd() {
       .string()
       .email("*Email is Invalid")
       .required("*Student email is required"),
-      student_mobile: yup.string()
+    student_mobile: yup.string()
       .matches(/^(?:\d{8}|\d{10})$/, "*Mobile number must be either 8 or 10 digits")
-      .required("*Student Mobile number is required!"),    
+      .required("*Student Mobile number is required!"),
     parent_name: yup.string().required("*Parent name is required"),
     parent_email: yup
       .string()
@@ -46,7 +46,7 @@ function StudentAdd() {
     admission_no: yup.string().max(255, "*Admission No must not exceed 255 characters").required("*Admission number is required"),
     date_of_birth: yup.string().required("*Date of Birth is required"),
     admission_date: yup.string().max(255, "*Admission Date must not exceed 255 characters").required("*Admission date is required"),
-  });  
+  });
 
   const formik = useFormik({
     initialValues: {
@@ -64,7 +64,7 @@ function StudentAdd() {
       roll_no: "",
       admission_no: "",
       date_of_birth: "",
-      admission_date: new Date().toISOString().split("T")[0],
+      admission_date: new Date().toLocaleDateString("en-CA"),
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -127,22 +127,32 @@ function StudentAdd() {
 
   const getGradeList = async () => {
     try {
-      const response = await api.get("grades/list");
-      const formattedGrades = response.data.data.map((grade) => ({
+      if (!formik.values.center_id) {
+        setGrades([]);
+        formik.setFieldValue("grade_id", "");
+        return;
+      }
+      const response = await api.get(`filter/grades?center_id[]=${formik.values.center_id}`);
+      const formattedGrades = response.data?.data?.map((grade) => ({
         value: grade.id,
         label: grade.name,
       }));
-
       setGrades(formattedGrades);
+      if (!formattedGrades.some((s) => s.value === formik.values.grade_id)) {
+        formik.setFieldValue("grade_id", "");
+      }
     } catch (e) {
-      toast.error("Error Fetching Data ", e?.response?.data?.error);
+      toast.error("Error Fetching Data", e?.response?.data?.error || e.message);
     }
   };
+
   useEffect(() => {
     getCenterList();
     getRoleList();
-    getGradeList();
   }, []);
+  useEffect(() => {
+    getGradeList();
+  }, [formik.values.center_id]);
 
   return (
     <div className="container p-3">
@@ -206,48 +216,18 @@ function StudentAdd() {
           </div>
           <div className="container-fluid px-4">
             <div className="row">
-              {/* <div className="col-md-6 col-12 mb-4">
-                <label className="form-label">
-                  Centre Name<span className="text-danger">*</span>
-                </label>
-                <MultiSelect
-                  options={centerList}
-                  value={selectedCenter}
-                  onChange={(selected) => {
-                    setSelectedCenter(selected);
-                    formik.setFieldValue(
-                      "center_id",
-                      selected.map((option) => option.value)
-                    );
-                  }}
-                  labelledBy="Select Service"
-                  className={`form-multi-select form-multi-select-sm ${
-                    formik.touched.center_id && formik.errors.center_id
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                />
-                {formik.touched.center_id && formik.errors.center_id && (
-                  <div className="invalid-feedback">
-                    {formik.errors.center_id}
-                  </div>
-                )}
-              </div> */}
-
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
                   Center Name<span className="text-danger">*</span>
                 </label>
                 <select
-                  className={`form-select form-select-sm ${
-                    formik.touched.center_id && formik.errors.center_id
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-select form-select-sm ${formik.touched.center_id && formik.errors.center_id ? "is-invalid" : ""}`}
                   value={formik.values.center_id}
-                  onChange={(e) =>
-                    formik.setFieldValue("center_id", e.target.value)
-                  }
+                  onChange={(e) => {
+                    formik.setFieldValue("center_id", e.target.value);
+                    formik.setFieldValue("grade_id", "");
+                    getGradeList();
+                  }}
                 >
                   <option value="">Select Center</option>
                   {center.map((center) => (
@@ -256,24 +236,48 @@ function StudentAdd() {
                     </option>
                   ))}
                 </select>
-
                 {formik.touched.center_id && formik.errors.center_id && (
                   <div className="invalid-feedback">
                     {formik.errors.center_id}
                   </div>
                 )}
               </div>
-
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Grader List<span className="text-danger">*</span>
+                </label>
+                <select
+                  className={`form-select form-select-sm ${formik.touched.grade_id && formik.errors.grade_id
+                    ? "is-invalid"
+                    : ""
+                    }`}
+                  value={formik.values.grade_id}
+                  onChange={(e) =>
+                    formik.setFieldValue("grade_id", e.target.value)
+                  }
+                >
+                  <option value="">Select Grade</option>
+                  {grade.map((grade) => (
+                    <option key={grade.value} value={grade.value}>
+                      {grade.label}
+                    </option>
+                  ))}
+                </select>
+                {formik.touched.grade_id && formik.errors.grade_id && (
+                  <div className="invalid-feedback">
+                    {formik.errors.grade_id}
+                  </div>
+                )}
+              </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
                   Role<span className="text-danger">*</span>
                 </label>
                 <select
-                  className={`form-select form-select-sm ${
-                    formik.touched.role_id && formik.errors.role_id
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-select form-select-sm ${formik.touched.role_id && formik.errors.role_id
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   value={formik.values.name}
                   onChange={(e) =>
                     formik.setFieldValue("role_id", e.target.value)
@@ -300,11 +304,10 @@ function StudentAdd() {
                 <input
                   type="text"
                   onKeyDown={(e) => e.stopPropagation()}
-                  className={`form-control form-control-sm ${
-                    formik.touched.first_name && formik.errors.first_name
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-control form-control-sm ${formik.touched.first_name && formik.errors.first_name
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   {...formik.getFieldProps("first_name")}
                 />
                 {formik.touched.first_name && formik.errors.first_name && (
@@ -318,11 +321,10 @@ function StudentAdd() {
                 <input
                   type="text"
                   onKeyDown={(e) => e.stopPropagation()}
-                  className={`form-control form-control-sm ${
-                    formik.touched.middle_name && formik.errors.middle_name
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-control form-control-sm ${formik.touched.middle_name && formik.errors.middle_name
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   {...formik.getFieldProps("middle_name")}
                 />
                 {/* {formik.touched.student_middle_name &&
@@ -337,11 +339,10 @@ function StudentAdd() {
                 <input
                   type="text"
                   onKeyDown={(e) => e.stopPropagation()}
-                  className={`form-control form-control-sm ${
-                    formik.touched.last_name && formik.errors.last_name
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-control form-control-sm ${formik.touched.last_name && formik.errors.last_name
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   {...formik.getFieldProps("last_name")}
                 />
                 {/* {formik.touched.student_last_name &&
@@ -357,13 +358,12 @@ function StudentAdd() {
                 </label>
                 <input
                   type="date"
-                  max={new Date().toISOString().split("T")[0]} 
+                  max={new Date().toISOString().split("T")[0]}
                   onKeyDown={(e) => e.stopPropagation()}
-                  className={`form-control form-control-sm ${
-                    formik.touched.date_of_birth && formik.errors.date_of_birth
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-control form-control-sm ${formik.touched.date_of_birth && formik.errors.date_of_birth
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   {...formik.getFieldProps("date_of_birth")}
                 />
                 {formik.touched.date_of_birth &&
@@ -380,11 +380,10 @@ function StudentAdd() {
                 <input
                   type="email"
                   onKeyDown={(e) => e.stopPropagation()}
-                  className={`form-control form-control-sm ${
-                    formik.touched.student_email && formik.errors.student_email
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-control form-control-sm ${formik.touched.student_email && formik.errors.student_email
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   {...formik.getFieldProps("student_email")}
                 />
                 {formik.touched.student_email &&
@@ -401,12 +400,11 @@ function StudentAdd() {
                 <input
                   type="text"
                   onKeyDown={(e) => e.stopPropagation()}
-                  className={`form-control form-control-sm ${
-                    formik.touched.student_mobile &&
+                  className={`form-control form-control-sm ${formik.touched.student_mobile &&
                     formik.errors.student_mobile
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   {...formik.getFieldProps("student_mobile")}
                 />
                 {formik.touched.student_mobile &&
@@ -423,11 +421,10 @@ function StudentAdd() {
                 <input
                   type="text"
                   onKeyDown={(e) => e.stopPropagation()}
-                  className={`form-control form-control-sm ${
-                    formik.touched.parent_name && formik.errors.parent_name
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-control form-control-sm ${formik.touched.parent_name && formik.errors.parent_name
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   {...formik.getFieldProps("parent_name")}
                 />
                 {formik.touched.parent_name && formik.errors.parent_name && (
@@ -443,11 +440,10 @@ function StudentAdd() {
                 <input
                   type="email"
                   onKeyDown={(e) => e.stopPropagation()}
-                  className={`form-control form-control-sm ${
-                    formik.touched.parent_email && formik.errors.parent_email
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-control form-control-sm ${formik.touched.parent_email && formik.errors.parent_email
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   {...formik.getFieldProps("parent_email")}
                 />
                 {formik.touched.parent_email && formik.errors.parent_email && (
@@ -463,11 +459,10 @@ function StudentAdd() {
                 <input
                   type="text"
                   onKeyDown={(e) => e.stopPropagation()}
-                  className={`form-control form-control-sm ${
-                    formik.touched.parent_mobile && formik.errors.parent_mobile
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-control form-control-sm ${formik.touched.parent_mobile && formik.errors.parent_mobile
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   {...formik.getFieldProps("parent_mobile")}
                 />
                 {formik.touched.parent_mobile &&
@@ -479,45 +474,15 @@ function StudentAdd() {
               </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
-                  Grader List<span className="text-danger">*</span>
-                </label>
-                <select
-                  className={`form-select form-select-sm ${
-                    formik.touched.grade_id && formik.errors.grade_id
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  value={formik.values.grade_id}
-                  onChange={(e) =>
-                    formik.setFieldValue("grade_id", e.target.value)
-                  }
-                >
-                  <option value="">Select Grade</option>
-                  {grade.map((grade) => (
-                    <option key={grade.value} value={grade.value}>
-                      {grade.label}
-                    </option>
-                  ))}
-                </select>
-
-                {formik.touched.grade_id && formik.errors.grade_id && (
-                  <div className="invalid-feedback">
-                    {formik.errors.grade_id}
-                  </div>
-                )}
-              </div>
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
                   Roll Number<span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
                   onKeyDown={(e) => e.stopPropagation()}
-                  className={`form-control form-control-sm ${
-                    formik.touched.roll_no && formik.errors.roll_no
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-control form-control-sm ${formik.touched.roll_no && formik.errors.roll_no
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   {...formik.getFieldProps("roll_no")}
                 />
                 {formik.touched.roll_no && formik.errors.roll_no && (
@@ -533,11 +498,10 @@ function StudentAdd() {
                 <input
                   type="text"
                   onKeyDown={(e) => e.stopPropagation()}
-                  className={`form-control form-control-sm ${
-                    formik.touched.admission_no && formik.errors.admission_no
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-control form-control-sm ${formik.touched.admission_no && formik.errors.admission_no
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   {...formik.getFieldProps("admission_no")}
                 />
                 {formik.touched.admission_no && formik.errors.admission_no && (
@@ -551,12 +515,11 @@ function StudentAdd() {
                 <input
                   type="date"
                   onKeyDown={(e) => e.stopPropagation()}
-                  className={`form-control form-control-sm ${
-                    formik.touched.admission_date &&
+                  className={`form-control form-control-sm ${formik.touched.admission_date &&
                     formik.errors.admission_date
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   {...formik.getFieldProps("admission_date")}
                 />
                 {/* {formik.touched.admission_date && formik.errors.admission_date && (

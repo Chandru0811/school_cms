@@ -83,7 +83,7 @@ function SubjectEdit({ id, show, setShow, onSuccess }) {
       toast.error(
         `Error Fetching Data: ${e?.response?.data?.error || e.message}`
       );
-    }finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -103,16 +103,23 @@ function SubjectEdit({ id, show, setShow, onSuccess }) {
 
   const getGradeList = async () => {
     try {
-      const response = await api.get("grades/list");
-      const formattedGrade = response.data.data.map((grade) => ({
+      if (selectedCenter.length === 0) {
+        setGrades([]);
+        return;
+      }
+      const centerIds = selectedCenter.map(center => `center_id[]=${center.value}`).join("&");
+      const response = await api.get(`filter/grades?${centerIds}`);
+      const formattedGrades = response.data?.data?.map((grade) => ({
         value: grade.id,
         label: grade.name,
       }));
-      setGrades(formattedGrade);
+      setGrades(formattedGrades);
+      if (!formattedGrades.some(g => g.value === formik.values.grade_id)) {
+        formik.setFieldValue("grade_id", "");
+      }
     } catch (e) {
-      toast.error(
-        `Error Fetching Data: ${e?.response?.data?.error || e.message}`
-      );
+      console.error("Error Fetching Data", e);
+      toast.error(`Error Fetching Data: ${e?.response?.data?.error || e.message}`);
     }
   };
 
@@ -120,9 +127,12 @@ function SubjectEdit({ id, show, setShow, onSuccess }) {
     if (show) {
       getSubjectData();
       getCenterList();
-      getGradeList();
     }
   }, [id, show]);
+
+  useEffect(() => {
+    getGradeList();
+  }, [selectedCenter]);
 
   const handleClose = () => {
     setShow(false);
@@ -142,95 +152,95 @@ function SubjectEdit({ id, show, setShow, onSuccess }) {
         <DialogTitle>Edit Subject</DialogTitle>
         <hr className="m-0" />
         <DialogContent>
-        {loading ? (
-          <div className="loader-container">
-            <div className="loader"></div>
-          </div>
-        ) : (
-          <div className="row">
-            <div className="col-md-6 col-12 mb-3">
-              <label className="form-label">
-                Centre Name<span className="text-danger">*</span>
-              </label>
-              <MultiSelect
-                options={centerList}
-                value={selectedCenter}
-                onChange={(selected) => {
-                  setSelectedCenter(selected);
-                  formik.setFieldValue(
-                    "center_id",
-                    selected.map((option) => option.value)
-                  );
-                }}
-                labelledBy="Select Center"
-                className={
-                  `form-multi-select form-multi-select-sm mb-5${formik.touched.center_id && formik.errors.center_id
+          {loading ? (
+            <div className="loader-container">
+              <div className="loader"></div>
+            </div>
+          ) : (
+            <div className="row">
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Centre Name<span className="text-danger">*</span>
+                </label>
+                <MultiSelect
+                  options={centerList}
+                  value={selectedCenter}
+                  onChange={(selected) => {
+                    setSelectedCenter(selected);
+                    formik.setFieldValue(
+                      "center_id",
+                      selected.map((option) => option.value)
+                    );
+                  }}
+                  labelledBy="Select Center"
+                  className={
+                    `form-multi-select form-multi-select-sm mb-5${formik.touched.center_id && formik.errors.center_id
+                      ? "is-invalid"
+                      : ""
+                    }`}
+                />
+                {formik.touched.center_id && formik.errors.center_id && (
+                  <div className="invalid-feedback">
+                    {formik.errors.center_id}
+                  </div>
+                )}
+              </div>
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Grade<span className="text-danger">*</span>
+                </label>
+                <select
+                  className={`form-select form-select-sm ${formik.touched.grade_id && formik.errors.grade_id
                     ? "is-invalid"
                     : ""
-                  }`}
-              />
-              {formik.touched.center_id && formik.errors.center_id && (
-                <div className="invalid-feedback">
-                  {formik.errors.center_id}
-                </div>
-              )}
-            </div>
-            <div className="col-md-6 col-12 mb-3">
-              <label className="form-label">
-                Grade<span className="text-danger">*</span>
-              </label>
-              <select
-                className={`form-select form-select-sm ${formik.touched.grade_id && formik.errors.grade_id
+                    }`}
+                  value={formik.values.grade_id}
+                  onChange={(e) =>
+                    formik.setFieldValue("grade_id", e.target.value)
+                  }
+                >
+                  <option value="">Select Grade</option>
+                  {grades?.map((grade) => (
+                    <option key={grade.value} value={grade.value}>
+                      {grade.label}
+                    </option>
+                  ))}
+                </select>
+                {formik.touched.grade_id && formik.errors.grade_id && (
+                  <div className="invalid-feedback">
+                    {formik.errors.grade_id}
+                  </div>
+                )}
+              </div>
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Name<span className="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  className={`form-control form-control-sm ${formik.touched.name && formik.errors.name ? "is-invalid" : ""
+                    }`}
+                  {...formik.getFieldProps("name")}
+                />
+                {formik.touched.name && formik.errors.name && (
+                  <div className="invalid-feedback">{formik.errors.name}</div>
+                )}
+              </div>
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Description
+                </label>
+                <textarea
+                  className={`form-control ${formik.touched.description && formik.errors.description
                     ? "is-invalid"
                     : ""
-                  }`}
-                value={formik.values.grade_id}
-                onChange={(e) =>
-                  formik.setFieldValue("grade_id", e.target.value)
-                }
-              >
-                <option value="">Select Grade</option>
-                {grades?.map((grade) => (
-                  <option key={grade.value} value={grade.value}>
-                    {grade.label}
-                  </option>
-                ))}
-              </select>
-              {formik.touched.grade_id && formik.errors.grade_id && (
-                <div className="invalid-feedback">
-                  {formik.errors.grade_id}
-                </div>
-              )}
+                    }`}
+                  rows="4"
+                  {...formik.getFieldProps("description")}
+                />
+              </div>
             </div>
-            <div className="col-md-6 col-12 mb-3">
-              <label className="form-label">
-                Name<span className="text-danger">*</span>
-              </label>
-              <input
-                type="text"
-                className={`form-control form-control-sm ${formik.touched.name && formik.errors.name ? "is-invalid" : ""
-                  }`}
-                {...formik.getFieldProps("name")}
-              />
-              {formik.touched.name && formik.errors.name && (
-                <div className="invalid-feedback">{formik.errors.name}</div>
-              )}
-            </div>
-            <div className="col-md-6 col-12 mb-3">
-              <label className="form-label">
-                Description
-              </label>
-              <textarea
-                className={`form-control ${formik.touched.description && formik.errors.description
-                    ? "is-invalid"
-                    : ""
-                  }`}
-                rows="4"
-                {...formik.getFieldProps("description")}
-              />
-            </div>
-          </div>
-                      )}
+          )}
 
         </DialogContent>
         <hr className="m-0" />

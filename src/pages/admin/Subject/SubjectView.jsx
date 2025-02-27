@@ -94,10 +94,7 @@ const[editModal,setEditModal] = useState(false);
             <div className="col-md-6 col-12">
               <div className="row mt-3  mb-2">
                 <div className="col-6 ">
-                  <p
-                    className="text-muted text-sm text-truncate"
-                    style={{ maxWidth: "200px" }}
-                  >
+                  <p>
                     Description
                   </p>
                 </div>

@@ -89,8 +89,12 @@ function TopicAdd({ onSuccess }) {
 
   const getGradeList = async () => {
     try {
-      const response = await api.get("grades/list");
-      console.log(response);
+      if (selectedCenter.length === 0) {
+        setGrades([]);
+        return;
+      }
+      const centerIds = selectedCenter.map((center) => `center_id[]=${center.value}`).join("&");
+      const response = await api.get(`filter/grades?${centerIds}`);
       const formattedGrades = response.data?.data?.map((grade) => ({
         value: grade.id,
         label: grade.name,
@@ -106,7 +110,7 @@ function TopicAdd({ onSuccess }) {
   useEffect(() => {
     getCenterList();
     getGradeList();
-  }, []);
+  }, [selectedCenter]);
 
   return (
     <>
@@ -145,11 +149,10 @@ function TopicAdd({ onSuccess }) {
                     );
                   }}
                   labelledBy="Select Center"
-                  className={`form-multi-select form-multi-select-sm mb-5${
-                    formik.touched.center_id && formik.errors.center_id
+                  className={`form-multi-select form-multi-select-sm mb-5${formik.touched.center_id && formik.errors.center_id
                       ? "is-invalid"
                       : ""
-                  }`}
+                    }`}
                 />
                 {formik.touched.center_id && formik.errors.center_id && (
                   <div className="invalid-feedback">
@@ -162,11 +165,10 @@ function TopicAdd({ onSuccess }) {
                   Grade<span className="text-danger">*</span>
                 </label>
                 <select
-                  className={`form-select form-select-sm ${
-                    formik.touched.grade_id && formik.errors.grade_id
+                  className={`form-select form-select-sm ${formik.touched.grade_id && formik.errors.grade_id
                       ? "is-invalid"
                       : ""
-                  }`}
+                    }`}
                   value={formik.values.grade_id}
                   onChange={(e) =>
                     formik.setFieldValue("grade_id", e.target.value)
@@ -192,11 +194,10 @@ function TopicAdd({ onSuccess }) {
                 <input
                   type="text"
                   onKeyDown={(e) => e.stopPropagation()}
-                  className={`form-control form-control-sm ${
-                    formik.touched.name && formik.errors.name
+                  className={`form-control form-control-sm ${formik.touched.name && formik.errors.name
                       ? "is-invalid"
                       : ""
-                  }`}
+                    }`}
                   {...formik.getFieldProps("name")}
                 />
                 {formik.touched.name && formik.errors.name && (
@@ -206,11 +207,10 @@ function TopicAdd({ onSuccess }) {
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">Description</label>
                 <textarea
-                  className={`form-control ${
-                    formik.touched.description && formik.errors.description
+                  className={`form-control ${formik.touched.description && formik.errors.description
                       ? "is-invalid"
                       : ""
-                  }`}
+                    }`}
                   rows="4"
                   {...formik.getFieldProps("description")}
                 />
