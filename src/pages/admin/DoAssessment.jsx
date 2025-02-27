@@ -95,8 +95,7 @@ const DoAssessment = () => {
           navigate(`/worksheet/view/${assignedId}`);
         }
       } catch (e) {
-        console.error("Error Fetching Data", e);
-        toast.error("Error Fetching Data", e?.response?.data?.error || e.message);
+        toast.error(e?.response?.data?.error || e.message);
       } finally {
         setLoadIndicator(false);
       }
