@@ -27,7 +27,7 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
       .array()
       .min(1, "*Select at least one center")
       .required("*Select a center id"),
-    // grade_id: yup.string().required("*Select a grade"),
+    grade_id: yup.string().required("*Select a grade"),
     subject_id: yup.string().required("*Selected a subject"),
     name: yup.string().max(255, "*Topic Name must not exceed 255 characters").required("*Topic Name is required"),
   });
@@ -35,7 +35,7 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
   const formik = useFormik({
     initialValues: {
       center_id: [],
-      // grade_id: "",
+      // grade: "",
       subject_id: "",
       name: "",
       description: "",
@@ -66,17 +66,17 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
       setLoading(true);
       const response = await api.get(`topic/${id}`);
       const { data } = response.data;
-      const parsedCenterIds = JSON.parse(data.center_id);
-      const parsedCenterNames = JSON.parse(data.center_names);
-      const selectedCenters = parsedCenterIds.map((id, index) => ({
-        value: id,
-        label: parsedCenterNames[index] || "",
-      }));
+      const centerIds = JSON.parse(data.center_id);
+      await getCenterList();
+
+      const selectedCenters = centerList.filter((center) =>
+        centerIds.includes(center.value)
+      );
 
       setSelectedCenter(selectedCenters);
       formik.setValues({
-        center_id: selectedCenters.map((center) => center.value),
-        // grade_id: data.grade_id || "",
+        center_id: centerIds,
+        grade_id: data.grade_id || "",
         subject_id: data.subject_id || "",
         name: data.name || "",
         description: data.description || "",
@@ -103,21 +103,20 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
     }
   };
 
-  // const getGradeList = async () => {
-  //   try {
-  //     const response = await api.get("grades/list");
-  //     const formattedGrade = response.data.data.map((grade) => ({
-  //       value: grade.id,
-  //       label: grade.name,
-  //     }));
-  //     setGrades(formattedGrade);
-  //   } catch (e) {
-  //     toast.error(
-  //       `Error Fetching Data: ${e?.response?.data?.error || e.message}`
-  //     );
-  //   }
-  // };
- 
+  const getGradeList = async () => {
+    try {
+      const response = await api.get("grades/list");
+      const formattedGrade = response.data.data.map((grade) => ({
+        value: grade.id,
+        label: grade.name,
+      }));
+      setGrades(formattedGrade);
+    } catch (e) {
+      toast.error(
+        `Error Fetching Data: ${e?.response?.data?.error || e.message}`
+      );
+    }
+  };
   const getSubjectList = async () => {
     try {
       const response = await api.get("subjects/list");
@@ -221,7 +220,7 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
                 </div>
               )}
             </div>
-            {/* <div className="col-md-6 col-12 mb-3">
+            <div className="col-md-6 col-12 mb-3">
               <label className="form-label">
                 Grade<span className="text-danger">*</span>
               </label>
@@ -237,9 +236,9 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
                 }
               >
                 <option value="">Select Grade</option>
-                {grades?.map((grade) => (
-                  <option key={grade.value} value={grade.value}>
-                    {grade.label}
+                {subjects?.map((subject) => (
+                  <option key={subject.value} value={subject.value}>
+                    {subject.label}
                   </option>
                 ))}
               </select>
@@ -248,7 +247,8 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
                   {formik.errors.grade_id}
                 </div>
               )}
-            </div> */}
+            </div>
+
             <div className="col-md-6 col-12 mb-3">
               <label className="form-label">
                 Name<span className="text-danger">*</span>
