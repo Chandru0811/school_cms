@@ -64,7 +64,7 @@ function Worksheet() {
       { accessorKey: "topic_names", header: "Topic",Cell: ({ cell }) => cell.getValue()?.join(", ") || "",
     },
       { accessorKey: "type", header: "Subject" },
-      { accessorKey: "target_score", header: "Difficult Level" },
+      { accessorKey: "difficult_level", header: "Difficult Level" },
       { accessorKey: "reward", header: "Reward" },
       { accessorKey: "created_by", header: "Created By" },
       {

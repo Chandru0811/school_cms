@@ -206,7 +206,10 @@ function HomeworkView() {
                     </div>
                     <div className="col-6">
                       <p className="text-muted text-sm">
-                        : {data.center_names || "--"}
+                      :{" "}
+                        {data.center_names && data.center_names.length > 0
+                          ? data.center_names.join(", ")
+                          : "N/A"}
                       </p>
                     </div>
                   </div>
@@ -218,7 +221,10 @@ function HomeworkView() {
                     </div>
                     <div className="col-6">
                       <p className="text-muted text-sm">
-                        : {data.grade_names || "--"}
+                      :{" "}
+                        {data.grade_names && data.grade_names.length > 0
+                          ? data.grade_names.join(", ")
+                          : "N/A"}
                       </p>
                     </div>
                   </div>

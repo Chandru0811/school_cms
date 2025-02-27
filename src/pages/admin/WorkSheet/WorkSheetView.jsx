@@ -195,7 +195,10 @@ function WorkSheetView() {
                     </div>
                     <div className="col-6">
                       <p className="text-muted text-sm">
-                        : {data.center_names}
+                      :{" "}
+                        {data.center_names && data.center_names.length > 0
+                          ? data.center_names.join(", ")
+                          : "N/A"}
                       </p>
                     </div>
                   </div>
@@ -206,7 +209,10 @@ function WorkSheetView() {
                       <p className="fw-medium text-sm">Grade</p>
                     </div>
                     <div className="col-6">
-                      <p className="text-muted text-sm">: {data.grade_names}</p>
+                      <p className="text-muted text-sm">                     :{" "}
+                        {data.grade_names && data.grade_names.length > 0
+                          ? data.grade_names.join(", ")
+                          : "N/A"}</p>
                     </div>
                   </div>
                 </div>
@@ -325,7 +331,7 @@ function WorkSheetView() {
                 </div>
                 {data.student_assigned && data.student_assigned.length > 0 && (
                   <div className="col-md-12 col-12">
-                    <h5 className="fw-bold mb-2">Student Assigned</h5>
+                    <h5 className="fw-bold">Student Assigned</h5>
                     <div className="row">
                       {data.student_assigned.map((student, index) => (
                         <div key={index}>
