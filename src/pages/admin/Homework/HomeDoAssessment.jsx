@@ -3,6 +3,8 @@ import toast from "react-hot-toast";
 import api from "../../../config/URL";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
+import Modal from "react-bootstrap/Modal";
+import ImageURL from "../../../config/ImageURL";
 
 const HomeDoAssessment = () => {
   const [data, setData] = useState({});
@@ -17,7 +19,19 @@ const HomeDoAssessment = () => {
   const [timeLeft, setTimeLeft] = useState(null);
   const [timeSpentPerQuestion, setTimeSpentPerQuestion] = useState({});
   const [timeUpQuestions, setTimeUpQuestions] = useState({});
+  const [showModal, setShowModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState("");
 
+  // Function to handle image click
+  const handleImageClick = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setShowModal(true);
+  };
+
+  // Function to close the modal
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
   const validateAnswers = () => {
     if (!data.questions) return false;
 
@@ -38,10 +52,10 @@ const HomeDoAssessment = () => {
       answer: [],
     },
     onSubmit: async (values) => {
-      if (!validateAnswers()) {
-        toast.error("Please answer questions before submitting.");
-        return;
-      }
+      // if (!validateAnswers()) {
+      //   toast.error("Please answer questions before submitting.");
+      //   return;
+      // }
 
       setLoadIndicator(true);
       console.log("values", values);
@@ -84,7 +98,7 @@ const HomeDoAssessment = () => {
       });
 
       try {
-        const response = await api.post("homework/assessment", formData, {
+        const response = await api.post("worksheet/assessment", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -92,11 +106,24 @@ const HomeDoAssessment = () => {
 
         if (response.status === 200) {
           toast.success(response.data.message);
-          navigate(`/homework/view/${assignedId}`);
+          navigate(`/worksheet/view/${assignedId}`);
         }
       } catch (e) {
-        toast.error(e?.response?.data?.error || e.message);
-      } finally {
+        let errorMessage = "Error submitting assessment. Please try again.";
+
+        if (e?.response?.data?.errors) {
+          errorMessage = Object.values(e.response.data.errors)
+            .flat()
+            .join("\n");
+        } else if (e?.response?.data?.error) {
+          errorMessage = e.response.data.error;
+        } else if (e.message) {
+          errorMessage = e.message;
+        }
+
+        toast.error(errorMessage);
+      }
+      finally {
         setLoadIndicator(false);
       }
     },
@@ -104,7 +131,7 @@ const HomeDoAssessment = () => {
 
   const getData = async () => {
     try {
-      const response = await api.get(`homework/assessment/${assignedId}`);
+      const response = await api.get(`worksheet/assessment/${assignedId}`);
       setData(response.data.data);
       if (response.data.data.questions && response.data.data.questions.length > 0) {
         const firstQuestion = response.data.data.questions[0];
@@ -127,19 +154,24 @@ const HomeDoAssessment = () => {
     switch (quesType) {
       case "fillable":
         return (
-          <input
-            type="text"
-            className="form-control form-control-sm"
-            placeholder="Your answer"
-            value={answers[id]?.fillable || ""}
-            onChange={(e) =>
-              setAnswers({
-                ...answers,
-                [id]: { ...answers[id], fillable: e.target.value },
-              })
-            }
-            disabled={isDisabled}
-          />
+          <div>
+            <textarea
+              rows={4}
+              className="form-control form-control-sm"
+              placeholder="Your answer"
+              value={answers[id]?.fillable || ""}
+              onChange={(e) =>
+                setAnswers({
+                  ...answers,
+                  [id]: { ...answers[id], fillable: e.target.value },
+                })
+              }
+              disabled={isDisabled}
+            />
+            {currentQuestion.hint && (
+              <div className="text-muted mt-2">Hint: {currentQuestion.hint}</div>
+            )}
+          </div>
         );
 
       case "closed":
@@ -179,6 +211,9 @@ const HomeDoAssessment = () => {
               />
               No
             </label>
+            {currentQuestion.hint && (
+              <div className="text-muted mt-2">Hint: {currentQuestion.hint}</div>
+            )}
           </div>
         );
 
@@ -191,7 +226,7 @@ const HomeDoAssessment = () => {
                   type="checkbox"
                   className="form-check-input me-2"
                   name={`multichoice-${id}`}
-                  // checked={answers[id]?.multichoice === option}
+                  checked={answers[id]?.multichoice === option}
                   onChange={(e) => {
                     setAnswers({
                       ...answers,
@@ -203,39 +238,63 @@ const HomeDoAssessment = () => {
                 <label className="ms-2">{option}</label>
               </div>
             ))}
+            {currentQuestion.hint && (
+              <div className="text-muted mt-2">Hint: {currentQuestion.hint}</div>
+            )}
           </div>
         );
 
       case "short_answer":
         return (
-          <textarea
-            placeholder="Your answer"
-            rows={4}
-            className="form-control form-control-sm"
-            value={answers[id]?.short_answer || ""}
-            onChange={(e) =>
-              setAnswers({
-                ...answers,
-                [id]: { ...answers[id], short_answer: e.target.value },
-              })
-            }
-            disabled={isDisabled}
-          />
+          <div>
+            <textarea
+              placeholder="For answer"
+              rows={4}
+              className="form-control form-control-sm"
+              value={answers[id]?.short_answer || ""}
+              onChange={(e) =>
+                setAnswers({
+                  ...answers,
+                  [id]: { ...answers[id], short_answer: e.target.value },
+                })
+              }
+              disabled={isDisabled}
+            />
+            {currentQuestion.hint && (
+              <div className="text-muted mt-2">Hint: {currentQuestion.hint}</div>
+            )}
+          </div>
         );
 
       case "upload":
         return (
-          <input
-            type="file"
-            className="form-control form-control-sm"
-            onChange={(e) =>
-              setAnswers({
-                ...answers,
-                [id]: { ...answers[id], upload: e.target.files[0] },
-              })
-            }
-            disabled={isDisabled}
-          />
+          <div>
+            {currentQuestion.upload && (
+              <img
+                src={`${ImageURL.replace(/\/$/, "")}/${currentQuestion.upload.replace(
+                  /^\//,
+                  ""
+                )}`}
+                alt="Question Upload"
+                style={{ width: "100px", cursor: "pointer" }}
+                onClick={() => handleImageClick(currentQuestion.upload)}
+              />
+            )}
+            <input
+              type="file"
+              className="form-control form-control-sm mt-2"
+              onChange={(e) =>
+                setAnswers({
+                  ...answers,
+                  [id]: { ...answers[id], upload: e.target.files[0] },
+                })
+              }
+              disabled={isDisabled}
+            />
+            {currentQuestion.hint && (
+              <div className="text-muted mt-2">Hint: {currentQuestion.hint}</div>
+            )}
+          </div>
         );
 
       default:
@@ -316,7 +375,7 @@ const HomeDoAssessment = () => {
             className="col-md-8 col-12 d-flex align-items-center justify-content-center flex-column"
             style={{ minHeight: "80vh" }}
           >
-            <h4 className="text-center my-4">Worksheet</h4>
+            <h4 className="text-center my-4">{data.title}</h4>
             <div
               className="card custom-card p-3 m-5 d-flex flex-column"
               style={{ width: "100%", minHeight: "50vh" }}
@@ -374,6 +433,26 @@ const HomeDoAssessment = () => {
           <div className="col-md-2 col-12"></div>
         </div>
       </div>
+      <Modal
+        show={showModal}
+        onHide={handleCloseModal}
+        centered
+        size="md"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Upload Image</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <img
+            src={`${ImageURL.replace(/\/$/, "")}/${selectedImage.replace(
+              /^\//,
+              ""
+            )}`}
+            alt="Full Size"
+            style={{ width: "100%" }}
+          />
+        </Modal.Body>
+      </Modal>
     </section>
   );
 };

@@ -67,7 +67,7 @@ function Role() {
         accessorKey: "created_by.name",
         header: "Created By",
         enableSorting: true,
-        enableHiding: false,        
+        enableHiding: false,
         Cell: ({ cell }) => cell.getValue() || " ",
       },
       {
@@ -85,7 +85,7 @@ function Role() {
         header: "Updated By",
         enableSorting: true,
         enableHiding: false,
-          Cell: ({ cell }) => cell.getValue() || " ",
+        Cell: ({ cell }) => cell.getValue() || " ",
       },
     ],
     []
@@ -142,7 +142,12 @@ function Role() {
       const response = await api.get("admin/roles");
       setData(response.data.data);
     } catch (e) {
-      toast.error("Error Fetching Data ", e?.response?.data?.error);
+      if (e?.response?.status === 403) {
+        toast.error("Don't have access to this page");
+      } else {
+        toast.error(e?.response?.data?.error);
+        toast.error(e?.response?.data?.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -163,57 +168,57 @@ function Role() {
             <div className="loader"></div>
           </div>
         ) : (
-        <>
-          <ThemeProvider theme={theme}>
-            <MaterialReactTable
-              columns={columns}
-              data={data}
-              enableColumnActions={false}
-              enableColumnFilters={false}
-              enableDensityToggle={false}
-              enableFullScreenToggle={false}
-              initialState={{
-                columnVisibility: {
-                  working_hrs: false,
-                  citizenship: false,
-                  nationality: false,
-                  created_by: false,
-                  created_at: false,
-                  updated_by: false,
-                  updated_at: false,
-                },
-              }}
-              muiTableBodyRowProps={({ row }) => ({
-              style: { cursor: "pointer" },
-              onClick: () => {
-                setSelectedId(row.original.id);
-                setShowView(true);
-              },
-            })}
-            />
-          </ThemeProvider>
-          <Menu
-            id="action-menu"
-            anchorEl={menuAnchor}
-            open={Boolean(menuAnchor)}
-            onClose={handleMenuClose}
-          >
-            <MenuItem
-              onClick={() => {
-                setShowEdit(true);
-                handleMenuClose();
-              }}
+          <>
+            <ThemeProvider theme={theme}>
+              <MaterialReactTable
+                columns={columns}
+                data={data}
+                enableColumnActions={false}
+                enableColumnFilters={false}
+                enableDensityToggle={false}
+                enableFullScreenToggle={false}
+                initialState={{
+                  columnVisibility: {
+                    working_hrs: false,
+                    citizenship: false,
+                    nationality: false,
+                    created_by: false,
+                    created_at: false,
+                    updated_by: false,
+                    updated_at: false,
+                  },
+                }}
+                muiTableBodyRowProps={({ row }) => ({
+                  style: { cursor: "pointer" },
+                  onClick: () => {
+                    setSelectedId(row.original.id);
+                    setShowView(true);
+                  },
+                })}
+              />
+            </ThemeProvider>
+            <Menu
+              id="action-menu"
+              anchorEl={menuAnchor}
+              open={Boolean(menuAnchor)}
+              onClose={handleMenuClose}
             >
-              Edit
-            </MenuItem>
-            <MenuItem>
-              <Delete path={`admin/role/delete/${selectedId}`}  onOpen={handleMenuClose} onDeleteSuccess={getData} />
-            </MenuItem>
-          </Menu>
-          <RoleEdit show={showEdit} setShow={setShowEdit}  id={selectedId}  onSuccess={getData}/>
-          <RoleView show={showView} setShow={setShowView} id={selectedId} />
-        </>
-      )}
+              <MenuItem
+                onClick={() => {
+                  setShowEdit(true);
+                  handleMenuClose();
+                }}
+              >
+                Edit
+              </MenuItem>
+              <MenuItem>
+                <Delete path={`admin/role/delete/${selectedId}`} onOpen={handleMenuClose} onDeleteSuccess={getData} />
+              </MenuItem>
+            </Menu>
+            <RoleEdit show={showEdit} setShow={setShowEdit} id={selectedId} onSuccess={getData} />
+            <RoleView show={showView} setShow={setShowView} id={selectedId} />
+          </>
+        )}
       </div>
     </div>
   );

@@ -687,7 +687,7 @@ function WorkSheetEdit() {
                   <div className="col-md-6 col-12 mb-3">
                     {formik.values.type === "challenge" ? (
                       <label className="form-label">
-                        Challenged Title<span className="text-danger">*</span>
+                        Challenge Title<span className="text-danger">*</span>
                       </label>
                     ) : formik.values.type === "question" ? (
                       <label className="form-label">
@@ -821,7 +821,7 @@ function WorkSheetEdit() {
                   <div className="col-md-6 col-12 mb-4">
                     {formik.values.type === "challenge" ? (
                       <label className="form-label">
-                        Challenged Type<span className="text-danger">*</span>
+                        Challenge Type<span className="text-danger">*</span>
                       </label>
                     ) : formik.values.type === "question" ? (
                       <label className="form-label">

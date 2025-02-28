@@ -72,7 +72,7 @@ function AdminSidebar() {
                 style={{ borderRadius: "5px" }}
                 to="/dashboard"
               >
-                <IoBarChart className="sidebar_icon" />
+                <IoBarChart className="sidebar_icon" size={17} />
                 Dashboard
               </NavLink>
             </li>
@@ -83,7 +83,7 @@ function AdminSidebar() {
                   style={{ borderRadius: "5px" }}
                   to="/center"
                 >
-                  <IoGridOutline className="sidebar_icon" />
+                  <IoGridOutline className="sidebar_icon" size={17} />
                   Centre
                 </NavLink>
               </li>
@@ -95,7 +95,7 @@ function AdminSidebar() {
                   style={{ borderRadius: "5px" }}
                   to="/employee"
                 >
-                  <BsPerson className="sidebar_icon" />
+                  <BsPerson className="sidebar_icon" size={17} />
                   Employee
                 </NavLink>
               </li>
@@ -107,7 +107,7 @@ function AdminSidebar() {
                   style={{ borderRadius: "5px" }}
                   to="/grade"
                 >
-                  <LiaAwardSolid className="sidebar_icon" />
+                  <LiaAwardSolid className="sidebar_icon" size={17} />
                   Grade
                 </NavLink>
               </li>
@@ -119,7 +119,7 @@ function AdminSidebar() {
                   style={{ borderRadius: "5px" }}
                   to="/subject"
                 >
-                  <SlBookOpen className="sidebar_icon" />
+                  <SlBookOpen className="sidebar_icon" size={17} />
                   Subject
                 </NavLink>
               </li>
@@ -131,7 +131,7 @@ function AdminSidebar() {
                   style={{ borderRadius: "5px" }}
                   to="/topic"
                 >
-                  <PiNotePencilDuotone className="sidebar_icon" />
+                  <PiNotePencilDuotone className="sidebar_icon" size={17} />
                   Topic
                 </NavLink>
               </li>
@@ -143,7 +143,7 @@ function AdminSidebar() {
                   style={{ borderRadius: "5px" }}
                   to="/student"
                 >
-                  <PiStudentLight className="sidebar_icon" />
+                  <PiStudentLight className="sidebar_icon" size={17} />
                   Student
                 </NavLink>
               </li>
@@ -155,7 +155,7 @@ function AdminSidebar() {
                   style={{ borderRadius: "5px" }}
                   to="/question"
                 >
-                  <IoHelpCircleOutline className="sidebar_icon" />
+                  <IoHelpCircleOutline className="sidebar_icon" size={17} />
                   Question & Answer
                 </NavLink>
               </li>
@@ -167,7 +167,7 @@ function AdminSidebar() {
                   style={{ borderRadius: "5px" }}
                   to="/challenges"
                 >
-                  <IoTrophyOutline className="sidebar_icon" />
+                  <IoTrophyOutline className="sidebar_icon" size={17} />
                   Challenges
                 </NavLink>
               </li>
@@ -179,7 +179,7 @@ function AdminSidebar() {
                   style={{ borderRadius: "5px" }}
                   to="/worksheet"
                 >
-                  <FaRegFileAlt className="sidebar_icon" />
+                  <FaRegFileAlt className="sidebar_icon" size={17} />
                   Worksheet
                 </NavLink>
               </li>
@@ -191,7 +191,7 @@ function AdminSidebar() {
                   style={{ borderRadius: "5px" }}
                   to="/homework"
                 >
-                  <IoLibraryOutline className="sidebar_icon" />
+                  <IoLibraryOutline className="sidebar_icon" size={17} />
                   Homework
                 </NavLink>
               </li>
@@ -203,7 +203,7 @@ function AdminSidebar() {
                   style={{ borderRadius: "5px" }}
                   to="/rewards"
                 >
-                  <IoGiftOutline className="sidebar_icon" />
+                  <IoGiftOutline className="sidebar_icon" size={17} />
                   Rewards
                 </NavLink>
               </li>
@@ -215,7 +215,7 @@ function AdminSidebar() {
                   style={{ borderRadius: "5px" }}
                   to="/subscriptions"
                 >
-                  <IoCardOutline className="sidebar_icon" />
+                  <IoCardOutline className="sidebar_icon" size={17} />
                   Subscriptions
                 </NavLink>
               </li>
@@ -226,7 +226,7 @@ function AdminSidebar() {
                 style={{ borderRadius: "5px" }}
                 to="/school"
               >
-                <IoSchoolOutline className="sidebar_icon" />
+                <IoSchoolOutline className="sidebar_icon" size={17} />
                 School
               </NavLink>
             </li>
@@ -236,7 +236,7 @@ function AdminSidebar() {
                 style={{ borderRadius: "5px" }}
                 to="/role"
               >
-                <IoSchoolOutline className="sidebar_icon" />
+                <IoSchoolOutline className="sidebar_icon" size={17} />
                 Role
               </NavLink>
             </li> */}

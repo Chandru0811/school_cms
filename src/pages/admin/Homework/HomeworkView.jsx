@@ -15,6 +15,7 @@ function HomeworkView() {
   console.log("idddss", assigned_id);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const schoolCMS_access = localStorage.getItem("schoolCMS_access");
 
   const getData = async () => {
     try {
@@ -160,35 +161,59 @@ function HomeworkView() {
               </button>
             </Link>
             &nbsp;&nbsp;
-            <HomeworkAssign
-              grade_ids={data.grade_id ? JSON.parse(data.grade_id) : []}
-              assignedId={assigned_id}
-            />
-            <button
-              className={`btn btn-sm ${
-                data.active === 1 ? "btn-danger" : "btn-success"
-              }`}
-              onClick={handleStatusToggle}
-            >
-              {data.active === 1 ? "Deactivate" : "Activate"}
-            </button>
+            {schoolCMS_access === "Limited Access" ? (
+              <></>
+            ) : (
+              <>
+                <HomeworkAssign
+                  grade_ids={data.grade_id ? JSON.parse(data.grade_id) : []}
+                  assignedId={assigned_id}
+                />
+              </>
+            )}
+            {schoolCMS_access === "Limited Access" ? (
+              <></>
+            ) : (
+              <>
+                <button
+                  className={`btn btn-sm ${data.active === 1 ? "btn-danger" : "btn-success"
+                    }`}
+                  onClick={handleStatusToggle}
+                >
+                  {data.active === 1 ? "Deactivate" : "Activate"}
+                </button>
+              </>
+            )}
             &nbsp;&nbsp;
-            <Link to={`/homedoassessment?assignedId=${assigned_id}`}>
-              <button
-                type="button"
-                className="btn btn-success btn-sm me-2"
-                style={{ fontWeight: "600 !important" }}
-              >
-                Do Assessment
-              </button>
-            </Link>
-            <button
-              type="button"
-              className="btn btn-sm btn-button"
-              onClick={() => navigate(`/homework/edit/${id}`)}
-            >
-              Edit
-            </button>
+            {schoolCMS_access === "Limited Access" ? (
+              <>
+                <Link to={`/homedoassessment?assignedId=${assigned_id}`}>
+                <button
+                    type="button"
+                    className="btn btn-success btn-sm me-2"
+                    style={{ fontWeight: "600 !important" }}
+                  >
+                    Do Assessment
+                  </button>
+                </Link>
+              </>
+            ) : (
+              <></>
+            )}
+            {/* &nbsp;&nbsp; */}
+            {schoolCMS_access === "Limited Access" ? (
+              <></>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  className="btn btn-sm btn-button"
+                  onClick={() => navigate(`/homework/edit/${id}`)}
+                >
+                  Edit
+                </button>
+              </>
+            )}
           </div>
         </div>
         {loading ? (

@@ -484,11 +484,19 @@ function ChallengesAdd() {
                   Time Limit<span className="text-danger">*</span>
                 </label>
                 <input
+                  type="text"
                   className={`form-control form-control-sm ${formik.touched.time_limit && formik.errors.time_limit
                     ? "is-invalid"
                     : ""
                     }`}
+                  placeholder="Seconds"
                   {...formik.getFieldProps("time_limit")}
+                  onInput={(e) =>
+                  (e.target.value = e.target.value.replace(
+                    /\D/g,
+                    ""
+                  ))
+                  }
                 />
                 {formik.touched.time_limit && formik.errors.time_limit && (
                   <div className="invalid-feedback">
@@ -630,11 +638,11 @@ function ChallengesAdd() {
                               ...multiChoice,
                               selected: !multiChoice.selected,
                             };
-                            console.log("multichoice",updatedOptions[index] = {
+                            console.log("multichoice", updatedOptions[index] = {
                               ...multiChoice,
                               selected: !multiChoice.selected,
                             })
-                            console.log("answer",updatedAnswers)
+                            console.log("answer", updatedAnswers)
                             formik.setFieldValue("options", updatedOptions);
                             formik.setFieldValue("answer", updatedAnswers);
                           }}

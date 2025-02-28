@@ -55,14 +55,24 @@ function Worksheet() {
         ),
       },
       {
+        accessorKey: "title",
+        header: "Title",
+      },
+      {
+        accessorKey: "type",
+        header: "Type",
+      },
+      {
         accessorKey: "center_names",
         header: "Centre name",
         Cell: ({ cell }) => cell.getValue()?.join(", ") || "",
       },
-      { accessorKey: "grade_names", header: "Grade", Cell: ({ cell }) => cell.getValue()?.join(", ") || "",
-    },
-      { accessorKey: "topic_names", header: "Topic",Cell: ({ cell }) => cell.getValue()?.join(", ") || "",
-    },
+      {
+        accessorKey: "grade_names", header: "Grade", Cell: ({ cell }) => cell.getValue()?.join(", ") || "",
+      },
+      {
+        accessorKey: "topic_names", header: "Topic", Cell: ({ cell }) => cell.getValue()?.join(", ") || "",
+      },
       { accessorKey: "type", header: "Subject" },
       { accessorKey: "difficult_level", header: "Difficult Level" },
       { accessorKey: "reward", header: "Reward" },
@@ -70,7 +80,7 @@ function Worksheet() {
         accessorKey: "created_by.name",
         header: "Created By",
         enableSorting: true,
-        enableHiding: false,        
+        enableHiding: false,
         Cell: ({ cell }) => cell.getValue() || " ",
       },
       {
@@ -88,7 +98,7 @@ function Worksheet() {
         header: "Updated By",
         enableSorting: true,
         enableHiding: false,
-          Cell: ({ cell }) => cell.getValue() || " ",
+        Cell: ({ cell }) => cell.getValue() || " ",
       },
     ],
     []
@@ -210,7 +220,7 @@ function Worksheet() {
                 enableFullScreenToggle={false}
                 initialState={{
                   columnVisibility: {
-                    id:!(storedScreens?.data?.[8]?.can_edit === 0 && storedScreens?.data?.[8]?.can_delete === 0),
+                    id: !(storedScreens?.data?.[8]?.can_edit === 0 && storedScreens?.data?.[8]?.can_delete === 0),
                     working_hrs: false,
                     citizenship: false,
                     nationality: false,
@@ -223,10 +233,10 @@ function Worksheet() {
                 muiTableBodyRowProps={({ row }) =>
                   storedScreens?.data[8]?.can_view === 1
                     ? {
-                        onClick: () =>
-                          navigate(`/worksheet/view/${row.original.id}`),
-                        style: { cursor: "pointer" },
-                      }
+                      onClick: () =>
+                        navigate(`/worksheet/view/${row.original.id}`),
+                      style: { cursor: "pointer" },
+                    }
                     : {}
                 }
               />
@@ -237,21 +247,21 @@ function Worksheet() {
               open={Boolean(menuAnchor)}
               onClose={handleMenuClose}
             >
-              {storedScreens?.data[8]?.can_edit ===1 && (
+              {storedScreens?.data[8]?.can_edit === 1 && (
                 <MenuItem
                   onClick={() => navigate(`/worksheet/edit/${selectedId}`)}
                 >
                   Edit
                 </MenuItem>
               )}
-              {storedScreens?.data[8]?.can_delete ===1 &&(
-              <MenuItem>
-                <Delete
-                  path={`worksheet/delete/${selectedId}`}
-                  onDeleteSuccess={getData}
-                  onOpen={handleMenuClose}
-                />
-              </MenuItem>)}
+              {storedScreens?.data[8]?.can_delete === 1 && (
+                <MenuItem>
+                  <Delete
+                    path={`worksheet/delete/${selectedId}`}
+                    onDeleteSuccess={getData}
+                    onOpen={handleMenuClose}
+                  />
+                </MenuItem>)}
             </Menu>
           </>
         )}

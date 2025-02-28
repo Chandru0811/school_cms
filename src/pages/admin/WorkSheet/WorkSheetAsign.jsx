@@ -20,17 +20,20 @@ function WorkSheetAsign({ grade_ids, assignedId }) {
   console.log("gradeID::", grade_ids)
 
   const handleClose = () => {
+    setSelectedStudent([]);
     formik.resetForm();
     setShow(false);
   };
 
   const handleShow = () => {
+    setSelectedStudent([]);
+    formik.resetForm();
     setShow(true);
   };
 
   const validationSchema = yup.object().shape({
-    grade_id: yup.string().required("*Select a grade id"),
-  });
+    student_id: yup.array().min(1, "*Select at least one student").required("*Select a Student"),
+  });  
 
   const formik = useFormik({
     initialValues: {
@@ -48,6 +51,7 @@ function WorkSheetAsign({ grade_ids, assignedId }) {
 
         if (response.status === 200) {
           toast.success(response.data.message);
+          formik.resetForm();
           handleClose();
         }
       } catch (e) {
@@ -59,25 +63,30 @@ function WorkSheetAsign({ grade_ids, assignedId }) {
   });
 
   const getStudentList = async (selectId) => {
-    if (!selectId) return;
-    
-    setLoadIndicator(true);
-    
     try {
-      const response = await api.get(`filter/students?grade_id=${selectId}`);
-      setStudentList(
-        response.data?.data?.map((student) => ({
-          value: student.id,
-          label: student.first_name,
-        }))
-      );
+      let response;
+      if (selectId) {
+        response = await api.get(`filter/students?grade_id=${selectId}`);
+        setStudentList(
+          response.data?.data?.map((student) => ({
+            value: student.id,
+            label: student.first_name,
+          }))
+        );
+      } else {
+        response = await api.get("students/list");
+        setStudentList(
+          response.data?.data?.map((student) => ({
+            value: student.id,
+            label: student.first_name,
+          }))
+        );
+      }
     } catch (e) {
       console.error("Error Fetching Data", e);
       toast.error("Error Fetching Data", e?.response?.data?.error || e.message);
-    } finally {
-      setLoadIndicator(false);
     }
-  };  
+  };
 
   const getGradeList = async () => {
     try {
@@ -102,15 +111,18 @@ function WorkSheetAsign({ grade_ids, assignedId }) {
       setLoadIndicator(false);
     }
   };
-  
+
   const memoizedGrades = useMemo(() => {
     return grades.filter(grade => grade_ids.includes(grade.value));
   }, [grades, grade_ids]);
-  
+
 
   useEffect(() => {
     getGradeList();
   }, [grade_ids]);
+  useEffect(() => {
+    getStudentList();
+  }, []);
 
   return (
     <>
@@ -140,7 +152,7 @@ function WorkSheetAsign({ grade_ids, assignedId }) {
             <div className="row">
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
-                  Grade ID<span className="text-danger">*</span>
+                  Grade ID
                 </label>
                 <select
                   className={`form-select form-select-sm ${formik.touched.grade_id && formik.errors.grade_id ? "is-invalid" : ""
@@ -150,6 +162,12 @@ function WorkSheetAsign({ grade_ids, assignedId }) {
                     const selectedGradeId = e.target.value;
                     formik.setFieldValue("grade_id", selectedGradeId);
                     getStudentList(selectedGradeId);
+
+                    // if (!selectedGradeId) {
+                    //   setSelectedStudent([]);
+                    //   formik.setFieldValue("student_id", []);
+                    // } else {
+                    // }
                   }}
                 >
                   <option value="">Select Grade ID</option>
@@ -159,15 +177,10 @@ function WorkSheetAsign({ grade_ids, assignedId }) {
                     </option>
                   ))}
                 </select>
-                {formik.touched.grade_id && formik.errors.grade_id && (
-                  <div className="invalid-feedback">
-                    {formik.errors.grade_id}
-                  </div>
-                )}
               </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
-                  Student ID
+                  Student ID<span className="text-danger">*</span>
                 </label>
                 <MultiSelect
                   options={studentsList}

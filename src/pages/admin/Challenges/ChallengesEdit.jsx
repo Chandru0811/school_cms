@@ -287,7 +287,7 @@ function ChallengesEdit() {
     getSubjectList();
     getGradeList();
     topicList();
-  }, []);
+  }, [id]);
 
   return (
     <div className="container p-3">

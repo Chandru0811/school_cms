@@ -3,6 +3,8 @@ import toast from "react-hot-toast";
 import api from "../../config/URL";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
+import Modal from "react-bootstrap/Modal";
+import ImageURL from "../../config/ImageURL";
 
 const DoAssessment = () => {
   const [data, setData] = useState({});
@@ -17,7 +19,19 @@ const DoAssessment = () => {
   const [timeLeft, setTimeLeft] = useState(null);
   const [timeSpentPerQuestion, setTimeSpentPerQuestion] = useState({});
   const [timeUpQuestions, setTimeUpQuestions] = useState({});
+  const [showModal, setShowModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState("");
 
+  // Function to handle image click
+  const handleImageClick = (imageUrl) => {
+    setSelectedImage(imageUrl);
+    setShowModal(true);
+  };
+
+  // Function to close the modal
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
   const validateAnswers = () => {
     if (!data.questions) return false;
 
@@ -96,7 +110,7 @@ const DoAssessment = () => {
         }
       } catch (e) {
         let errorMessage = "Error submitting assessment. Please try again.";
-      
+
         if (e?.response?.data?.errors) {
           errorMessage = Object.values(e.response.data.errors)
             .flat()
@@ -106,10 +120,10 @@ const DoAssessment = () => {
         } else if (e.message) {
           errorMessage = e.message;
         }
-      
+
         toast.error(errorMessage);
       }
-       finally {
+      finally {
         setLoadIndicator(false);
       }
     },
@@ -140,19 +154,24 @@ const DoAssessment = () => {
     switch (quesType) {
       case "fillable":
         return (
-          <textarea
-          rows={4}
-            className="form-control form-control-sm"
-            placeholder="Your answer"
-            value={answers[id]?.fillable || ""}
-            onChange={(e) =>
-              setAnswers({
-                ...answers,
-                [id]: { ...answers[id], fillable: e.target.value },
-              })
-            }
-            disabled={isDisabled}
-          />
+          <div>
+            <textarea
+              rows={4}
+              className="form-control form-control-sm"
+              placeholder="Your answer"
+              value={answers[id]?.fillable || ""}
+              onChange={(e) =>
+                setAnswers({
+                  ...answers,
+                  [id]: { ...answers[id], fillable: e.target.value },
+                })
+              }
+              disabled={isDisabled}
+            />
+            {currentQuestion.hint && (
+              <div className="text-muted mt-2">Hint: {currentQuestion.hint}</div>
+            )}
+          </div>
         );
 
       case "closed":
@@ -192,6 +211,9 @@ const DoAssessment = () => {
               />
               No
             </label>
+            {currentQuestion.hint && (
+              <div className="text-muted mt-2">Hint: {currentQuestion.hint}</div>
+            )}
           </div>
         );
 
@@ -216,39 +238,63 @@ const DoAssessment = () => {
                 <label className="ms-2">{option}</label>
               </div>
             ))}
+            {currentQuestion.hint && (
+              <div className="text-muted mt-2">Hint: {currentQuestion.hint}</div>
+            )}
           </div>
         );
 
       case "short_answer":
         return (
-          <textarea
-            placeholder="Your answer"
-            rows={4}
-            className="form-control form-control-sm"
-            value={answers[id]?.short_answer || ""}
-            onChange={(e) =>
-              setAnswers({
-                ...answers,
-                [id]: { ...answers[id], short_answer: e.target.value },
-              })
-            }
-            disabled={isDisabled}
-          />
+          <div>
+            <textarea
+              placeholder="For answer"
+              rows={4}
+              className="form-control form-control-sm"
+              value={answers[id]?.short_answer || ""}
+              onChange={(e) =>
+                setAnswers({
+                  ...answers,
+                  [id]: { ...answers[id], short_answer: e.target.value },
+                })
+              }
+              disabled={isDisabled}
+            />
+            {currentQuestion.hint && (
+              <div className="text-muted mt-2">Hint: {currentQuestion.hint}</div>
+            )}
+          </div>
         );
 
       case "upload":
         return (
-          <input
-            type="file"
-            className="form-control form-control-sm"
-            onChange={(e) =>
-              setAnswers({
-                ...answers,
-                [id]: { ...answers[id], upload: e.target.files[0] },
-              })
-            }
-            disabled={isDisabled}
-          />
+          <div>
+            {currentQuestion.upload && (
+              <img
+                src={`${ImageURL.replace(/\/$/, "")}/${currentQuestion.upload.replace(
+                  /^\//,
+                  ""
+                )}`}
+                alt="Question Upload"
+                style={{ width: "100px", cursor: "pointer" }}
+                onClick={() => handleImageClick(currentQuestion.upload)}
+              />
+            )}
+            <input
+              type="file"
+              className="form-control form-control-sm mt-2"
+              onChange={(e) =>
+                setAnswers({
+                  ...answers,
+                  [id]: { ...answers[id], upload: e.target.files[0] },
+                })
+              }
+              disabled={isDisabled}
+            />
+            {currentQuestion.hint && (
+              <div className="text-muted mt-2">Hint: {currentQuestion.hint}</div>
+            )}
+          </div>
         );
 
       default:
@@ -387,6 +433,26 @@ const DoAssessment = () => {
           <div className="col-md-2 col-12"></div>
         </div>
       </div>
+      <Modal
+        show={showModal}
+        onHide={handleCloseModal}
+        centered
+        size="md"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Upload Image</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <img
+            src={`${ImageURL.replace(/\/$/, "")}/${selectedImage.replace(
+              /^\//,
+              ""
+            )}`}
+            alt="Full Size"
+            style={{ width: "100%" }}
+          />
+        </Modal.Body>
+      </Modal>
     </section>
   );
 };

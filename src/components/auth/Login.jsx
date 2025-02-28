@@ -69,6 +69,7 @@ const Login = ({ loginAsAdmin, loginAsSuperAdmin }) => {
           localStorage.setItem("schoolCMS_email", data.data.user.email);
           localStorage.setItem("schoolCMS_role", data.data.user.role_id);
           localStorage.setItem("schoolCMS_mobile", data.data.user.mobile);
+          localStorage.setItem("schoolCMS_access", data.data.user.role_access);
 
           const roleId = data.data.user.role_id;
           const permissionsResponse = await api.get(`role_permission/${roleId}`);
