@@ -76,6 +76,10 @@ function Employee() {
         header: "Email",
       },
       {
+        accessorKey: "mobile",
+        header: "Mobile",
+      },
+      {
         accessorKey: "created_by.name",
         header: "Created By",
         enableSorting: true,

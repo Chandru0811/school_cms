@@ -16,10 +16,12 @@ import SubjectEdit from "./SubjectEdit";
 import SubjectView from "./SubjectView";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
+import AddTopic from "../../admin/Subject/AddTopic";
 
 function Subject() {
   const [menuAnchor, setMenuAnchor] = useState(null);
   const [showEdit, setShowEdit] = useState(false);
+  const [showAddTopic, setShowAddTopic] = useState(false);
   const [showView, setShowView] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [data, setData] = useState([]);
@@ -69,7 +71,7 @@ function Subject() {
         accessorKey: "created_by.name",
         header: "Created By",
         enableSorting: true,
-        enableHiding: false,        
+        enableHiding: false,
         Cell: ({ cell }) => cell.getValue() || " ",
       },
       {
@@ -87,7 +89,7 @@ function Subject() {
         header: "Updated By",
         enableSorting: true,
         enableHiding: false,
-          Cell: ({ cell }) => cell.getValue() || " ",
+        Cell: ({ cell }) => cell.getValue() || " ",
       },
     ],
     []
@@ -201,7 +203,10 @@ function Subject() {
                 enableFullScreenToggle={false}
                 initialState={{
                   columnVisibility: {
-                    id:!(storedScreens?.data?.[4]?.can_edit === 0 && storedScreens?.data?.[4]?.can_delete === 0),
+                    id: !(
+                      storedScreens?.data?.[4]?.can_edit === 0 &&
+                      storedScreens?.data?.[4]?.can_delete === 0
+                    ),
                     working_hrs: false,
                     citizenship: false,
                     nationality: false,
@@ -211,16 +216,17 @@ function Subject() {
                     updated_at: false,
                   },
                 }}
-                muiTableBodyRowProps={({ row }) => 
-                  storedScreens?.data[4]?.can_view === 1 ? {
-
-                    style: { cursor: "pointer" },
-                    onClick: () => {
-                      setSelectedId(row.original.id);
-                      setShowView(true);
-                    },
-                  }
-                :{}}
+                muiTableBodyRowProps={({ row }) =>
+                  storedScreens?.data[4]?.can_view === 1
+                    ? {
+                        style: { cursor: "pointer" },
+                        onClick: () => {
+                          setSelectedId(row.original.id);
+                          setShowView(true);
+                        },
+                      }
+                    : {}
+                }
               />
             </ThemeProvider>
             <Menu
@@ -229,37 +235,53 @@ function Subject() {
               open={Boolean(menuAnchor)}
               onClose={handleMenuClose}
             >
-              
-            {storedScreens?.data[4]?.can_edit === 1 && (
+              {storedScreens?.data[4]?.can_edit === 1 && (
+                <MenuItem
+                  onClick={() => {
+                    setShowEdit(true);
+                    handleMenuClose();
+                  }}
+                >
+                  Edit
+                </MenuItem>
+              )}
+              {storedScreens?.data[4]?.can_delete === 1 && (
+                <MenuItem>
+                  <Delete
+                    path={`subject/delete/${selectedId}`}
+                    onDeleteSuccess={getData}
+                    onOpen={handleMenuClose}
+                  />
+                </MenuItem>
+              )}
+
               <MenuItem
                 onClick={() => {
-                  setShowEdit(true);
+                  setShowAddTopic(true);
                   handleMenuClose();
                 }}
               >
-                Edit
+                Add Topic
               </MenuItem>
-            )}
-              {storedScreens?.data[4]?.can_delete === 1 && (
-              <MenuItem>
-                <Delete
-                  path={`subject/delete/${selectedId}`}
-                  onDeleteSuccess={getData}
-                  onOpen={handleMenuClose}
-                />
-              </MenuItem>)}
             </Menu>
-              <SubjectEdit
-                show={showEdit}
-                setShow={setShowEdit}
-                id={selectedId}
-                onSuccess={getData}
-              />
-              <SubjectView
-                show={showView}
-                setShow={setShowView}
-                id={selectedId}
-              />
+            <SubjectEdit
+              show={showEdit}
+              setShow={setShowEdit}
+              id={selectedId}
+              onSuccess={getData}
+            />
+            <SubjectView
+              show={showView}
+              setShow={setShowView}
+              id={selectedId}
+            />
+
+            <AddTopic
+              show={showAddTopic}
+              setShow={setShowAddTopic}
+              id={selectedId}
+              onSuccess={getData}
+            />
           </>
         )}
       </div>

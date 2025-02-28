@@ -269,24 +269,6 @@ function EmployeeAdd() {
               </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
-                  Employee Mobile<span className="text-danger">*</span>
-                </label>
-                <input
-                  type="text"
-                  onKeyDown={(e) => e.stopPropagation()}
-                  className={`form-control form-control-sm ${
-                    formik.touched.mobile && formik.errors.mobile
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  {...formik.getFieldProps("mobile")}
-                />
-                {formik.touched.mobile && formik.errors.mobile && (
-                  <div className="invalid-feedback">{formik.errors.mobile}</div>
-                )}
-              </div>
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
                   Password<span className="text-danger">*</span>
                 </label>
                 <div className="input-group">
@@ -347,6 +329,25 @@ function EmployeeAdd() {
                       {formik.errors.password_confirmation}
                     </div>
                   )}
+              </div>
+
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Employee Mobile<span className="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  onKeyDown={(e) => e.stopPropagation()}
+                  className={`form-control form-control-sm ${
+                    formik.touched.mobile && formik.errors.mobile
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("mobile")}
+                />
+                {formik.touched.mobile && formik.errors.mobile && (
+                  <div className="invalid-feedback">{formik.errors.mobile}</div>
+                )}
               </div>
             </div>
           </div>

@@ -14,6 +14,7 @@ function SchoolAdd() {
 
   const validationSchema = Yup.object({
     school_name: Yup.string().max(255, "*School Name must not exceed 255 characters").required("*School Name is required"),
+    center_name: Yup.string().max(255, "*Center Name must not exceed 255 characters").required("*Center Name is required"),
     location: Yup.string()
       .max(255, "*Location must be at most 255 characters")
       .required("*School Location is required"),
@@ -38,6 +39,7 @@ function SchoolAdd() {
   const formik = useFormik({
     initialValues: {
       school_name: "",
+      center_name: "",
       location: "",
       admin_name: "",
       email: "",
@@ -163,6 +165,25 @@ function SchoolAdd() {
                 {formik.touched.school_name && formik.errors.school_name && (
                   <div className="invalid-feedback">
                     {formik.errors.school_name}
+                  </div>
+                )}
+              </div>
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Center Name<span className="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  className={`form-control ${
+                    formik.touched.center_name && formik.errors.center_name
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("center_name")}
+                />
+                {formik.touched.center_name && formik.errors.center_name && (
+                  <div className="invalid-feedback">
+                    {formik.errors.center_name}
                   </div>
                 )}
               </div>

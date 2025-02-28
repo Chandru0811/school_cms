@@ -17,26 +17,34 @@ function StudentEdit() {
   const validationSchema = yup.object().shape({
     center_id: yup.string().required("*Select a center id"),
     role_id: yup.string().required("*Select a role"),
-    first_name: yup.string().required("*Student first name is required"),
-    last_name: yup.string().required("*Student last name is required"),
+    first_name: yup.string().max(255, "*First Name must not exceed 255 characters").required("*Student first name is required"),
     student_email: yup
       .string()
-      .email("*Email is Invlaid")
+      .email("*Email is Invalid")
       .required("*Student email is required"),
-    student_mobile: yup
-      .string()
+    student_mobile: yup.string()
       .matches(/^(?:\d{8}|\d{10})$/, "*Mobile number must be either 8 or 10 digits")
-      .required("Student Mobile number is required!"),
+      .required("*Student Mobile number is required!"),
     parent_name: yup.string().required("*Parent name is required"),
-    parent_email: yup.string().required("*Parent email is required"),
+    parent_email: yup
+      .string()
+      .email("*Email is Invalid")
+      .required("*Parent email is required")
+      .test("unique-email", "Student and Parent email must be different", function (value) {
+        return value !== this.parent.student_email;
+      }),
     parent_mobile: yup
       .string()
       .matches(/^(?:\d{8}|\d{10})$/, "*Mobile number must be either 8 or 10 digits")
-      .required("Parent Mobile number is required!"),
+      .required("Parent Mobile number is required!")
+      .test("unique-mobile", "Student and Parent mobile number must be different", function (value) {
+        return value !== this.parent.student_mobile;
+      }),
     grade_id: yup.string().required("*Grader list is required"),
-    roll_no: yup.string().required("*Roll number is required"),
-    admission_no: yup.string().required("*Admission number is required"),
+    roll_no: yup.string().max(255, "*Roll No must not exceed 255 characters").required("*Roll number is required"),
+    admission_no: yup.string().max(255, "*Admission No must not exceed 255 characters").required("*Admission number is required"),
     date_of_birth: yup.string().required("*Date of Birth is required"),
+    admission_date: yup.string().max(255, "*Admission Date must not exceed 255 characters").required("*Admission date is required"),
   });
 
   const formik = useFormik({
@@ -334,11 +342,7 @@ function StudentEdit() {
                 <input
                   type="text"
                   onKeyDown={(e) => e.stopPropagation()}
-                  className={`form-control form-control-sm ${
-                    formik.touched.middle_name && formik.errors.middle_name
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className="form-control form-control-sm"
                   {...formik.getFieldProps("middle_name")}
                 />
               </div>
@@ -347,11 +351,7 @@ function StudentEdit() {
                 <input
                   type="text"
                   onKeyDown={(e) => e.stopPropagation()}
-                  className={`form-control form-control-sm ${
-                    formik.touched.last_name && formik.errors.last_name
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className="form-control form-control-sm"
                   {...formik.getFieldProps("last_name")}
                 />
               </div>
