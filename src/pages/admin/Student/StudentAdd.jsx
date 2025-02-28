@@ -17,8 +17,6 @@ function StudentAdd() {
     center_id: yup.string().required("*Select a center id"),
     role_id: yup.string().required("*Select a role"),
     first_name: yup.string().max(255, "*First Name must not exceed 255 characters").required("*Student first name is required"),
-    last_name: yup.string().max(255, "*Last Name must not exceed 255 characters").required("*Student last name is required"),
-    middle_name: yup.string().max(255, "*Middle Name must not exceed 255 characters"),
     student_email: yup
       .string()
       .email("*Email is Invalid")
@@ -321,36 +319,18 @@ function StudentAdd() {
                 <input
                   type="text"
                   onKeyDown={(e) => e.stopPropagation()}
-                  className={`form-control form-control-sm ${formik.touched.middle_name && formik.errors.middle_name
-                    ? "is-invalid"
-                    : ""
-                    }`}
+                  className="form-control form-control-sm"
                   {...formik.getFieldProps("middle_name")}
                 />
-                {/* {formik.touched.student_middle_name &&
-              formik.errors.student_middle_name && (
-                <div className="invalid-feedback">
-                  {formik.errors.student_middle_name}
-                </div>
-              )} */}
               </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">Student Last Name</label>
                 <input
                   type="text"
                   onKeyDown={(e) => e.stopPropagation()}
-                  className={`form-control form-control-sm ${formik.touched.last_name && formik.errors.last_name
-                    ? "is-invalid"
-                    : ""
-                    }`}
+                  className="form-control form-control-sm"
                   {...formik.getFieldProps("last_name")}
                 />
-                {/* {formik.touched.student_last_name &&
-              formik.errors.student_last_name && (
-                <div className="invalid-feedback">
-                  {formik.errors.student_last_name}
-                </div>
-              )} */}
               </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">

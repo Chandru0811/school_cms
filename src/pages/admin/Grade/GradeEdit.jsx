@@ -45,16 +45,16 @@ function GradeEdit({ show, setShow, id, onSuccess }) {
       setLoadIndicator(true);
       try {
         const response = await api.put(`grade/update/${id}`, values);
-
         if (response.status === 200) {
           toast.success(response.data.message);
           onSuccess();
           handleClose();
-          formik.resetForm();
           navigate("/grade");
         }
       } catch (e) {
-        toast.error("Error Fetching Data ", e?.response?.data?.error);
+        toast.error(
+          `Error Fetching Data: ${e?.response?.data?.error || e.message}`
+        );
       } finally {
         setLoadIndicator(false);
       }
