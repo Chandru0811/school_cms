@@ -205,58 +205,77 @@ function ChallengesEdit() {
         value: center.id,
         label: center.name,
       }));
-      console.log("center", formattedCenters)
       setCenterList(formattedCenters);
     } catch (e) {
-      toast.error("Error Fetching Data ", e?.response?.data?.error);
-    }
-  };
-
-  const getSubjectList = async () => {
-    try {
-      const response = await api.get("subjects/list");
-      console.log(response);
-      const formattedSubjects = response.data?.data?.map((subject) => ({
-        value: subject.id,
-        label: subject.name,
-      }));
-
-      setSubjects(formattedSubjects);
-    } catch (e) {
-      console.error("Error Fetching Data", e);
-      toast.error("Error Fetching Data", e?.response?.data?.error || e.message);
+      toast.error(`Error Fetching Data: ${e?.response?.data?.error || e.message}`);
     }
   };
 
   const getGradeList = async () => {
     try {
-      const response = await api.get("grades/list");
-      console.log(response);
+      if (selectedCenter.length === 0) {
+        setGrades([]);
+        formik.setFieldValue("grade_id", "");
+        return;
+      }
+
+      const centerIds = selectedCenter.map(center => `center_id[]=${center.value}`).join("&");
+      const response = await api.get(`filter/grades?${centerIds}`);
+
       const formattedGrades = response.data?.data?.map((grade) => ({
         value: grade.id,
         label: grade.name,
       }));
 
       setGrades(formattedGrades);
+
+      // Reset grade & subject if current values are no longer valid
+      if (!formattedGrades.some(g => g.value === formik.values.grade_id)) {
+        formik.setFieldValue("grade_id", "");
+        formik.setFieldValue("subject_id", "");
+      }
     } catch (e) {
-      console.error("Error Fetching Data", e);
-      toast.error("Error Fetching Data", e?.response?.data?.error || e.message);
+      toast.error(`Error Fetching Grades: ${e?.response?.data?.error || e.message}`);
     }
   };
-
-  const topicList = async () => {
+  const getSubjectList = async () => {
     try {
-      const response = await api.get("topics/list");
-      console.log(response);
-      const formattedTopics = response.data?.data?.map((topics) => ({
-        value: topics.id,
-        label: topics.name,
+      if (!formik.values.grade_id) {
+        setSubjects([]);
+        formik.setFieldValue("subject_id", "");
+        return;
+      }
+      const response = await api.get(`filter/subjects?grade_id[]=${formik.values.grade_id}`);
+      const formattedSubjects = response.data?.data?.map((subject) => ({
+        value: subject.id,
+        label: subject.name,
       }));
-
-      setTopics(formattedTopics);
+      setSubjects(formattedSubjects);
+      if (!formattedSubjects.some(s => s.value === formik.values.subject_id)) {
+        formik.setFieldValue("subject_id", "");
+      }
     } catch (e) {
-      console.error("Error Fetching Data", e);
-      toast.error("Error Fetching Data", e?.response?.data?.error || e.message);
+      toast.error(`Error Fetching Subjects: ${e?.response?.data?.error || e.message}`);
+    }
+  };
+    const getTopicsList = async () => {
+    try {
+      if (!formik.values.subject_id) {
+        setTopics([]);
+        formik.setFieldValue("topic_id", "");
+        return;
+      }
+      const response = await api.get(`filter/topics?subject_id[]=${formik.values.subject_id}`);
+      const formattedTopics = response.data?.data?.map((topic) => ({
+        value: topic.id,
+        label: topic.name,
+      }));
+      setTopics(formattedTopics);
+      if (!formattedTopics.some(s => s.value === formik.values.topic_id)) {
+        formik.setFieldValue("topic_id", "");
+      }
+    } catch (e) {
+      toast.error(`Error Fetching Topics: ${e?.response?.data?.error || e.message}`);
     }
   };
 
@@ -284,10 +303,37 @@ function ChallengesEdit() {
   useEffect(() => {
     getData();
     getCenterList();
-    getSubjectList();
-    getGradeList();
-    topicList();
-  }, [id]);
+  }, []);
+
+  
+  useEffect(() => {
+    if (selectedCenter.length > 0) {
+      getGradeList();
+    } else {
+      setGrades([]);
+      formik.setFieldValue("grade_id", "");
+      formik.setFieldValue("subject_id", "");
+      formik.setFieldValue("topic_id", "");
+    }
+  }, [selectedCenter]);
+
+  useEffect(() => {
+    if (formik.values.grade_id) {
+      getSubjectList();
+    } else {
+      setSubjects([]);
+      formik.setFieldValue("subject_id", "");
+    }
+  }, [formik.values.grade_id]);
+
+  useEffect(() => {
+    if (formik.values.subject_id) {
+      getTopicsList();
+    } else {
+      setTopics([]);
+      formik.setFieldValue("topic_id", "");
+    }
+  }, [formik.values.subject_id]);
 
   return (
     <div className="container p-3">
@@ -359,7 +405,7 @@ function ChallengesEdit() {
         ) : (
           <div className="container-fluid px-4">
             <div className="row">
-              <div className="col-md-6 col-12 mb-4">
+            <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
                   Centre Name<span className="text-danger">*</span>
                 </label>
@@ -372,11 +418,15 @@ function ChallengesEdit() {
                       "center_id",
                       selected.map((option) => option.value)
                     );
+                    if (selected.length === 0) {
+                      setGrades([]);
+                      setSubjects([]);
+                      formik.setFieldValue("grade_id", "");
+                      formik.setFieldValue("subject_id", "");
+                    }
                   }}
                   labelledBy="Select Center"
-                  className={`form-multi-select form-multi-select-sm ${formik.touched.center_id && formik.errors.center_id
-                    ? "is-invalid"
-                    : ""
+                  className={`form-multi-select form-multi-select-sm ${formik.touched.center_id && formik.errors.center_id ? "is-invalid" : ""
                     }`}
                 />
                 {formik.touched.center_id && formik.errors.center_id && (
@@ -394,9 +444,12 @@ function ChallengesEdit() {
                     ? "is-invalid"
                     : ""
                     }`}
-                  {...formik.getFieldProps("grade_id")}
+                  value={formik.values.grade_id}
+                  onChange={(e) =>
+                    formik.setFieldValue("grade_id", e.target.value)
+                  }
                 >
-                  <option value=""></option>
+                  <option value="">Select grade</option>
                   {grades.map((grade) => (
                     <option key={grade.value} value={grade.value}>
                       {grade.label}
@@ -418,9 +471,12 @@ function ChallengesEdit() {
                     ? "is-invalid"
                     : ""
                     }`}
-                  {...formik.getFieldProps("subject_id")}
+                  value={formik.values.subject_id}
+                  onChange={(e) =>
+                    formik.setFieldValue("subject_id", e.target.value)
+                  }
                 >
-                  <option value=""></option>
+                  <option value="">Select Subject</option>
                   {subjects.map((subject) => (
                     <option key={subject.value} value={subject.value}>
                       {subject.label}
@@ -442,7 +498,10 @@ function ChallengesEdit() {
                     ? "is-invalid"
                     : ""
                     }`}
-                  {...formik.getFieldProps("topic_id")}
+                  value={formik.values.topic_id}
+                  onChange={(e) =>
+                    formik.setFieldValue("topic_id", e.target.value)
+                  }
                 >
                   <option value="">Select Topic</option>
                   {topics.map((topic) => (

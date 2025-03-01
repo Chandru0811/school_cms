@@ -31,7 +31,7 @@ function RewardView() {
       try {
         const response = await api.post(`reward/status/${id}`);
         if (response.status === 200) {
-          toast.success("Status updated successfully!");
+          toast.success(response.data.message); 
           setData((prevData) => ({
             ...prevData,
             active: prevData.active === 1 ? 0 : 1,

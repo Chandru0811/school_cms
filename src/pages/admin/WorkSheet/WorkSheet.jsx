@@ -70,10 +70,10 @@ function Worksheet() {
       {
         accessorKey: "grade_names", header: "Grade", Cell: ({ cell }) => cell.getValue()?.join(", ") || "",
       },
+      { accessorKey: "subject_names", header: "Subject" },
       {
         accessorKey: "topic_names", header: "Topic", Cell: ({ cell }) => cell.getValue()?.join(", ") || "",
       },
-      { accessorKey: "type", header: "Subject" },
       { accessorKey: "difficult_level", header: "Difficult Level" },
       { accessorKey: "reward", header: "Reward" },
       {

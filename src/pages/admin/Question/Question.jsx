@@ -53,10 +53,19 @@ function Question() {
           </IconButton>
         ),
       },
-      { accessorKey: "topic.name", header: "Topic" },
-      { accessorKey: "centers", header: "Centre Name" ,Cell: ({ cell }) => cell.getValue()?.join(", ") || "",
-    },
+      { accessorKey: "question", header: "Question" },
+      { 
+        accessorKey: "ques_type", 
+        header: "Question Type",
+        Cell: ({ cell }) => JSON.parse(cell.getValue() || "[]").join(", ") 
+      },
       { accessorKey: "difficult_level", header: "Difficult Level" },
+      { accessorKey: "topic.name", header: "Topic" },
+      { 
+        accessorKey: "centers", 
+        header: "Centre Name",
+        Cell: ({ cell }) => cell.getValue()?.join(", ") || ""
+      },      
       {
         accessorKey: "created_by.name",
         header: "Created By",

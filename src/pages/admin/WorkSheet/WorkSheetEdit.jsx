@@ -49,16 +49,6 @@ function WorkSheetEdit() {
       .of(yup.string().required("*Select at least one subject"))
       .min(1, "*Select at least one subject")
       .required("*Select a subject name"),
-    subject_id: yup
-      .array()
-      .of(yup.string().required("*Select at least one subject"))
-      .min(1, "*Select at least one subject")
-      .required("*Select a subject name"),
-    topic_id: yup
-      .array()
-      .of(yup.string().required("*Select at least one subject"))
-      .min(1, "*Select at least one subject")
-      .required("*Select a subject name"),
     ques_type: yup
       .array()
       .of(yup.string().required("*Select at least one question type"))
@@ -657,6 +647,18 @@ function WorkSheetEdit() {
                         <input
                           type="radio"
                           name="type"
+                          value="question"
+                          className="form-check-input"
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          checked={formik.values.type === "question"}
+                        />
+                        <label className="form-check-label">Q/A</label>
+                      </div>
+                      <div className="form-check">
+                        <input
+                          type="radio"
+                          name="type"
                           value="challenge"
                           className={`form-check-input ${
                             formik.touched.type && formik.errors.type
@@ -668,19 +670,6 @@ function WorkSheetEdit() {
                           checked={formik.values.type === "challenge"}
                         />
                         <label className="form-check-label">Challenge</label>
-                      </div>
-
-                      <div className="form-check">
-                        <input
-                          type="radio"
-                          name="type"
-                          value="question"
-                          className="form-check-input"
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                          checked={formik.values.type === "question"}
-                        />
-                        <label className="form-check-label">Q/A</label>
                       </div>
                     </div>
                   </div>
@@ -766,7 +755,7 @@ function WorkSheetEdit() {
                   </div>
                   <div className="col-md-6 col-12 mb-4">
                     <label className="form-label">
-                      Subject<span className="text-danger">*</span>
+                      Subject
                     </label>
                     <MultiSelect
                       options={subjects}
@@ -779,21 +768,12 @@ function WorkSheetEdit() {
                         );
                       }}
                       labelledBy="Select Service"
-                      className={`form-multi-select form-multi-select-sm ${
-                        formik.touched.subject_id && formik.errors.subject_id
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                      className="form-multi-select form-multi-select-sm"
                     />
-                    {formik.touched.subject_id && formik.errors.subject_id && (
-                      <div className="invalid-feedback">
-                        {formik.errors.subject_id}
-                      </div>
-                    )}
                   </div>
                   <div className="col-md-6 col-12 mb-4">
                     <label className="form-label">
-                      Topic<span className="text-danger">*</span>
+                      Topic
                     </label>
                     <MultiSelect
                       options={topics}
@@ -806,17 +786,8 @@ function WorkSheetEdit() {
                         );
                       }}
                       labelledBy="Select Topic"
-                      className={`form-multi-select form-multi-select-sm ${
-                        formik.touched.topic_id && formik.errors.topic_id
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                      className="form-multi-select form-multi-select-sm"
                     />
-                    {formik.touched.topic_id && formik.errors.topic_id && (
-                      <div className="invalid-feedback">
-                        {formik.errors.topic_id}
-                      </div>
-                    )}
                   </div>
                   <div className="col-md-6 col-12 mb-4">
                     {formik.values.type === "challenge" ? (
@@ -865,6 +836,7 @@ function WorkSheetEdit() {
                       {...formik.getFieldProps("difficult_level")}
                     >
                       <option value=""></option>
+                      <option value="All">All</option>
                       <option value="Easy">Easy</option>
                       <option value="Medium">Medium</option>
                       <option value="Hard">Hard</option>
