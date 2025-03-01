@@ -26,6 +26,8 @@ function AdminHeader({ handleLogout }) {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
 
+  const schoolCMS_role = localStorage.getItem("schoolCMS_role");
+
   const handleChangePasswordClick = () => {
     setIsChangingPassword(true);
     formik.resetForm();
@@ -179,16 +181,19 @@ function AdminHeader({ handleLogout }) {
                       onClick={handleShow} // Open modal when clicked
                       style={{ cursor: "pointer" }}
                     >
-                        <GoPencil className="me-2" />
-                        <span>Profile</span>
+                      <GoPencil className="me-2" />
+                      <span>Profile</span>
                     </Link>
-                    <Link
-                      to="/settings"
-                      className="dropdown-item d-flex align-items-center"
-                    >
-                      <IoSettingsOutline className="me-2" />
-                      <span>Settings</span>
-                    </Link>
+                    {schoolCMS_role == 2 && (
+                      <Link
+                        to="/settings"
+                        className="dropdown-item d-flex align-items-center"
+                      >
+                        <IoSettingsOutline className="me-2" />
+                        <span>Settings</span>
+                      </Link>
+                    )}
+
                     <Link
                       className="dropdown-item d-flex align-items-center"
                       onClick={handelLogOutClick}
@@ -299,9 +304,7 @@ function AdminHeader({ handleLogout }) {
 
                         <div className="row pb-2 justify-content-center">
                           <div className="col-6 text-start pe-2">
-                            <p className="text-muted text-sm">
-                              School Name
-                            </p>
+                            <p className="text-muted text-sm">School Name</p>
                           </div>
                           <div className="col-6 text-start ps-2">
                             <p className="text-muted text-sm">

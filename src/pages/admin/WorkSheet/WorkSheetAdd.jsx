@@ -13,7 +13,7 @@ import toast from "react-hot-toast";
 import api from "../../../config/URL";
 
 function WorkSheetAdd() {
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   const [selectedCenter, setSelectedCenter] = useState([]);
   const [selectedSubjects, setSelectedSubjects] = useState([]);
   const [selectedGrades, setSelectedGrades] = useState([]);
@@ -46,16 +46,6 @@ function WorkSheetAdd() {
       .of(yup.string().required("*Select at least one subject"))
       .min(1, "*Select at least one subject")
       .required("*Select a subject name"),
-    subject_id: yup
-      .array()
-      .of(yup.string().required("*Select at least one subject"))
-      .min(1, "*Select at least one subject")
-      .required("*Select a subject name"),
-    topic_id: yup
-      .array()
-      .of(yup.string().required("*Select at least one subject"))
-      .min(1, "*Select at least one subject")
-      .required("*Select a subject name"),
     ques_type: yup
       .array()
       .of(yup.string().required("*Select at least one question type"))
@@ -81,17 +71,17 @@ function WorkSheetAdd() {
       .integer("*Reward must be an integer"),
     difficult_level: yup.string().required("*Select a difficult level"),
     ques_id_with_type: yup
-    .array()
-    .min(1, "*Please select a question")
-    .of(
-      yup.object().shape({
-        id: yup.number().required(),
-        questype: yup
-          .string()
-          // .oneOf(questionOption, "*Invalid question type")
-          .required("*Please select a question type"),
-      })
-    ),
+      .array()
+      .min(1, "*Please select a question")
+      .of(
+        yup.object().shape({
+          id: yup.number().required(),
+          questype: yup
+            .string()
+            // .oneOf(questionOption, "*Invalid question type")
+            .required("*Please select a question type"),
+        })
+      ),
   });
 
   const formik = useFormik({
@@ -128,7 +118,7 @@ function WorkSheetAdd() {
       } catch (error) {
         if (error.response?.data?.errors) {
           const errors = error.response.data.errors;
-      
+
           // Loop through errors and show each one in a toast
           Object.keys(errors).forEach((key) => {
             errors[key].forEach((errMsg) => {
@@ -140,7 +130,7 @@ function WorkSheetAdd() {
         }
       } finally {
         setLoadIndicator(false);
-      }        
+      }
     },
     validateOnChange: false,
     validateOnBlur: true,
@@ -195,24 +185,23 @@ function WorkSheetAdd() {
           );
           return (
             <div>
-              <div
-                className="d-flex gap-3"
-              >
+              <div className="d-flex gap-3">
                 {quesTypes.map((t, i) => (
-                  <div className="form-check"  key={`${row.id}-${i}`}> 
-                  <label className="form-check-label">
-                   <input
-                      type="radio"
-                      // name={`ques_id_with_type_${row.id}`}
-                      value={t}
-                      className="form-check-input position-relative" style={{top:"-2px"}}
-                      checked={selectedRow?.questype === t || ""}
-                      onChange={(e) =>
-                        handleRadioChange(row.original.id, e.target.value)
-                      }
-                    />
-                    {cName(t)}
-                  </label>
+                  <div className="form-check" key={`${row.id}-${i}`}>
+                    <label className="form-check-label">
+                      <input
+                        type="radio"
+                        // name={`ques_id_with_type_${row.id}`}
+                        value={t}
+                        className="form-check-input position-relative"
+                        style={{ top: "-2px" }}
+                        checked={selectedRow?.questype === t || ""}
+                        onChange={(e) =>
+                          handleRadioChange(row.original.id, e.target.value)
+                        }
+                      />
+                      {cName(t)}
+                    </label>
                   </div>
                 ))}
               </div>
@@ -537,6 +526,18 @@ function WorkSheetAdd() {
                     <input
                       type="radio"
                       name="type"
+                      value="question"
+                      className="form-check-input"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      checked={formik.values.type === "question"}
+                    />
+                    <label className="form-check-label">Q/A</label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      type="radio"
+                      name="type"
                       value="challenge"
                       className={`form-check-input ${
                         formik.touched.type && formik.errors.type
@@ -548,19 +549,6 @@ function WorkSheetAdd() {
                       checked={formik.values.type === "challenge"}
                     />
                     <label className="form-check-label">Challenge</label>
-                  </div>
-
-                  <div className="form-check">
-                    <input
-                      type="radio"
-                      name="type"
-                      value="question"
-                      className="form-check-input"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      checked={formik.values.type === "question"}
-                    />
-                    <label className="form-check-label">Q/A</label>
                   </div>
                 </div>
               </div>
@@ -644,7 +632,7 @@ function WorkSheetAdd() {
               </div>
               <div className="col-md-6 col-12 mb-4">
                 <label className="form-label">
-                  Subject<span className="text-danger">*</span>
+                  Subject
                 </label>
                 <MultiSelect
                   options={subjects}
@@ -657,21 +645,12 @@ function WorkSheetAdd() {
                     );
                   }}
                   labelledBy="Select Service"
-                  className={`form-multi-select form-multi-select-sm ${
-                    formik.touched.subject_id && formik.errors.subject_id
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className="form-multi-select form-multi-select-sm"
                 />
-                {formik.touched.subject_id && formik.errors.subject_id && (
-                  <div className="invalid-feedback">
-                    {formik.errors.subject_id}
-                  </div>
-                )}
               </div>
               <div className="col-md-6 col-12 mb-4">
                 <label className="form-label">
-                  Topic<span className="text-danger">*</span>
+                  Topic
                 </label>
                 <MultiSelect
                   options={topics}
@@ -684,17 +663,8 @@ function WorkSheetAdd() {
                     );
                   }}
                   labelledBy="Select Topic"
-                  className={`form-multi-select form-multi-select-sm ${
-                    formik.touched.topic_id && formik.errors.topic_id
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className="form-multi-select form-multi-select-sm"
                 />
-                {formik.touched.topic_id && formik.errors.topic_id && (
-                  <div className="invalid-feedback">
-                    {formik.errors.topic_id}
-                  </div>
-                )}
               </div>
               <div className="col-md-6 col-12 mb-4">
                 {formik.values.type === "challenge" ? (
@@ -743,6 +713,7 @@ function WorkSheetAdd() {
                   {...formik.getFieldProps("difficult_level")}
                 >
                   <option value=""></option>
+                  <option value="All">All</option>
                   <option value="Easy">Easy</option>
                   <option value="Medium">Medium</option>
                   <option value="Hard">Hard</option>
