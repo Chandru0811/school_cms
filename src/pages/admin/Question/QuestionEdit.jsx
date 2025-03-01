@@ -83,7 +83,7 @@ function QuestionEdit() {
       formData.append("topic_id", values.topic_id);
       formData.append("difficult_level", values.difficult_level);
       formData.append("question", values.question);
-      formData.append("hint", values.hint);
+      formData.append("hint", values.hint ? values.hint : "");
 
       let multichoiceAdded = false;
 

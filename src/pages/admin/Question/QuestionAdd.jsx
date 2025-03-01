@@ -222,28 +222,12 @@ function QuestionAdd() {
         value: topic.id,
         label: topic.name,
       }));
-      setSubjects(formattedTopics);
+      setTopics(formattedTopics);
       if (!formattedTopics.some(s => s.value === formik.values.topic_id)) {
         formik.setFieldValue("topic_id", "");
       }
     } catch (e) {
       toast.error(`Error Fetching Topics: ${e?.response?.data?.error || e.message}`);
-    }
-  };
-
-  const topicList = async () => {
-    try {
-      const response = await api.get("topics/list");
-      console.log(response);
-      const formattedTopics = response.data?.data?.map((topics) => ({
-        value: topics.id,
-        label: topics.name,
-      }));
-
-      setTopics(formattedTopics);
-    } catch (e) {
-      console.error("Error Fetching Data", e);
-      toast.error("Error Fetching Data", e?.response?.data?.error || e.message);
     }
   };
 
@@ -270,9 +254,6 @@ function QuestionAdd() {
 
   useEffect(() => {
     getCenterList();
-    // getSubjectList();
-    // getGradeList();
-    topicList();
   }, []);
 
   useEffect(() => {
@@ -285,7 +266,7 @@ function QuestionAdd() {
 
   useEffect(() => {
     getTopicsList();
-  }, [formik.values.grade_id]);
+  }, [formik.values.subject_id]);
 
   return (
     <div className="container p-3">
