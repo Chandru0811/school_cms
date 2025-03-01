@@ -47,6 +47,25 @@ function WorkSheetView() {
     },
   });
 
+  const columnsstudent = useMemo(
+    () => [
+      {
+        accessorKey: "sno",
+        header: "S.NO",
+        size: 40,
+        Cell: ({ row }) => row.index + 1,
+      },
+      {
+        accessorKey: "student_names",
+        header: "Student Name",
+      },
+      {
+        accessorKey: "grade_name",
+        header: "Grade",
+      },
+    ],
+    [data]
+  );
   const columns = useMemo(
     () => [
       {
@@ -56,8 +75,11 @@ function WorkSheetView() {
         size: 40,
       },
       {
-        accessorKey: "question",
-        header: "Question",
+        accessorKey: "title", // Default key (can be either "title" or "question")
+        header: "Type",
+        Cell: ({ row }) => {
+          return row.original.title || row.original.question || "N/A";
+        },
       },
       {
         accessorKey: "questype",
@@ -95,7 +117,7 @@ function WorkSheetView() {
     try {
       const response = await api.post(`worksheet/status/${id}`);
       if (response.status === 200) {
-        toast.success("Status updated successfully!");
+        toast.success(response.data.message);
         setData((prevData) => ({
           ...prevData,
           active: prevData.active === 1 ? 0 : 1,
@@ -156,6 +178,7 @@ function WorkSheetView() {
                 <WorkSheetAsign
                   grade_ids={data.grade_id ? JSON.parse(data.grade_id) : []}
                   assignedId={assigned_id}
+                  onSuccess={getData}
                 />
               </>
             )}
@@ -173,7 +196,7 @@ function WorkSheetView() {
               </>
             )}
             &nbsp;&nbsp;
-            {schoolCMS_access === "Limited Access" ? (
+            {schoolCMS_access === "Limited Access" && data.active === 1 ? (
               <>
                 <Link to={`/doassessment?assignedId=${assigned_id}`}>
                   <button
@@ -181,7 +204,7 @@ function WorkSheetView() {
                     className="btn btn-success btn-sm me-2"
                     style={{ fontWeight: "600 !important" }}
                   >
-                    Do Assessment
+                    Do Worksheet
                   </button>
                 </Link>
               </>
@@ -341,7 +364,7 @@ function WorkSheetView() {
                     </div>
                   </div>
                 </div>
-                <div className="col-md-6 col-12 my-2">
+                <div className="col-md-6 col-12 my-2 mb-5">
                   <div className="row">
                     <div className="col-6">
                       <p className="fw-medium text-sm">Reward</p>
@@ -353,47 +376,20 @@ function WorkSheetView() {
                     </div>
                   </div>
                 </div>
-                {data.student_assigned && data.student_assigned.length > 0 && (
-                  <div className="col-md-12 col-12">
-                    <h5 className="fw-bold">Student Assigned</h5>
-                    <div className="row">
-                      {data.student_assigned.map((student, index) => (
-                        <div key={index}>
-                          <div className="col-md-6 col-12 my-2">
-                            <div className="row">
-                              <div className="col-6">
-                                <p className="fw-medium text-sm">
-                                  Student Name
-                                </p>
-                              </div>
-                              <div className="col-6">
-                                <p className="text-muted text-sm text-break ">
-                                  : {student.student_names.join(", ")}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                          <div className="col-md-6 col-12 my-2">
-                            <div className="row">
-                              <div className="col-6">
-                                <p className="fw-medium text-sm">Grade</p>
-                              </div>
-                              <div className="col-6">
-                                <p className="text-muted text-sm text-break ">
-                                  : {student.grade_name}
-                                </p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+                {schoolCMS_access === "Limited Access" ? (
+                  <></>
+                ) : (
+                  <>
+                    <ThemeProvider theme={theme}>
+                      <MaterialReactTable columns={columnsstudent} data={data.student_assigned || []} />
+                    </ThemeProvider>
+
+                    <ThemeProvider theme={theme}>
+                      <MaterialReactTable columns={columns} data={data.questions} />
+                    </ThemeProvider>
+                  </>
                 )}
               </div>
-              <ThemeProvider theme={theme}>
-                <MaterialReactTable columns={columns} data={data.questions} />
-              </ThemeProvider>
             </div>
           )}
         </>

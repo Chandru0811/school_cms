@@ -208,6 +208,18 @@ function AdminSidebar() {
                 </NavLink>
               </li>
             }
+            {storedScreens?.data[13]?.can_access === 1 &&
+              <li className="nav-item px-3">
+                <NavLink
+                  className="nav-link"
+                  style={{ borderRadius: "5px" }}
+                  to="/subscriptions"
+                >
+                  <IoGiftOutline className="sidebar_icon" size={17} />
+                  Subscription
+                </NavLink>
+              </li>
+            }
             {/* {storedScreens?.data[15]?.can_access === 1 &&
               <li className="nav-item px-3">
                 <NavLink

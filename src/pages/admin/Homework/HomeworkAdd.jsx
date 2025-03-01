@@ -678,6 +678,7 @@ function HomeworkAdd() {
                   {...formik.getFieldProps("difficult_level")}
                 >
                   <option value=""></option>
+                  <option value="All">All</option>
                   <option value="Easy">Easy</option>
                   <option value="Medium">Medium</option>
                   <option value="Hard">Hard</option>

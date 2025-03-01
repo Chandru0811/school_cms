@@ -72,10 +72,10 @@ const HomeDoAssessment = () => {
 
       // Include empty answers for time-up questions
       data.questions.forEach((question) => {
-        if (timeUpQuestions[question.id] && !answers[question.id]) {
+        if (!answers[question.id]) {
           sortedAnswers.push({
             question_id: question.id,
-            answer: { empty: true }, // Indicate that the answer is empty due to time-up
+            answer: { empty: true }, // Indicate that the answer is empty
           });
         }
       });
@@ -93,12 +93,12 @@ const HomeDoAssessment = () => {
         } else if (item.answer.short_answer) {
           formData.append(`answer[${item.question_id}]`, item.answer.short_answer);
         } else if (item.answer.empty) {
-          formData.append(`answer[${item.question_id}]`, "Not attend Question"); // Send empty answer for time-up questions
+          formData.append(`answer[${item.question_id}]`, ""); // Send empty answer for unanswered or time-up questions
         }
       });
 
       try {
-        const response = await api.post("worksheet/assessment", formData, {
+        const response = await api.post("homework/assessment", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -106,7 +106,7 @@ const HomeDoAssessment = () => {
 
         if (response.status === 200) {
           toast.success(response.data.message);
-          navigate(`/worksheet/view/${assignedId}`);
+          navigate(`/homework/view/${assignedId}`);
         }
       } catch (e) {
         let errorMessage = "Error submitting assessment. Please try again.";
@@ -131,7 +131,7 @@ const HomeDoAssessment = () => {
 
   const getData = async () => {
     try {
-      const response = await api.get(`worksheet/assessment/${assignedId}`);
+      const response = await api.get(`homework/assessment/${assignedId}`);
       setData(response.data.data);
       if (response.data.data.questions && response.data.data.questions.length > 0) {
         const firstQuestion = response.data.data.questions[0];

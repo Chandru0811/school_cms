@@ -48,6 +48,25 @@ function HomeworkView() {
     },
   });
 
+  const columnsstudent = useMemo(
+    () => [
+      {
+        accessorKey: "sno",
+        header: "S.NO",
+        size: 40,
+        Cell: ({ row }) => row.index + 1,
+      },
+      {
+        accessorKey: "student_names",
+        header: "Student Name",
+      },
+      {
+        accessorKey: "grade_name",
+        header: "Grade",
+      },
+    ],
+    [data]
+  );
   const columns = useMemo(
     () => [
       {
@@ -96,7 +115,7 @@ function HomeworkView() {
     try {
       const response = await api.post(`homework/status/${id}`);
       if (response.status === 200) {
-        toast.success("Status updated successfully!");
+        toast.success(response.data.message);
         setData((prevData) => ({
           ...prevData,
           active: prevData.active === 1 ? 0 : 1,
@@ -185,15 +204,15 @@ function HomeworkView() {
               </>
             )}
             &nbsp;&nbsp;
-            {schoolCMS_access === "Limited Access" ? (
+            {schoolCMS_access === "Limited Access" && data.active === 1 ? (
               <>
                 <Link to={`/homedoassessment?assignedId=${assigned_id}`}>
-                <button
+                  <button
                     type="button"
                     className="btn btn-success btn-sm me-2"
                     style={{ fontWeight: "600 !important" }}
                   >
-                    Do Assessment
+                    Do Homework
                   </button>
                 </Link>
               </>
@@ -231,7 +250,7 @@ function HomeworkView() {
                     </div>
                     <div className="col-6">
                       <p className="text-muted text-sm">
-                      :{" "}
+                        :{" "}
                         {data.center_names && data.center_names.length > 0
                           ? data.center_names.join(", ")
                           : "N/A"}
@@ -246,7 +265,7 @@ function HomeworkView() {
                     </div>
                     <div className="col-6">
                       <p className="text-muted text-sm">
-                      :{" "}
+                        :{" "}
                         {data.grade_names && data.grade_names.length > 0
                           ? data.grade_names.join(", ")
                           : "N/A"}
@@ -340,46 +359,21 @@ function HomeworkView() {
                     </div>
                   </div>
                 </div>
+                {schoolCMS_access === "Limited Access" ? (
+                  <></>
+                ) : (
+                  <>
+                    <ThemeProvider theme={theme}>
+                      <MaterialReactTable columns={columnsstudent} data={data.student_assigned || []} />
+                    </ThemeProvider>
+
+                    <ThemeProvider theme={theme}>
+                      <MaterialReactTable columns={columns} data={data.questions} />
+                    </ThemeProvider>
+                  </>
+                )}
               </div>
-              {data.student_assigned && data.student_assigned.length > 0 && (
-                <div className="col-md-12 col-12">
-                  <h5 className="fw-bold mb-2">Student Assigned</h5>
-                  <div className="row">
-                    {data.student_assigned.map((student, index) => (
-                      <div key={index}>
-                        <div className="col-md-6 col-12 my-2">
-                          <div className="row">
-                            <div className="col-6">
-                              <p className="fw-medium text-sm">Student Name</p>
-                            </div>
-                            <div className="col-6">
-                              <p className="text-muted text-sm text-break ">
-                                : {student.student_names.join(", ")}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="col-md-6 col-12 my-2">
-                          <div className="row">
-                            <div className="col-6">
-                              <p className="fw-medium text-sm">Grade</p>
-                            </div>
-                            <div className="col-6">
-                              <p className="text-muted text-sm text-break ">
-                                : {student.grade_name}
-                              </p>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
-            <ThemeProvider theme={theme}>
-              <MaterialReactTable columns={columns} data={data.questions} />
-            </ThemeProvider>
           </>
         )}
       </div>

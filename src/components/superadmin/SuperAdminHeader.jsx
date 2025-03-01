@@ -78,8 +78,9 @@ function SuperAdminHeader({ handleLogout }) {
   });
 
   const handelLogOutClick = () => {
-    handleLogout();
     navigate("/");
+
+    handleLogout();
   };
 
   const toggleDropdown = () => {

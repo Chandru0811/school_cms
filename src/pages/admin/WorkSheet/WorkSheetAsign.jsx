@@ -11,7 +11,7 @@ import toast from "react-hot-toast";
 import api from "../../../config/URL";
 import { MultiSelect } from "react-multi-select-component";
 
-function WorkSheetAsign({ grade_ids, assignedId }) {
+function WorkSheetAsign({ grade_ids, assignedId, onSuccess }) {
   const [show, setShow] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [grades, setGrades] = useState([]);
@@ -33,7 +33,7 @@ function WorkSheetAsign({ grade_ids, assignedId }) {
 
   const validationSchema = yup.object().shape({
     student_id: yup.array().min(1, "*Select at least one student").required("*Select a Student"),
-  });  
+  });
 
   const formik = useFormik({
     initialValues: {
@@ -52,6 +52,7 @@ function WorkSheetAsign({ grade_ids, assignedId }) {
         if (response.status === 200) {
           toast.success(response.data.message);
           formik.resetForm();
+          onSuccess();
           handleClose();
         }
       } catch (e) {
