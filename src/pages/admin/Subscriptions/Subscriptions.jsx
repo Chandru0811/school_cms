@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MaterialReactTable } from "material-react-table";
 import {
@@ -11,35 +11,34 @@ import {
 import Delete from "../../../components/common/Delete";
 import PropTypes from "prop-types";
 import { MoreVert as MoreVertIcon } from "@mui/icons-material";
+import api from "../../../config/URL";
+import toast from "react-hot-toast";
 
 function Subscriptions() {
   const [menuAnchor, setMenuAnchor] = useState(null);
+  const [selectedId, setSelectedId] = useState(null);
   const navigate = useNavigate();
+  const [data, setData] = useState([]);
+  const storedScreens = JSON.parse(
+    localStorage.getItem("schoolCMS_Permissions") || "{}"
+  );
+  const [loading, setLoading] = useState(true);
 
-  const data = [
-    {
-      id: 1,
-      name: "Premium Subscription",
-      description: "Unlock all premium features with priority support",
-      details: {
-        start_date: "2024-01-01",
-        end_date: "2024-03-31",
-      },
-      price: 49.99,
-      duration: 90,
-    },
-    {
-      id: 2,
-      name: "Basic Subscription",
-      description: "Unlock all basic features",
-      details: {
-        start_date: "2024-01-01",
-        end_date: "2024-03-31",
-      },
-      price: 29.99,
-      duration: 90,
-    },
-  ];
+  const getData = async () => {
+    try {
+      setLoading(true);
+      const response = await api.get("subscriptions");
+      setData(response.data.data);
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
 
   const columns = useMemo(
     () => [
@@ -59,11 +58,12 @@ function Subscriptions() {
         enableHiding: false,
         enableSorting: false,
         size: 20,
-        Cell: () => (
+        Cell: ({ cell }) => (
           <IconButton
             onClick={(e) => {
               e.stopPropagation();
               setMenuAnchor(e.currentTarget);
+              setSelectedId(cell.getValue());
             }}
           >
             <MoreVertIcon />
@@ -71,31 +71,34 @@ function Subscriptions() {
         ),
       },
       {
-        accessorKey: "name",
-        enableHiding: false,
+        accessorKey: "first_name",
         header: "Name",
-      },
-      {
-        accessorKey: "description",
+        enableSorting: true,
         enableHiding: false,
-        header: "Description",
       },
       {
         accessorKey: "price",
         header: "Price",
+        enableSorting: true,
         enableHiding: false,
-        size: 40,
       },
       {
         accessorKey: "duration",
         header: "Duration",
-        size: 40,
+        enableSorting: true,
+        enableHiding: false,
+      },
+      {
+        accessorKey: "details",
+        header: "Details",
+        enableSorting: true,
+        enableHiding: false,
       },
       {
         accessorKey: "created_by.name",
         header: "Created By",
         enableSorting: true,
-        enableHiding: false,        
+        enableHiding: false,
         Cell: ({ cell }) => cell.getValue() || " ",
       },
       {
@@ -113,7 +116,7 @@ function Subscriptions() {
         header: "Updated By",
         enableSorting: true,
         enableHiding: false,
-          Cell: ({ cell }) => cell.getValue() || " ",
+        Cell: ({ cell }) => cell.getValue() || " ",
       },
     ],
     []
@@ -174,9 +177,9 @@ function Subscriptions() {
           <Link to="/" className="custom-breadcrumb text-sm">
             Home
           </Link>
-          <span className="breadcrumb-separator text-sm"> &gt; </span>
+          <span className="breadcrumb-separator"> &gt; </span>
         </li>
-        <li className="breadcrumb-item active text-sm" aria-current="page">
+        <li className="breadcrumb-item active  text-sm" aria-current="page">
           &nbsp;Subscriptions
         </li>
       </ol>
@@ -186,61 +189,83 @@ function Subscriptions() {
             <div className="d-flex">
               <div className="dot active"></div>
             </div>
-            <span className="me-2 text-muted text-sm">
+            <span className="me-2 text-muted  text-sm">
               This database shows the list of&nbsp;
               <span className="database_name">Subscriptions</span>
             </span>
           </div>
-          <Link to="/subscription/add">
-            <button
-              type="button"
-              className="btn btn-button btn-sm me-2"
-              style={{ fontWeight: "600px !important" }}
-            >
-              &nbsp; Add &nbsp;&nbsp; <i className="bi bi-plus-lg"></i>
-            </button>
-          </Link>
+          {storedScreens?.data[13]?.can_create === 1 && (
+            <Link to="/subscription/add">
+              <button
+                type="button"
+                className="btn btn-button btn-sm me-2"
+                style={{ fontWeight: "600px !important" }}
+              >
+                &nbsp; Add &nbsp;&nbsp; <i className="bi bi-plus-lg"></i>
+              </button>
+            </Link>
+          )}
         </div>
-        <>
-          <ThemeProvider theme={theme}>
-            <MaterialReactTable
-              columns={columns}
-              data={data}
-              enableColumnActions={false}
-              enableColumnFilters={false}
-              enableDensityToggle={false}
-              enableFullScreenToggle={false}
-              initialState={{
-                columnVisibility: {
-                  created_by: false,
-                  created_at: false,
-                  updated_by: false,
-                  updated_at: false,
-                },
-              }}
-              muiTableBodyRowProps={() => ({
-                onClick: () => navigate(`/subscription/view`),
-                style: { cursor: "pointer" },
-              })}
-            />
-          </ThemeProvider>
-          <Menu
-            id="action-menu"
-            anchorEl={menuAnchor}
-            open={Boolean(menuAnchor)}
-            onClose={handleMenuClose}
-          >
-            <MenuItem onClick={() => navigate(`/subscription/edit`)}>
-              Edit
-            </MenuItem>
-            <MenuItem>
-              <Delete
-                path={`admin/subscription/delete`}
-                onOpen={handleMenuClose}
+        {loading ? (
+          <div className="loader-container">
+            <div className="loader"></div>
+          </div>
+        ) : (
+          <>
+            <ThemeProvider theme={theme}>
+              <MaterialReactTable
+                columns={columns}
+                data={data}
+                enableColumnActions={false}
+                enableColumnFilters={false}
+                enableDensityToggle={false}
+                enableFullScreenToggle={false}
+                initialState={{
+                  columnVisibility: {
+                    id: !(storedScreens?.data?.[3]?.can_edit === 0 && storedScreens?.data?.[3]?.can_delete === 0),
+                    working_hrs: false,
+                    citizenship: false,
+                    nationality: false,
+                    created_by: false,
+                    created_at: false,
+                    updated_by: false,
+                    updated_at: false,
+                  },
+                }}
+                muiTableBodyRowProps={({ row }) =>
+                  storedScreens?.data[13]?.can_view === 1
+                    ? {
+                      onClick: () =>
+                        navigate(`/subscription/view/${row.original.id}`),
+                      style: { cursor: "pointer" },
+                    }
+                    : {}
+                }
               />
-            </MenuItem>
-          </Menu>
-        </>
+            </ThemeProvider>
+            <Menu
+              id="action-menu"
+              anchorEl={menuAnchor}
+              open={Boolean(menuAnchor)}
+              onClose={handleMenuClose}
+            >
+              {storedScreens?.data[13]?.can_edit === 1 && (
+                <MenuItem
+                  onClick={() => navigate(`/subscription/edit/${selectedId}`)}
+                >
+                  Edit
+                </MenuItem>
+              )}
+              {storedScreens?.data[13]?.can_delete === 1 && (
+                <MenuItem>
+                  <Delete
+                    path={`/subscription/delete/${selectedId}`}
+                    onOpen={handleMenuClose}
+                  />
+                </MenuItem>)}
+            </Menu>
+          </>
+        )}
       </div>
     </div>
   );

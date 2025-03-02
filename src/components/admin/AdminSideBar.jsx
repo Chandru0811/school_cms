@@ -213,7 +213,7 @@ function AdminSidebar() {
                 <NavLink
                   className="nav-link"
                   style={{ borderRadius: "5px" }}
-                  to="/subscriptions"
+                  to="/subscription"
                 >
                   <IoGiftOutline className="sidebar_icon" size={17} />
                   Subscription

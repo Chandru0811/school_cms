@@ -70,12 +70,12 @@ const DoAssessment = () => {
           answer: answers[key],
         }));
 
-      // Include empty answers for time-up questions
+      // Include empty answers for time-up questions or unanswered questions
       data.questions.forEach((question) => {
-        if (timeUpQuestions[question.id] && !answers[question.id]) {
+        if (!answers[question.id]) {
           sortedAnswers.push({
             question_id: question.id,
-            answer: { empty: true }, // Indicate that the answer is empty due to time-up
+            answer: { empty: true }, // Indicate that the answer is empty
           });
         }
       });
@@ -93,7 +93,7 @@ const DoAssessment = () => {
         } else if (item.answer.short_answer) {
           formData.append(`answer[${item.question_id}]`, item.answer.short_answer);
         } else if (item.answer.empty) {
-          formData.append(`answer[${item.question_id}]`, "Not attend Question"); // Send empty answer for time-up questions
+          formData.append(`answer[${item.question_id}]`, ""); // Send empty answer for unanswered or time-up questions
         }
       });
 
@@ -106,24 +106,27 @@ const DoAssessment = () => {
 
         if (response.status === 200) {
           toast.success(response.data.message);
-          navigate(`/worksheet/view/${assignedId}`);
+          const { score, rewards } = response.data.data;
+          if (score === null || score === 0) {
+            navigate(`/successfull?id=${assignedId}`);
+          } else {
+            navigate(`/successfull?score=${score}&rewards=${rewards}&id=${assignedId}`);
+          }
         }
       } catch (e) {
         let errorMessage = "Error submitting assessment. Please try again.";
 
-        if (e?.response?.data?.errors) {
-          errorMessage = Object.values(e.response.data.errors)
-            .flat()
-            .join("\n");
+        if (e?.response?.status === 403) {
+          errorMessage = "You do not have permission to access this page.";
+        } else if (e?.response?.data?.errors) {
+          errorMessage = Object.values(e.response.data.errors).flat().join("\n");
         } else if (e?.response?.data?.error) {
           errorMessage = e.response.data.error;
         } else if (e.message) {
           errorMessage = e.message;
         }
-
         toast.error(errorMessage);
-      }
-      finally {
+      } finally {
         setLoadIndicator(false);
       }
     },
@@ -155,8 +158,8 @@ const DoAssessment = () => {
       case "fillable":
         return (
           <div>
-            <textarea
-              rows={4}
+            <input
+              type="text"
               className="form-control form-control-sm"
               placeholder="Your answer"
               value={answers[id]?.fillable || ""}
@@ -226,7 +229,7 @@ const DoAssessment = () => {
                   type="checkbox"
                   className="form-check-input me-2"
                   name={`multichoice-${id}`}
-                  checked={answers[id]?.multichoice === option}
+                  // checked={answers[id]?.multichoice === option}
                   onChange={(e) => {
                     setAnswers({
                       ...answers,
@@ -283,6 +286,7 @@ const DoAssessment = () => {
             <input
               type="file"
               className="form-control form-control-sm mt-2"
+              accept="image/*"
               onChange={(e) =>
                 setAnswers({
                   ...answers,

@@ -59,6 +59,7 @@ import CenterAdd from "../pages/admin/Center/CenterAdd";
 import CenterEdit from "../pages/admin/Center/CenterEdit";
 import CenterView from "../pages/admin/Center/CenterView";
 import HomeDoAssessment from "../pages/admin/Homework/HomeDoAssessment";
+import Successfull from "../pages/admin/WorkSheet/Successfull";
 
 function Admin({ handleLogout }) {
   return (
@@ -132,7 +133,9 @@ function Admin({ handleLogout }) {
                     <Route path="/worksheet/add" element={<WorkSheetAdd />} />
                     <Route path="/worksheet/edit/:id" element={<WorkSheetEdit />} />
                     <Route path="/worksheet/view/:id" element={<WorkSheetView />} />
+                    <Route path="/doassessment" element={<DoAssessment />} />
                     <Route path="/homedoassessment" element={<HomeDoAssessment />} />
+                    <Route path="/successfull" element={<Successfull />} />
 
                     {/* Home Work  */}
                     <Route path="/homework" element={<Homework />} />
@@ -159,7 +162,7 @@ function Admin({ handleLogout }) {
                     <Route path="/reward/view/:id" element={<RewardView />} />
 
                     {/* Subscriptions  */}
-                    <Route path="/subscriptions" element={<Subscriptions />} />
+                    <Route path="/subscription" element={<Subscriptions />} />
                     <Route
                       path="/subscription/add"
                       element={<SubscriptionAdd />}
@@ -175,9 +178,6 @@ function Admin({ handleLogout }) {
 
                     {/* Profile   */}
                     <Route path="/settings" element={<Settings />} />
-
-                    {/* Do Assessment   */}
-                    <Route path="/doassessment" element={<DoAssessment />} />
 
                     <Route
                       path="/role_permission"

@@ -27,7 +27,7 @@ function SubscriptionView() {
           <span className="breadcrumb-separator text-sm"> &gt; </span>
         </li>
         <li>
-          <Link to="/subscriptions" className="custom-breadcrumb text-sm">
+          <Link to="/subscription" className="custom-breadcrumb text-sm">
             &nbsp;Subscriptions
           </Link>
           <span className="breadcrumb-separator text-sm"> &gt; </span>
@@ -45,7 +45,7 @@ function SubscriptionView() {
             <span className="me-2 text-muted text-sm">View Subscriptions</span>
           </div>
           <div className="my-2 pe-3 d-flex align-items-center">
-            <Link to="/subscriptions">
+            <Link to="/subscription">
               <button type="button" className="btn btn-sm btn-back">
                 Back
               </button>
