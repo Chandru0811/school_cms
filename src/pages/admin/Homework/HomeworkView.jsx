@@ -12,7 +12,7 @@ function HomeworkView() {
   const { id } = useParams();
   // const [centerList, setCenterList] = useState([]);
   const assigned_id = id;
-  console.log("idddss", assigned_id);
+  // console.log("idddss", assigned_id);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const schoolCMS_access = localStorage.getItem("schoolCMS_access");
@@ -187,6 +187,7 @@ function HomeworkView() {
                 <HomeworkAssign
                   grade_ids={data.grade_id ? JSON.parse(data.grade_id) : []}
                   assignedId={assigned_id}
+                  onSuccess={getData}
                 />
               </>
             )}
@@ -195,8 +196,9 @@ function HomeworkView() {
             ) : (
               <>
                 <button
-                  className={`btn btn-sm ${data.active === 1 ? "btn-danger" : "btn-success"
-                    }`}
+                  className={`btn btn-sm ${
+                    data.active === 1 ? "btn-danger" : "btn-success"
+                  }`}
                   onClick={handleStatusToggle}
                 >
                   {data.active === 1 ? "Deactivate" : "Activate"}
@@ -364,11 +366,26 @@ function HomeworkView() {
                 ) : (
                   <>
                     <ThemeProvider theme={theme}>
-                      <MaterialReactTable columns={columnsstudent} data={data.student_assigned || []} />
+                      <MaterialReactTable
+                        columns={columnsstudent}
+                        data={data.student_assigned || []}
+                      />
                     </ThemeProvider>
 
                     <ThemeProvider theme={theme}>
-                      <MaterialReactTable columns={columns} data={data.questions} />
+                      <MaterialReactTable
+                        columns={columns}
+                        data={data.questions}
+                        enableColumnActions={false}
+                        enableColumnFilters={false}
+                        enableDensityToggle={false}
+                        enableFullScreenToggle={false}
+                        muiTableBodyRowProps={({ row }) => ({
+                          onClick: () =>
+                            navigate(`/question/view/${row.original.id}`),
+                          style: { cursor: "pointer" },
+                        })}
+                      />
                     </ThemeProvider>
                   </>
                 )}

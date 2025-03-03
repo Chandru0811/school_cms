@@ -71,7 +71,7 @@ function Subscriptions() {
         ),
       },
       {
-        accessorKey: "first_name",
+        accessorKey: "name",
         header: "Name",
         enableSorting: true,
         enableHiding: false,

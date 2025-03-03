@@ -72,7 +72,7 @@ function AddTopic({ id, show, setShow, onSuccess }) {
 
       formik.setFieldValue("center_id", centerIds || []);
       formik.setFieldValue("grade_id", response.data.data.grade_id || "");
-      formik.setFieldValue("    ", response.data.data.id || ""); 
+      formik.setFieldValue("subject_id", response.data.data.id || ""); 
     } catch (e) {
       toast.error("Error Fetching Data", e?.response?.data?.error);
     } finally {

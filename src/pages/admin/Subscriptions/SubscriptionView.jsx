@@ -1,18 +1,49 @@
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import api from "../../../config/URL";
+import toast from "react-hot-toast";
+import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
 function SubscriptionView() {
-  const data = {
-    grade_id: "10 Grade",
-    name: "Premium Subscription",
-    subject_id: "Problem",
-    description: "Unlock all premium features with priority support",
-    details: {
-      start_date: "2024-01-01",
-      end_date: "2024-03-31",
-    },
-    price: 49.99,
-    duration: 90,
+  const [data, setData] = useState({});
+  const { id } = useParams();
+  const [loading, setLoading] = useState(true);
+
+  const getSubscriptionData = async () => {
+    try {
+      setLoading(true);
+      const response = await api.get(`subscription/${id}`);
+      setData(response.data.data);
+    } catch (e) {
+      const errorMessage =
+        e?.response?.data?.error || "Error Fetching Data. Please try again.";
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  // Function to Toggle Status
+  const handleStatusToggle = async () => {
+    try {
+      const response = await api.post(`subscription/status/${id}`);
+      if (response.status === 200) {
+        toast.success(response.data.message);
+        setData((prevData) => ({
+          ...prevData,
+          active: prevData.active === 1 ? 0 : 1,
+        }));
+      }
+    } catch (error) {
+      toast.error("Error updating status!");
+      console.error("Status Update Error:", error);
+    }
+  };
+
+  useEffect(() => {
+    getSubscriptionData();
+  }, [id]);
 
   return (
     <div className="container-fluid px-0">
@@ -51,51 +82,66 @@ function SubscriptionView() {
               </button>
             </Link>
             &nbsp;&nbsp;
+            <button
+              className={`btn btn-sm ${
+                data.active === 1 ? "btn-danger" : "btn-success"
+              }`}
+              onClick={handleStatusToggle}
+            >
+              {data.active === 1 ? "Deactivate" : "Activate"}
+            </button>
           </div>
         </div>
-        <div className="container-fluid px-4">
-          <div className="row pb-3">
-          <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Grade</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.grade_id}</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Name</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.name}</p>
+        {loading ? (
+          <div className="loader-container">
+            <div className="loader"></div>
+          </div>
+        ) : (
+          <div className="container-fluid px-4">
+            <div className="row pb-3">
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Grade</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">: {data.grand_name}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Name</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">: {data.name}</p>
+                  </div>
+                </div>
+              </div>
+              {/* <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
                   <p className="fw-medium text-sm">Subject</p>
                 </div>
                 <div className="col-6">
-                  <p className="text-muted text-sm">: {data.subject_id}</p>
+                  <p className="text-muted text-sm">
+                    : {data.subject_id} 
+                     </p>
                 </div>
               </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Price</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.price}</p>
+            </div> */}
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Price</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">: {data.price}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
+              {/* <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
                   <p className="fw-medium text-sm">Start Date</p>
@@ -106,8 +152,8 @@ function SubscriptionView() {
                   </p>
                 </div>
               </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
+            </div> */}
+              {/* <div className="col-md-6 col-12 my-2">
               <div className="row">
                 <div className="col-6">
                   <p className="fw-medium text-sm">End Date</p>
@@ -118,34 +164,47 @@ function SubscriptionView() {
                   </p>
                 </div>
               </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Duration</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.duration}</p>
+            </div> */}
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Duration</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">: {data.duration}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="col-12 my-2">
-              <div className="row">
-                <div className="col-3">
-                  <p className="fw-medium text-sm">Description</p>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Description</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">: {data.description}</p>
+                  </div>
                 </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm text-break">
-                    : {data.description}
-                  </p>
+              </div>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Detail</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">: {data.details}</p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
 }
+
+SubscriptionView.propTypes = {
+  id: PropTypes.number.isRequired,
+};
 
 export default SubscriptionView;

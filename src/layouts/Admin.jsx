@@ -174,7 +174,7 @@ function Admin({ handleLogout }) {
                       element={<SubscriptionEdit />}
                     />
                     <Route
-                      path="/subscription/view"
+                      path="/subscription/view/:id"
                       element={<SubscriptionView />}
                     />
 
