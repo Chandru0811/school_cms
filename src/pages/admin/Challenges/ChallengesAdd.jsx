@@ -286,12 +286,12 @@ function ChallengesAdd() {
           </li>
           <li className="breadcrumb-item active text-sm" aria-current="page">
             <Link to="/challenges" className="custom-breadcrumb">
-              &nbsp;Challenges
+              &nbsp;Challenge
             </Link>
           </li>
           <span className="breadcrumb-separator"> &gt; </span>
           <li className="breadcrumb-item active text-sm" aria-current="page">
-            &nbsp;Challenges Add
+            &nbsp;Challenge Add
           </li>
         </ol>
         <div className="card" style={{ border: "1px solid #dbd9d0" }}>
@@ -301,7 +301,7 @@ function ChallengesAdd() {
                 <div className="dot active"></div>
               </div>
               <span className="me-2 text-muted text-sm">
-                Add Challenges
+                Add Challenge
               </span>
             </div>
             <div className="my-2 pe-3 d-flex align-items-center">
@@ -490,7 +490,7 @@ function ChallengesAdd() {
                   )}
               </div>
               <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">Challenges Title</label>
+                <label className="form-label">Challenge Title</label>
                 <span className="text-danger">*</span>
                 <input
                   type="text"
@@ -507,7 +507,7 @@ function ChallengesAdd() {
                 )}
               </div>
               <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">Challenges Description</label>
+                <label className="form-label">Challenge Description</label>
                 <textarea
                   rows={5}
                   className={`form-control ${formik.touched.description && formik.errors.description

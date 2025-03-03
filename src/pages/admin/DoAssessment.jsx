@@ -229,11 +229,16 @@ const DoAssessment = () => {
                   type="checkbox"
                   className="form-check-input me-2"
                   name={`multichoice-${id}`}
-                  // checked={answers[id]?.multichoice === option}
+                  checked={answers[id]?.multichoice?.includes(option) || false}
                   onChange={(e) => {
+                    const selectedOptions = answers[id]?.multichoice || [];
+                    const updatedOptions = e.target.checked
+                      ? [...selectedOptions, option]
+                      : selectedOptions.filter((item) => item !== option);
+
                     setAnswers({
                       ...answers,
-                      [id]: { ...answers[id], multichoice: option },
+                      [id]: { ...answers[id], multichoice: updatedOptions },
                     });
                   }}
                   disabled={isDisabled}

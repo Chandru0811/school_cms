@@ -60,6 +60,7 @@ import CenterEdit from "../pages/admin/Center/CenterEdit";
 import CenterView from "../pages/admin/Center/CenterView";
 import HomeDoAssessment from "../pages/admin/Homework/HomeDoAssessment";
 import Successfull from "../pages/admin/WorkSheet/Successfull";
+import HomeSuccessfull from "../pages/admin/Homework/HomeSuccessfull";
 
 function Admin({ handleLogout }) {
   return (
@@ -136,6 +137,7 @@ function Admin({ handleLogout }) {
                     <Route path="/doassessment" element={<DoAssessment />} />
                     <Route path="/homedoassessment" element={<HomeDoAssessment />} />
                     <Route path="/successfull" element={<Successfull />} />
+                    <Route path="/homesuccessfull" element={<HomeSuccessfull />} />
 
                     {/* Home Work  */}
                     <Route path="/homework" element={<Homework />} />

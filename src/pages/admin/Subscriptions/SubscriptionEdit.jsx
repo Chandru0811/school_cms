@@ -2,7 +2,7 @@ import { useFormik } from "formik";
 import { Link } from "react-router-dom";
 import * as Yup from "yup";
 import ReactQuill from "react-quill";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import 'react-quill/dist/quill.snow.css';
@@ -27,29 +27,66 @@ function SubscriptionEdit() {
     },
   };
 
-  const modules = {
-    toolbar: {
-      container: [
-        [{ header: "1" }, { header: "2" }, { font: [] }],
-        [{ size: [] }],
-        ["bold", "italic", "underline", "strike", "blockquote"],
-        [{ color: [] }, { background: [] }],
-        [{ list: "ordered" }, { list: "bullet" }, { align: [] }],
-        ["link", "image", "video"],
-        ["clean"],
-        ["undo", "redo", "maximize"],
-      ],
-      handlers: toolbarHandlers,
-    },
-    clipboard: {
-      matchVisual: false,
-    },
-    history: {
-      delay: 1000,
-      maxStack: 100,
-      userOnly: true,
-    },
-  };
+  const modules = useMemo(
+    () => ({
+      toolbar: {
+        container: [
+          [{ header: "1" }, { header: "2" }, { font: [] }],
+          [{ size: [] }],
+          ["bold", "italic", "underline", "strike", "blockquote"],
+          [{ color: [] }, { background: [] }],
+          [{ list: "ordered" }, { list: "bullet" }, { align: [] }],
+          ["link", "image", "video"],
+          ["clean"],
+          ["undo", "redo", "maximize"],
+        ],
+        handlers: {
+          ...toolbarHandlers,
+          image: function () {
+            const input = document.createElement('input');
+            input.setAttribute('type', 'file');
+            input.setAttribute('accept', 'image/*');
+            input.click();
+
+            input.onchange = () => {
+              const file = input.files[0];
+              if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                  const image = new Image();
+                  image.src = e.target.result;
+                  image.onload = () => {
+                    const canvas = document.createElement('canvas');
+                    const maxWidth = 100; // Set the maximum width for the image
+                    const scaleSize = maxWidth / image.width;
+                    canvas.width = maxWidth;
+                    canvas.height = image.height * scaleSize;
+
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+                    const resizedImage = canvas.toDataURL('image/jpeg');
+                    const range = this.quill.getSelection();
+                    this.quill.insertEmbed(range.index, 'image', resizedImage);
+                  };
+                };
+                reader.readAsDataURL(file);
+              }
+            };
+          }
+        }
+      },
+      clipboard: {
+        matchVisual: false,
+      },
+      history: {
+        delay: 1000,
+        maxStack: 100,
+        userOnly: true,
+      },
+    }),
+    []
+  );
 
   const formats = [
     "header",

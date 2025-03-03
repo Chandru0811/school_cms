@@ -49,16 +49,6 @@ function HomeworkEdit() {
       .of(yup.string().required("*Select at least one subject"))
       .min(1, "*Select at least one subject")
       .required("*Select a subject name"),
-    subject_id: yup
-      .array()
-      .of(yup.string().required("*Select at least one subject"))
-      .min(1, "*Select at least one subject")
-      .required("*Select a subject name"),
-    topic_id: yup
-      .array()
-      .of(yup.string().required("*Select at least one subject"))
-      .min(1, "*Select at least one subject")
-      .required("*Select a subject name"),
     ques_type: yup
       .array()
       .of(yup.string().required("*Select at least one question type"))
@@ -197,7 +187,7 @@ function HomeworkEdit() {
                       type="radio"
                       // name={`ques_id_with_type_${row.id}`}
                       value={t}
-                      className="form-check"
+                      className="form-check-input positive-relative"
                       checked={selectedRow?.questype === t || ""}
                       onChange={(e) =>
                         handleRadioChange(row.original.id, e.target.value)
@@ -317,6 +307,7 @@ function HomeworkEdit() {
     state: { rowSelection },
     onRowSelectionChange: (updatedSelection) => {
       setRowSelection(updatedSelection);
+      handleRowSelectionChange(table.getSelectedRowModel().rows);
     },
   });
 
@@ -325,32 +316,29 @@ function HomeworkEdit() {
 
     const selectedRowIds = selectedData.map((row) => row.original.id);
 
-    const updatedSelectedRows = selectedRowIds.map((id) => {
-      const existingEntry = formik.values.ques_id_with_type?.find(
-        (q) => q.id === id
-      );
-      let quesTypes = [];
-      const rowData = filterDatas.find((q) => q.id === id);
+    // Filter out the entries that are no longer selected
+    const updatedSelectedRows = formik.values.ques_id_with_type.filter((q) =>
+      selectedRowIds.includes(q.id)
+    );
 
-      try {
-        quesTypes = rowData ? JSON.parse(rowData.ques_type) : [];
-      } catch (error) {
-        console.error("Error parsing ques_type:", error);
-      }
-
-      return (
-        existingEntry || {
-          id,
-          questype: existingEntry
-            ? existingEntry.questype
-            : quesTypes.length > 0
-            ? quesTypes[0]
-            : "",
+    // Add new entries for the newly selected rows
+    selectedRowIds.forEach((id) => {
+      if (!updatedSelectedRows.some((q) => q.id === id)) {
+        const rowData = filterDatas.find((q) => q.id === id);
+        let quesTypes = [];
+        try {
+          quesTypes = rowData ? JSON.parse(rowData.ques_type) : [];
+        } catch (error) {
+          console.error("Error parsing ques_type:", error);
         }
-      );
+        updatedSelectedRows.push({
+          id,
+          questype: quesTypes.length > 0 ? quesTypes[0] : "",
+        });
+      }
     });
 
-    console.log("Updated Selected Rows:", updatedSelectedRows);
+    formik.setFieldValue("ques_id_with_type", updatedSelectedRows);
   };
 
   useEffect(() => {
@@ -364,7 +352,6 @@ function HomeworkEdit() {
       if (response.status === 200) {
         const apiData = response.data.data;
 
-        // Parse the API data
         const filteredData = Object.keys(formik.initialValues).reduce(
           (acc, key) => {
             if (apiData.hasOwnProperty(key)) {
@@ -390,14 +377,13 @@ function HomeworkEdit() {
           {}
         );
 
-        // Set form values
         const ques_id_with_type = filteredData?.ques_id_with_type || [];
         const filterValue = { ...filteredData };
         delete filterValue.ques_id_with_type;
 
         formik.setValues({ ...filterValue, ques_id_with_type }, false);
 
-        // Set row selection
+        // ✅ Row selection handling
         if (filteredData.question_id) {
           const selectedRows = {};
           filteredData.question_id.forEach((row) => {
@@ -406,46 +392,46 @@ function HomeworkEdit() {
           setRowSelection(selectedRows);
         }
 
-        // Update selected values for Centre, Grade, Subject, and Topic
-        if (apiData.center_names) {
-          const selectedCenters = apiData.center_names.map((name, index) => ({
-            value: JSON.parse(apiData.center_id)[index],
-            label: name,
-          }));
-          setSelectedCenter(selectedCenters);
+        // ✅ Update dependent fields
+        if (filteredData.center_id) {
+          setSelectedCenter(
+            filteredData.center_id.map((id) => ({
+              value: id,
+              label: `Center ${id}`,
+            }))
+          );
         }
-
-        if (apiData.grade_names) {
-          const selectedGrades = apiData.grade_names.map((name, index) => ({
-            value: JSON.parse(apiData.grade_id)[index],
-            label: name,
-          }));
-          setSelectedGrades(selectedGrades);
+        if (filteredData.grade_id) {
+          setSelectedGrades(
+            filteredData.grade_id.map((id) => ({
+              value: id,
+              label: `Grade ${id}`,
+            }))
+          );
         }
-
-        if (apiData.subject_names) {
-          const selectedSubjects = apiData.subject_names.map((name, index) => ({
-            value: JSON.parse(apiData.subject_id)[index],
-            label: name,
-          }));
-          setSelectedSubjects(selectedSubjects);
+        if (filteredData.subject_id) {
+          setSelectedSubjects(
+            filteredData.subject_id.map((id) => ({
+              value: id,
+              label: `Subject ${id}`,
+            }))
+          );
         }
-
-        if (apiData.topic_names) {
-          const selectedTopics = apiData.topic_names.map((name, index) => ({
-            value: JSON.parse(apiData.topic_id)[index],
-            label: name,
-          }));
-          setSelectedTopics(selectedTopics);
+        if (filteredData.topic_id) {
+          setSelectedTopics(
+            filteredData.topic_id.map((id) => ({
+              value: id,
+              label: `Topic ${id}`,
+            }))
+          );
         }
-
-        // Update selected question types
         if (filteredData.ques_type) {
-          const selectedQuestions = filteredData.ques_type.map((type) => ({
-            value: type,
-            label: type.charAt(0).toUpperCase() + type.slice(1),
-          }));
-          setSelectedQuestion(selectedQuestions);
+          setSelectedQuestion(
+            filteredData.ques_type.map((type) => ({
+              value: type,
+              label: type.charAt(0).toUpperCase() + type.slice(1),
+            }))
+          );
         }
       }
     } catch (e) {
@@ -469,51 +455,70 @@ function HomeworkEdit() {
     }
   };
 
-  const getSubjectList = async () => {
-    try {
-      const response = await api.get("subjects/list");
-      // console.log(response);
-      const formattedSubjects = response.data?.data?.map((subject) => ({
-        value: subject.id,
-        label: subject.name,
-      }));
-
-      setSubjects(formattedSubjects);
-    } catch (e) {
-      console.error("Error Fetching Data", e);
-      toast.error("Error Fetching Data", e?.response?.data?.error || e.message);
-    }
-  };
-
   const getGradeList = async () => {
     try {
-      const response = await api.get("grades/list");
-      // console.log(response);
+      if (selectedCenter.length === 0) {
+        setGrades([]);
+        formik.setFieldValue("grade_id", []);
+        return;
+      }
+      const centerIds = selectedCenter.map((center) => `center_id[]=${center.value}`).join("&");
+      const response = await api.get(`filter/grades?${centerIds}`);
       const formattedGrades = response.data?.data?.map((grade) => ({
         value: grade.id,
         label: grade.name,
       }));
-
       setGrades(formattedGrades);
+      if (!formattedGrades.some((g) => formik.values.grade_id.includes(g.value))) {
+        formik.setFieldValue("grade_id", []);
+        formik.setFieldValue("subject_id", []);
+      }
     } catch (e) {
-      console.error("Error Fetching Data", e);
-      toast.error("Error Fetching Data", e?.response?.data?.error || e.message);
+      toast.error(`Error Fetching Grades: ${e?.response?.data?.error || e.message}`);
+    }
+  };
+  const getSubjectList = async () => {
+    try {
+      if (formik.values.grade_id.length === 0) {
+        setSubjects([]);
+        formik.setFieldValue("subject_id", []);
+        return;
+      }
+      const gradeIds = formik.values.grade_id.map((grade) => `grade_id[]=${grade}`).join("&");
+      const response = await api.get(`filter/subjects?${gradeIds}`);
+      const formattedSubjects = response.data?.data?.map((subject) => ({
+        value: subject.id,
+        label: subject.name,
+      }));
+      setSubjects(formattedSubjects);
+      if (!formattedSubjects.some((s) => formik.values.subject_id.includes(s.value))) {
+        formik.setFieldValue("subject_id", []);
+        formik.setFieldValue("topic_id", []);
+      }
+    } catch (e) {
+      toast.error(`Error Fetching Subjects: ${e?.response?.data?.error || e.message}`);
     }
   };
 
-  const topicList = async () => {
+  const getTopicsList = async () => {
     try {
-      const response = await api.get("topics/list");
-      // console.log(response);
-      const formattedTopics = response.data?.data?.map((topics) => ({
-        value: topics.id,
-        label: topics.name,
+      if (formik.values.subject_id.length === 0) {
+        setTopics([]);
+        formik.setFieldValue("topic_id", []);
+        return;
+      }
+      const subjectIds = formik.values.subject_id.map((subject) => `subject_id[]=${subject}`).join("&");
+      const response = await api.get(`filter/topics?${subjectIds}`);
+      const formattedTopics = response.data?.data?.map((topic) => ({
+        value: topic.id,
+        label: topic.name,
       }));
-
       setTopics(formattedTopics);
+      if (!formattedTopics.some((t) => formik.values.topic_id.includes(t.value))) {
+        formik.setFieldValue("topic_id", []);
+      }
     } catch (e) {
-      console.error("Error Fetching Data", e);
-      toast.error("Error Fetching Data", e?.response?.data?.error || e.message);
+      toast.error(`Error Fetching Topics: ${e?.response?.data?.error || e.message}`);
     }
   };
   const filterData = async () => {
@@ -563,12 +568,38 @@ function HomeworkEdit() {
   ]);
   useEffect(() => {
     getCenterList();
-    getSubjectList();
-    getGradeList();
-    topicList();
     fetchData();
-  }, []);
-  // console.log("formik.values", formik.values);
+  }, [id]);
+
+  useEffect(() => {
+    if (selectedCenter.length > 0) {
+      getGradeList();
+    } else {
+      setGrades([]);
+      formik.setFieldValue("grade_id", "");
+      formik.setFieldValue("subject_id", "");
+      formik.setFieldValue("topic_id", "");
+    }
+  }, [selectedCenter]);
+
+  useEffect(() => {
+    if (formik.values.grade_id) {
+      getSubjectList();
+    } else {
+      setSubjects([]);
+      formik.setFieldValue("subject_id", "");
+    }
+  }, [formik.values.grade_id]);
+
+  useEffect(() => {
+    if (formik.values.subject_id) {
+      getTopicsList();
+    } else {
+      setTopics([]);
+      formik.setFieldValue("topic_id", "");
+    }
+  }, [formik.values.subject_id]);
+
   return (
     <div className="container p-3">
       <ol
@@ -648,7 +679,7 @@ function HomeworkEdit() {
                           : ""
                       }`}
                       {...formik.getFieldProps("title")}
-                    ></input>
+                    />
                     {formik.touched.title && formik.errors.title && (
                       <div className="invalid-feedback">
                         {formik.errors.title}
@@ -668,13 +699,23 @@ function HomeworkEdit() {
                           "center_id",
                           selected.map((option) => option.value)
                         );
+                        if (selected.length === 0) {
+                          setGrades([]);
+                          setSubjects([]);
+                          setTopics([]);
+                          formik.setFieldValue("grade_id", []);
+                          formik.setFieldValue("subject_id", []);
+                          formik.setFieldValue("topic_id", []);
+                          setSelectedGrades([]);
+                          setSelectedSubjects([]);
+                          setSelectedTopics([]);
+                        }
                       }}
                       labelledBy="Select Service"
-                      className={`form-multi-select form-multi-select-sm ${
-                        formik.touched.center_id && formik.errors.center_id
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                      className={`form-multi-select form-multi-select-sm ${formik.touched.center_id && formik.errors.center_id
+                        ? "is-invalid"
+                        : ""
+                        }`}
                     />
                     {formik.touched.center_id && formik.errors.center_id && (
                       <div className="invalid-feedback">
@@ -695,13 +736,20 @@ function HomeworkEdit() {
                           "grade_id",
                           selected.map((option) => option.value)
                         );
+                        if (selected.length === 0) {
+                          setSubjects([]);
+                          setTopics([]);
+                          formik.setFieldValue("subject_id", []);
+                          formik.setFieldValue("topic_id", []);
+                          setSelectedSubjects([]);
+                          setSelectedTopics([]);
+                        }
                       }}
                       labelledBy="Select Service"
-                      className={`form-multi-select form-multi-select-sm ${
-                        formik.touched.grade_id && formik.errors.grade_id
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                      className={`form-multi-select form-multi-select-sm ${formik.touched.grade_id && formik.errors.grade_id
+                        ? "is-invalid"
+                        : ""
+                        }`}
                     />
 
                     {formik.touched.grade_id && formik.errors.grade_id && (
@@ -712,7 +760,7 @@ function HomeworkEdit() {
                   </div>
                   <div className="col-md-6 col-12 mb-4">
                     <label className="form-label">
-                      Subject<span className="text-danger">*</span>
+                      Subject
                     </label>
                     <MultiSelect
                       options={subjects}
@@ -723,23 +771,19 @@ function HomeworkEdit() {
                           "subject_id",
                           selected.map((option) => option.value)
                         );
+                        if (selected.length === 0) {
+                          setTopics([]);
+                          formik.setFieldValue("topic_id", []);
+                          setSelectedTopics([]);
+                        }
                       }}
                       labelledBy="Select Service"
-                      className={`form-multi-select form-multi-select-sm ${
-                        formik.touched.subject_id && formik.errors.subject_id
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                      className="form-multi-select form-multi-select-sm"
                     />
-                    {formik.touched.subject_id && formik.errors.subject_id && (
-                      <div className="invalid-feedback">
-                        {formik.errors.subject_id}
-                      </div>
-                    )}
                   </div>
                   <div className="col-md-6 col-12 mb-4">
                     <label className="form-label">
-                      Topic<span className="text-danger">*</span>
+                      Topic
                     </label>
                     <MultiSelect
                       options={topics}
@@ -752,17 +796,8 @@ function HomeworkEdit() {
                         );
                       }}
                       labelledBy="Select Topic"
-                      className={`form-multi-select form-multi-select-sm ${
-                        formik.touched.topic_id && formik.errors.topic_id
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                      className="form-multi-select form-multi-select-sm"
                     />
-                    {formik.touched.topic_id && formik.errors.topic_id && (
-                      <div className="invalid-feedback">
-                        {formik.errors.topic_id}
-                      </div>
-                    )}
                   </div>
                   <div className="col-md-6 col-12 mb-4">
                     <label className="form-label">
@@ -796,15 +831,15 @@ function HomeworkEdit() {
                       Difficulty Type<span className="text-danger">*</span>
                     </label>
                     <select
-                      className={`form-select form-select-sm ${
-                        formik.touched.difficult_level &&
+                      className={`form-select form-select-sm ${formik.touched.difficult_level &&
                         formik.errors.difficult_level
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                        ? "is-invalid"
+                        : ""
+                        }`}
                       {...formik.getFieldProps("difficult_level")}
                     >
                       <option value=""></option>
+                      <option value="All">All</option>
                       <option value="Easy">Easy</option>
                       <option value="Medium">Medium</option>
                       <option value="Hard">Hard</option>

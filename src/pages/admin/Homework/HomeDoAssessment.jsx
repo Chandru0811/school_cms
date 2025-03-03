@@ -106,24 +106,27 @@ const HomeDoAssessment = () => {
 
         if (response.status === 200) {
           toast.success(response.data.message);
-          navigate(`/homework/view/${assignedId}`);
+          const { score, rewards } = response.data.data;
+          if (score === null || score === 0) {
+            navigate(`/homesuccessfull?id=${assignedId}`);
+          } else {
+            navigate(`/homesuccessfull?score=${score}&rewards=${rewards}&id=${assignedId}`);
+          }
         }
       } catch (e) {
         let errorMessage = "Error submitting assessment. Please try again.";
 
-        if (e?.response?.data?.errors) {
-          errorMessage = Object.values(e.response.data.errors)
-            .flat()
-            .join("\n");
+        if (e?.response?.status === 403) {
+          errorMessage = "You do not have permission to access this page.";
+        } else if (e?.response?.data?.errors) {
+          errorMessage = Object.values(e.response.data.errors).flat().join("\n");
         } else if (e?.response?.data?.error) {
           errorMessage = e.response.data.error;
         } else if (e.message) {
           errorMessage = e.message;
         }
-
         toast.error(errorMessage);
-      }
-      finally {
+      } finally {
         setLoadIndicator(false);
       }
     },
@@ -226,11 +229,16 @@ const HomeDoAssessment = () => {
                   type="checkbox"
                   className="form-check-input me-2"
                   name={`multichoice-${id}`}
-                  checked={answers[id]?.multichoice === option}
+                  checked={answers[id]?.multichoice?.includes(option) || false}
                   onChange={(e) => {
+                    const selectedOptions = answers[id]?.multichoice || [];
+                    const updatedOptions = e.target.checked
+                      ? [...selectedOptions, option]
+                      : selectedOptions.filter((item) => item !== option);
+
                     setAnswers({
                       ...answers,
-                      [id]: { ...answers[id], multichoice: option },
+                      [id]: { ...answers[id], multichoice: updatedOptions },
                     });
                   }}
                   disabled={isDisabled}

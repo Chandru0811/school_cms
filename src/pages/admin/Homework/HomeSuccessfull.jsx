@@ -2,7 +2,7 @@ import React from 'react'
 import success from "../../../assets/images/tick.png";
 import { useLocation, useNavigate } from 'react-router-dom';
 
-function Successfull() {
+function HomeSuccessfull() {
     const navigate = useNavigate();
     const location = useLocation();
     const queryParams = new URLSearchParams(location.search);
@@ -45,7 +45,7 @@ function Successfull() {
                                 <button
                                     className="text-white px-6 py-2 rounded-lg mt-4 w-100"
                                     style={{ background: "#11b823", borderRadius: "10px" }}
-                                    onClick={() => navigate(`/worksheet/view/${id}`)}
+                                    onClick={() => navigate(`/homework/view/${id}`)}
                                 >
                                     OK
                                 </button>
@@ -59,4 +59,4 @@ function Successfull() {
     )
 }
 
-export default Successfull
+export default HomeSuccessfull

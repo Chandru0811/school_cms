@@ -184,9 +184,7 @@ function HomeworkAdd() {
           );
           return (
             <div>
-              <div
-                className="d-flex gap-3"
-              >
+              <div className="d-flex gap-3">
                 {quesTypes.map((t, i) => (
                   <div className="form-check" key={`${row.id}-${i}`}>
                     <label className="form-check-label">
@@ -194,7 +192,8 @@ function HomeworkAdd() {
                         type="radio"
                         // name={`ques_id_with_type_${row.id}`}
                         value={t}
-                        className="form-check-input position-relative" style={{ top: "-2px" }}
+                        className="form-check-input position-relative"
+                        style={{ top: "-2px" }}
                         checked={selectedRow?.questype === t || ""}
                         onChange={(e) =>
                           handleRadioChange(row.original.id, e.target.value)
@@ -359,53 +358,75 @@ function HomeworkAdd() {
     }
   };
 
-  const getSubjectList = async () => {
-    try {
-      const response = await api.get("subjects/list");
-      // console.log(response);
-      const formattedSubjects = response.data?.data?.map((subject) => ({
-        value: subject.id,
-        label: subject.name,
-      }));
-
-      setSubjects(formattedSubjects);
-    } catch (e) {
-      console.error("Error Fetching Data", e);
-      toast.error("Error Fetching Data", e?.response?.data?.error || e.message);
-    }
-  };
-
   const getGradeList = async () => {
     try {
-      const response = await api.get("grades/list");
-      // console.log(response);
+      if (selectedCenter.length === 0) {
+        setGrades([]);
+        formik.setFieldValue("grade_id", "");
+        return;
+      }
+
+      const centerIds = selectedCenter.map(center => `center_id[]=${center.value}`).join("&");
+      const response = await api.get(`filter/grades?${centerIds}`);
+
       const formattedGrades = response.data?.data?.map((grade) => ({
         value: grade.id,
         label: grade.name,
       }));
 
       setGrades(formattedGrades);
+
+      // Reset grade & subject if current values are no longer valid
+      if (!formattedGrades.some(g => g.value === formik.values.grade_id)) {
+        formik.setFieldValue("grade_id", "");
+        formik.setFieldValue("subject_id", "");
+      }
     } catch (e) {
-      console.error("Error Fetching Data", e);
-      toast.error("Error Fetching Data", e?.response?.data?.error || e.message);
+      toast.error(`Error Fetching Grades: ${e?.response?.data?.error || e.message}`);
     }
   };
-
-  const topicList = async () => {
+  const getSubjectList = async () => {
     try {
-      const response = await api.get("topics/list");
-      // console.log(response);
-      const formattedTopics = response.data?.data?.map((topics) => ({
-        value: topics.id,
-        label: topics.name,
+      if (!formik.values.grade_id) {
+        setSubjects([]);
+        formik.setFieldValue("subject_id", "");
+        return;
+      }
+      const response = await api.get(`filter/subjects?grade_id[]=${formik.values.grade_id}`);
+      const formattedSubjects = response.data?.data?.map((subject) => ({
+        value: subject.id,
+        label: subject.name,
       }));
-
-      setTopics(formattedTopics);
+      setSubjects(formattedSubjects);
+      if (!formattedSubjects.some(s => s.value === formik.values.subject_id)) {
+        formik.setFieldValue("subject_id", "");
+      }
     } catch (e) {
-      console.error("Error Fetching Data", e);
-      toast.error("Error Fetching Data", e?.response?.data?.error || e.message);
+      toast.error(`Error Fetching Subjects: ${e?.response?.data?.error || e.message}`);
     }
   };
+
+  const getTopicsList = async () => {
+    try {
+      if (!formik.values.subject_id) {
+        setTopics([]);
+        formik.setFieldValue("topic_id", "");
+        return;
+      }
+      const response = await api.get(`filter/topics?subject_id[]=${formik.values.subject_id}`);
+      const formattedTopics = response.data?.data?.map((topic) => ({
+        value: topic.id,
+        label: topic.name,
+      }));
+      setTopics(formattedTopics);
+      if (!formattedTopics.some(s => s.value === formik.values.topic_id)) {
+        formik.setFieldValue("topic_id", "");
+      }
+    } catch (e) {
+      toast.error(`Error Fetching Topics: ${e?.response?.data?.error || e.message}`);
+    }
+  };
+
   const filterData = async () => {
     try {
       const response = await api.get("filter/homework", {
@@ -453,11 +474,19 @@ function HomeworkAdd() {
   ]);
   useEffect(() => {
     getCenterList();
-    getSubjectList();
-    getGradeList();
-    topicList();
   }, []);
-  // console.log("formik.values", formik.values);
+
+  useEffect(() => {
+    getGradeList();
+  }, [selectedCenter]);
+
+  useEffect(() => {
+    getSubjectList();
+  }, [formik.values.grade_id]);
+
+  useEffect(() => {
+    getTopicsList();
+  }, [formik.values.subject_id]);
   return (
     <div className="container p-3">
       <ol
@@ -525,8 +554,8 @@ function HomeworkAdd() {
                 <span className="text-danger">*</span>
                 <input
                   className={`form-control form-control-sm ${formik.touched.title && formik.errors.title
-                      ? "is-invalid"
-                      : ""
+                    ? "is-invalid"
+                    : ""
                     }`}
                   {...formik.getFieldProps("title")}
                 />
@@ -547,11 +576,22 @@ function HomeworkAdd() {
                       "center_id",
                       selected.map((option) => option.value)
                     );
+                    if (selected.length === 0) {
+                      setGrades([]);
+                      setSubjects([]);
+                      setTopics([]);
+                      formik.setFieldValue("grade_id", []);
+                      formik.setFieldValue("subject_id", []);
+                      formik.setFieldValue("topic_id", []);
+                      setSelectedGrades([]);
+                      setSelectedSubjects([]);
+                      setSelectedTopics([]);
+                    }
                   }}
                   labelledBy="Select Service"
                   className={`form-multi-select form-multi-select-sm ${formik.touched.center_id && formik.errors.center_id
-                      ? "is-invalid"
-                      : ""
+                    ? "is-invalid"
+                    : ""
                     }`}
                 />
                 {formik.touched.center_id && formik.errors.center_id && (
@@ -573,11 +613,19 @@ function HomeworkAdd() {
                       "grade_id",
                       selected.map((option) => option.value)
                     );
+                    if (selected.length === 0) {
+                      setSubjects([]);
+                      setTopics([]);
+                      formik.setFieldValue("subject_id", []);
+                      formik.setFieldValue("topic_id", []);
+                      setSelectedSubjects([]);
+                      setSelectedTopics([]);
+                    }
                   }}
                   labelledBy="Select Service"
                   className={`form-multi-select form-multi-select-sm ${formik.touched.grade_id && formik.errors.grade_id
-                      ? "is-invalid"
-                      : ""
+                    ? "is-invalid"
+                    : ""
                     }`}
                 />
 
@@ -589,7 +637,7 @@ function HomeworkAdd() {
               </div>
               <div className="col-md-6 col-12 mb-4">
                 <label className="form-label">
-                  Subject<span className="text-danger">*</span>
+                  Subject
                 </label>
                 <MultiSelect
                   options={subjects}
@@ -600,22 +648,19 @@ function HomeworkAdd() {
                       "subject_id",
                       selected.map((option) => option.value)
                     );
+                    if (selected.length === 0) {
+                      setTopics([]);
+                      formik.setFieldValue("topic_id", []);
+                      setSelectedTopics([]);
+                    }
                   }}
                   labelledBy="Select Service"
-                  className={`form-multi-select form-multi-select-sm ${formik.touched.subject_id && formik.errors.subject_id
-                      ? "is-invalid"
-                      : ""
-                    }`}
+                  className="form-multi-select form-multi-select-sm"
                 />
-                {formik.touched.subject_id && formik.errors.subject_id && (
-                  <div className="invalid-feedback">
-                    {formik.errors.subject_id}
-                  </div>
-                )}
               </div>
               <div className="col-md-6 col-12 mb-4">
                 <label className="form-label">
-                  Topic<span className="text-danger">*</span>
+                  Topic
                 </label>
                 <MultiSelect
                   options={topics}
@@ -628,16 +673,8 @@ function HomeworkAdd() {
                     );
                   }}
                   labelledBy="Select Topic"
-                  className={`form-multi-select form-multi-select-sm ${formik.touched.topic_id && formik.errors.topic_id
-                      ? "is-invalid"
-                      : ""
-                    }`}
+                  className="form-multi-select form-multi-select-sm"
                 />
-                {formik.touched.topic_id && formik.errors.topic_id && (
-                  <div className="invalid-feedback">
-                    {formik.errors.topic_id}
-                  </div>
-                )}
               </div>
               <div className="col-md-6 col-12 mb-4">
                 <label className="form-label">
@@ -655,8 +692,8 @@ function HomeworkAdd() {
                   }}
                   labelledBy="Select Service"
                   className={`form-multi-select form-multi-select-sm ${formik.touched.ques_type && formik.errors.ques_type
-                      ? "is-invalid"
-                      : ""
+                    ? "is-invalid"
+                    : ""
                     }`}
                 />
                 {formik.touched.ques_type && formik.errors.ques_type && (

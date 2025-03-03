@@ -359,53 +359,75 @@ function WorkSheetAdd() {
     }
   };
 
-  const getSubjectList = async () => {
-    try {
-      const response = await api.get("subjects/list");
-      // console.log(response);
-      const formattedSubjects = response.data?.data?.map((subject) => ({
-        value: subject.id,
-        label: subject.name,
-      }));
-
-      setSubjects(formattedSubjects);
-    } catch (e) {
-      console.error("Error Fetching Data", e);
-      toast.error("Error Fetching Data", e?.response?.data?.error || e.message);
-    }
-  };
-
   const getGradeList = async () => {
     try {
-      const response = await api.get("grades/list");
-      // console.log(response);
+      if (selectedCenter.length === 0) {
+        setGrades([]);
+        formik.setFieldValue("grade_id", "");
+        return;
+      }
+
+      const centerIds = selectedCenter.map(center => `center_id[]=${center.value}`).join("&");
+      const response = await api.get(`filter/grades?${centerIds}`);
+
       const formattedGrades = response.data?.data?.map((grade) => ({
         value: grade.id,
         label: grade.name,
       }));
 
       setGrades(formattedGrades);
+
+      // Reset grade & subject if current values are no longer valid
+      if (!formattedGrades.some(g => g.value === formik.values.grade_id)) {
+        formik.setFieldValue("grade_id", "");
+        formik.setFieldValue("subject_id", "");
+      }
     } catch (e) {
-      console.error("Error Fetching Data", e);
-      toast.error("Error Fetching Data", e?.response?.data?.error || e.message);
+      toast.error(`Error Fetching Grades: ${e?.response?.data?.error || e.message}`);
     }
   };
-
-  const topicList = async () => {
+  const getSubjectList = async () => {
     try {
-      const response = await api.get("topics/list");
-      // console.log(response);
-      const formattedTopics = response.data?.data?.map((topics) => ({
-        value: topics.id,
-        label: topics.name,
+      if (!formik.values.grade_id) {
+        setSubjects([]);
+        formik.setFieldValue("subject_id", "");
+        return;
+      }
+      const response = await api.get(`filter/subjects?grade_id[]=${formik.values.grade_id}`);
+      const formattedSubjects = response.data?.data?.map((subject) => ({
+        value: subject.id,
+        label: subject.name,
       }));
-
-      setTopics(formattedTopics);
+      setSubjects(formattedSubjects);
+      if (!formattedSubjects.some(s => s.value === formik.values.subject_id)) {
+        formik.setFieldValue("subject_id", "");
+      }
     } catch (e) {
-      console.error("Error Fetching Data", e);
-      toast.error("Error Fetching Data", e?.response?.data?.error || e.message);
+      toast.error(`Error Fetching Subjects: ${e?.response?.data?.error || e.message}`);
     }
   };
+
+  const getTopicsList = async () => {
+    try {
+      if (!formik.values.subject_id) {
+        setTopics([]);
+        formik.setFieldValue("topic_id", "");
+        return;
+      }
+      const response = await api.get(`filter/topics?subject_id[]=${formik.values.subject_id}`);
+      const formattedTopics = response.data?.data?.map((topic) => ({
+        value: topic.id,
+        label: topic.name,
+      }));
+      setTopics(formattedTopics);
+      if (!formattedTopics.some(s => s.value === formik.values.topic_id)) {
+        formik.setFieldValue("topic_id", "");
+      }
+    } catch (e) {
+      toast.error(`Error Fetching Topics: ${e?.response?.data?.error || e.message}`);
+    }
+  };
+
   const filterData = async () => {
     try {
       const response = await api.get(`filter/worksheet/${formik.values.type}`, {
@@ -453,11 +475,19 @@ function WorkSheetAdd() {
   ]);
   useEffect(() => {
     getCenterList();
-    getSubjectList();
-    getGradeList();
-    topicList();
   }, []);
-  // console.log("formik.values", formik.values);
+
+  useEffect(() => {
+    getGradeList();
+  }, [selectedCenter]);
+
+  useEffect(() => {
+    getSubjectList();
+  }, [formik.values.grade_id]);
+
+  useEffect(() => {
+    getTopicsList();
+  }, [formik.values.subject_id]);
   return (
     <div className="container p-3">
       <ol
@@ -539,11 +569,10 @@ function WorkSheetAdd() {
                       type="radio"
                       name="type"
                       value="challenge"
-                      className={`form-check-input ${
-                        formik.touched.type && formik.errors.type
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                      className={`form-check-input ${formik.touched.type && formik.errors.type
+                        ? "is-invalid"
+                        : ""
+                        }`}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
                       checked={formik.values.type === "challenge"}
@@ -564,11 +593,10 @@ function WorkSheetAdd() {
                 ) : null}
 
                 <input
-                  className={`form-control form-control-sm ${
-                    formik.touched.title && formik.errors.title
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-control form-control-sm ${formik.touched.title && formik.errors.title
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   {...formik.getFieldProps("title")}
                 />
                 {formik.touched.title && formik.errors.title && (
@@ -588,13 +616,23 @@ function WorkSheetAdd() {
                       "center_id",
                       selected.map((option) => option.value)
                     );
+                    if (selected.length === 0) {
+                      setGrades([]);
+                      setSubjects([]);
+                      setTopics([]);
+                      formik.setFieldValue("grade_id", []);
+                      formik.setFieldValue("subject_id", []);
+                      formik.setFieldValue("topic_id", []);
+                      setSelectedGrades([]);
+                      setSelectedSubjects([]);
+                      setSelectedTopics([]);
+                    }
                   }}
                   labelledBy="Select Service"
-                  className={`form-multi-select form-multi-select-sm ${
-                    formik.touched.center_id && formik.errors.center_id
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-multi-select form-multi-select-sm ${formik.touched.center_id && formik.errors.center_id
+                    ? "is-invalid"
+                    : ""
+                    }`}
                 />
                 {formik.touched.center_id && formik.errors.center_id && (
                   <div className="invalid-feedback">
@@ -615,13 +653,20 @@ function WorkSheetAdd() {
                       "grade_id",
                       selected.map((option) => option.value)
                     );
+                    if (selected.length === 0) {
+                      setSubjects([]);
+                      setTopics([]);
+                      formik.setFieldValue("subject_id", []);
+                      formik.setFieldValue("topic_id", []);
+                      setSelectedSubjects([]);
+                      setSelectedTopics([]);
+                    }
                   }}
                   labelledBy="Select Service"
-                  className={`form-multi-select form-multi-select-sm ${
-                    formik.touched.grade_id && formik.errors.grade_id
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-multi-select form-multi-select-sm ${formik.touched.grade_id && formik.errors.grade_id
+                    ? "is-invalid"
+                    : ""
+                    }`}
                 />
 
                 {formik.touched.grade_id && formik.errors.grade_id && (
@@ -643,6 +688,11 @@ function WorkSheetAdd() {
                       "subject_id",
                       selected.map((option) => option.value)
                     );
+                    if (selected.length === 0) {
+                      setTopics([]);
+                      formik.setFieldValue("topic_id", []);
+                      setSelectedTopics([]);
+                    }
                   }}
                   labelledBy="Select Service"
                   className="form-multi-select form-multi-select-sm"
@@ -687,11 +737,10 @@ function WorkSheetAdd() {
                     );
                   }}
                   labelledBy="Select Service"
-                  className={`form-multi-select form-multi-select-sm ${
-                    formik.touched.ques_type && formik.errors.ques_type
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-multi-select form-multi-select-sm ${formik.touched.ques_type && formik.errors.ques_type
+                    ? "is-invalid"
+                    : ""
+                    }`}
                 />
                 {formik.touched.ques_type && formik.errors.ques_type && (
                   <div className="invalid-feedback">
@@ -704,12 +753,11 @@ function WorkSheetAdd() {
                   Difficulty Type<span className="text-danger">*</span>
                 </label>
                 <select
-                  className={`form-select form-select-sm ${
-                    formik.touched.difficult_level &&
+                  className={`form-select form-select-sm ${formik.touched.difficult_level &&
                     formik.errors.difficult_level
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   {...formik.getFieldProps("difficult_level")}
                 >
                   <option value=""></option>
@@ -730,11 +778,10 @@ function WorkSheetAdd() {
                 <span className="text-danger">*</span>
                 <input
                   type="text"
-                  className={`form-control form-control-sm ${
-                    formik.touched.total_score && formik.errors.total_score
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-control form-control-sm ${formik.touched.total_score && formik.errors.total_score
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   {...formik.getFieldProps("total_score")}
                 />
                 {formik.touched.total_score && formik.errors.total_score && (
@@ -748,11 +795,10 @@ function WorkSheetAdd() {
                 <span className="text-danger">*</span>
                 <input
                   type="text"
-                  className={`form-control form-control-sm ${
-                    formik.touched.target_score && formik.errors.target_score
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-control form-control-sm ${formik.touched.target_score && formik.errors.target_score
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   {...formik.getFieldProps("target_score")}
                 />
                 {formik.touched.target_score && formik.errors.target_score && (
@@ -766,11 +812,10 @@ function WorkSheetAdd() {
                 <span className="text-danger">*</span>
                 <input
                   type="text"
-                  className={`form-control form-control-sm ${
-                    formik.touched.reward && formik.errors.reward
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-control form-control-sm ${formik.touched.reward && formik.errors.reward
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   {...formik.getFieldProps("reward")}
                 />
                 {formik.touched.reward && formik.errors.reward && (

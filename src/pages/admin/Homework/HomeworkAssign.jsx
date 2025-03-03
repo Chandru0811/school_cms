@@ -11,7 +11,7 @@ import toast from "react-hot-toast";
 import api from "../../../config/URL";
 import { MultiSelect } from "react-multi-select-component";
 
-function HomeworkAssign({ grade_ids, assignedId }) {
+function HomeworkAssign({ grade_ids, assignedId,onSuccess }) {
   const [show, setShow] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [grades, setGrades] = useState([]);
@@ -52,6 +52,7 @@ function HomeworkAssign({ grade_ids, assignedId }) {
         if (response.status === 200) {
           toast.success(response.data.message);
           formik.resetForm();
+          onSuccess();
           handleClose();
         }
       } catch (e) {
