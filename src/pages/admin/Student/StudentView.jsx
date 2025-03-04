@@ -126,7 +126,7 @@ function StudentView() {
     } catch (error) {
       console.error("Error fetching data:", error);
       toast.error("Failed to fetch student details.");
-    }finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -139,8 +139,13 @@ function StudentView() {
     <div className="container-fluid px-0">
       <ol
         className="breadcrumb my-2 px-2  d-flex align-items-center"
-        style={{ listStyle: "none", padding: 0, margin: 0 ,display: "flex",
-          alignItems: "center",}}
+        style={{
+          listStyle: "none",
+          padding: 0,
+          margin: 0,
+          display: "flex",
+          alignItems: "center",
+        }}
       >
         <li className="d-flex align-items-center">
           <Link to="/" className="custom-breadcrumb text-sm">
@@ -188,7 +193,7 @@ function StudentView() {
             >
               Change Parent Password
             </button>
-            &nbsp;&nbsp; 
+            &nbsp;&nbsp;
             <button
               type="button"
               className="btn btn-sm btn-button"
@@ -232,9 +237,7 @@ function StudentView() {
                     </button>
                   </div>
                   {formik.touched.password && formik.errors.password && (
-                    <div className="text-danger">
-                      {formik.errors.password}
-                    </div>
+                    <div className="text-danger">{formik.errors.password}</div>
                   )}
                 </div>
 
@@ -402,130 +405,145 @@ function StudentView() {
             <div className="loader"></div>
           </div>
         ) : (
-        <div className="container-fluid px-4">
-          <div className="row pb-3">
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Centre</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.center_name}</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Role</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.role_name}</p>
+          <div className="container-fluid px-4">
+            <div className="row pb-3">
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Centre</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">: {data.center_name}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Student First Name</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.first_name}</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Student Middle Name</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.middle_name}</p>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Role</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">: {data.role_name}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Student Last Name</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.last_name}</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Student Email</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm text-break">
-                    : {data?.student?.email}
-                  </p>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Student First Name</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">: {data.first_name}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Student Mobile Number</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm text-break">
-                    : {data?.student?.mobile}
-                  </p>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Student Middle Name</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">: {data.middle_name}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Parent Name</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm text-break">
-                    : {data?.parent?.name}
-                  </p>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Student Last Name</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">: {data.last_name}</p>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Parent Email</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm text-break">
-                    : {data?.parent?.email}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Parent Mobile Number</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm text-break">
-                    : {data?.parent?.mobile}
-                  </p>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Student Email</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm text-break">
+                      : {data?.student?.email}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Grade</p>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Student Mobile Number</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm text-break">
+                      : {data?.student?.mobile}
+                    </p>
+                  </div>
                 </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">: {data.grade_name}</p>
+              </div>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Parent Name</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm text-break">
+                      : {data?.parent_name}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Parent Email</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm text-break">
+                      : {data?.parent_email}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Parent Mobile Number</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm text-break">
+                      : {data?.parent_mobile}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Grade</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">: {data.grade_name}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Subscriptions</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">
+                      :{" "}
+                      {data.subscriptions_names
+                        ? JSON.parse(data.subscriptions_names).join(", ")
+                        : ""}
+                    </p>{" "}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
         )}
       </div>
     </div>
