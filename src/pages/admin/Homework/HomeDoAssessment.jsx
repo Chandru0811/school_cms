@@ -106,11 +106,12 @@ const HomeDoAssessment = () => {
 
         if (response.status === 200) {
           toast.success(response.data.message);
+          const { total_score } = data;
           const { score, rewards } = response.data.data;
           if (score === null || score === 0) {
             navigate(`/homesuccessfull?id=${assignedId}`);
           } else {
-            navigate(`/homesuccessfull?score=${score}&rewards=${rewards}&id=${assignedId}`);
+            navigate(`/homesuccessfull?score=${score}&rewards=${rewards}&id=${assignedId}&totalScore=${total_score}`);
           }
         }
       } catch (e) {

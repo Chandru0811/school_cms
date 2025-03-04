@@ -1,14 +1,128 @@
 import { useFormik } from "formik";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import * as Yup from "yup";
-import ReactQuill from "react-quill";
 import { useEffect, useMemo, useState } from "react";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
+import ReactQuill from "react-quill";
 import 'react-quill/dist/quill.snow.css';
+import { MultiSelect } from "react-multi-select-component";
 
 function SubscriptionEdit() {
-  const [grade, setGrades] = useState([]);
+  const [selectedWorksheet, setSelectedWorksheet] = useState([]);
+  const [grades, setGrades] = useState([]);
+  const [Worksheets, setWorksheets] = useState([]);
+  const [loadIndicator, setLoadIndicator] = useState(false);
+  const navigate = useNavigate();
+
+  const validationSchema = Yup.object({
+    grade_id: Yup.string().required("*Select a grade"),
+    worksheet_id: Yup
+      .array()
+      .of(Yup.string().required("*Select at least one Worksheet"))
+      .min(1, "*Select at least one Worksheet")
+      .required("*Select a Worksheet name"),
+    name: Yup.string().required("*Name is a required"),
+    details: Yup.string().required("*Details is a required"),
+    price: Yup.string().required("*Price is a required"),
+    duration: Yup.string().required("*Duration is a required"),
+    description: Yup.string().required("*Description is a required"),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      grade_id: "",
+      worksheet_id: [],
+      name: "",
+      details: "",
+      price: "",
+      duration: "",
+      description: "",
+    },
+    validationSchema: validationSchema,
+    onSubmit: async (values) => {
+      setLoadIndicator(true);
+      console.log("Form Values:", values);
+      try {
+        const response = await api.post("subscription", values);
+        if (response.status === 200) {
+          console.log("object", response);
+          toast.success(response.data?.message);
+          formik.resetForm();
+          navigate("/subscription");
+        }
+      } catch (error) {
+        if (error.response?.data?.errors) {
+          const errors = error.response.data.errors;
+
+          // Loop through errors and show each one in a toast
+          Object.keys(errors).forEach((key) => {
+            errors[key].forEach((errMsg) => {
+              toast.error(errMsg);
+            });
+          });
+        } else {
+          toast.error("An unexpected error occurred. Please try again.");
+        }
+      } finally {
+        setLoadIndicator(false);
+      }
+    },
+    validateOnChange: false,
+    validateOnBlur: true,
+  });
+
+  const handleDetailsChange = (value) => {
+    formik.setFieldValue("details", value);
+  };
+
+  const getGradeList = async () => {
+    try {
+      const response = await api.get("grades/list");
+      const formattedGrades = response.data.data.map((grade) => ({
+        value: grade.id,
+        label: grade.name,
+      }));
+
+      setGrades(formattedGrades);
+    } catch (e) {
+      toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }
+  };
+
+  const getWorksheetList = async (selectId) => {
+    try {
+      // If no grade_id is selected, fetch the entire list of worksheets
+      if (!selectId || selectId.length === 0) {
+        const response = await api.get("worksheets/list");
+        const formattedWorksheets = response.data?.data?.map((worksheet) => ({
+          value: worksheet.id,
+          label: worksheet.title,
+        }));
+        setWorksheets(formattedWorksheets);
+        return;
+      }
+
+      // Fetch worksheets based on the selected grade_id
+      const response = await api.get(`filter/worksheets?grade_id[]=${selectId}`);
+      const formattedWorksheets = response.data?.data?.map((worksheet) => ({
+        value: worksheet.id,
+        label: worksheet.title,
+      }));
+      setWorksheets(formattedWorksheets);
+
+      // Reset the selected worksheets if they are not in the new list
+      if (
+        !formattedWorksheets.some((worksheet) =>
+          formik.values.worksheet_id.includes(worksheet.value))
+      ) {
+        formik.setFieldValue("worksheet_id", []);
+        setSelectedWorksheet([]);
+      }
+    } catch (e) {
+      toast.error(`Error Fetching: ${e?.response?.data?.error || e.message}`);
+    }
+  };
 
   const toolbarHandlers = {
     undo: function () {
@@ -104,56 +218,15 @@ function SubscriptionEdit() {
     "align",
     "link",
     "image",
-    // "video",
   ];
-
-  const validationSchema = Yup.object({
-    grade_id: Yup.string().required("*Select a grade"),
-    name: Yup.string().required("*Name is a required"),
-    details: Yup.string().required("*Details is a required"),
-    price: Yup.string().required("*Price is a required"),
-    duration: Yup.string().required("*Duration is a required"),
-    description: Yup.string().required("*Description is a required"),
-  });
-
-  const formik = useFormik({
-    initialValues: {
-      grade_id: "",
-      name: "",
-      details: "",
-      price: "",
-      duration: "",
-      description: "",
-    },
-    validationSchema: validationSchema,
-    onSubmit: async (values) => {
-      console.log("Form Values:", values);
-    },
-    validateOnChange: false,
-    validateOnBlur: true,
-  });
-
-  const handleDescriptionChange = (value) => {
-    formik.setFieldValue("description", value);
-  };
-
-  const getGradeList = async () => {
-    try {
-      const response = await api.get("grades/list");
-      const formattedGrades = response.data.data.map((grade) => ({
-        value: grade.id,
-        label: grade.name,
-      }));
-
-      setGrades(formattedGrades);
-    } catch (e) {
-      toast.error("Error Fetching Data ", e?.response?.data?.error);
-    }
-  };
 
   useEffect(() => {
     getGradeList();
   }, []);
+
+  useEffect(() => {
+    getWorksheetList(formik.values.grade_id);
+  }, [formik.values.grade_id]);
 
   return (
     <div className="container-fluid px-0">
@@ -202,7 +275,15 @@ function SubscriptionEdit() {
                 </button>
               </Link>
               &nbsp;&nbsp;
-              <button type="submit" className="btn btn-button">
+              <button type="submit" className="btn btn-button"
+                disabled={loadIndicator}
+              >
+                {loadIndicator && (
+                  <span
+                    className="spinner-border spinner-border-sm me-2"
+                    aria-hidden="true"
+                  ></span>
+                )}
                 Update
               </button>
             </div>
@@ -214,14 +295,16 @@ function SubscriptionEdit() {
                   Grade<span className="text-danger">*</span>
                 </label>
                 <select
-                  className={`form-select form-select-sm ${formik.touched.grade_id && formik.errors.grade_id ? "is-invalid" : ""}`}
+                  className={`form-select form-select-sm ${formik.touched.grade_id && formik.errors.grade_id ? "is-invalid" : ""
+                    }`}
                   value={formik.values.grade_id}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  name="grade_id"
+                  onChange={(e) => {
+                    const selectedGradeId = e.target.value;
+                    formik.setFieldValue("grade_id", selectedGradeId);
+                  }}
                 >
-                  <option value="">Select Grade</option>
-                  {grade.map((grade) => (
+                  <option value="">Select Grade ID</option>
+                  {grades.map((grade) => (
                     <option key={grade.value} value={grade.value}>
                       {grade.label}
                     </option>
@@ -230,6 +313,29 @@ function SubscriptionEdit() {
                 {formik.touched.grade_id && formik.errors.grade_id && (
                   <div className="invalid-feedback">
                     {formik.errors.grade_id}
+                  </div>
+                )}
+              </div>
+              <div className="col-md-6 col-12 mb-4">
+                <label className="form-label">
+                  Worksheet
+                </label>
+                <MultiSelect
+                  options={Worksheets}
+                  value={selectedWorksheet}
+                  onChange={(selected) => {
+                    setSelectedWorksheet(selected);
+                    formik.setFieldValue(
+                      "worksheet_id",
+                      selected.map((option) => option.value)
+                    );
+                  }}
+                  labelledBy="Select Worksheet"
+                  className="form-multi-select form-multi-select-sm"
+                />
+                {formik.touched.worksheet_id && formik.errors.worksheet_id && (
+                  <div className="invalid-feedback">
+                    {formik.errors.worksheet_id}
                   </div>
                 )}
               </div>
@@ -271,23 +377,20 @@ function SubscriptionEdit() {
                 <label className="form-label">
                   Duration<span className="text-danger">*</span>
                 </label>
-                <input
-                  type="text"
-                  className={`form-control form-control-sm ${formik.touched.duration &&
+                <select
+                  className={`form-select form-select-sm ${formik.touched.duration &&
                     formik.errors.duration
                     ? "is-invalid"
                     : ""
                     }`}
-                  placeholder="Days"
                   {...formik.getFieldProps("duration")}
-                  value={formik.values.duration}
-                  onInput={(e) =>
-                  (e.target.value = e.target.value.replace(
-                    /\D/g,
-                    ""
-                  ))
-                  }
-                />
+                >
+                  <option value="">Select Months</option>
+                  <option value="1">One Month</option>
+                  <option value="3">Three Months</option>
+                  <option value="6">Six Months</option>
+                  <option value="12">Twelve Months</option>
+                </select>
                 {formik.touched.duration &&
                   formik.errors.duration && (
                     <div className="invalid-feedback">
@@ -298,41 +401,41 @@ function SubscriptionEdit() {
 
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
-                  Details<span className="text-danger">*</span>
+                  Description<span className="text-danger">*</span>
                 </label>
                 <input
                   type="text"
-                  className={`form-control form-control-sm ${formik.touched.details &&
-                    formik.errors.details
+                  className={`form-control form-control-sm ${formik.touched.description &&
+                    formik.errors.description
                     ? "is-invalid"
                     : ""
                     }`}
-                  {...formik.getFieldProps("details")}
-                  value={formik.values.details}
+                  {...formik.getFieldProps("description")}
+                  value={formik.values.description}
                 />
-                {formik.touched.details &&
-                  formik.errors.details && (
+                {formik.touched.description &&
+                  formik.errors.description && (
                     <div className="invalid-feedback">
-                      {formik.errors.details}
+                      {formik.errors.description}
                     </div>
                   )}
               </div>
               <div className="col-12 mb-3">
-                <label className="form-label">Description</label>
+                <label className="form-label">Details</label>
                 <ReactQuill
                   theme="snow"
-                  value={formik.values.description}
-                  onChange={handleDescriptionChange}
+                  value={formik.values.details}
+                  onChange={handleDetailsChange}
                   modules={modules}
                   formats={formats}
-                  className={`${formik.touched.description && formik.errors.description
+                  className={`${formik.touched.details && formik.errors.details
                     ? "is-invalid"
                     : ""
                     }`}
                 />
-                {formik.touched.description && formik.errors.description && (
+                {formik.touched.details && formik.errors.details && (
                   <div className="invalid-feedback">
-                    {formik.errors.description}
+                    {formik.errors.details}
                   </div>
                 )}
               </div>

@@ -10,7 +10,6 @@ import { ThemeProvider, createTheme } from "@mui/material";
 function WorkSheetView() {
   const [data, setData] = useState({});
   const { id } = useParams();
-  // const [centerList, setCenterList] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const schoolCMS_access = localStorage.getItem("schoolCMS_access");
@@ -63,6 +62,10 @@ function WorkSheetView() {
         accessorKey: "grade_name",
         header: "Grade",
       },
+      {
+        accessorKey: "status",
+        header: "Status",
+      },
     ],
     [data]
   );
@@ -75,7 +78,7 @@ function WorkSheetView() {
         size: 40,
       },
       {
-        accessorKey: "title", // Default key (can be either "title" or "question")
+        accessorKey: "title",
         header: "Type",
         Cell: ({ row }) => {
           return row.original.title || row.original.question || "N/A";
@@ -101,11 +104,12 @@ function WorkSheetView() {
             (q) => q.id === row.original.id
           );
 
-          // Check if question type is "closed"
-          if (questionTypeObj?.questype.toLowerCase() === "closed") {
-            return "Yes/No";
+          // Check if question type is "multichoice"
+          if (questionTypeObj?.questype.toLowerCase() === "multichoice") {
+            return row.original.options || "N/A";
           }
-          return row.original.options || "N/A";
+
+          return ""; // Return empty for other question types
         },
       },
     ],
@@ -171,7 +175,7 @@ function WorkSheetView() {
               </button>
             </Link>
             &nbsp;&nbsp;
-            {schoolCMS_access === "Limited Access" ? (
+            {/* {schoolCMS_access === "Limited Access" ? (
               <></>
             ) : (
               <>
@@ -181,7 +185,7 @@ function WorkSheetView() {
                   onSuccess={getData}
                 />
               </>
-            )}
+            )} */}
             {schoolCMS_access === "Limited Access" ? (
               <></>
             ) : (
@@ -198,7 +202,7 @@ function WorkSheetView() {
             &nbsp;&nbsp;
             {schoolCMS_access === "Limited Access" && data.active === 1 ? (
               <>
-                <Link to={`/doassessment?assignedId=${assigned_id}`}>
+                <Link to={`/doassessment?assignedId=${id}`}>
                   <button
                     type="button"
                     className="btn btn-success btn-sm me-2"
@@ -380,12 +384,24 @@ function WorkSheetView() {
                   <></>
                 ) : (
                   <>
-                    <ThemeProvider theme={theme}>
+                    {/* <ThemeProvider theme={theme}>
                       <MaterialReactTable columns={columnsstudent} data={data.student_assigned || []} />
-                    </ThemeProvider>
+                    </ThemeProvider> */}
 
                     <ThemeProvider theme={theme}>
-                      <MaterialReactTable columns={columns} data={data.questions} />
+                      <MaterialReactTable
+                        columns={columns}
+                        data={data.questions}
+                        enableColumnActions={false}
+                        enableColumnFilters={false}
+                        enableDensityToggle={false}
+                        enableFullScreenToggle={false}
+                        muiTableBodyRowProps={({ row }) => ({
+                          onClick: () =>
+                            navigate(`/question/view/${row.original.id}`),
+                          style: { cursor: "pointer" },
+                        })}
+                      />
                     </ThemeProvider>
                   </>
                 )}

@@ -338,7 +338,11 @@ function HomeworkEdit() {
       }
     });
 
-    formik.setFieldValue("ques_id_with_type", updatedSelectedRows);
+    formik.setValues({
+      ...formik.values,
+      ques_id_with_type: updatedSelectedRows,
+      question_id: selectedRowIds,
+    });
   };
 
   useEffect(() => {
@@ -673,11 +677,10 @@ function HomeworkEdit() {
                     <span className="text-danger">*</span>
                     <input
                       type="text"
-                      className={`form-control form-control-sm ${
-                        formik.touched.title && formik.errors.title
+                      className={`form-control form-control-sm ${formik.touched.title && formik.errors.title
                           ? "is-invalid"
                           : ""
-                      }`}
+                        }`}
                       {...formik.getFieldProps("title")}
                     />
                     {formik.touched.title && formik.errors.title && (
@@ -814,11 +817,10 @@ function HomeworkEdit() {
                         );
                       }}
                       labelledBy="Select Service"
-                      className={`form-multi-select form-multi-select-sm ${
-                        formik.touched.ques_type && formik.errors.ques_type
+                      className={`form-multi-select form-multi-select-sm ${formik.touched.ques_type && formik.errors.ques_type
                           ? "is-invalid"
                           : ""
-                      }`}
+                        }`}
                     />
                     {formik.touched.ques_type && formik.errors.ques_type && (
                       <div className="invalid-feedback">
@@ -856,11 +858,10 @@ function HomeworkEdit() {
                     <span className="text-danger">*</span>
                     <input
                       type="date"
-                      className={`form-control form-control-sm ${
-                        formik.touched.due_date && formik.errors.due_date
+                      className={`form-control form-control-sm ${formik.touched.due_date && formik.errors.due_date
                           ? "is-invalid"
                           : ""
-                      }`}
+                        }`}
                       {...formik.getFieldProps("due_date")}
                       min={today}
                     />
@@ -875,11 +876,10 @@ function HomeworkEdit() {
                     <span className="text-danger">*</span>
                     <input
                       type="text"
-                      className={`form-control form-control-sm ${
-                        formik.touched.total_score && formik.errors.total_score
+                      className={`form-control form-control-sm ${formik.touched.total_score && formik.errors.total_score
                           ? "is-invalid"
                           : ""
-                      }`}
+                        }`}
                       {...formik.getFieldProps("total_score")}
                     />
                     {formik.touched.total_score &&

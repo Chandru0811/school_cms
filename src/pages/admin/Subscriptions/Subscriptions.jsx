@@ -89,8 +89,8 @@ function Subscriptions() {
         enableHiding: false,
       },
       {
-        accessorKey: "details",
-        header: "Details",
+        accessorKey: "description",
+        header: "Description",
         enableSorting: true,
         enableHiding: false,
       },

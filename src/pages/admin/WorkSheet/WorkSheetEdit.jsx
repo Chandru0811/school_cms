@@ -346,7 +346,11 @@ function WorkSheetEdit() {
       }
     });
 
-    formik.setFieldValue("ques_id_with_type", updatedSelectedRows);
+    formik.setValues({
+      ...formik.values,
+      ques_id_with_type: updatedSelectedRows,
+      question_id: selectedRowIds,
+    });
   };
 
   useEffect(() => {

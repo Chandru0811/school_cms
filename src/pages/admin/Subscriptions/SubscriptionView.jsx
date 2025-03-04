@@ -83,9 +83,8 @@ function SubscriptionView() {
             </Link>
             &nbsp;&nbsp;
             <button
-              className={`btn btn-sm ${
-                data.active === 1 ? "btn-danger" : "btn-success"
-              }`}
+              className={`btn btn-sm ${data.active === 1 ? "btn-danger" : "btn-success"
+                }`}
               onClick={handleStatusToggle}
             >
               {data.active === 1 ? "Deactivate" : "Activate"}
@@ -206,7 +205,7 @@ function SubscriptionView() {
                     <p className="fw-medium text-sm">Detail</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">: {data.details}</p>
+                    <p className="text-muted text-sm" dangerouslySetInnerHTML={{ __html: data.details }}></p>
                   </div>
                 </div>
               </div>

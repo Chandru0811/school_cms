@@ -10,9 +10,7 @@ import { ThemeProvider, createTheme } from "@mui/material";
 function HomeworkView() {
   const [data, setData] = useState({});
   const { id } = useParams();
-  // const [centerList, setCenterList] = useState([]);
   const assigned_id = id;
-  // console.log("idddss", assigned_id);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const schoolCMS_access = localStorage.getItem("schoolCMS_access");
@@ -63,6 +61,10 @@ function HomeworkView() {
       {
         accessorKey: "grade_name",
         header: "Grade",
+      },
+      {
+        accessorKey: "status",
+        header: "Status",
       },
     ],
     [data]
