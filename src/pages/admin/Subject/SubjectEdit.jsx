@@ -19,7 +19,7 @@ function SubjectEdit({ id, show, setShow, onSuccess }) {
   const [centerList, setCenterList] = useState([]);
   const [grades, setGrades] = useState([]);
   const navigate = useNavigate();
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const validationSchema = yup.object().shape({
     center_id: yup

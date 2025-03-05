@@ -186,13 +186,19 @@ function StudentView() {
               Change Student Password
             </button>
             &nbsp;&nbsp;
-            <button
-              type="button"
-              className="btn btn-sm btn-button"
-              onClick={handleParentShow}
-            >
-              Change Parent Password
-            </button>
+            {data.parent_email === null ? (
+              <></>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  className="btn btn-sm btn-button"
+                  onClick={handleParentShow}
+                >
+                  Change Parent Password
+                </button>
+              </>
+            )}
             &nbsp;&nbsp;
             <button
               type="button"
@@ -221,11 +227,10 @@ function StudentView() {
                   <div className="input-group">
                     <input
                       type={showPassword ? "text" : "password"}
-                      className={`form-control form-control-sm ${
-                        formik.touched.password && formik.errors.password
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                      className={`form-control form-control-sm ${formik.touched.password && formik.errors.password
+                        ? "is-invalid"
+                        : ""
+                        }`}
                       {...formik.getFieldProps("password")}
                     />
                     <button
@@ -248,12 +253,11 @@ function StudentView() {
                   <div className="input-group">
                     <input
                       type={showConfirmPassword ? "text" : "password"}
-                      className={`form-control form-control-sm ${
-                        formik.touched.password_confirmation &&
+                      className={`form-control form-control-sm ${formik.touched.password_confirmation &&
                         formik.errors.password_confirmation
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                        ? "is-invalid"
+                        : ""
+                        }`}
                       {...formik.getFieldProps("password_confirmation")}
                     />
                     <button
@@ -320,12 +324,11 @@ function StudentView() {
                   <div className="input-group">
                     <input
                       type={showPassword ? "text" : "password"}
-                      className={`form-control form-control-sm ${
-                        parentFormik.touched.password &&
+                      className={`form-control form-control-sm ${parentFormik.touched.password &&
                         parentFormik.errors.password
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                        ? "is-invalid"
+                        : ""
+                        }`}
                       {...parentFormik.getFieldProps("password")}
                     />
                     <button
@@ -351,12 +354,11 @@ function StudentView() {
                   <div className="input-group">
                     <input
                       type={showConfirmPassword ? "text" : "password"}
-                      className={`form-control form-control-sm ${
-                        parentFormik.touched.password_confirmation &&
+                      className={`form-control form-control-sm ${parentFormik.touched.password_confirmation &&
                         parentFormik.errors.password_confirmation
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                        ? "is-invalid"
+                        : ""
+                        }`}
                       {...parentFormik.getFieldProps("password_confirmation")}
                     />
                     <button
@@ -443,7 +445,7 @@ function StudentView() {
                     <p className="fw-medium text-sm">Student Middle Name</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">: {data.middle_name}</p>
+                    <p className="text-muted text-sm">: {data.middle_name || "--"}</p>
                   </div>
                 </div>
               </div>
@@ -500,7 +502,7 @@ function StudentView() {
                   </div>
                   <div className="col-6">
                     <p className="text-muted text-sm text-break">
-                      : {data?.parent_email}
+                      : {data?.parent_email || "--"}
                     </p>
                   </div>
                 </div>
@@ -512,7 +514,7 @@ function StudentView() {
                   </div>
                   <div className="col-6">
                     <p className="text-muted text-sm text-break">
-                      : {data?.parent_mobile}
+                      : {data?.parent_mobile || "--"}
                     </p>
                   </div>
                 </div>
@@ -534,11 +536,11 @@ function StudentView() {
                   </div>
                   <div className="col-6">
                     <p className="text-muted text-sm">
-                      :{" "}
+                      :{"--"}
                       {data.subscriptions_names
                         ? JSON.parse(data.subscriptions_names).join(", ")
                         : ""}
-                    </p>{" "}
+                    </p>
                   </div>
                 </div>
               </div>

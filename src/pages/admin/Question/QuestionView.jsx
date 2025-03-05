@@ -195,9 +195,9 @@ function QustionView() {
                     <p className="text-muted text-sm">
                       :{" "}
                       {data.question?.options
-                        ? JSON.parse(data.question?.options).join(", ")
-                        : ""}
-                    </p>{" "}
+                        ? Object.values(JSON.parse(data.question.options)).join(", ")
+                        : "N/A"}
+                    </p>
                   </div>
                 </div>
               </div>

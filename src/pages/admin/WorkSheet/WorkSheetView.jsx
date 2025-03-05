@@ -46,29 +46,30 @@ function WorkSheetView() {
     },
   });
 
-  const columnsstudent = useMemo(
-    () => [
-      {
-        accessorKey: "sno",
-        header: "S.NO",
-        size: 40,
-        Cell: ({ row }) => row.index + 1,
-      },
-      {
-        accessorKey: "student_names",
-        header: "Student Name",
-      },
-      {
-        accessorKey: "grade_name",
-        header: "Grade",
-      },
-      {
-        accessorKey: "status",
-        header: "Status",
-      },
-    ],
-    [data]
-  );
+  // const columnsstudent = useMemo(
+  //   () => [
+  //     {
+  //       accessorKey: "sno",
+  //       header: "S.NO",
+  //       size: 40,
+  //       Cell: ({ row }) => row.index + 1,
+  //     },
+  //     {
+  //       accessorKey: "student_names",
+  //       header: "Student Name",
+  //     },
+  //     {
+  //       accessorKey: "grade_name",
+  //       header: "Grade",
+  //     },
+  //     {
+  //       accessorKey: "status",
+  //       header: "Status",
+  //     },
+  //   ],
+  //   [data]
+  // );
+  
   const columns = useMemo(
     () => [
       {
@@ -103,13 +104,16 @@ function WorkSheetView() {
           const questionTypeObj = quesIdWithType.find(
             (q) => q.id === row.original.id
           );
-
-          // Check if question type is "multichoice"
-          if (questionTypeObj?.questype.toLowerCase() === "multichoice") {
-            return row.original.options || "N/A";
+          if (!questionTypeObj) {
+            return "--";
           }
-
-          return ""; // Return empty for other question types
+          if (questionTypeObj.questype.toLowerCase() === "closed") {
+            return "Yes/No";
+          }
+          if (questionTypeObj.questype.toLowerCase() === "multichoice") {
+            return row.original.options || "--";
+          }
+          return "--";
         },
       },
     ],
@@ -398,7 +402,9 @@ function WorkSheetView() {
                         enableFullScreenToggle={false}
                         muiTableBodyRowProps={({ row }) => ({
                           onClick: () =>
-                            navigate(`/question/view/${row.original.id}`),
+                            data.type === "challenge"
+                              ? navigate(`/challenges/view/${row.original.id}`)
+                              : navigate(`/question/view/${row.original.id}`),
                           style: { cursor: "pointer" },
                         })}
                       />

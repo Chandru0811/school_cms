@@ -67,7 +67,7 @@ function SubscriptionView() {
           &nbsp;Subscriptions View
         </li>
       </ol>
-      <div className="card vh-100" style={{ border: "1px solid #dbd9d0" }}>
+      <div className="card" style={{ border: "1px solid #dbd9d0", minHeight: "70vh" }}>
         <div className="d-flex px-4 justify-content-between align-items-center card_header p-1 mb-4">
           <div className="d-flex align-items-center">
             <div className="d-flex">
@@ -96,121 +96,87 @@ function SubscriptionView() {
             <div className="loader"></div>
           </div>
         ) : (
-          <div className="container-fluid px-4">
-            <div className="row pb-3">
-              <div className="col-md-6 col-12 my-2">
+          <>
+            <div className="container-fluid px-4">
+              <div className="row pb-3">
+                <div className="col-md-6 col-12 my-2">
+                  <div className="row">
+                    <div className="col-6">
+                      <p className="fw-medium text-sm">Grade</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm">: {data.grand_name}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12 my-2">
+                  <div className="row">
+                    <div className="col-6">
+                      <p className="fw-medium text-sm">Worksheets</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm">
+                        :{" "}
+                        {data.worksheets_names
+                          ? JSON.parse(data.worksheets_names).join(", ")
+                          : ""}
+                      </p>{" "}
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12 my-2">
+                  <div className="row">
+                    <div className="col-6">
+                      <p className="fw-medium text-sm">Name</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm">: {data.name}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12 my-2">
+                  <div className="row">
+                    <div className="col-6">
+                      <p className="fw-medium text-sm">Price</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm">: {data.price}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12 my-2">
+                  <div className="row">
+                    <div className="col-6">
+                      <p className="fw-medium text-sm">Duration</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm">: {data.duration}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12 my-2">
+                  <div className="row">
+                    <div className="col-6">
+                      <p className="fw-medium text-sm">Description</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="text-muted text-sm">: {data.description}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6col-12 my-2">
                 <div className="row">
-                  <div className="col-6">
-                    <p className="fw-medium text-sm">Grade</p>
-                  </div>
-                  <div className="col-6">
-                    <p className="text-muted text-sm">: {data.grand_name}</p>
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6 col-12 my-2">
-                <div className="row">
-                  <div className="col-6">
-                    <p className="fw-medium text-sm">Worksheets</p>
-                  </div>
-                  <div className="col-6">
-                    <p className="text-muted text-sm">
-                      :{" "}
-                      {data.worksheets_names
-                        ? JSON.parse(data.worksheets_names).join(", ")
-                        : ""}
-                    </p>{" "}
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6 col-12 my-2">
-                <div className="row">
-                  <div className="col-6">
-                    <p className="fw-medium text-sm">Name</p>
-                  </div>
-                  <div className="col-6">
-                    <p className="text-muted text-sm">: {data.name}</p>
-                  </div>
-                </div>
-              </div>
-              {/* <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Subject</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">
-                    : {data.subject_id} 
-                     </p>
-                </div>
-              </div>
-            </div> */}
-              <div className="col-md-6 col-12 my-2">
-                <div className="row">
-                  <div className="col-6">
-                    <p className="fw-medium text-sm">Price</p>
-                  </div>
-                  <div className="col-6">
-                    <p className="text-muted text-sm">: {data.price}</p>
-                  </div>
-                </div>
-              </div>
-              {/* <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">Start Date</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">
-                    : {data.details.start_date}
-                  </p>
-                </div>
-              </div>
-            </div> */}
-              {/* <div className="col-md-6 col-12 my-2">
-              <div className="row">
-                <div className="col-6">
-                  <p className="fw-medium text-sm">End Date</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">
-                    : {data.details.end_date}
-                  </p>
-                </div>
-              </div>
-            </div> */}
-              <div className="col-md-6 col-12 my-2">
-                <div className="row">
-                  <div className="col-6">
-                    <p className="fw-medium text-sm">Duration</p>
-                  </div>
-                  <div className="col-6">
-                    <p className="text-muted text-sm">: {data.duration}</p>
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6 col-12 my-2">
-                <div className="row">
-                  <div className="col-6">
-                    <p className="fw-medium text-sm">Description</p>
-                  </div>
-                  <div className="col-6">
-                    <p className="text-muted text-sm">: {data.description}</p>
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6 col-12 my-2">
-                <div className="row">
-                  <div className="col-6">
+                  <div className="col-3">
                     <p className="fw-medium text-sm">Detail</p>
                   </div>
-                  <div className="col-6">
+                  <div className="col-9">
                     <p className="text-muted text-sm" dangerouslySetInnerHTML={{ __html: data.details }}></p>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </>
         )}
       </div>
     </div>

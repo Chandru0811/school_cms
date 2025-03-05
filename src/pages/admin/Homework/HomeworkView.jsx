@@ -100,12 +100,16 @@ function HomeworkView() {
           const questionTypeObj = quesIdWithType.find(
             (q) => q.id === row.original.id
           );
-
-          // Check if question type is "closed"
-          if (questionTypeObj?.questype.toLowerCase() === "closed") {
+          if (!questionTypeObj) {
+            return "--";
+          }
+          if (questionTypeObj.questype.toLowerCase() === "closed") {
             return "Yes/No";
           }
-          return row.original.options || "N/A";
+          if (questionTypeObj.questype.toLowerCase() === "multichoice") {
+            return row.original.options || "--";
+          }
+          return "--";
         },
       },
     ],
@@ -167,7 +171,7 @@ function HomeworkView() {
           &nbsp;Homework View
         </li>
       </ol>
-      <div className="card vh-100" style={{ border: "1px solid #dbd9d0" }}>
+      <div className="card" style={{ border: "1px solid #dbd9d0" }}>
         <div className="d-flex px-4 justify-content-between align-items-center card_header p-1 mb-4">
           <div className="d-flex align-items-center">
             <div className="d-flex">

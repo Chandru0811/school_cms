@@ -65,15 +65,6 @@ function QuestionAdd() {
       then: (schema) => schema.required("*File is required"),
       otherwise: (schema) => schema.notRequired(),
     }),
-    // multiChoices: yup.array().of(
-    //   yup.object().shape({
-    //     value: yup.string().required("*Multi choice value is required"),
-    //   })
-    // ),
-    // filledAnswer: yup.string().required("*Field is required"),
-    // closedOption: yup.string().required("*Select a one option"),
-    // shortAnswer: yup.string().required("*Field is required"),
-    // checkUploadFile: yup.string().required("*Please upload a file"),
   });
 
   const formik = useFormik({
@@ -137,61 +128,35 @@ function QuestionAdd() {
         }
         
         rows.forEach((row, index) => {
-          formData.append(
-            `questions[${index}][question]`,
-            row["Question"] || ""
-          );
-          formData.append(
-            `questions[${index}][options][Option 1]`,
-            row["Option 1"] || ""
-          );
-          formData.append(
-            `questions[${index}][options][Option 2]`,
-            row["Option 2"] || ""
-          );
-          formData.append(
-            `questions[${index}][options][Option 3]`,
-            row["Option 3"] || ""
-          );
-          formData.append(
-            `questions[${index}][options][Option 4]`,
-            row["Option 4"] || ""
-          );
-          formData.append(
-            `questions[${index}][difficult_level]`,
-            row["difficult_level"] || ""
-          );
+          formData.append(`questions[${index}][question]`, row["Question"] || "");
+          formData.append(`questions[${index}][options][Option 1]`, row["Option 1"] || "");
+          formData.append(`questions[${index}][options][Option 2]`, row["Option 2"] || "");
+          formData.append(`questions[${index}][options][Option 3]`, row["Option 3"] || "");
+          formData.append(`questions[${index}][options][Option 4]`, row["Option 4"] || "");
+          formData.append(`questions[${index}][difficult_level]`, row["difficult_level"] || "");
           formData.append(`questions[${index}][hint]`, row["Hint"] || "");
-          formData.append(`questions[${index}][answer][multichoice]`, row["Answer"] || "");
+
+          // Map the selected option label (e.g., "Option 2") to its value (e.g., "Singapore")
+          const selectedOptionLabel = row["Answer"];
+          const selectedOptionValue = row[`Option ${selectedOptionLabel.replace("Option", "").trim()}`];
+          formData.append(`questions[${index}][answer][multichoice]`, selectedOptionValue || "");
         });
       } else {
         formData.append("question", values.question);
         formData.append("difficult_level", values.difficult_level);
         formData.append("hint", values.hint);
-        let multichoiceAdded = false;
 
-        values.answer.forEach((ans) => {
-          if (ans.fillable) {
-            formData.append("answer[fillable]", ans.fillable);
-          }
-          if (ans.multichoice) {
-            formData.append("answer[multichoice]", ans.multichoice);
-            multichoiceAdded = true;
-          }
-          if (ans.short_answer) {
-            formData.append("answer[short_answer]", ans.short_answer);
-          }
-          if (ans.closed) {
-            formData.append("answer[closed]", ans.closed);
-          }
-        });
+        // Handle options and answer
+        const optionsArray = values.options.map((option) => option.value);
+        formData.append("options", JSON.stringify(optionsArray));
 
-        values.options.forEach((option) => {
-          if (option.value.trim()) {
-            formData.append("options[]", option.value.trim());
-          }
-        });
+        // Handle answer
+        const selectedAnswer = values.answer[0]?.multichoice;
+        if (selectedAnswer) {
+          formData.append("answer", JSON.stringify({ multichoice: selectedAnswer }));
+        }
 
+        // Handle file uploads
         if (values.upload) {
           formData.append("upload", values.upload);
         }
@@ -201,10 +166,7 @@ function QuestionAdd() {
       }
 
       try {
-        let url =
-          formik.values.uploadType === "upload"
-            ? "multiple/questions"
-            : "question";
+        let url = values.uploadType === "upload" ? "multiple/questions" : "question";
         const response = await api.post(url, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
@@ -530,11 +492,10 @@ function QuestionAdd() {
                     }
                   }}
                   labelledBy="Select Center"
-                  className={`form-multi-select form-multi-select-sm ${
-                    formik.touched.center_id && formik.errors.center_id
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-multi-select form-multi-select-sm ${formik.touched.center_id && formik.errors.center_id
+                    ? "is-invalid"
+                    : ""
+                    }`}
                 />
                 {formik.touched.center_id && formik.errors.center_id && (
                   <div className="invalid-feedback">
@@ -547,11 +508,10 @@ function QuestionAdd() {
                   Grade<span className="text-danger">*</span>
                 </label>
                 <select
-                  className={`form-select form-select-sm ${
-                    formik.touched.grade_id && formik.errors.grade_id
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-select form-select-sm ${formik.touched.grade_id && formik.errors.grade_id
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   value={formik.values.grade_id}
                   onChange={(e) =>
                     formik.setFieldValue("grade_id", e.target.value)
@@ -575,11 +535,10 @@ function QuestionAdd() {
                   Subject<span className="text-danger">*</span>
                 </label>
                 <select
-                  className={`form-select form-select-sm ${
-                    formik.touched.subject_id && formik.errors.subject_id
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-select form-select-sm ${formik.touched.subject_id && formik.errors.subject_id
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   value={formik.values.subject_id}
                   onChange={(e) =>
                     formik.setFieldValue("subject_id", e.target.value)
@@ -603,11 +562,10 @@ function QuestionAdd() {
                   Topic<span className="text-danger">*</span>
                 </label>
                 <select
-                  className={`form-select form-select-sm ${
-                    formik.touched.topic_id && formik.errors.topic_id
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-select form-select-sm ${formik.touched.topic_id && formik.errors.topic_id
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   {...formik.getFieldProps("topic_id")}
                 >
                   <option value="">Select Topic</option>
@@ -628,11 +586,10 @@ function QuestionAdd() {
                   Question Upload Type<span className="text-danger">*</span>
                 </label>
                 <select
-                  className={`form-select form-select-sm ${
-                    formik.touched.uploadType && formik.errors.uploadType
-                      ? "is-invalid"
-                      : ""
-                  }`}
+                  className={`form-select form-select-sm ${formik.touched.uploadType && formik.errors.uploadType
+                    ? "is-invalid"
+                    : ""
+                    }`}
                   {...formik.getFieldProps("uploadType")}
                 >
                   <option value="" disabled>
@@ -706,11 +663,10 @@ function QuestionAdd() {
                     <span className="text-danger">*</span>
                     <input
                       type="text"
-                      className={`form-control form-control-sm ${
-                        formik.touched.question && formik.errors.question
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                      className={`form-control form-control-sm ${formik.touched.question && formik.errors.question
+                        ? "is-invalid"
+                        : ""
+                        }`}
                       {...formik.getFieldProps("question")}
                     ></input>
                     {formik.touched.question && formik.errors.question && (
@@ -724,11 +680,10 @@ function QuestionAdd() {
                     <input
                       type="file"
                       accept="image/*"
-                      className={`form-control form-control-sm ${
-                        formik.touched.upload && formik.errors.upload
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                      className={`form-control form-control-sm ${formik.touched.upload && formik.errors.upload
+                        ? "is-invalid"
+                        : ""
+                        }`}
                       onChange={(event) => {
                         formik.setFieldValue(
                           "upload",
@@ -784,12 +739,11 @@ function QuestionAdd() {
                         <input
                           type="text"
                           placeholder="Your Question & Answer"
-                          className={`form-control form-control-sm ${
-                            formik.touched.answer?.[0]?.fillable &&
+                          className={`form-control form-control-sm ${formik.touched.answer?.[0]?.fillable &&
                             formik.errors.answer?.[0]?.fillable
-                              ? "is-invalid"
-                              : ""
-                          }`}
+                            ? "is-invalid"
+                            : ""
+                            }`}
                           name="answer"
                           value={formik.values.answer[0]?.fillable || ""}
                           onChange={(e) => {
@@ -925,13 +879,12 @@ function QuestionAdd() {
                             <div className="input-group mb-2">
                               <input
                                 type="text"
-                                className={`form-control form-control-sm ${
-                                  formik.errors.options &&
+                                className={`form-control form-control-sm ${formik.errors.options &&
                                   formik.touched.options &&
                                   formik.errors.options[index]?.value
-                                    ? "is-invalid"
-                                    : ""
-                                }`}
+                                  ? "is-invalid"
+                                  : ""
+                                  }`}
                                 name={`options[${index}].value`}
                                 value={multiChoice.value}
                                 onChange={(e) => {
@@ -949,12 +902,12 @@ function QuestionAdd() {
                                     updatedAnswers = updatedAnswers.map((ans) =>
                                       ans.multichoice === multiChoice.value
                                         ? {
-                                            ...ans,
-                                            multichoice: e.target.value.replace(
-                                              /,/g,
-                                              ""
-                                            ),
-                                          }
+                                          ...ans,
+                                          multichoice: e.target.value.replace(
+                                            /,/g,
+                                            ""
+                                          ),
+                                        }
                                         : ans
                                     );
                                   }
@@ -1027,12 +980,11 @@ function QuestionAdd() {
                         <label className="form-label">Short Answer</label>
                         <textarea
                           rows={3}
-                          className={`form-control form-control-sm ${
-                            formik.touched.answer?.[0]?.short_answer &&
+                          className={`form-control form-control-sm ${formik.touched.answer?.[0]?.short_answer &&
                             formik.errors.answer?.[0]?.short_answer
-                              ? "is-invalid"
-                              : ""
-                          }`}
+                            ? "is-invalid"
+                            : ""
+                            }`}
                           name="answer"
                           value={formik.values.answer[0]?.short_answer || ""}
                           onChange={(e) => {
@@ -1058,12 +1010,11 @@ function QuestionAdd() {
                         <label className="form-label">Answer Upload</label>
                         <input
                           type="file"
-                          className={`form-control form-control-sm ${
-                            formik.touched.answer_upload &&
+                          className={`form-control form-control-sm ${formik.touched.answer_upload &&
                             formik.errors.answer_upload
-                              ? "is-invalid"
-                              : ""
-                          }`}
+                            ? "is-invalid"
+                            : ""
+                            }`}
                           name="answer_upload"
                           accept="image/*"
                           onChange={(event) => {
@@ -1162,7 +1113,8 @@ function QuestionAdd() {
               ) : (
                 ""
               )}
-              {/* <div className="col-md-6 col-12 mb-3">
+              <>
+                {/* <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
                   Difficult Level<span className="text-danger">*</span>
                 </label>
@@ -1214,7 +1166,7 @@ function QuestionAdd() {
                     </div>
                   )}
               </div> */}
-              {/* <div className="col-md-6 col-12 mb-3">
+                {/* <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">Question</label>
                 <span className="text-danger">*</span>
                 <input
@@ -1231,7 +1183,7 @@ function QuestionAdd() {
                   </div>
                 )}
               </div> */}
-              {/* <div className="col-md-6 col-12 mb-3">
+                {/* <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">Upload File</label>
                 <input
                   type="file"
@@ -1250,7 +1202,7 @@ function QuestionAdd() {
                   </div>
                 )}
               </div> */}
-              {/* <div className="col-md-6 col-12 mb-3">
+                {/* <div className="col-md-6 col-12 mb-3">
                 <div>
                   <label className="form-label">
                     Question Type<span className="text-danger">*</span>
@@ -1517,6 +1469,7 @@ function QuestionAdd() {
                   {...formik.getFieldProps("hint")}
                 ></input>
               </div> */}
+              </>
             </div>
           </div>
         </div>

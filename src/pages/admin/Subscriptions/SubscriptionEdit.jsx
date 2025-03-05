@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import * as Yup from "yup";
 import { useEffect, useMemo, useState } from "react";
 import api from "../../../config/URL";
@@ -11,9 +11,10 @@ import { MultiSelect } from "react-multi-select-component";
 function SubscriptionEdit() {
   const [selectedWorksheet, setSelectedWorksheet] = useState([]);
   const [grades, setGrades] = useState([]);
-  const [Worksheets, setWorksheets] = useState([]);
+  const [worksheets, setWorksheets] = useState([]);
   const [loadIndicator, setLoadIndicator] = useState(false);
   const navigate = useNavigate();
+  const { id } = useParams();
 
   const validationSchema = Yup.object({
     grade_id: Yup.string().required("*Select a grade"),
@@ -23,10 +24,10 @@ function SubscriptionEdit() {
       .min(1, "*Select at least one Worksheet")
       .required("*Select a Worksheet name"),
     name: Yup.string().required("*Name is a required"),
-    details: Yup.string().required("*Details is a required"),
     price: Yup.string().required("*Price is a required"),
     duration: Yup.string().required("*Duration is a required"),
-    description: Yup.string().required("*Description is a required"),
+    // details: Yup.string().required("*Details is a required"),
+    // description: Yup.string().required("*Description is a required"),
   });
 
   const formik = useFormik({
@@ -44,7 +45,7 @@ function SubscriptionEdit() {
       setLoadIndicator(true);
       console.log("Form Values:", values);
       try {
-        const response = await api.post("subscription", values);
+        const response = await api.put(`subscription/update/${id}`, values);
         if (response.status === 200) {
           console.log("object", response);
           toast.success(response.data?.message);
@@ -54,8 +55,6 @@ function SubscriptionEdit() {
       } catch (error) {
         if (error.response?.data?.errors) {
           const errors = error.response.data.errors;
-
-          // Loop through errors and show each one in a toast
           Object.keys(errors).forEach((key) => {
             errors[key].forEach((errMsg) => {
               toast.error(errMsg);
@@ -71,6 +70,37 @@ function SubscriptionEdit() {
     validateOnChange: false,
     validateOnBlur: true,
   });
+
+  const getData = async () => {
+    try {
+      const response = await api.get(`subscription/${id}`);
+      const { data } = response.data;
+      const worksheetIds = JSON.parse(data.worksheet_id);
+      const worksheetNames = JSON.parse(data.worksheets_names);
+      console.log("workid::", worksheetIds)
+      const selectedWorksheets = worksheetIds.map((id, index) => ({
+        value: id,
+        label: worksheetNames[index],
+      }));
+      formik.setValues({
+        grade_id: data.grade_id,
+        worksheet_id: worksheetIds,
+        name: data.name,
+        details: data.details,
+        price: data.price,
+        duration: data.duration,
+        description: data.description,
+      });
+
+      setSelectedWorksheet(selectedWorksheets);
+
+      getWorksheetList(data.grade_id);
+    } catch (e) {
+      toast.error(
+        `Error Fetching Data: ${e?.response?.data?.error || e.message}`
+      );
+    }
+  };
 
   const handleDetailsChange = (value) => {
     formik.setFieldValue("details", value);
@@ -92,7 +122,6 @@ function SubscriptionEdit() {
 
   const getWorksheetList = async (selectId) => {
     try {
-      // If no grade_id is selected, fetch the entire list of worksheets
       if (!selectId || selectId.length === 0) {
         const response = await api.get("worksheets/list");
         const formattedWorksheets = response.data?.data?.map((worksheet) => ({
@@ -102,27 +131,20 @@ function SubscriptionEdit() {
         setWorksheets(formattedWorksheets);
         return;
       }
-
-      // Fetch worksheets based on the selected grade_id
       const response = await api.get(`filter/worksheets?grade_id[]=${selectId}`);
       const formattedWorksheets = response.data?.data?.map((worksheet) => ({
         value: worksheet.id,
         label: worksheet.title,
       }));
       setWorksheets(formattedWorksheets);
-
-      // Reset the selected worksheets if they are not in the new list
-      if (
-        !formattedWorksheets.some((worksheet) =>
-          formik.values.worksheet_id.includes(worksheet.value))
-      ) {
-        formik.setFieldValue("worksheet_id", []);
-        setSelectedWorksheet([]);
-      }
+      // if (!formattedWorksheets.some((t) => formik.values.worksheet_id.includes(t.value))) {
+      //   formik.setFieldValue("worksheet_id", []);
+      // }
     } catch (e) {
       toast.error(`Error Fetching: ${e?.response?.data?.error || e.message}`);
     }
   };
+  // console.log("formik:", formik.values)
 
   const toolbarHandlers = {
     undo: function () {
@@ -222,11 +244,12 @@ function SubscriptionEdit() {
 
   useEffect(() => {
     getGradeList();
-  }, []);
+    getData();
+  }, [id]);
 
-  useEffect(() => {
-    getWorksheetList(formik.values.grade_id);
-  }, [formik.values.grade_id]);
+  // useEffect(() => {
+  //   getWorksheetList(formik.values.grade_id);
+  // }, [formik.values.grade_id]);
 
   return (
     <div className="container-fluid px-0">
@@ -301,6 +324,7 @@ function SubscriptionEdit() {
                   onChange={(e) => {
                     const selectedGradeId = e.target.value;
                     formik.setFieldValue("grade_id", selectedGradeId);
+                    getWorksheetList(selectedGradeId);
                   }}
                 >
                   <option value="">Select Grade ID</option>
@@ -318,10 +342,10 @@ function SubscriptionEdit() {
               </div>
               <div className="col-md-6 col-12 mb-4">
                 <label className="form-label">
-                  Worksheet
+                  Worksheet<span className="text-danger">*</span>
                 </label>
                 <MultiSelect
-                  options={Worksheets}
+                  options={worksheets}
                   value={selectedWorksheet}
                   onChange={(selected) => {
                     setSelectedWorksheet(selected);

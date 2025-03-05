@@ -23,10 +23,10 @@ function SubscriptionAdd() {
       .min(1, "*Select at least one Worksheet")
       .required("*Select a Worksheet name"),
     name: Yup.string().required("*Name is a required"),
-    details: Yup.string().required("*Details is a required"),
     price: Yup.string().required("*Price is a required"),
     duration: Yup.string().required("*Duration is a required"),
-    description: Yup.string().required("*Description is a required"),
+    // description: Yup.string().required("*Description is a required"),
+    // details: Yup.string().required("*Details is a required"),
   });
 
   const formik = useFormik({

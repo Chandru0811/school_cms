@@ -1,6 +1,7 @@
 import React from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
 import { IoMdShare } from "react-icons/io";
+import success from "../../../assets/images/tick.png";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 
 function HomeSuccessfull() {
@@ -56,6 +57,11 @@ function HomeSuccessfull() {
                                     </>
                                 ) : (
                                     <>
+                                        <div className="flex justify-center mb-3">
+                                            <div>
+                                                <img src={success} className="w-16 h-16 img-fluid" />
+                                            </div>
+                                        </div>
                                         < h2 className="text-lg font-bold my-3">Success</h2>
                                         <p className="text-gray-600 text-sm mt-1">
                                             Thank you for completing the assessment!

@@ -33,15 +33,6 @@ function QuestionEdit() {
       .array()
       .min(1, "*Select at least one question type")
       .required("*Select a question type"),
-    // multiChoices: yup.array().of(
-    //   yup.object().shape({
-    //     value: yup.string().required("*Multi choice value is required"),
-    //   })
-    // ),
-    // filledAnswer: yup.string().required("*Field is required"),
-    // closedOption: yup.string().required("*Select a one option"),
-    // shortAnswer: yup.string().required("*Field is required"),
-    // checkUploadFile: yup.string().required("*Please upload a file"),
   });
 
   const formik = useFormik({
@@ -136,6 +127,134 @@ function QuestionEdit() {
     },
   });
 
+  // const getData = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const response = await api.get(`question/${id}`);
+  //     const { question, answer } = response.data.data;
+
+  //     // Parse JSON strings
+  //     const parsedCenterIds = JSON.parse(question.center_id);
+  //     const parsedCenterNames = JSON.parse(question.center_names);
+  //     const parsedQuesType = JSON.parse(question.ques_type);
+  //     const parsedOptions = JSON.parse(question.options || "[]");
+  //     const parsedAnswerType = JSON.parse(answer.answer_type);
+  //     const parsedAnswer = JSON.parse(answer.answer);
+
+  //     // Map selected centers
+  //     const selectedCenters = parsedCenterIds.map((id, index) => ({
+  //       value: id,
+  //       label: parsedCenterNames[index] || "",
+  //     }));
+  //     setSelectedCenter(selectedCenters);
+
+  //     // Map multi-choice options
+  //     const initialMultiChoices = parsedOptions.map((option, index) => ({
+  //       id: Date.now() + index,
+  //       value: option,
+  //       selected: parsedAnswer.multichoice === option, // Mark selected option
+  //     }));
+
+  //     // Set initial values for the form
+  //     formik.setValues({
+  //       center_id: selectedCenters.map((center) => center.value),
+  //       grade_id: question.grade_id,
+  //       subject_id: question.subject_id,
+  //       topic_id: question.topic_id,
+  //       difficult_level: question.difficult_level,
+  //       question: question.question,
+  //       upload: question.upload,
+  //       ques_type: parsedQuesType,
+  //       options: initialMultiChoices,
+  //       answer_upload: answer.answer_upload,
+  //       hint: question.hint,
+  //       answer: [
+  //         {
+  //           fillable: parsedAnswer.fillable || "",
+  //           multichoice: parsedAnswer.multichoice || "",
+  //           short_answer: parsedAnswer.short_answer || "",
+  //           closed: parsedAnswer.closed || "",
+  //         },
+  //       ],
+  //     });
+  //   } catch (e) {
+  //     toast.error("Error Fetching Data ", e?.response?.data?.error);
+  //   }finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  // const getData = async () => {
+  //   try {
+  //     setLoading(true);
+  //     const response = await api.get(`question/${id}`);
+  //     const { question, answer } = response.data.data;
+
+  //     // Parse JSON strings
+  //     const parsedCenterIds = JSON.parse(question.center_id);
+  //     const parsedCenterNames = JSON.parse(question.center_names);
+  //     const parsedQuesType = JSON.parse(question.ques_type);
+  //     const parsedAnswerType = JSON.parse(answer.answer_type);
+  //     const parsedAnswer = JSON.parse(answer.answer);
+
+  //     // Map selected centers
+  //     const selectedCenters = parsedCenterIds.map((id, index) => ({
+  //       value: id,
+  //       label: parsedCenterNames[index] || "",
+  //     }));
+  //     setSelectedCenter(selectedCenters);
+
+  //     // Handle options parsing
+  //     let parsedOptions;
+  //     try {
+  //       parsedOptions = JSON.parse(question.options || "[]");
+  //       if (typeof parsedOptions === 'object' && !Array.isArray(parsedOptions)) {
+  //         // Convert object to array of key-value pairs
+  //         parsedOptions = Object.entries(parsedOptions).map(([key, value]) => ({
+  //           id: key,
+  //           value: value,
+  //         }));
+  //       }
+  //     } catch (e) {
+  //       parsedOptions = [];
+  //     }
+
+  //     // Map multi-choice options
+  //     const initialMultiChoices = parsedOptions.map((option, index) => ({
+  //       id: Date.now() + index,
+  //       value: option.value || option,
+  //       selected: parsedAnswer.multichoice === (option.value || option), // Mark selected option
+  //     }));
+
+  //     // Set initial values for the form
+  //     formik.setValues({
+  //       center_id: selectedCenters.map((center) => center.value),
+  //       grade_id: question.grade_id,
+  //       subject_id: question.subject_id,
+  //       topic_id: question.topic_id,
+  //       difficult_level: question.difficult_level,
+  //       question: question.question,
+  //       upload: question.upload,
+  //       ques_type: parsedQuesType,
+  //       options: initialMultiChoices,
+  //       answer_upload: answer.answer_upload,
+  //       hint: question.hint,
+  //       answer: [
+  //         {
+  //           fillable: parsedAnswer.fillable || "",
+  //           multichoice: parsedAnswer.multichoice || "",
+  //           short_answer: parsedAnswer.short_answer || "",
+  //           closed: parsedAnswer.closed || "",
+  //         },
+  //       ],
+  //     });
+  //   } catch (e) {
+  //     toast.error("Error Fetching Data ", e?.response?.data?.error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const getData = async () => {
     try {
       setLoading(true);
@@ -143,12 +262,11 @@ function QuestionEdit() {
       const { question, answer } = response.data.data;
 
       // Parse JSON strings
-      const parsedCenterIds = JSON.parse(question.center_id);
-      const parsedCenterNames = JSON.parse(question.center_names);
-      const parsedQuesType = JSON.parse(question.ques_type);
-      const parsedOptions = JSON.parse(question.options || "[]");
-      const parsedAnswerType = JSON.parse(answer.answer_type);
-      const parsedAnswer = JSON.parse(answer.answer);
+      const parsedCenterIds = JSON.parse(question.center_id || "[]");
+      const parsedCenterNames = JSON.parse(question.center_names || "[]");
+      const parsedQuesType = JSON.parse(question.ques_type || "[]");
+      const parsedAnswerType = JSON.parse(answer.answer_type || "[]");
+      const parsedAnswer = JSON.parse(answer.answer || "{}");
 
       // Map selected centers
       const selectedCenters = parsedCenterIds.map((id, index) => ({
@@ -157,11 +275,29 @@ function QuestionEdit() {
       }));
       setSelectedCenter(selectedCenters);
 
-      // Map multi-choice options
+      // Handle options parsing
+      let parsedOptions;
+      try {
+        parsedOptions = JSON.parse(question.options || "[]");
+        if (typeof parsedOptions === 'object' && !Array.isArray(parsedOptions)) {
+          // Convert object to array of key-value pairs
+          parsedOptions = Object.entries(parsedOptions).map(([key, value]) => ({
+            id: key,
+            value: value,
+          }));
+        }
+      } catch (e) {
+        parsedOptions = [];
+      }
+
+      // Extract the correct multi-choice answer
+      const correctMultiChoiceAnswer = parsedAnswer.multichoice || "";
+
+      // Map multi-choice options and set the selected one
       const initialMultiChoices = parsedOptions.map((option, index) => ({
         id: Date.now() + index,
-        value: option,
-        selected: parsedAnswer.multichoice === option, // Mark selected option
+        value: option.value || option,
+        selected: (option.value || option) === correctMultiChoiceAnswer, // Mark selected option
       }));
 
       // Set initial values for the form
@@ -180,15 +316,15 @@ function QuestionEdit() {
         answer: [
           {
             fillable: parsedAnswer.fillable || "",
-            multichoice: parsedAnswer.multichoice || "",
+            multichoice: correctMultiChoiceAnswer, // Correctly store multi-choice answer
             short_answer: parsedAnswer.short_answer || "",
             closed: parsedAnswer.closed || "",
           },
         ],
       });
     } catch (e) {
-      toast.error("Error Fetching Data ", e?.response?.data?.error);
-    }finally {
+      toast.error("Error Fetching Data", e?.response?.data?.error);
+    } finally {
       setLoading(false);
     }
   };
@@ -253,7 +389,7 @@ function QuestionEdit() {
       toast.error(`Error Fetching Subjects: ${e?.response?.data?.error || e.message}`);
     }
   };
-    const getTopicsList = async () => {
+  const getTopicsList = async () => {
     try {
       if (!formik.values.subject_id) {
         setTopics([]);
@@ -394,475 +530,475 @@ function QuestionEdit() {
             </div>
           </div>
           {loading ? (
-          <div className="loader-container">
-            <div className="loader"></div>
-          </div>
-        ) : (
-          <div className="container-fluid px-4">
-            <div className="row">
-            <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
-                  Centre Name<span className="text-danger">*</span>
-                </label>
-                <MultiSelect
-                  options={centerList}
-                  value={selectedCenter}
-                  onChange={(selected) => {
-                    setSelectedCenter(selected);
-                    formik.setFieldValue(
-                      "center_id",
-                      selected.map((option) => option.value)
-                    );
-                    if (selected.length === 0) {
-                      setGrades([]);
-                      setSubjects([]);
-                      formik.setFieldValue("grade_id", "");
-                      formik.setFieldValue("subject_id", "");
-                    }
-                  }}
-                  labelledBy="Select Center"
-                  className={`form-multi-select form-multi-select-sm ${formik.touched.center_id && formik.errors.center_id ? "is-invalid" : ""
-                    }`}
-                />
-                {formik.touched.center_id && formik.errors.center_id && (
-                  <div className="invalid-feedback">
-                    {formik.errors.center_id}
-                  </div>
-                )}
-              </div>
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
-                  Grade<span className="text-danger">*</span>
-                </label>
-                <select
-                  className={`form-select form-select-sm ${formik.touched.grade_id && formik.errors.grade_id
-                    ? "is-invalid"
-                    : ""
-                    }`}
-                  value={formik.values.grade_id}
-                  onChange={(e) =>
-                    formik.setFieldValue("grade_id", e.target.value)
-                  }
-                >
-                  <option value="">Select grade</option>
-                  {grades.map((grade) => (
-                    <option key={grade.value} value={grade.value}>
-                      {grade.label}
-                    </option>
-                  ))}
-                </select>
-                {formik.touched.grade_id && formik.errors.grade_id && (
-                  <div className="invalid-feedback">
-                    {formik.errors.grade_id}
-                  </div>
-                )}
-              </div>
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
-                  Subject<span className="text-danger">*</span>
-                </label>
-                <select
-                  className={`form-select form-select-sm ${formik.touched.subject_id && formik.errors.subject_id
-                    ? "is-invalid"
-                    : ""
-                    }`}
-                  value={formik.values.subject_id}
-                  onChange={(e) =>
-                    formik.setFieldValue("subject_id", e.target.value)
-                  }
-                >
-                  <option value="">Select Subject</option>
-                  {subjects.map((subject) => (
-                    <option key={subject.value} value={subject.value}>
-                      {subject.label}
-                    </option>
-                  ))}
-                </select>
-                {formik.touched.subject_id && formik.errors.subject_id && (
-                  <div className="invalid-feedback">
-                    {formik.errors.subject_id}
-                  </div>
-                )}
-              </div>
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
-                  Topic<span className="text-danger">*</span>
-                </label>
-                <select
-                  className={`form-select form-select-sm ${formik.touched.topic_id && formik.errors.topic_id
-                    ? "is-invalid"
-                    : ""
-                    }`}
-                  value={formik.values.topic_id}
-                  onChange={(e) =>
-                    formik.setFieldValue("topic_id", e.target.value)
-                  }
-                >
-                  <option value="">Select Topic</option>
-                  {topics.map((topic) => (
-                    <option key={topic.value} value={topic.value}>
-                      {topic.label}
-                    </option>
-                  ))}
-                </select>
-                {formik.touched.topic_id && formik.errors.topic_id && (
-                  <div className="invalid-feedback">
-                    {formik.errors.topic_id}
-                  </div>
-                )}
-              </div>
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
-                  Difficult Level<span className="text-danger">*</span>
-                </label>
-                <div className="d-flex gap-3">
-                  <div className="form-check">
-                    <input
-                      type="radio"
-                      name="difficult_level"
-                      value="Easy"
-                      className="form-check-input"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      checked={formik.values.difficult_level === "Easy"}
-                    />
-                    <label className="form-check-label">Easy</label>
-                  </div>
-
-                  <div className="form-check">
-                    <input
-                      type="radio"
-                      name="difficult_level"
-                      value="Medium"
-                      className="form-check-input"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      checked={formik.values.difficult_level === "Medium"}
-                    />
-                    <label className="form-check-label">Medium</label>
-                  </div>
-
-                  <div className="form-check">
-                    <input
-                      type="radio"
-                      name="difficult_level"
-                      value="Hard"
-                      className="form-check-input"
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      checked={formik.values.difficult_level === "Hard"}
-                    />
-                    <label className="form-check-label">Hard</label>
-                  </div>
-                </div>
-
-                {formik.touched.difficult_level &&
-                  formik.errors.difficult_level && (
-                    <div className="invalid-feedback d-block">
-                      {formik.errors.difficult_level}
+            <div className="loader-container">
+              <div className="loader"></div>
+            </div>
+          ) : (
+            <div className="container-fluid px-4">
+              <div className="row">
+                <div className="col-md-6 col-12 mb-3">
+                  <label className="form-label">
+                    Centre Name<span className="text-danger">*</span>
+                  </label>
+                  <MultiSelect
+                    options={centerList}
+                    value={selectedCenter}
+                    onChange={(selected) => {
+                      setSelectedCenter(selected);
+                      formik.setFieldValue(
+                        "center_id",
+                        selected.map((option) => option.value)
+                      );
+                      if (selected.length === 0) {
+                        setGrades([]);
+                        setSubjects([]);
+                        formik.setFieldValue("grade_id", "");
+                        formik.setFieldValue("subject_id", "");
+                      }
+                    }}
+                    labelledBy="Select Center"
+                    className={`form-multi-select form-multi-select-sm ${formik.touched.center_id && formik.errors.center_id ? "is-invalid" : ""
+                      }`}
+                  />
+                  {formik.touched.center_id && formik.errors.center_id && (
+                    <div className="invalid-feedback">
+                      {formik.errors.center_id}
                     </div>
                   )}
-              </div>
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">Question</label>
-                <span className="text-danger">*</span>
-                <input
-                  type="text"
-                  className={`form-control form-control-sm ${formik.touched.question && formik.errors.question
-                    ? "is-invalid"
-                    : ""
-                    }`}
-                  {...formik.getFieldProps("question")}
-                ></input>
-                {formik.touched.question && formik.errors.question && (
-                  <div className="invalid-feedback">
-                    {formik.errors.question}
-                  </div>
-                )}
-              </div>
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">Upload File</label>
-                <input
-                  type="file"
-                  className={`form-control form-control-sm ${formik.touched.upload && formik.errors.upload ? "is-invalid" : ""
-                    }`}
-                  accept="image/*"
-                  onChange={(event) => {
-                    const file = event.currentTarget.files[0];
-                    if (file) {
-                      formik.setFieldValue("upload", file);
-                    }
-                  }}
-                />
-                {formik.touched.upload && formik.errors.upload && (
-                  <div className="invalid-feedback">{formik.errors.upload}</div>
-                )}
-              </div>
-              <div className="col-md-6 col-12 mb-3">
-                <div>
-                  <label className="form-label">
-                    Question Type<span className="text-danger">*</span>
-                  </label>
                 </div>
-                {[
-                  { id: "fillable", label: "Fillable" },
-                  { id: "closed", label: "Closed" },
-                  { id: "multichoice", label: "Multi choice" },
-                  { id: "short_answer", label: "Short Answer" },
-                  { id: "upload", label: "Answer Upload" },
-                ].map(({ id, label }) => (
-                  <div className="form-check form-check-inline" key={id}>
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id={id}
-                      value={id}
-                      onChange={handleCheckboxChange}
-                      checked={formik.values.ques_type.includes(id)}
-                    />
-                    <label className="form-check-label" htmlFor={id}>
-                      {label}
+                <div className="col-md-6 col-12 mb-3">
+                  <label className="form-label">
+                    Grade<span className="text-danger">*</span>
+                  </label>
+                  <select
+                    className={`form-select form-select-sm ${formik.touched.grade_id && formik.errors.grade_id
+                      ? "is-invalid"
+                      : ""
+                      }`}
+                    value={formik.values.grade_id}
+                    onChange={(e) =>
+                      formik.setFieldValue("grade_id", e.target.value)
+                    }
+                  >
+                    <option value="">Select grade</option>
+                    {grades.map((grade) => (
+                      <option key={grade.value} value={grade.value}>
+                        {grade.label}
+                      </option>
+                    ))}
+                  </select>
+                  {formik.touched.grade_id && formik.errors.grade_id && (
+                    <div className="invalid-feedback">
+                      {formik.errors.grade_id}
+                    </div>
+                  )}
+                </div>
+                <div className="col-md-6 col-12 mb-3">
+                  <label className="form-label">
+                    Subject<span className="text-danger">*</span>
+                  </label>
+                  <select
+                    className={`form-select form-select-sm ${formik.touched.subject_id && formik.errors.subject_id
+                      ? "is-invalid"
+                      : ""
+                      }`}
+                    value={formik.values.subject_id}
+                    onChange={(e) =>
+                      formik.setFieldValue("subject_id", e.target.value)
+                    }
+                  >
+                    <option value="">Select Subject</option>
+                    {subjects.map((subject) => (
+                      <option key={subject.value} value={subject.value}>
+                        {subject.label}
+                      </option>
+                    ))}
+                  </select>
+                  {formik.touched.subject_id && formik.errors.subject_id && (
+                    <div className="invalid-feedback">
+                      {formik.errors.subject_id}
+                    </div>
+                  )}
+                </div>
+                <div className="col-md-6 col-12 mb-3">
+                  <label className="form-label">
+                    Topic<span className="text-danger">*</span>
+                  </label>
+                  <select
+                    className={`form-select form-select-sm ${formik.touched.topic_id && formik.errors.topic_id
+                      ? "is-invalid"
+                      : ""
+                      }`}
+                    value={formik.values.topic_id}
+                    onChange={(e) =>
+                      formik.setFieldValue("topic_id", e.target.value)
+                    }
+                  >
+                    <option value="">Select Topic</option>
+                    {topics.map((topic) => (
+                      <option key={topic.value} value={topic.value}>
+                        {topic.label}
+                      </option>
+                    ))}
+                  </select>
+                  {formik.touched.topic_id && formik.errors.topic_id && (
+                    <div className="invalid-feedback">
+                      {formik.errors.topic_id}
+                    </div>
+                  )}
+                </div>
+                <div className="col-md-6 col-12 mb-3">
+                  <label className="form-label">
+                    Difficult Level<span className="text-danger">*</span>
+                  </label>
+                  <div className="d-flex gap-3">
+                    <div className="form-check">
+                      <input
+                        type="radio"
+                        name="difficult_level"
+                        value="Easy"
+                        className="form-check-input"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        checked={formik.values.difficult_level === "Easy"}
+                      />
+                      <label className="form-check-label">Easy</label>
+                    </div>
+
+                    <div className="form-check">
+                      <input
+                        type="radio"
+                        name="difficult_level"
+                        value="Medium"
+                        className="form-check-input"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        checked={formik.values.difficult_level === "Medium"}
+                      />
+                      <label className="form-check-label">Medium</label>
+                    </div>
+
+                    <div className="form-check">
+                      <input
+                        type="radio"
+                        name="difficult_level"
+                        value="Hard"
+                        className="form-check-input"
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        checked={formik.values.difficult_level === "Hard"}
+                      />
+                      <label className="form-check-label">Hard</label>
+                    </div>
+                  </div>
+
+                  {formik.touched.difficult_level &&
+                    formik.errors.difficult_level && (
+                      <div className="invalid-feedback d-block">
+                        {formik.errors.difficult_level}
+                      </div>
+                    )}
+                </div>
+                <div className="col-md-6 col-12 mb-3">
+                  <label className="form-label">Question</label>
+                  <span className="text-danger">*</span>
+                  <input
+                    type="text"
+                    className={`form-control form-control-sm ${formik.touched.question && formik.errors.question
+                      ? "is-invalid"
+                      : ""
+                      }`}
+                    {...formik.getFieldProps("question")}
+                  ></input>
+                  {formik.touched.question && formik.errors.question && (
+                    <div className="invalid-feedback">
+                      {formik.errors.question}
+                    </div>
+                  )}
+                </div>
+                <div className="col-md-6 col-12 mb-3">
+                  <label className="form-label">Upload File</label>
+                  <input
+                    type="file"
+                    className={`form-control form-control-sm ${formik.touched.upload && formik.errors.upload ? "is-invalid" : ""
+                      }`}
+                    accept="image/*"
+                    onChange={(event) => {
+                      const file = event.currentTarget.files[0];
+                      if (file) {
+                        formik.setFieldValue("upload", file);
+                      }
+                    }}
+                  />
+                  {formik.touched.upload && formik.errors.upload && (
+                    <div className="invalid-feedback">{formik.errors.upload}</div>
+                  )}
+                </div>
+                <div className="col-md-6 col-12 mb-3">
+                  <div>
+                    <label className="form-label">
+                      Question Type<span className="text-danger">*</span>
                     </label>
                   </div>
-                ))}
-
-                {formik.errors.ques_type && formik.touched.ques_type && (
-                  <div className="text-danger">{formik.errors.ques_type}</div>
-                )}
-              </div>
-              <div className="col-md-6 col-12 mb-3">
-                {/* Conditional Fields Based on Selected Checkboxes */}
-                {formik.values.ques_type.includes("fillable") && (
-                  <div className="mt-2">
-                    <label className="form-label">Enter your answer:</label>
-                    <input
-                      type="text"
-                      placeholder="Your Question & Answer"
-                      className={`form-control form-control-sm ${formik.touched.answer?.[0]?.fillable && formik.errors.answer?.[0]?.fillable
-                        ? "is-invalid"
-                        : ""
-                        }`}
-                      name="answer"
-                      value={formik.values.answer[0]?.fillable || ""}
-                      onChange={(e) => {
-                        const updatedAnswer = [{ ...formik.values.answer[0], fillable: e.target.value }];
-                        formik.setFieldValue("answer", updatedAnswer);
-                      }}
-                    />
-                    {formik.touched.answer?.[0]?.fillable && formik.errors.answer?.[0]?.fillable && (
-                      <div className="text-danger">{formik.errors.answer[0]?.fillable}</div>
-                    )}
-                  </div>
-                )}
-                {formik.values.ques_type.includes("closed") && (
-                  <div className="mt-2">
-                    <label className="form-label">Select Yes or No:</label>
-                    <div className="d-flex gap-3">
-                      <div className="form-check">
-                        <input
-                          className="form-check-input"
-                          type="radio"
-                          name="closed"
-                          value="yes"
-                          onChange={(e) => {
-                            // Create or update the first object in the answer array with closed value
-                            const currentAnswer = formik.values.answer?.[0] || {};
-                            formik.setFieldValue("answer", [
-                              { ...currentAnswer, closed: e.target.value },
-                            ]);
-                          }}
-                          onBlur={formik.handleBlur}
-                          checked={formik.values.answer?.[0]?.closed === "yes"}
-                        />
-                        <label className="form-check-label" htmlFor="closedYes">
-                          Yes
-                        </label>
-                      </div>
-                      <div className="form-check">
-                        <input
-                          className="form-check-input"
-                          type="radio"
-                          name="closed"
-                          value="no"
-                          onChange={(e) => {
-                            const currentAnswer = formik.values.answer?.[0] || {};
-                            formik.setFieldValue("answer", [
-                              { ...currentAnswer, closed: e.target.value },
-                            ]);
-                          }}
-                          onBlur={formik.handleBlur}
-                          checked={formik.values.answer?.[0]?.closed === "no"}
-                        />
-                        <label className="form-check-label" htmlFor="closedNo">
-                          No
-                        </label>
-                      </div>
+                  {[
+                    { id: "fillable", label: "Fillable" },
+                    { id: "closed", label: "Closed" },
+                    { id: "multichoice", label: "Multi choice" },
+                    { id: "short_answer", label: "Short Answer" },
+                    { id: "upload", label: "Answer Upload" },
+                  ].map(({ id, label }) => (
+                    <div className="form-check form-check-inline" key={id}>
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id={id}
+                        value={id}
+                        onChange={handleCheckboxChange}
+                        checked={formik.values.ques_type.includes(id)}
+                      />
+                      <label className="form-check-label" htmlFor={id}>
+                        {label}
+                      </label>
                     </div>
-                    {formik.touched.answer?.[0]?.closed && formik.errors.answer?.[0]?.closed && (
-                      <div className="invalid-feedback d-block">
-                        {formik.errors.answer[0]?.closed}
-                      </div>
-                    )}
-                  </div>
-                )}
-                {formik.values.ques_type.includes("multichoice") && (
-                  <div className="mt-2">
-                    <label className="form-label">Select Multi Choice:</label>
-                    {formik.values.options.map((multiChoice, index) => (
-                      <div
-                        key={multiChoice.id}
-                        className="d-flex align-items-center justify-content-center"
-                      >
-                        <input
-                          type="checkbox"
-                          className="form-check-input mb-2"
-                          name={`options[${index}].selected`}
-                          id={`multiChoice-${index}`}
-                          checked={multiChoice.selected || false}
-                          onChange={() => {
-                            let updatedOptions = [...formik.values.options];
-                            let updatedAnswers = [...formik.values.answer];
+                  ))}
 
-                            if (multiChoice.selected) {
-                              updatedAnswers = updatedAnswers.filter((ans) => ans.multichoice !== multiChoice.value);
-                            } else {
-                              updatedAnswers.push({ fillable: "", multichoice: multiChoice.value, short_answer: "", closed: "" });
-                            }
-                            updatedOptions[index] = {
-                              ...multiChoice,
-                              selected: !multiChoice.selected,
-                            };
-                            formik.setFieldValue("options", updatedOptions);
-                            formik.setFieldValue("answer", updatedAnswers);
-                          }}
-                          aria-label="Multi Choice"
-                        />
-                        &nbsp; &nbsp;
-                        <div className="input-group mb-2">
+                  {formik.errors.ques_type && formik.touched.ques_type && (
+                    <div className="text-danger">{formik.errors.ques_type}</div>
+                  )}
+                </div>
+                <div className="col-md-6 col-12 mb-3">
+                  {/* Conditional Fields Based on Selected Checkboxes */}
+                  {formik.values.ques_type.includes("fillable") && (
+                    <div className="mt-2">
+                      <label className="form-label">Enter your answer:</label>
+                      <input
+                        type="text"
+                        placeholder="Your Question & Answer"
+                        className={`form-control form-control-sm ${formik.touched.answer?.[0]?.fillable && formik.errors.answer?.[0]?.fillable
+                          ? "is-invalid"
+                          : ""
+                          }`}
+                        name="answer"
+                        value={formik.values.answer[0]?.fillable || ""}
+                        onChange={(e) => {
+                          const updatedAnswer = [{ ...formik.values.answer[0], fillable: e.target.value }];
+                          formik.setFieldValue("answer", updatedAnswer);
+                        }}
+                      />
+                      {formik.touched.answer?.[0]?.fillable && formik.errors.answer?.[0]?.fillable && (
+                        <div className="text-danger">{formik.errors.answer[0]?.fillable}</div>
+                      )}
+                    </div>
+                  )}
+                  {formik.values.ques_type.includes("closed") && (
+                    <div className="mt-2">
+                      <label className="form-label">Select Yes or No:</label>
+                      <div className="d-flex gap-3">
+                        <div className="form-check">
                           <input
-                            type="text"
-                            className={`form-control form-control-sm ${formik.errors.options &&
-                              formik.touched.options &&
-                              formik.errors.options[index]?.value
-                              ? "is-invalid"
-                              : ""
-                              }`}
-                            name={`options[${index}].value`}
-                            value={multiChoice.value}
+                            className="form-check-input"
+                            type="radio"
+                            name="closed"
+                            value="yes"
                             onChange={(e) => {
+                              // Create or update the first object in the answer array with closed value
+                              const currentAnswer = formik.values.answer?.[0] || {};
+                              formik.setFieldValue("answer", [
+                                { ...currentAnswer, closed: e.target.value },
+                              ]);
+                            }}
+                            onBlur={formik.handleBlur}
+                            checked={formik.values.answer?.[0]?.closed === "yes"}
+                          />
+                          <label className="form-check-label" htmlFor="closedYes">
+                            Yes
+                          </label>
+                        </div>
+                        <div className="form-check">
+                          <input
+                            className="form-check-input"
+                            type="radio"
+                            name="closed"
+                            value="no"
+                            onChange={(e) => {
+                              const currentAnswer = formik.values.answer?.[0] || {};
+                              formik.setFieldValue("answer", [
+                                { ...currentAnswer, closed: e.target.value },
+                              ]);
+                            }}
+                            onBlur={formik.handleBlur}
+                            checked={formik.values.answer?.[0]?.closed === "no"}
+                          />
+                          <label className="form-check-label" htmlFor="closedNo">
+                            No
+                          </label>
+                        </div>
+                      </div>
+                      {formik.touched.answer?.[0]?.closed && formik.errors.answer?.[0]?.closed && (
+                        <div className="invalid-feedback d-block">
+                          {formik.errors.answer[0]?.closed}
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  {formik.values.ques_type.includes("multichoice") && (
+                    <div className="mt-2">
+                      <label className="form-label">Select Multi Choice:</label>
+                      {formik.values.options.map((multiChoice, index) => (
+                        <div
+                          key={multiChoice.id}
+                          className="d-flex align-items-center justify-content-center"
+                        >
+                          <input
+                            type="checkbox"
+                            className="form-check-input mb-2"
+                            name={`options[${index}].selected`}
+                            id={`multiChoice-${index}`}
+                            checked={multiChoice.selected || false}
+                            onChange={() => {
                               let updatedOptions = [...formik.values.options];
-                              updatedOptions[index].value = e.target.value.replace(/,/g, "");
-
-                              // Update answer array if selected
                               let updatedAnswers = [...formik.values.answer];
-                              if (multiChoice.selected) {
-                                updatedAnswers = updatedAnswers.map((ans) =>
-                                  ans.multichoice === multiChoice.value
-                                    ? { ...ans, multichoice: e.target.value.replace(/,/g, "") }
-                                    : ans
-                                );
-                              }
 
+                              if (multiChoice.selected) {
+                                updatedAnswers = updatedAnswers.filter((ans) => ans.multichoice !== multiChoice.value);
+                              } else {
+                                updatedAnswers.push({ fillable: "", multichoice: multiChoice.value, short_answer: "", closed: "" });
+                              }
+                              updatedOptions[index] = {
+                                ...multiChoice,
+                                selected: !multiChoice.selected,
+                              };
                               formik.setFieldValue("options", updatedOptions);
                               formik.setFieldValue("answer", updatedAnswers);
                             }}
-                            placeholder={`Multi Choice ${index + 1}`}
+                            aria-label="Multi Choice"
                           />
-                          {index > 1 && (
-                            <button
-                              type="button"
-                              className="btn btn-danger btn-sm"
-                              onClick={() => {
-                                let updatedOptions = formik.values.options.filter((opt) => opt.id !== multiChoice.id);
-                                let updatedAnswers = formik.values.answer.filter((ans) => ans.multichoice !== multiChoice.value);
+                          &nbsp; &nbsp;
+                          <div className="input-group mb-2">
+                            <input
+                              type="text"
+                              className={`form-control form-control-sm ${formik.errors.options &&
+                                formik.touched.options &&
+                                formik.errors.options[index]?.value
+                                ? "is-invalid"
+                                : ""
+                                }`}
+                              name={`options[${index}].value`}
+                              value={multiChoice.value}
+                              onChange={(e) => {
+                                let updatedOptions = [...formik.values.options];
+                                updatedOptions[index].value = e.target.value.replace(/,/g, "");
+
+                                // Update answer array if selected
+                                let updatedAnswers = [...formik.values.answer];
+                                if (multiChoice.selected) {
+                                  updatedAnswers = updatedAnswers.map((ans) =>
+                                    ans.multichoice === multiChoice.value
+                                      ? { ...ans, multichoice: e.target.value.replace(/,/g, "") }
+                                      : ans
+                                  );
+                                }
 
                                 formik.setFieldValue("options", updatedOptions);
                                 formik.setFieldValue("answer", updatedAnswers);
                               }}
-                            >
-                              <FaTrash />
-                            </button>
-                          )}
+                              placeholder={`Multi Choice ${index + 1}`}
+                            />
+                            {index > 1 && (
+                              <button
+                                type="button"
+                                className="btn btn-danger btn-sm"
+                                onClick={() => {
+                                  let updatedOptions = formik.values.options.filter((opt) => opt.id !== multiChoice.id);
+                                  let updatedAnswers = formik.values.answer.filter((ans) => ans.multichoice !== multiChoice.value);
+
+                                  formik.setFieldValue("options", updatedOptions);
+                                  formik.setFieldValue("answer", updatedAnswers);
+                                }}
+                              >
+                                <FaTrash />
+                              </button>
+                            )}
+                          </div>
+                          {formik.errors.options &&
+                            formik.touched.options &&
+                            formik.errors.options[index]?.value && (
+                              <div className="text-danger mt-1">
+                                {formik.errors.options[index]?.value}
+                              </div>
+                            )}
                         </div>
-                        {formik.errors.options &&
-                          formik.touched.options &&
-                          formik.errors.options[index]?.value && (
-                            <div className="text-danger mt-1">
-                              {formik.errors.options[index]?.value}
-                            </div>
-                          )}
-                      </div>
-                    ))}
-                    <button
-                      type="button"
-                      className="btn btn-primary btn-sm mt-2"
-                      onClick={() => {
-                        formik.setFieldValue("options", [
-                          ...formik.values.options,
-                          { id: Date.now(), value: "", selected: false },
-                        ]);
-                      }}
-                    >
-                      Add Multi Choice
-                    </button>
-                  </div>
-                )}
-                {formik.values.ques_type.includes("short_answer") && (
-                  <div className="mt-2">
-                    <label className="form-label">Short Answer</label>
-                    <textarea
-                      rows={3}
-                      className={`form-control ${formik.touched.answer?.[0]?.short_answer && formik.errors.answer?.[0]?.short_answer
-                        ? "is-invalid"
-                        : ""
-                        }`}
-                      name="answer"
-                      value={formik.values.answer[0]?.short_answer || ""}
-                      onChange={(e) => {
-                        const updatedAnswer = [{ ...formik.values.answer[0], short_answer: e.target.value }];
-                        formik.setFieldValue("answer", updatedAnswer);
-                      }}
-                    />
-                    {formik.touched.answer?.[0]?.short_answer && formik.errors.answer?.[0]?.short_answer && (
-                      <div className="text-danger">{formik.errors.answer[0]?.short_answer}</div>
-                    )}
-                  </div>
-                )}
-                {formik.values.ques_type.includes("upload") && (
-                  <div className="mt-2">
-                    <label className="form-label">Answer Upload</label>
-                    <input
-                      type="file"
-                      className={`form-control form-control-sm ${formik.touched.answer_upload && formik.errors.answer_upload
-                        ? "is-invalid"
-                        : ""
-                        }`}
-                      name="answer_upload"
-                      accept="image/*"
-                      onChange={(event) => {
-                        const file = event.currentTarget.files[0];
-                        if (file) {
-                          formik.setFieldValue("answer_upload", file);
-                        }
-                      }}
-                    />
-                    {formik.touched.answer_upload && formik.errors.answer_upload && (
-                      <div className="text-danger">{formik.errors.answer_upload}</div>
-                    )}
-                  </div>
-                )}
-              </div>
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">Hint</label>
-                <input
-                  type="text"
-                  className="form-control form-control-sm"
-                  {...formik.getFieldProps("hint")}
-                ></input>
+                      ))}
+                      <button
+                        type="button"
+                        className="btn btn-primary btn-sm mt-2"
+                        onClick={() => {
+                          formik.setFieldValue("options", [
+                            ...formik.values.options,
+                            { id: Date.now(), value: "", selected: false },
+                          ]);
+                        }}
+                      >
+                        Add Multi Choice
+                      </button>
+                    </div>
+                  )}
+                  {formik.values.ques_type.includes("short_answer") && (
+                    <div className="mt-2">
+                      <label className="form-label">Short Answer</label>
+                      <textarea
+                        rows={3}
+                        className={`form-control ${formik.touched.answer?.[0]?.short_answer && formik.errors.answer?.[0]?.short_answer
+                          ? "is-invalid"
+                          : ""
+                          }`}
+                        name="answer"
+                        value={formik.values.answer[0]?.short_answer || ""}
+                        onChange={(e) => {
+                          const updatedAnswer = [{ ...formik.values.answer[0], short_answer: e.target.value }];
+                          formik.setFieldValue("answer", updatedAnswer);
+                        }}
+                      />
+                      {formik.touched.answer?.[0]?.short_answer && formik.errors.answer?.[0]?.short_answer && (
+                        <div className="text-danger">{formik.errors.answer[0]?.short_answer}</div>
+                      )}
+                    </div>
+                  )}
+                  {formik.values.ques_type.includes("upload") && (
+                    <div className="mt-2">
+                      <label className="form-label">Answer Upload</label>
+                      <input
+                        type="file"
+                        className={`form-control form-control-sm ${formik.touched.answer_upload && formik.errors.answer_upload
+                          ? "is-invalid"
+                          : ""
+                          }`}
+                        name="answer_upload"
+                        accept="image/*"
+                        onChange={(event) => {
+                          const file = event.currentTarget.files[0];
+                          if (file) {
+                            formik.setFieldValue("answer_upload", file);
+                          }
+                        }}
+                      />
+                      {formik.touched.answer_upload && formik.errors.answer_upload && (
+                        <div className="text-danger">{formik.errors.answer_upload}</div>
+                      )}
+                    </div>
+                  )}
+                </div>
+                <div className="col-md-6 col-12 mb-3">
+                  <label className="form-label">Hint</label>
+                  <input
+                    type="text"
+                    className="form-control form-control-sm"
+                    {...formik.getFieldProps("hint")}
+                  ></input>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
         </div>
       </form >
     </div >

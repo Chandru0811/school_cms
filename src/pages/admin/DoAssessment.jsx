@@ -110,7 +110,7 @@ const DoAssessment = () => {
           const { score, rewards } = response.data.data.student_attempt;
           const { total_questions, total_attended_questions } = response.data.data;
           if (score === null || score === 0) {
-            navigate("/successfull");
+            navigate(`/successfull?id=${assignedId}`);
           } else {
             navigate(`/successfull?score=${score}&rewards=${rewards}&id=${assignedId}&totalScore=${total_score}&total_questions=${total_questions}&total_attended_questions=${total_attended_questions}`);
           }
