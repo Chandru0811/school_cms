@@ -106,11 +106,13 @@ const DoAssessment = () => {
 
         if (response.status === 200) {
           toast.success(response.data.message);
-          const { score, rewards } = response.data.data;
+          const { total_score } = data;
+          const { score, rewards } = response.data.data.student_attempt;
+          const { total_questions, total_attended_questions } = response.data.data;
           if (score === null || score === 0) {
-            navigate(`/successfull?id=${assignedId}`);
+            navigate("/successfull");
           } else {
-            navigate(`/successfull?score=${score}&rewards=${rewards}&id=${assignedId}`);
+            navigate(`/successfull?score=${score}&rewards=${rewards}&id=${assignedId}&totalScore=${total_score}&total_questions=${total_questions}&total_attended_questions=${total_attended_questions}`);
           }
         }
       } catch (e) {
