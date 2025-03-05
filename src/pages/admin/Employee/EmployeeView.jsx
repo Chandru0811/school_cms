@@ -12,11 +12,18 @@ import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
+import { MdKeyboardArrowLeft } from "react-icons/md";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import DeleteChange from "../../../components/common/DeleteChange";
+import { GoTrash } from "react-icons/go";
+import { TbEdit } from "react-icons/tb";
+import userImage from "../../../../src/assets/images/employee_image.png";
 
 function EmployeeView() {
   const [data, setData] = useState({});
   const { id } = useParams();
+  const [selectedId, setSelectedId] = useState(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [centerList, setCenterList] = useState([]);
   const [show, setShow] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
@@ -24,6 +31,15 @@ function EmployeeView() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+
+  const handleDeleteClick = (id) => {
+    setSelectedId(id);
+    setDeleteModalOpen(true);
+  };
+
+  const storedScreens = JSON.parse(
+    localStorage.getItem("schoolCMS_Permissions") || "{}"
+  );
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
   const toggleConfirmPasswordVisibility = () =>
@@ -121,65 +137,70 @@ function EmployeeView() {
 
   return (
     <div className="container-fluid px-0">
-      <ol
-        className="breadcrumb my-2 px-2 d-flex align-items-center"
-        style={{
-          listStyle: "none",
-          padding: 0,
-          margin: 0,
-          display: "flex",
-          alignItems: "center",
-        }}
-      >
-        <li className="d-flex align-items-center">
-          <Link to="/" className="custom-breadcrumb text-sm">
-            Home
-          </Link>
-          <span className="breadcrumb-separator mx-1"> &gt; </span>
-        </li>
-        <li className="d-flex align-items-center">
-          <Link to="/employee" className="custom-breadcrumb text-sm">
-            Employee
-          </Link>
-          <span className="breadcrumb-separator mx-1"> &gt; </span>
-        </li>
-        <li className="breadcrumb-item active text-sm" aria-current="page">
-          Employee View
-        </li>
-      </ol>
-      <div className="card vh-100" style={{ border: "1px solid #dbd9d0" }}>
-        <div className="d-flex px-4 justify-content-between align-items-center card_header p-1 mb-4">
-          <div className="d-flex align-items-center">
-            <div className="d-flex">
-              <div className="dot active"></div>
-            </div>
-            <span className="me-2 text-muted">View Employee</span>
-          </div>
-          <div className="my-2 pe-3 d-flex align-items-center">
+      <div className="d-flex px-4 justify-content-between align-items-center  p-1 mb-4">
+        <div className="d-flex align-items-center">
+          <div>
             <Link to="/employee">
-              <button type="button " className="btn btn-sm btn-back">
-                Back
+              <button type="button " className="btn btn-sm add-btn">
+                <MdKeyboardArrowLeft size={20} />
               </button>
             </Link>
             &nbsp;&nbsp;
+          </div>
+          <span className="mx-3 table-heading">
+            Employee Details -&nbsp;
+            <span className="table-subheading">
+              Details of Selected Employees
+            </span>
+          </span>
+        </div>
+        <div className="my-2 pe-3 d-flex align-items-center">
+          {/* <button
+            type="button"
+            className="btn btn-sm btn-button"
+            onClick={handleShow}
+          >
+            Change Password
+          </button>
+          &nbsp;&nbsp; */}
+          {/* <button
+            type="button"
+            className="btn btn-sm btn-button"
+            onClick={() => navigate(`/employee/edit/${id}`)}
+          >
+            Edit
+          </button> */}
+          {storedScreens?.data[1]?.can_delete === 1 && (
             <button
-              type="button"
-              className="btn btn-sm btn-button"
-              onClick={handleShow}
+              className="btn view-delete-btn"
+              onClick={(e) => {
+                handleDeleteClick(id); // Use id from useParams()
+              }}
             >
-              Change Password
+              <GoTrash className="trash-icon" /> &nbsp;&nbsp; Delete Employee
             </button>
-            &nbsp;&nbsp; 
-            <button
-              type="button"
-              className="btn btn-sm btn-button"
-              onClick={() => navigate(`/employee/edit/${id}`)}
-            >
-              Edit
-            </button>
+          )}
+        </div>
+      </div>
+      <div className="mx-4 card vh-100" style={{ border: "1px solid #dbd9d0" }}>
+        <div
+          className="card-header d-flex justify-content-between mx-3"
+          style={{ marginBottom: "1px solid #F4F4F4" }}
+        >
+          <p className="view-header">Personal Info</p>
+          <div className="d-flex justify-content-end">
+            {storedScreens?.data[1]?.can_edit === 1 && (
+              <button
+                className="btn edit-btn"
+                onClick={(e) => {
+                  navigate(`/employee/edit/${id}`);
+                }}
+              >
+                <TbEdit style={{ color: "#C0C0C0", fontSize: "16px" }} />
+              </button>
+            )}
           </div>
         </div>
-
         {/* Modal for Changing Password */}
         <Dialog open={show} onClose={handleClose} maxWidth="sm" fullWidth>
           <form onSubmit={formik.handleSubmit}>
@@ -285,48 +306,59 @@ function EmployeeView() {
         ) : (
           <div className="container-fluid px-4">
             <div className="row pb-3">
-              <div className="col-md-6 col-12 my-2">
-                <div className="row">
+              <div className="col-md-2 col-12 my-2 d-flex align-items-center">
+                <img
+                  src={userImage}
+                  alt="Profile"
+                  className="img-fluid"
+                  style={{
+                    width: "300px",
+                    height: "300px",
+                    objectFit: "cover",
+                    border: "1px solid #4F46E5",
+                  }}
+                />
+              </div>
+
+              <div className="col-md-5 col-12 my-2">
+                <div className="row mb-4">
                   <div className="col-6">
-                    <p className="fw-medium text-sm">Centre</p>
+                    <p className="view-label-text">Centre</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">
-                    :{" "}
-                    {data.center_names
-                      ? JSON.parse(data.center_names).join(", ")
-                      : ""}
+                    <p className="view-value">
+                      {" "}
+                      {data.center_names
+                        ? JSON.parse(data.center_names).join(", ")
+                        : ""}
                     </p>
                   </div>
                 </div>
-              </div>
-              <div className="col-md-6 col-12 my-2">
-                <div className="row">
+                <div className="row mb-4">
                   <div className="col-6">
-                    <p className="fw-medium text-sm">Role</p>
+                    <p className="view-label-text">Role</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">: {data.role_name}</p>
+                    <p className="view-value"> {data.role_name}</p>
                   </div>
                 </div>
               </div>
-              <div className="col-md-6 col-12 my-2">
-                <div className="row">
+
+              <div className="col-md-5 col-12 my-2">
+                <div className="row mb-4">
                   <div className="col-6">
-                    <p className="fw-medium text-sm">Employee Name</p>
+                    <p className="view-label-text">Employee Name</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">: {data.name}</p>
+                    <p className="view-value">{data.name}</p>
                   </div>
                 </div>
-              </div>
-              <div className="col-md-6 col-12 my-2">
-                <div className="row">
+                <div className="row mb-4">
                   <div className="col-6">
-                    <p className="fw-medium text-sm">Employee Email</p>
+                    <p className="view-label-text">Employee Email</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">: {data.email}</p>
+                    <p className="view-value"> {data.email}</p>
                   </div>
                 </div>
               </div>
@@ -334,6 +366,16 @@ function EmployeeView() {
           </div>
         )}
       </div>
+      {deleteModalOpen && selectedId && (
+        <DeleteChange
+          path={`employee/delete/${id}`}
+          onDeleteSuccess={() => {
+            setDeleteModalOpen(false);
+            navigate("/employee");
+          }}
+          onClose={() => setDeleteModalOpen(false)}
+        />
+      )}
     </div>
   );
 }
