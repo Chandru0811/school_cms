@@ -231,7 +231,7 @@ function Challenges() {
               Edit
             </MenuItem>
           )}
-          {storedScreens?.data[7]?.delete === 1 && (
+          {storedScreens?.data[7]?.can_delete === 1 && (
             <MenuItem>
               <Delete path={`challenge/delete/${selectedId}`} onOpen={handleMenuClose} />
             </MenuItem>

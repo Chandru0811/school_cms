@@ -136,7 +136,6 @@ function QuestionAdd() {
           formData.append(`questions[${index}][difficult_level]`, row["difficult_level"] || "");
           formData.append(`questions[${index}][hint]`, row["Hint"] || "");
 
-          // Map the selected option label (e.g., "Option 2") to its value (e.g., "Singapore")
           const selectedOptionLabel = row["Answer"];
           const selectedOptionValue = row[`Option ${selectedOptionLabel.replace("Option", "").trim()}`];
           formData.append(`questions[${index}][answer][multichoice]`, selectedOptionValue || "");
@@ -146,17 +145,16 @@ function QuestionAdd() {
         formData.append("difficult_level", values.difficult_level);
         formData.append("hint", values.hint);
 
-        // Handle options and answer
         const optionsArray = values.options.map((option) => option.value);
-        formData.append("options", JSON.stringify(optionsArray));
+        optionsArray.forEach((option) => {
+          formData.append("options[]", option);
+        });
 
-        // Handle answer
         const selectedAnswer = values.answer[0]?.multichoice;
         if (selectedAnswer) {
-          formData.append("answer", JSON.stringify({ multichoice: selectedAnswer }));
+          formData.append("answer[multichoice]", selectedAnswer);
         }
 
-        // Handle file uploads
         if (values.upload) {
           formData.append("upload", values.upload);
         }
