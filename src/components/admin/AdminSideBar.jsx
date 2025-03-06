@@ -13,7 +13,10 @@ import { PiStudentLight } from "react-icons/pi";
 import { LiaAwardSolid } from "react-icons/lia";
 import { SlBookOpen } from "react-icons/sl";
 import { BsPerson } from "react-icons/bs";
-import { RiHome6Line } from "react-icons/ri";
+import { RiHome6Fill, RiHome6Line } from "react-icons/ri";
+import { FiBell } from "react-icons/fi";
+import { FaBook, FaBookOpen, FaMedal, FaPuzzlePiece, FaQuestionCircle } from "react-icons/fa";
+import { AiOutlineEdit } from "react-icons/ai";
 
 function AdminSidebar() {
   // const navigate = useNavigate();
@@ -85,7 +88,7 @@ function AdminSidebar() {
                   to="/center"
                 >
                   <IoGridOutline className="sidebar_icon" size={17} />
-                  <p>center</p>
+                  <p>Center</p>
                 </NavLink>
               )}{" "}
               {storedScreens?.data[13]?.can_access === 1 && (
@@ -95,7 +98,7 @@ function AdminSidebar() {
                   }
                   to="/subscription"
                 >
-                  <RiHome6Line />
+                  <FiBell />
                   <p>Subscribtion</p>
                 </NavLink>
               )}
@@ -160,7 +163,7 @@ function AdminSidebar() {
                   }
                   to="/worksheet"
                 >
-                  <RiHome6Line />
+                  <AiOutlineEdit  />
                   <p>Study Materials</p>
                 </NavLink>
               )}
@@ -171,7 +174,7 @@ function AdminSidebar() {
                   }
                   to="/challenges"
                 >
-                  <IoTrophyOutline className="sidebar_icon" size={17} />
+                  <IoTrophyOutline   className="sidebar_icon" size={17} />
                   <p>Challenges & Quizzes</p>
                 </NavLink>
               )}

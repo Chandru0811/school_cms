@@ -10,7 +10,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="down" ref={ref} {...props} />;
 });
 
-function DeleteChange({ path, onDeleteSuccess, onOpen }) {
+function DeleteChange({ path, onDeleteSuccess, onOpen, navigate }) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(true);
   const [loading, setLoading] = useState(false);
 
@@ -28,6 +28,7 @@ function DeleteChange({ path, onDeleteSuccess, onOpen }) {
         onDeleteSuccess(); // Successful delete callback
         toast.success(response?.data?.message || "Deleted successfully!");
         handleCloseDialog(); // Close the dialog on success
+        navigate()
       }
     } catch (error) {
       if (error.response) {

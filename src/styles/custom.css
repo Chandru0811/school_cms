@@ -308,23 +308,16 @@
 }
 
 .add-btn{
-  border-radius: 12px;
   background-color: #EAE9FC;
-  padding: 12px 16px;
-  gap: 8px;
+  padding: 8px 12px;
   border-color: #4F46E5;
   color: #4F46E5;
-  font-size: 16px;
 }
 
 .add-btn:hover{
-  border-radius: 12px;
   background-color: #4F46E5;
-  padding: 12px 16px;
-  gap: 8px;
   border-color: #4F46E5;
   color: #EAE9FC;
-  font-size: 16px;
 }
 
 /* Table Styling */
@@ -403,21 +396,6 @@
   background-color: #FAFAFA !important;
 }
 
-.add-btn {
-  border-radius: 7px !important;
-  background-color: #EAE9FC;
-  padding: 12px 16px;
-  gap: 8px;
-  border-color: #4F46E5;
-  color: #4F46E5;
-  font-size: 16px;
-}
-
-.add-btn:hover {
-  background-color: #4F46E5;
-  color: #EAE9FC;
-}
-
 .table-heading {
   font-size: 24px;
   font-weight:  500 !important;
@@ -453,10 +431,8 @@
 }
 
 .view-delete-btn {
-  border-radius: 7px !important;
   background-color: #FCE9EB;
-  padding: 12px 16px;
-  gap: 8px;
+  padding: 8px 12px;
   border-color: #FB3748;
   color:#FB3748;
   font-size: 16px;
@@ -480,7 +456,7 @@
 
 .view-label-text{
   color: #5D5D5D;
-  font-size: 18px !important;
+  font-size: 15px !important;
   font-weight: 400 !important;
 }
 .view-value{
@@ -588,3 +564,17 @@
   box-shadow: none;
   border-color: transparent !important;
 }
+.form-multi-select .dropdown-container {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.MuiTableContainer-root::-webkit-scrollbar {
+  height: 4px; 
+}
+
+.MuiTableContainer-root::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 10px;
+}
+

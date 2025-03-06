@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { MaterialReactTable } from "material-react-table";
@@ -11,7 +12,6 @@ import { GoTrash } from "react-icons/go";
 import userImage from "../../../assets/images/user_image.png";
 
 function Employee() {
-  const [menuAnchor, setMenuAnchor] = useState(null);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [loading, setLoading] = useState(true);
