@@ -62,7 +62,7 @@ function SubjectEdit({ id, show, setShow, onSuccess }) {
     try {
       setLoading(true);
       const response = await api.get(`subject/${id}`);
-      const { data } = response.data;
+      const { data } = response.data.subject;
 
       const parsedCenterIds = JSON.parse(data.center_id);
       const parsedCenterNames = JSON.parse(data.center_names);

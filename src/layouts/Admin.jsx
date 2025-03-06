@@ -106,7 +106,7 @@ function Admin({ handleLogout }) {
                     <Route path="/subject" element={<Subject />} />
                     <Route path="/subject/add" element={<SubjectAdd />} />
                     <Route path="/subject/edit" element={<SubjectEdit />} />
-                    <Route path="/subject/view" element={<SubjectView />} />
+                    <Route path="/subject/view/:id" element={<SubjectView />} />
 
                     {/* Topic  */}
                     <Route path="/topic" element={<Topic />} />

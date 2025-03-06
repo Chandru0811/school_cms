@@ -27,8 +27,6 @@ function AddTopic({ id, show, setShow, onSuccess }) {
 
   const formik = useFormik({
     initialValues: {
-      center_id: [],
-      grade_id: "",
       subject_id: "",
       topic_name: "",
       description: "",
@@ -41,8 +39,8 @@ function AddTopic({ id, show, setShow, onSuccess }) {
         const payload = {
           ...values,
           name: values.topic_name,
-          center_id: values.center_id,
-          subject_id: values.subject_id, 
+          // center_id: values.center_id,
+          subject_id: values.subject_id,
         };
         delete payload.topic_name;
 
@@ -52,7 +50,7 @@ function AddTopic({ id, show, setShow, onSuccess }) {
           onSuccess();
           handleClose();
           formik.resetForm();
-          navigate("/topic");
+          navigate("/subject");
         }
       } catch (e) {
         toast.error(`Error: ${e?.response?.data?.error || e.message}`);
@@ -67,12 +65,7 @@ function AddTopic({ id, show, setShow, onSuccess }) {
       setLoading(true);
       const response = await api.get(`subject/${id}`);
       setData(response.data.data);
-
-      const centerIds = JSON.parse(response.data.data.center_id);
-
-      formik.setFieldValue("center_id", centerIds || []);
-      formik.setFieldValue("grade_id", response.data.data.grade_id || "");
-      formik.setFieldValue("subject_id", response.data.data.id || ""); 
+      formik.setFieldValue("subject_id", response.data.data.subject.id || "");
     } catch (e) {
       toast.error("Error Fetching Data", e?.response?.data?.error);
     } finally {
@@ -103,6 +96,13 @@ function AddTopic({ id, show, setShow, onSuccess }) {
 
   return (
     <>
+      {/* <button
+        type="button"
+        className="btn btn-button btn-sm d-flex align-items-center"
+        onClick={show}
+      >
+        Add
+      </button> */}
       <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
         <form
           onSubmit={formik.handleSubmit}
@@ -123,54 +123,14 @@ function AddTopic({ id, show, setShow, onSuccess }) {
               <div className="row">
                 <div className="col-md-6 col-12 mb-3">
                   <label className="form-label">
-                    Centre Name<span className="text-danger">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control form-control-sm"
-                    value={data.center_names ? JSON.parse(data.center_names).join(", ") : ""}
-                    readOnly
-                  />
-                </div>
-
-                <div className="col-md-6 col-12 mb-3">
-                  <label className="form-label">
-                    Grade<span className="text-danger">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control form-control-sm"
-                    value={data.grand_name || ""}
-                    readOnly
-                  />
-                </div>
-
-                <div className="col-md-6 col-12 mb-3">
-                  <label className="form-label">
-                    Subject Name<span className="text-danger">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    className="form-control form-control-sm"
-                    value={data.name}
-                    readOnly
-                  />
-                  {formik.touched.name && formik.errors.name && (
-                    <div className="invalid-feedback">{formik.errors.name}</div>
-                  )}
-                </div>
-
-                <div className="col-md-6 col-12 mb-3">
-                  <label className="form-label">
                     Topic Name<span className="text-danger">*</span>
                   </label>
                   <input
                     type="text"
-                    className={`form-control form-control-sm ${
-                      formik.touched.topic_name && formik.errors.topic_name
-                        ? "is-invalid"
-                        : ""
-                    }`}
+                    className={`form-control form-control-sm ${formik.touched.topic_name && formik.errors.topic_name
+                      ? "is-invalid"
+                      : ""
+                      }`}
                     {...formik.getFieldProps("topic_name")}
                   />
                   {formik.touched.topic_name && formik.errors.topic_name && (
@@ -183,11 +143,10 @@ function AddTopic({ id, show, setShow, onSuccess }) {
                 <div className="col-md-6 col-12 mb-3">
                   <label className="form-label">Description</label>
                   <textarea
-                    className={`form-control ${
-                      formik.touched.description && formik.errors.description
-                        ? "is-invalid"
-                        : ""
-                    }`}
+                    className={`form-control ${formik.touched.description && formik.errors.description
+                      ? "is-invalid"
+                      : ""
+                      }`}
                     rows="4"
                     {...formik.getFieldProps("description")}
                   />

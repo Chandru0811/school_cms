@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MaterialReactTable } from "material-react-table";
 import {
   ThemeProvider,
@@ -13,12 +13,12 @@ import PropTypes from "prop-types";
 import { MoreVert as MoreVertIcon } from "@mui/icons-material";
 import SubjectAdd from "./SubjectAdd";
 import SubjectEdit from "./SubjectEdit";
-import SubjectView from "./SubjectView";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import AddTopic from "../../admin/Subject/AddTopic";
 
 function Subject() {
+  const navigate = useNavigate();
   const [menuAnchor, setMenuAnchor] = useState(null);
   const [showEdit, setShowEdit] = useState(false);
   const [showAddTopic, setShowAddTopic] = useState(false);
@@ -216,17 +216,13 @@ function Subject() {
                     updated_at: false,
                   },
                 }}
-                muiTableBodyRowProps={({ row }) =>
-                  storedScreens?.data[4]?.can_view === 1
-                    ? {
-                        style: { cursor: "pointer" },
-                        onClick: () => {
-                          setSelectedId(row.original.id);
-                          setShowView(true);
-                        },
-                      }
-                    : {}
-                }
+                muiTableBodyRowProps={({ row }) => ({
+                  style: { cursor: "pointer" },
+                  onClick: () => {
+                    setSelectedId(row.original.id);
+                    navigate(`/subject/view/${row.original.id}`);
+                  },
+                })}
               />
             </ThemeProvider>
             <Menu
@@ -270,11 +266,11 @@ function Subject() {
               id={selectedId}
               onSuccess={getData}
             />
-            <SubjectView
+            {/* <SubjectView
               show={showView}
               setShow={setShowView}
               id={selectedId}
-            />
+            /> */}
 
             <AddTopic
               show={showAddTopic}
