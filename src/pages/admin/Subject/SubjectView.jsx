@@ -2,20 +2,32 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState, useMemo } from "react";
 import toast from "react-hot-toast";
 import { MaterialReactTable } from "material-react-table";
-import { IconButton, ThemeProvider, createTheme } from "@mui/material";
+import { IconButton, Menu, MenuItem, ThemeProvider, createTheme } from "@mui/material";
 import api from "../../../config/URL";
 import PropTypes from "prop-types";
 import AddTopic from "./AddTopic";
+import Delete from "../../../components/common/Delete";
+import TopicEdit from "../Topic/TopicEdit";
+import TopicView from "../Topic/TopicView";
+import TopicAdd from "../Topic/TopicAdd";
 
 function SubjectView() {
+  const [menuAnchor, setMenuAnchor] = useState(null);
+  const [showEdit, setShowEdit] = useState(false);
+  const [showView, setShowView] = useState(false);
   const [data, setData] = useState({});
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const [selectedId, setSelectedId] = useState(null);
   const [showAddTopic, setShowAddTopic] = useState(false);
+  const storedScreens = JSON.parse(
+    localStorage.getItem("schoolCMS_Permissions") || "{}"
+  );
 
-  const getSubjectData = async () => {
+  const handleMenuClose = () => setMenuAnchor(null);
+
+  const getData = async () => {
     try {
       setLoading(true);
       const response = await api.get(`subject/${id}`);
@@ -110,7 +122,7 @@ function SubjectView() {
     text?.length > length ? text.substring(0, length) + "..." : text;
 
   useEffect(() => {
-    getSubjectData();
+    getData();
   }, [id]);
 
   return (
@@ -208,11 +220,12 @@ function SubjectView() {
                   </div>
                 </div>
               </div>
-                <AddTopic
-                  show={showAddTopic}
-                  setShow={setShowAddTopic}
-                  id={selectedId}
-                />
+              <div className="d-flex justify-content-end me-2">
+                {/* {storedScreens?.data[5]?.can_create === 1 && ( */}
+                <TopicAdd onSuccess={getData}
+                  id={selectedId} />
+                {/* )} */}
+              </div>
               <ThemeProvider theme={theme}>
                 <MaterialReactTable
                   columns={columns}
@@ -221,12 +234,56 @@ function SubjectView() {
                   enableColumnFilters={false}
                   enableDensityToggle={false}
                   enableFullScreenToggle={false}
-                  // muiTableBodyRowProps={({ row }) => ({
-                  //   onClick: () => navigate(`/topic/view/${row.original.id}`),
-                  //   style: { cursor: "pointer" },
-                  // })}
+                  muiTableBodyRowProps={({ row }) =>
+                    storedScreens?.data[5]?.can_view === 1
+                      ? {
+                        style: { cursor: "pointer" },
+                        onClick: () => {
+                          setSelectedId(row.original.id);
+                          setShowView(true);
+                        },
+                      }
+                      : {}
+                  }
+                // muiTableBodyRowProps={({ row }) => ({
+                //   onClick: () => navigate(`/topic/view/${row.original.id}`),
+                //   style: { cursor: "pointer" },
+                // })}
                 />
               </ThemeProvider>
+              <Menu
+                id="action-menu"
+                anchorEl={menuAnchor}
+                open={Boolean(menuAnchor)}
+                onClose={handleMenuClose}
+              >
+                {/* {storedScreens?.data[5]?.can_edit === 1 && ( */}
+                <MenuItem
+                  onClick={() => {
+                    setShowEdit(true);
+                    handleMenuClose();
+                  }}
+                >
+                  Edit
+                </MenuItem>
+                {/* )} */}
+                {/* {storedScreens?.data[5]?.can_delete === 1 && ( */}
+                <MenuItem>
+                  <Delete
+                    path={`topic/delete/${selectedId}`}
+                    onDeleteSuccess={getData}
+                    onOpen={handleMenuClose}
+                  />
+                </MenuItem>
+                {/* )} */}
+              </Menu>
+              <TopicEdit
+                show={showEdit}
+                setShow={setShowEdit}
+                id={selectedId}
+                onSuccess={getData}
+              />
+              <TopicView show={showView} setShow={setShowView} id={selectedId} />
             </div>
           )}
         </>

@@ -62,22 +62,19 @@ function SubjectEdit({ id, show, setShow, onSuccess }) {
     try {
       setLoading(true);
       const response = await api.get(`subject/${id}`);
-      const { data } = response.data.subject;
-
-      const parsedCenterIds = JSON.parse(data.center_id);
-      const parsedCenterNames = JSON.parse(data.center_names);
+      const { subject } = response.data.data;
+      const parsedCenterIds = JSON.parse(subject.center_id);
+      const parsedCenterNames = JSON.parse(subject.center_names);
       const selectedCenters = parsedCenterIds.map((id, index) => ({
         value: id,
         label: parsedCenterNames[index] || "",
       }));
-
       setSelectedCenter(selectedCenters);
-
       formik.setValues({
         center_id: selectedCenters.map((center) => center.value),
-        grade_id: data.grade_id || "",
-        name: data.name || "",
-        description: data.description || "",
+        grade_id: subject.grade_id || "",
+        name: subject.name || "",
+        description: subject.description || "",
       });
     } catch (e) {
       toast.error(
