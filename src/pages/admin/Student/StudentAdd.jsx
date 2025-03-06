@@ -419,6 +419,12 @@ function StudentAdd() {
                       {...formik.getFieldProps("middle_name")}
                       placeholder="Enter Text"
                     />
+                    {formik.touched.middle_name &&
+                      formik.errors.middle_name && (
+                        <div className="invalid-feedback">
+                          {formik.errors.middle_name}
+                        </div>
+                      )}
                   </div>
                 </div>
               </div>
@@ -435,6 +441,11 @@ function StudentAdd() {
                       {...formik.getFieldProps("last_name")}
                       placeholder="Enter Text"
                     />
+                    {formik.touched.last_name && formik.errors.last_name && (
+                      <div className="invalid-feedback">
+                        {formik.errors.last_name}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -532,6 +543,12 @@ function StudentAdd() {
                       {...formik.getFieldProps("parent_name")}
                       placeholder="Enter Text"
                     />
+                    {formik.touched.parent_name &&
+                      formik.errors.parent_name && (
+                        <div className="invalid-feedback">
+                          {formik.errors.parent_name}
+                        </div>
+                      )}
                   </div>
                 </div>
               </div>
@@ -548,6 +565,12 @@ function StudentAdd() {
                       {...formik.getFieldProps("parent_email")}
                       placeholder="Enter Text"
                     />
+                    {formik.touched.parent_email &&
+                      formik.errors.parent_email && (
+                        <div className="invalid-feedback">
+                          {formik.errors.parent_email}
+                        </div>
+                      )}
                   </div>
                 </div>
               </div>
@@ -564,6 +587,12 @@ function StudentAdd() {
                       {...formik.getFieldProps("parent_mobile")}
                       placeholder="Enter Text"
                     />
+                    {formik.touched.parent_mobile &&
+                      formik.errors.parent_mobile && (
+                        <div className="invalid-feedback">
+                          {formik.errors.parent_mobile}
+                        </div>
+                      )}
                   </div>
                 </div>
               </div>
@@ -636,6 +665,12 @@ function StudentAdd() {
                       }`}
                       {...formik.getFieldProps("admission_date")}
                     />
+                    {formik.touched.admission_date &&
+                      formik.errors.admission_date && (
+                        <div className="invalid-feedback">
+                          {formik.errors.admission_date}
+                        </div>
+                      )}
                   </div>
                 </div>
               </div>

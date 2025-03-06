@@ -171,7 +171,7 @@ function StudentView() {
           {storedScreens?.data[1]?.can_delete === 1 && (
             <button
               className="btn view-delete-btn"
-              onClick={(e) => {
+              onClick={() => {
                 handleDeleteClick(id);
               }}
             >
@@ -211,7 +211,7 @@ function StudentView() {
             {storedScreens?.data[1]?.can_edit === 1 && (
               <button
                 className="btn edit-btn ms-2"
-                onClick={(e) => {
+                onClick={() => {
                   navigate(`/student/edit/${id}`);
                 }}
               >
