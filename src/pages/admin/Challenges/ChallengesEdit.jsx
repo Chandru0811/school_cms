@@ -159,14 +159,15 @@ function ChallengesEdit() {
         value: id,
         label: parsedCenterNames[index] || "",
       }));
-      setSelectedCenter(selectedCenters);
+      const correctMultiChoiceAnswer = parsedAnswer.multichoice || "";
 
-      // Map multi-choice options
+      // Map multi-choice options and set the selected one
       const initialMultiChoices = parsedOptions.map((option, index) => ({
         id: Date.now() + index,
-        value: option,
-        selected: parsedAnswer.multichoice === option, // Mark selected option
+        value: option.value || option,
+        selected: (option.value || option) === correctMultiChoiceAnswer, // Mark selected option
       }));
+      setSelectedCenter(selectedCenters);
 
       // Set initial values for the form
       formik.setValues({

@@ -575,3 +575,16 @@
   border-width: 1px;
   border-color:#4f46e5 ;
 }
+
+
+.btn--underline {
+  color: #525f7f;
+  text-decoration-line: underline;
+  font-weight: 400;
+  font-size: 0.9rem;
+}
+.btn--underline:hover ,.btn--underline:active ,.btn--underline:focus{
+  color: #1a1a1a;
+  box-shadow: none;
+  border-color: transparent !important;
+}
