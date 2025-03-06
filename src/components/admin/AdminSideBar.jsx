@@ -13,9 +13,8 @@ import { PiStudentLight } from "react-icons/pi";
 import { LiaAwardSolid } from "react-icons/lia";
 import { SlBookOpen } from "react-icons/sl";
 import { BsPerson } from "react-icons/bs";
-import { RiHome6Fill, RiHome6Line } from "react-icons/ri";
+import { RiHome6Line } from "react-icons/ri";
 import { FiBell } from "react-icons/fi";
-import { FaBook, FaBookOpen, FaMedal, FaPuzzlePiece, FaQuestionCircle } from "react-icons/fa";
 import { AiOutlineEdit } from "react-icons/ai";
 
 function AdminSidebar() {
