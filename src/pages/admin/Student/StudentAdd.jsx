@@ -214,17 +214,7 @@ function StudentAdd() {
           <div className="d-flex align-items-center">
             <div>
               <Link to="/student">
-                <button
-                  type="submit"
-                  className="btn btn-sm add-btn p-1"
-                  disabled={loadIndicator}
-                >
-                  {loadIndicator && (
-                    <span
-                      className="spinner-border spinner-border-sm me-2"
-                      aria-hidden="true"
-                    ></span>
-                  )}
+                <button type="button" className="btn btn-sm add-btn p-1">
                   <MdKeyboardArrowLeft size={25} />
                 </button>
               </Link>
@@ -247,7 +237,17 @@ function StudentAdd() {
             >
               <GoTrash className="trash-icon" /> &nbsp;&nbsp; Discard Changes
             </button>
-            <button className="btn add-btn">
+            <button
+              type="submit"
+              className="btn add-btn"
+              disabled={loadIndicator}
+            >
+              {loadIndicator && (
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  aria-hidden="true"
+                ></span>
+              )}
               <FiSave className="trash-icon" /> &nbsp;&nbsp; Save Student
             </button>
           </div>
@@ -257,7 +257,7 @@ function StudentAdd() {
             <p className="view-header">Student Info</p>
           </div>
           <div className="container-fluid px-4">
-            <div className="row border-top py-2">
+            <div className="row border-top py-5">
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
                   <div className="col-5">

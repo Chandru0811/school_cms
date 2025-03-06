@@ -179,7 +179,7 @@ function Student() {
           <Link to="/student/add">
             <button
               type="button"
-              className="btn btn-button btn-sm me-2 add-btn"
+              className="btn btn-sm me-2 add-btn"
             >
               <FaPlus fontSize={12} className="me-1" /> Add Student
             </button>
