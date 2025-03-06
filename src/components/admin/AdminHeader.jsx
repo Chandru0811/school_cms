@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import user from "../../assets/images/user_profile.svg";
 import { Link, useNavigate } from "react-router-dom";
-import { IoIosArrowDown } from "react-icons/io";
+import { IoIosArrowDown, IoMdNotificationsOutline } from "react-icons/io";
 import PropTypes from "prop-types";
 import { IoHomeOutline, IoSettingsOutline } from "react-icons/io5";
 import { TbLogout2 } from "react-icons/tb";
-import { GoPencil } from "react-icons/go";
+import { GoMail, GoPencil } from "react-icons/go";
 import { Modal } from "react-bootstrap";
 import userImage from "../../assets/images/user_image.png";
 import api from "../../config/URL";
@@ -120,14 +120,20 @@ function AdminHeader({ handleLogout }) {
   return (
     <header
       className="border-bottom py-3 sticky-top"
-      style={{ backgroundColor: "#fff" }}
+      style={{ backgroundColor: "#e0e7ff" }}
     >
       <div className="container-fluid">
         <div className="mb-npx">
-          <div className="row align-items-center">
+          <div className="row align-items-center m-0">
             <div className="col-sm-6 col-12 mb-4 mb-sm-0 admin-settings"></div>
             <div className="col-sm-6 col-12 text-sm-end">
               <div className="mx-n1 position-relative" ref={dropdownRef}>
+                <span className="me-5">
+                  <GoMail size={25} />
+                </span>
+                <span className="me-5">
+                  <IoMdNotificationsOutline size={25} />
+                </span>
                 <span style={{ cursor: "pointer" }} onClick={toggleDropdown}>
                   {/* <FaBell className="me-3" style={{ color: "#8b99b5" }} /> */}
                   <img

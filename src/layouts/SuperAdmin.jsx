@@ -14,11 +14,10 @@ function SuperAdmin({ handleLogout }) {
   return (
     <div>
       <div>
-        <BrowserRouter basename="/schoolCms">
-          <div className="d-flex flex-column flex-lg-row bg-surface-secondary ">
-            <SuperAdminSideBar />
-
-            <div className="flex-grow-1 h-screen overflow-y-lg-auto">
+        <BrowserRouter basename="/schoolCms"> 
+          <div className="d-flex flex-column flex-lg-row bg-surface-secondary">
+          <SuperAdminSideBar />
+            <div className="flex-grow-1 max-h-screen overflow-y-auto">
               <SuperAdminHeader handleLogout={handleLogout} />
               <main className="pt-2 bg-surface-secondary">
                 <div className="px-2" style={{ minHeight: "80vh" }}>

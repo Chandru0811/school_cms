@@ -3,21 +3,17 @@ import { NavLink } from "react-router-dom";
 import helperlogo from "../../assets/images/logo.webp";
 import PropTypes from "prop-types";
 import {
-  IoHelpCircleOutline,
   IoGridOutline,
-  IoBarChart,
   IoTrophyOutline,
   IoGiftOutline,
-  IoCardOutline,
   IoLibraryOutline,
 
 } from "react-icons/io5"
 import { PiStudentLight } from "react-icons/pi";
-import { FaRegFileAlt } from "react-icons/fa";
 import { LiaAwardSolid } from "react-icons/lia";
-import { PiNotePencilDuotone } from "react-icons/pi";
 import { SlBookOpen } from "react-icons/sl";
 import { BsPerson } from "react-icons/bs";
+import { RiHome6Line } from "react-icons/ri";
 
 function AdminSidebar() {
   // const navigate = useNavigate();
@@ -27,14 +23,14 @@ function AdminSidebar() {
   //   navigate("/");
   // };
   const storedScreens = JSON.parse(localStorage.getItem("schoolCMS_Permissions") || "{}");
-
+  const schoolCMS_role = localStorage.getItem("schoolCMS_role");
   const [leadMenuOpen] = useState(false);
 
   const [activeSubmenu] = useState(null);
 
   return (
     <nav
-      className="navbar show navbar-vertical navbar-expand-lg p-0 navbar-light border-bottom border-bottom-lg-0 border-end-lg sidebar"
+      className="navbar show navbar-vertical max-h-screen overflow-y-auto navbar-expand-lg p-0 navbar-light border-bottom border-bottom-lg-0 border-end-lg"
       id="navbarVertical"
     >
       <div className="container-fluid">
@@ -50,8 +46,9 @@ function AdminSidebar() {
           <span className="navbar-toggler-icon"></span>
         </button>
         <NavLink
-          className={`navbar-brand nav-logo logo_ats py-lg-2 px-lg-6 m-0 d-flex align-items-center justify-content-center gap-3 ${leadMenuOpen || activeSubmenu ? "active" : ""
-            }`}
+          className={`navbar-brand nav-logo logo_ats py-lg-2 px-lg-6 m-0 d-flex align-items-center justify-content-center gap-3 ${
+            leadMenuOpen || activeSubmenu ? "active" : ""
+          }`}
           to="/"
         >
           <img
@@ -65,209 +62,171 @@ function AdminSidebar() {
           />
         </NavLink>
         <div className="collapse navbar-collapse" id="sidebarCollapse">
-          <ul className="navbar-nav">
-            <li className="nav-item px-3">
+          <div className="ms-5 me-5 my-3">
+            <div className="mb-2">
+              <p className="sidebar-heading">DASHBOARD</p>
               <NavLink
-                className="nav-link"
-                style={{ borderRadius: "5px" }}
+                className={({ isActive }) =>
+                  `sidebar-navlink ${isActive ? "active" : ""}`
+                }
                 to="/dashboard"
               >
-                <IoBarChart className="sidebar_icon" size={17} />
-                Dashboard
+                <RiHome6Line className="sidebar_icon" size={17} />
+                <p>Home</p>
               </NavLink>
-            </li>
-            {storedScreens?.data[0]?.can_access === 1 &&
-              <li className="nav-item px-3">
+            </div>
+            <div className="mb-2">
+              <p className="sidebar-heading fw-semibold">ADMINISTRATION</p>
+              {storedScreens?.data[0]?.can_access === 1 && (
                 <NavLink
-                  className="nav-link"
-                  style={{ borderRadius: "5px" }}
+                  className={({ isActive }) =>
+                    `sidebar-navlink ${isActive ? "active" : ""}`
+                  }
                   to="/center"
                 >
                   <IoGridOutline className="sidebar_icon" size={17} />
-                  Centre
+                  <p>center</p>
                 </NavLink>
-              </li>
-            }
-            {storedScreens?.data[1]?.can_access === 1 &&
-              <li className="nav-item px-3">
+              )}{" "}
+              {storedScreens?.data[13]?.can_access === 1 && (
                 <NavLink
-                  className="nav-link"
-                  style={{ borderRadius: "5px" }}
-                  to="/employee"
+                  className={({ isActive }) =>
+                    `sidebar-navlink ${isActive ? "active" : ""}`
+                  }
+                  to="/subscription"
                 >
-                  <BsPerson className="sidebar_icon" size={17} />
-                  Employee
+                  <RiHome6Line />
+                  <p>Subscribtion</p>
                 </NavLink>
-              </li>
-            }
-            {storedScreens?.data[2]?.can_access === 1 &&
-              <li className="nav-item px-3">
+              )}
+            </div>
+
+            <div className="mb-2">
+              <p className="sidebar-heading">ACADEMIC</p>
+              {storedScreens?.data[2]?.can_access === 1 && (
                 <NavLink
-                  className="nav-link"
-                  style={{ borderRadius: "5px" }}
+                  className={({ isActive }) =>
+                    `sidebar-navlink ${isActive ? "active" : ""}`
+                  }
                   to="/grade"
                 >
                   <LiaAwardSolid className="sidebar_icon" size={17} />
-                  Grade
+                  <p>Classes/Grades</p>
                 </NavLink>
-              </li>
-            }
-            {storedScreens?.data[4]?.can_access === 1 &&
-              <li className="nav-item px-3">
+              )}
+              {storedScreens?.data[4]?.can_access === 1 && (
                 <NavLink
-                  className="nav-link"
-                  style={{ borderRadius: "5px" }}
+                  className={({ isActive }) =>
+                    `sidebar-navlink ${isActive ? "active" : ""}`
+                  }
                   to="/subject"
                 >
                   <SlBookOpen className="sidebar_icon" size={17} />
-                  Subject
+                  <p>Subject & Topics</p>
                 </NavLink>
-              </li>
-            }
-            {storedScreens?.data[5]?.can_access === 1 &&
-              <li className="nav-item px-3">
+              )}
+              {storedScreens?.data[3]?.can_access === 1 && (
                 <NavLink
-                  className="nav-link"
-                  style={{ borderRadius: "5px" }}
-                  to="/topic"
-                >
-                  <PiNotePencilDuotone className="sidebar_icon" size={17} />
-                  Topic
-                </NavLink>
-              </li>
-            }
-            {storedScreens?.data[3]?.can_access === 1 &&
-              <li className="nav-item px-3">
-                <NavLink
-                  className="nav-link"
-                  style={{ borderRadius: "5px" }}
+                  className={({ isActive }) =>
+                    `sidebar-navlink ${isActive ? "active" : ""}`
+                  }
                   to="/student"
                 >
                   <PiStudentLight className="sidebar_icon" size={17} />
-                  Student
+                  <p>Students</p>
                 </NavLink>
-              </li>
-            }
-            {storedScreens?.data[6]?.can_access === 1 &&
-              <li className="nav-item px-3">
+              )}
+            </div>
+            <div className="mb-2">
+              <p className="sidebar-heading">STAFF</p>
+              {storedScreens?.data[1]?.can_access === 1 && (
                 <NavLink
-                  className="nav-link"
-                  style={{ borderRadius: "5px" }}
-                  to="/question"
+                  className={({ isActive }) =>
+                    `sidebar-navlink ${isActive ? "active" : ""}`
+                  }
+                  to="/employee"
                 >
-                  <IoHelpCircleOutline className="sidebar_icon" size={17} />
-                  Question & Answer
+                  <BsPerson className="sidebar_icon" size={17} />
+                  <p>Employees</p>
                 </NavLink>
-              </li>
-            }
-            {storedScreens?.data[7]?.can_access === 1 &&
-              <li className="nav-item px-3">
+              )}
+            </div>
+            <div className="mb-2">
+              <p className="sidebar-heading">STUDY MATERIALS</p>
+              {storedScreens?.data[8]?.can_access === 1 && (
                 <NavLink
-                  className="nav-link"
-                  style={{ borderRadius: "5px" }}
+                  className={({ isActive }) =>
+                    `sidebar-navlink ${isActive ? "active" : ""}`
+                  }
+                  to="/worksheet"
+                >
+                  <RiHome6Line />
+                  <p>Study Materials</p>
+                </NavLink>
+              )}
+              {storedScreens?.data[7]?.can_access === 1 && (
+                <NavLink
+                  className={({ isActive }) =>
+                    `sidebar-navlink ${isActive ? "active" : ""}`
+                  }
                   to="/challenges"
                 >
                   <IoTrophyOutline className="sidebar_icon" size={17} />
-                  Challenges
+                  <p>Challenges & Quizzes</p>
                 </NavLink>
-              </li>
-            }
-            {storedScreens?.data[8]?.can_access === 1 &&
-              <li className="nav-item px-3">
+              )}
+              {storedScreens?.data[10]?.can_access === 1 && (
                 <NavLink
-                  className="nav-link"
-                  style={{ borderRadius: "5px" }}
-                  to="/worksheet"
-                >
-                  <FaRegFileAlt className="sidebar_icon" size={17} />
-                  Worksheet
-                </NavLink>
-              </li>
-            }
-            {storedScreens?.data[10]?.can_access === 1 &&
-              <li className="nav-item px-3">
-                <NavLink
-                  className="nav-link"
-                  style={{ borderRadius: "5px" }}
+                  className={({ isActive }) =>
+                    `sidebar-navlink ${isActive ? "active" : ""}`
+                  }
                   to="/homework"
                 >
                   <IoLibraryOutline className="sidebar_icon" size={17} />
-                  Homework
+                  <p>Assignments & Homeworks</p>
                 </NavLink>
-              </li>
-            }
-            {storedScreens?.data[12]?.can_access === 1 &&
-              <li className="nav-item px-3">
+              )}
+              {storedScreens?.data[6]?.can_access === 1 && (
                 <NavLink
-                  className="nav-link"
-                  style={{ borderRadius: "5px" }}
+                  className={({ isActive }) =>
+                    `sidebar-navlink ${isActive ? "active" : ""}`
+                  }
+                  to="/question"
+                >
+                  <IoTrophyOutline className="sidebar_icon" size={17} />
+                  <p>Questions & Answer</p>
+                </NavLink>
+              )}
+            </div>
+            <div className="mb-2">
+              <p className="sidebar-heading">ENGAGEMENT</p>
+              {storedScreens?.data[12]?.can_access === 1 && (
+                <NavLink
+                  className={({ isActive }) =>
+                    `sidebar-navlink ${isActive ? "active" : ""}`
+                  }
                   to="/rewards"
                 >
                   <IoGiftOutline className="sidebar_icon" size={17} />
-                  Rewards
+                  <p>Rewards</p>
                 </NavLink>
-              </li>
-            }
-            {storedScreens?.data[13]?.can_access === 1 &&
-              <li className="nav-item px-3">
-                <NavLink
-                  className="nav-link"
-                  style={{ borderRadius: "5px" }}
-                  to="/subscription"
-                >
-                  <IoGiftOutline className="sidebar_icon" size={17} />
-                  Subscription
-                </NavLink>
-              </li>
-            }
-            {/* {storedScreens?.data[15]?.can_access === 1 &&
-              <li className="nav-item px-3">
-                <NavLink
-                  className="nav-link"
-                  style={{ borderRadius: "5px" }}
-                  to="/subscriptions"
-                >
-                  <IoCardOutline className="sidebar_icon" size={17} />
-                  Subscriptions
-                </NavLink>
-              </li>
-            } */}
-            {/* <li className="nav-item px-3">
-              <NavLink
-                className="nav-link"
-                style={{ borderRadius: "5px" }}
-                to="/school"
-              >
-                <IoSchoolOutline className="sidebar_icon" size={17} />
-                School
-              </NavLink>
-            </li>
-            <li className="nav-item px-3">
-              <NavLink
-                className="nav-link"
-                style={{ borderRadius: "5px" }}
-                to="/role"
-              >
-                <IoSchoolOutline className="sidebar_icon" size={17} />
-                Role
-              </NavLink>
-            </li> */}
-          </ul>
-          {/* <div className="ps-4 mt-auto w-100 mb-4">
-            <div className="navbar-nav">
-              <div className="nav-item">
-                <button
-                  to={"#"}
-                  style={{ width: "100%" }}
-                  className="nav-link ps-6 logout_button"
-                  onClick={handelLogOutClick}
-                >
-                  <BiLogOut />
-                  &nbsp;&nbsp; Logout
-                </button>
-              </div>
+              )}
             </div>
-          </div> */}
+
+            <div className="mb-2">
+              {schoolCMS_role == 2 && (
+                <NavLink
+                  className={({ isActive }) =>
+                    `sidebar-navlink ${isActive ? "active" : ""}`
+                  }
+                  to="/settings"
+                >
+                  <BsPerson className="sidebar_icon" size={17} />
+                  <p>Settings</p>
+                </NavLink>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </nav>

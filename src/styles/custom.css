@@ -488,3 +488,90 @@
   font-size: 18px !important;
   font-weight: 500 !important;
 }
+
+
+.sidebar-heading {
+  color: #4f46e5;
+  font-family: "Plus Jakarta Sans";
+  font-size: 11px;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+.heading-color {
+  color: #4f46e5;
+  font-size: 20px;
+  margin-bottom: 5px;
+}
+.sidebar-navlink {
+  color: #333333;
+  font-family: "Urbanist";
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  gap: 8px;
+  padding: 10px 5px;
+  border-radius: 5px;
+  transition: all 0.3s ease-in-out;
+}
+.sidebar-navlink p {
+  font-family: "Urbanist" !important;
+}
+
+.sidebar-navlink:hover {
+  background: #e0e7ff;
+  color: #000;
+}
+.sidebar-navlink:hover svg {
+  color: #4f46e5;
+}
+
+.sidebar-navlink.active {
+  background: #4f46e5;
+  color: #fff;
+  font-weight: bold;
+}
+.sidebar-navlink.active svg {
+  color: white;
+}
+.dash-font{
+  font-family: "Urbanist" !important;
+}
+.chart-heading {
+  font-family: "Urbanist" !important;
+  font-size: 13px;
+  line-height: 20px;
+}
+.navbar::-webkit-scrollbar {
+  display: none;
+}
+
+.navbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.dash-scrool {
+  -ms-overflow-style: none;
+  scrollbar-width: 2px; 
+}
+
+.dash-scrool::-webkit-scrollbar {
+  width: 2px;
+}
+
+.dash-scrool::-webkit-scrollbar-thumb {
+  background-color: #ccc; 
+  border-radius: 10px;
+}
+
+.dash-scrool::-webkit-scrollbar-track {
+  background: transparent; 
+}
+
+.dash-icon{
+  background-color: #e0e7ff;
+  border-width: 1px;
+  border-color:#4f46e5 ;
+}
