@@ -10,13 +10,11 @@ import toast from "react-hot-toast";
 import api from "../../../config/URL";
 import TopicEdit from "./TopicEdit";
 
-
 function TopicView({ show, setShow, id }) {
   const [data, setData] = useState({});
   const [centerList, setCenterList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showEdit, setShowEdit] = useState(false);
-
 
   const handleClose = () => {
     setShow(false);
@@ -31,7 +29,7 @@ function TopicView({ show, setShow, id }) {
       toast.error(
         `Error Fetching Topic Data: ${e?.response?.data?.error || e.message}`
       );
-    }finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -66,90 +64,81 @@ function TopicView({ show, setShow, id }) {
         <DialogTitle>View Topic</DialogTitle>
         <hr className="m-0" />
         <DialogContent>
-        {loading ? (
-          <div className="loader-container">
-            <div className="loader"></div>
-          </div>
-        ) : (
-          <div className="row">
-            <div className="col-md-6 col-12">
-              <div className="row mt-3 mb-2">
-                <div className="col-6">
-                  <p>Centre Names</p>
-                </div>
+          {loading ? (
+            <div className="loader-container">
+              <div className="loader"></div>
+            </div>
+          ) : (
+            <div className="row">
+              <div className="col-md-6 col-12">
+                <div className="row mt-3 mb-2">
                   <div className="col-6">
-                  <p className="text-muted text-sm">
+                    <p className="view-label-text">Centre Names</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="view-value">
                       :{" "}
-                  {data.center_names
-                    ? JSON.parse(data.center_names).join(", ")
-                    : ""}
+                      {data.center_names
+                        ? JSON.parse(data.center_names).join(", ")
+                        : ""}
                     </p>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="col-md-6 col-12">
-              <div className="row mt-3 mb-2">
-                <div className="col-6">
-                  <p>Subject Name</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">
-                    : {truncateText(data.subject_name)}
-                  </p>
+              <div className="col-md-6 col-12">
+                <div className="row mt-3 mb-2">
+                  <div className="col-6">
+                    <p className="view-label-text">Subject Name</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="view-value">
+                      : {truncateText(data.subject_name)}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="col-md-6 col-12">
-              <div className="row mt-3 mb-2">
-                <div className="col-6">
-                  <p>Topic Name</p>
-                </div>
-                <div className="col-6">
-                  <p className="text-muted text-sm">
-                    : {truncateText(data.name)}
-                  </p>
+              <div className="col-md-6 col-12">
+                <div className="row mt-3 mb-2">
+                  <div className="col-6">
+                    <p className="view-label-text">Topic Name</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="view-value">
+                      : {truncateText(data.name)}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className="col-md-6 col-12">
-              <div className="row mt-3 mb-2">
-                <div className="col-6">
-                  <p>Description</p>
-                </div>
-                <div className="col-6">
-                  <p
-                    className="text-muted text-sm text-truncate"
-                  >
-                    : {truncateText(data.description)}
-                  </p>
+              <div className="col-md-6 col-12">
+                <div className="row mt-3 mb-2">
+                  <div className="col-6">
+                    <p className="view-label-text"> Description</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="view-value text-truncate">
+                      : {truncateText(data.description)}
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
         </DialogContent>
         <hr className="m-0" />
         <DialogActions>
           <button className="btn btn-sm btn-back" onClick={handleClose}>
             Close
           </button>
-           <button
-                    className="btn btn-sm btn-primary"
-                    type="button"
-                    onClick={() => setShowEdit(true)}
-                  >
-                    Edit
-                  </button>
-          
-                  <TopicEdit
-                    show={showEdit}
-                    setShow={setShowEdit}
-                    id={id}
-                    onSuccess={getTopicData}
-                  />
+          <button
+            className="btn btn-sm btn-primary "
+            type="submit"
+            onClick={() => setShowEdit(true)}
+          >
+            update
+          </button>
         </DialogActions>
       </Dialog>
     </>

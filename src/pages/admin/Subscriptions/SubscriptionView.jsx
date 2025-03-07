@@ -1,15 +1,24 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
+import { MdKeyboardArrowLeft } from "react-icons/md";
+import { GoTrash } from "react-icons/go";
+import { TbEdit } from "react-icons/tb";
+import DeleteChange from "../../../components/common/DeleteChange";
 
 function SubscriptionView() {
   const [data, setData] = useState({});
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
-
+  const [selectedId, setSelectedId] = useState(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const navigate = useNavigate();
+  const storedScreens = JSON.parse(
+    localStorage.getItem("schoolCMS_Permissions") || "{}"
+  );
   const getSubscriptionData = async () => {
     try {
       setLoading(true);
@@ -40,55 +49,75 @@ function SubscriptionView() {
       console.error("Status Update Error:", error);
     }
   };
-
+  const handleDeleteClick = (id) => {
+    setSelectedId(id);
+    setDeleteModalOpen(true);
+  };
   useEffect(() => {
     getSubscriptionData();
   }, [id]);
 
   return (
     <div className="container-fluid px-0">
-      <ol
-        className="breadcrumb my-2 px-2 d-flex align-items-center"
-        style={{ listStyle: "none", padding: 0, margin: 0 }}
-      >
-        <li>
-          <Link to="/" className="custom-breadcrumb text-sm">
-            Home
-          </Link>
-          <span className="breadcrumb-separator text-sm"> &gt; </span>
-        </li>
-        <li>
-          <Link to="/subscription" className="custom-breadcrumb text-sm">
-            &nbsp;Subscriptions
-          </Link>
-          <span className="breadcrumb-separator text-sm"> &gt; </span>
-        </li>
-        <li className="breadcrumb-item active text-sm" aria-current="page">
-          &nbsp;Subscriptions View
-        </li>
-      </ol>
-      <div className="card" style={{ border: "1px solid #dbd9d0", minHeight: "70vh" }}>
-        <div className="d-flex px-4 justify-content-between align-items-center card_header p-1 mb-4">
-          <div className="d-flex align-items-center">
-            <div className="d-flex">
-              <div className="dot active"></div>
-            </div>
-            <span className="me-2 text-muted text-sm">View Subscriptions</span>
-          </div>
-          <div className="my-2 pe-3 d-flex align-items-center">
+      <div className="d-flex px-4 justify-content-between align-items-center  p-1 mb-4">
+        <div className="d-flex align-items-center">
+          <div>
             <Link to="/subscription">
-              <button type="button" className="btn btn-sm btn-back">
-                Back
+              <button type="button " className="btn btn-sm add-btn">
+                <MdKeyboardArrowLeft size={20} />
               </button>
             </Link>
             &nbsp;&nbsp;
+          </div>
+          <span className="mx-3 table-heading">
+            Subscription -&nbsp;
+            <span className="table-subheading">
+              Details of Selected Subscription
+            </span>
+          </span>
+        </div>
+        <div className="my-2 d-flex align-items-center">
+          {storedScreens?.data[13]?.can_delete === 1 && (
             <button
-              className={`btn btn-sm ${data.active === 1 ? "btn-danger" : "btn-success"
-                }`}
+              className="btn view-delete-btn"
+              onClick={() => {
+                handleDeleteClick(id);
+              }}
+            >
+              <GoTrash className="trash-icon" /> &nbsp;&nbsp; Delete
+              Subscription
+            </button>
+          )}
+        </div>
+        <div
+          className="mx-4 card vh-100"
+          style={{ border: "1px solid #dbd9d0" }}
+        >
+          <div
+            className="card-header d-flex justify-content-between"
+            style={{ marginBottom: "1px solid #F4F4F4" }}
+          >
+            <p className="view-header">Subscription Info</p>
+
+            <button
+              className={`btn btn-sm ${
+                data.active === 1 ? "btn-danger" : "btn-success"
+              }`}
               onClick={handleStatusToggle}
             >
               {data.active === 1 ? "Deactivate" : "Activate"}
             </button>
+
+            {storedScreens?.data[1]?.can_edit === 1 && (
+              <button
+                className="btn edit-btn ms-2"
+                onClick={() => {
+                  navigate(`/subscription/edit/${id}`);
+                }}
+              >
+                <TbEdit style={{ color: "#C0C0C0", fontSize: "16px" }} />
+              </button>
+            )}
           </div>
         </div>
         {loading ? (
@@ -102,20 +131,20 @@ function SubscriptionView() {
                 <div className="col-md-6 col-12 my-2">
                   <div className="row">
                     <div className="col-6">
-                      <p className="fw-medium text-sm">Grade</p>
+                      <p className="view-label-text">Grade</p>
                     </div>
                     <div className="col-6">
-                      <p className="text-muted text-sm">: {data.grand_name}</p>
+                      <p className="view-value">: {data.grand_name}</p>
                     </div>
                   </div>
                 </div>
                 <div className="col-md-6 col-12 my-2">
                   <div className="row">
                     <div className="col-6">
-                      <p className="fw-medium text-sm">Worksheets</p>
+                      <p className="view-label-text">Worksheets</p>
                     </div>
                     <div className="col-6">
-                      <p className="text-muted text-sm">
+                      <p className="view-value">
                         :{" "}
                         {data.worksheets_names
                           ? JSON.parse(data.worksheets_names).join(", ")
@@ -127,40 +156,40 @@ function SubscriptionView() {
                 <div className="col-md-6 col-12 my-2">
                   <div className="row">
                     <div className="col-6">
-                      <p className="fw-medium text-sm">Name</p>
+                      <p className="view-label-text">Name</p>
                     </div>
                     <div className="col-6">
-                      <p className="text-muted text-sm">: {data.name}</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-6 col-12 my-2">
-                  <div className="row">
-                    <div className="col-6">
-                      <p className="fw-medium text-sm">Price</p>
-                    </div>
-                    <div className="col-6">
-                      <p className="text-muted text-sm">: {data.price}</p>
+                      <p className="view-value">: {data.name}</p>
                     </div>
                   </div>
                 </div>
                 <div className="col-md-6 col-12 my-2">
                   <div className="row">
                     <div className="col-6">
-                      <p className="fw-medium text-sm">Duration</p>
+                      <p className="view-label-text">Price</p>
                     </div>
                     <div className="col-6">
-                      <p className="text-muted text-sm">: {data.duration}</p>
+                      <p className="view-value">: {data.price}</p>
                     </div>
                   </div>
                 </div>
                 <div className="col-md-6 col-12 my-2">
                   <div className="row">
                     <div className="col-6">
-                      <p className="fw-medium text-sm">Description</p>
+                      <p className="view-label-text">Duration</p>
                     </div>
                     <div className="col-6">
-                      <p className="text-muted text-sm">: {data.description}</p>
+                      <p className="view-value">: {data.duration}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12 my-2">
+                  <div className="row">
+                    <div className="col-6">
+                      <p className="view-label-text">Description</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="view-value">: {data.description}</p>
                     </div>
                   </div>
                 </div>
@@ -168,15 +197,28 @@ function SubscriptionView() {
               <div className="col-md-6col-12 my-2">
                 <div className="row">
                   <div className="col-3">
-                    <p className="fw-medium text-sm">Detail</p>
+                    <p className="view-label-text">Detail</p>
                   </div>
                   <div className="col-9">
-                    <p className="text-muted text-sm" dangerouslySetInnerHTML={{ __html: data.details }}></p>
+                    <p
+                      className="view-value"
+                      dangerouslySetInnerHTML={{ __html: data.details }}
+                    ></p>
                   </div>
                 </div>
               </div>
             </div>
           </>
+        )}
+        {deleteModalOpen && selectedId && (
+          <DeleteChange
+            path={`subscription/delete/${id}`}
+            onDeleteSuccess={() => {
+              setDeleteModalOpen(false);
+              navigate("/studensubscriptiont");
+            }}
+            onClose={() => setDeleteModalOpen(false)}
+          />
         )}
       </div>
     </div>

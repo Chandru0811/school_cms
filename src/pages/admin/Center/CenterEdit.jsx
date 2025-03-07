@@ -10,9 +10,9 @@ import {
 import PropTypes from "prop-types";
 import toast from "react-hot-toast";
 import api from "../../../config/URL";
-import { Button } from "react-bootstrap";
+import { TbEdit } from "react-icons/tb";
 
-function CenterEdit({ id, onSuccess, handleMenuClose }) {
+function CenterEdit({ id, onSuccess }) {
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -47,7 +47,6 @@ function CenterEdit({ id, onSuccess, handleMenuClose }) {
 
         if (response.status === 200) {
           onSuccess();
-          handleMenuClose();
           toast.success(
             response.data.message || "Payment type updated successfully!"
           );
@@ -92,9 +91,6 @@ function CenterEdit({ id, onSuccess, handleMenuClose }) {
   const handleClose = () => {
     setOpen(false); // Close the dialog
     formik.resetForm(); // Reset the form
-    if (handleMenuClose) {
-      handleMenuClose(); // Optional: Trigger parent menu close if applicable
-    }
   };
 
   return (
@@ -183,7 +179,7 @@ function CenterEdit({ id, onSuccess, handleMenuClose }) {
           cursor: "pointer",
         }}
       >
-        Edit
+        <TbEdit style={{ color: "#4F46E5", fontSize: "16px" }} />
       </span>
 
       <Dialog
@@ -209,43 +205,52 @@ function CenterEdit({ id, onSuccess, handleMenuClose }) {
             ) : (
               <div className="container">
                 <div className="row">
-                  <div className="col-md-6 col-12 mb-3">
-                    <label className="form-label">
-                      Name<span className="text-danger">*</span>
-                    </label>
-                    <input
-                      className={`form-control ${
-                        formik.touched.name && formik.errors.name
-                          ? "is-invalid"
-                          : ""
-                      }`}
-                      {...formik.getFieldProps("name")}
-                    />
-                    {formik.touched.name && formik.errors.name && (
-                      <div className="invalid-feedback">
-                        {formik.errors.name}
+                  <div className="col-md-6 col-12">
+                    <div className="row mb-4">
+                      <div className="col-5">
+                        <p className="view-label-text">Name</p>
                       </div>
-                    )}
+                      <div className="col-7">
+                        <input
+                          aria-label="Default select example"
+                          className={`form-control ${
+                            formik.touched.name && formik.errors.name
+                              ? "is-invalid"
+                              : ""
+                          }`}
+                          {...formik.getFieldProps("name")}
+                        />
+                        {formik.touched.name && formik.errors.name && (
+                          <div className="invalid-feedback">
+                            {formik.errors.name}
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                  <div className="col-md-6 col-12 mb-3">
-                    <label className="form-label">
-                      Location<span className="text-danger">*</span>
-                    </label>
-                    <textarea
-                      rows={5}
-                      className={`form-control ${
-                        formik.touched.location && formik.errors.location
-                          ? "is-invalid"
-                          : ""
-                      }`}
-                      {...formik.getFieldProps("location")}
-                      maxLength={825}
-                    />
-                    {formik.touched.location && formik.errors.location && (
-                      <div className="invalid-feedback">
-                        {formik.errors.location}
+                  <div className="col-md-6 col-12">
+                    <div className="row mb-4">
+                      <div className="col-4">
+                        <p className="view-label-text">Location</p>
                       </div>
-                    )}
+                      <div className="col-8">
+                        <textarea
+                          rows={5}
+                          className={`form-control ${
+                            formik.touched.location && formik.errors.location
+                              ? "is-invalid"
+                              : ""
+                          }`}
+                          {...formik.getFieldProps("location")}
+                          maxLength={825}
+                        />
+                        {formik.touched.location && formik.errors.location && (
+                          <div className="invalid-feedback">
+                            {formik.errors.location}
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

@@ -2,14 +2,22 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState, useMemo } from "react";
 import toast from "react-hot-toast";
 import { MaterialReactTable } from "material-react-table";
-import { IconButton, Menu, MenuItem, ThemeProvider, createTheme } from "@mui/material";
+import {
+  IconButton,
+  Menu,
+  MenuItem,
+  ThemeProvider,
+  createTheme,
+} from "@mui/material";
 import api from "../../../config/URL";
 import { MoreVert as MoreVertIcon } from "@mui/icons-material";
 import PropTypes from "prop-types";
-import Delete from "../../../components/common/Delete";
 import TopicEdit from "../Topic/TopicEdit";
 import TopicView from "../Topic/TopicView";
 import TopicAdd from "../Topic/TopicAdd";
+import { GoTrash } from "react-icons/go";
+import { MdKeyboardArrowLeft } from "react-icons/md";
+import DeleteChange from "../../../components/common/DeleteChange";
 
 function SubjectView() {
   const [menuAnchor, setMenuAnchor] = useState(null);
@@ -18,14 +26,12 @@ function SubjectView() {
   const [data, setData] = useState({});
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const [showAddTopic, setShowAddTopic] = useState(false);
   const storedScreens = JSON.parse(
     localStorage.getItem("schoolCMS_Permissions") || "{}"
   );
-
-  const handleMenuClose = () => setMenuAnchor(null);
 
   const getData = async () => {
     try {
@@ -66,21 +72,33 @@ function SubjectView() {
         ),
       },
       {
-        accessorKey: "id",
-        header: "",
-        enableHiding: false,
+        accessorKey: "actions",
+        header: "Actions",
         enableSorting: false,
-        size: 20,
         Cell: ({ row }) => (
-          <IconButton
-            onClick={(e) => {
-              e.stopPropagation();
-              setSelectedId(row.original.id);
-              setMenuAnchor(e.currentTarget);
-            }}
-          >
-            <MoreVertIcon />
-          </IconButton>
+          <div className="actions-column">
+            {storedScreens?.data[5]?.can_edit === 1 && (
+              <button
+                className="btn edit-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <TopicEdit id={selectedId} onSuccess={getData} />
+              </button>
+            )}
+            {storedScreens?.data[5]?.can_delete === 1 && (
+              <button
+                className="btn delete-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteClick(row.original.id);
+                }}
+              >
+                <GoTrash style={{ color: "#FB3748", fontSize: "16px" }} />
+              </button>
+            )}
+          </div>
         ),
       },
       {
@@ -143,43 +161,49 @@ function SubjectView() {
     getData();
   }, [id]);
 
+  const handleDeleteClick = (id) => {
+    setSelectedId(id);
+    setDeleteModalOpen(true);
+  };
+
   return (
     <div className="container-fluid px-0 vh-100 mb-4">
-      <ol
-        className="breadcrumb my-2 px-2 d-flex align-items-center"
-        style={{ listStyle: "none", padding: 0, margin: 0 }}
-      >
-        <li>
-          <Link to="/" className="custom-breadcrumb text-sm">
-            Home
-          </Link>
-          <span className="breadcrumb-separator text-sm"> &gt; </span>
-        </li>
-        <li>
-          <Link to="/subject" className="custom-breadcrumb text-sm">
-            &nbsp;Subject
-          </Link>
-          <span className="breadcrumb-separator text-sm"> &gt; </span>
-        </li>
-        <li className="breadcrumb-item active text-sm" aria-current="page">
-          &nbsp;Subject View
-        </li>
-      </ol>
-      <div className="card" style={{ border: "1px solid #dbd9d0" }}>
-        <div className="d-flex px-4 justify-content-between align-items-center card_header p-1 mb-4">
-          <div className="d-flex align-items-center">
-            <div className="d-flex">
-              <div className="dot active"></div>
-            </div>
-            <span className="me-2 text-muted text-sm">View Subject</span>
-          </div>
-          <div className="my-2 pe-3 d-flex align-items-center">
+      <div className="d-flex px-4 justify-content-between align-items-center  p-1 mb-4">
+        <div className="d-flex align-items-center">
+          <div>
             <Link to="/subject">
-              <button type="button " className="btn btn-sm btn-back">
-                Back
+              <button type="button " className="btn btn-sm add-btn">
+                <MdKeyboardArrowLeft size={20} />
               </button>
             </Link>
+            &nbsp;&nbsp;
           </div>
+          <span className="mx-3 table-heading">
+            Subject Details -&nbsp;
+            <span className="table-subheading">
+              Details of Selected Subject
+            </span>
+          </span>
+        </div>
+        <div className="my-2 d-flex align-items-center">
+          {storedScreens?.data[4]?.can_delete === 1 && (
+            <button
+              className="btn view-delete-btn"
+              onClick={() => {
+                handleDeleteClick(id);
+              }}
+            >
+              <GoTrash className="trash-icon" /> &nbsp;&nbsp; Delete Subject
+            </button>
+          )}
+        </div>
+      </div>
+      <div className="mx-4 card vh-100" style={{ border: "1px solid #dbd9d0" }}>
+        <div
+          className="card-header d-flex justify-content-between"
+          style={{ marginBottom: "1px solid #F4F4F4" }}
+        >
+          <p className="view-header">Student Info</p>
         </div>
         <>
           {loading ? (
@@ -192,10 +216,10 @@ function SubjectView() {
                 <div className="col-md-6 col-12 my-2">
                   <div className="row">
                     <div className="col-6">
-                      <p className="fw-medium text-sm">Centre</p>
+                      <p className="view-label-text">Centre</p>
                     </div>
                     <div className="col-6">
-                      <p className="text-muted text-sm">
+                      <p className="view-value">
                         : {truncateText(data?.subject?.center_id)}
                       </p>
                     </div>
@@ -204,10 +228,10 @@ function SubjectView() {
                 <div className="col-md-6 col-12 my-2">
                   <div className="row">
                     <div className="col-6">
-                      <p className="fw-medium text-sm">Grade</p>
+                      <p className="view-label-text">Grade</p>
                     </div>
                     <div className="col-6">
-                      <p className="text-muted text-sm">
+                      <p className="view-value">
                         : {truncateText(data?.subject?.grade_id)}
                       </p>
                     </div>
@@ -216,10 +240,10 @@ function SubjectView() {
                 <div className="col-md-6 col-12 my-2">
                   <div className="row">
                     <div className="col-6">
-                      <p className="fw-medium text-sm">Name</p>
+                      <p className="view-label-text">Name</p>
                     </div>
                     <div className="col-6">
-                      <p className="text-muted text-sm">
+                      <p className="view-value">
                         : {truncateText(data?.subject?.name)}
                       </p>
                     </div>
@@ -228,10 +252,10 @@ function SubjectView() {
                 <div className="col-md-6 col-12 my-2">
                   <div className="row">
                     <div className="col-6">
-                      <p className="fw-medium text-sm">Description</p>
+                      <p className="view-label-text">Description</p>
                     </div>
                     <div className="col-6">
-                      <p className="text-muted text-sm">
+                      <p className="view-value">
                         : {truncateText(data?.subject?.description)}
                       </p>
                     </div>
@@ -244,7 +268,8 @@ function SubjectView() {
                     show={showAddTopic}
                     setShow={setShowAddTopic}
                     id={id}
-                    onSuccess={getData} />
+                    onSuccess={getData}
+                  />
                 )}
               </div>
               <ThemeProvider theme={theme}>
@@ -270,60 +295,62 @@ function SubjectView() {
                       updated_at: false,
                     },
                   }}
-                  muiTableBodyRowProps={({ row }) =>
-                    storedScreens?.data[5]?.can_view === 1
+                  muiTableHeadCellProps={{
+                    sx: {
+                      backgroundColor: "#fff",
+                      color: "#4F46E5 !important",
+                      fontSize: "13px",
+                      fontWeight: 500,
+                      fontFamily: "Urbanist",
+                      textAlign: "center",
+                    },
+                  }}
+                  muiTableBodyRowProps={({ row }) => ({
+                    sx: {
+                      cursor: "pointer",
+                      transition: "background-color 0.2s ease-in-out",
+                      "&:hover": { backgroundColor: "#EAE9FC" },
+                      "&.Mui-selected": {
+                        backgroundColor: "#EAE9FC !important",
+                      },
+                    },
+                    ...(storedScreens?.data?.[5]?.can_view === 1
                       ? {
-                        style: { cursor: "pointer" },
-                        onClick: () => {
-                          setSelectedId(row.original.id);
-                          setShowView(true);
-                        },
-                      }
-                      : {}
-                  }
-                // muiTableBodyRowProps={({ row }) => ({
-                //   onClick: () => navigate(`/topic/view/${row.original.id}`),
-                //   style: { cursor: "pointer" },
-                // })}
+                          style: { cursor: "pointer" },
+                          onClick: () => {
+                            setSelectedId(row.original.id);
+                            setShowView(true);
+                          },
+                        }
+                      : {}),
+                  })}
+
+                  // muiTableBodyRowProps={({ row }) => ({
+                  //   onClick: () => navigate(`/topic/view/${row.original.id}`),
+                  //   style: { cursor: "pointer" },
+                  // })}
                 />
               </ThemeProvider>
-              <Menu
-                id="action-menu"
-                anchorEl={menuAnchor}
-                open={Boolean(menuAnchor)}
-                onClose={handleMenuClose}
-              >
-                {storedScreens?.data[5]?.can_edit === 1 && (
-                  <MenuItem
-                    onClick={() => {
-                      setShowEdit(true);
-                      handleMenuClose();
-                    }}
-                  >
-                    Edit
-                  </MenuItem>
-                )}
-                {storedScreens?.data[5]?.can_delete === 1 && (
-                  <MenuItem>
-                    <Delete
-                      path={`topic/delete/${selectedId}`}
-                      onDeleteSuccess={getData}
-                      onOpen={handleMenuClose}
-                    />
-                  </MenuItem>
-                )}
-              </Menu>
-              <TopicEdit
-                show={showEdit}
-                setShow={setShowEdit}
+
+              <TopicView
+                show={showView}
+                setShow={setShowView}
                 id={selectedId}
-                onSuccess={getData}
               />
-              <TopicView show={showView} setShow={setShowView} id={selectedId} />
             </div>
           )}
         </>
       </div>
+      {deleteModalOpen && selectedId && (
+        <DeleteChange
+          path={`subjects/delete/${selectedId}`}
+          onDeleteSuccess={() => {
+            getData();
+            setDeleteModalOpen(false);
+          }}
+          onOpen={() => setDeleteModalOpen(false)}
+        />
+      )}
     </div>
   );
 }

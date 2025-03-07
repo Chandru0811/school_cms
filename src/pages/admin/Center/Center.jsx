@@ -1,30 +1,25 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
 import { MaterialReactTable } from "material-react-table";
-import {
-  ThemeProvider,
-  createTheme,
-  Menu,
-  MenuItem,
-  IconButton,
-} from "@mui/material";
-import Delete from "../../../components/common/Delete";
+import { ThemeProvider, createTheme } from "@mui/material";
 import PropTypes from "prop-types";
-import { MoreVert as MoreVertIcon } from "@mui/icons-material";
 import CenterAdd from "./CenterAdd";
-import CenterEdit from "./CenterEdit";
-import CenterView from "./CenterView";
 import api from "../../../config/URL";
+import { GoTrash } from "react-icons/go";
+import CenterEdit from "./CenterEdit";
+import DeleteChange from "../../../components/common/DeleteChange";
 
 function Center() {
-  const [menuAnchor, setMenuAnchor] = useState(null);
   const [loading, setLoading] = useState(true);
   const [selectedId, setSelectedId] = useState(null);
-  const [showView, setShowView] = useState(false);
   const [data, setData] = useState([]);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const storedScreens = JSON.parse(
     localStorage.getItem("schoolCMS_Permissions") || "{}"
   );
+  const handleDeleteClick = (id) => {
+    setSelectedId(id);
+    setDeleteModalOpen(true);
+  };
 
   const columns = useMemo(
     () => [
@@ -39,21 +34,33 @@ function Center() {
         ),
       },
       {
-        accessorKey: "id",
-        header: "",
-        enableHiding: false,
+        accessorKey: "actions",
+        header: "Actions",
         enableSorting: false,
-        size: 20,
-        Cell: ({ cell }) => (
-          <IconButton
-            onClick={(e) => {
-              e.stopPropagation();
-              setMenuAnchor(e.currentTarget);
-              setSelectedId(cell.getValue());
-            }}
-          >
-            <MoreVertIcon />
-          </IconButton>
+        Cell: ({ row }) => (
+          <div className="actions-column">
+            {storedScreens?.data[0]?.can_edit === 1 && (
+              <button
+                className="btn edit-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <CenterEdit onSuccess={fetchData} id={row.original.id} />
+              </button>
+            )}
+            {storedScreens?.data[0]?.can_delete === 1 && (
+              <button
+                className="btn delete-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteClick(row.original.id);
+                }}
+              >
+                <GoTrash style={{ color: "#FB3748", fontSize: "16px" }} />
+              </button>
+            )}
+          </div>
         ),
       },
       // { accessorKey: "school_id", header: "School ID" },
@@ -71,7 +78,7 @@ function Center() {
         accessorKey: "created_by.name",
         header: "Created By",
         enableSorting: true,
-        enableHiding: false,        
+        enableHiding: false,
         Cell: ({ cell }) => cell.getValue() || " ",
       },
       {
@@ -89,7 +96,7 @@ function Center() {
         header: "Updated By",
         enableSorting: true,
         enableHiding: false,
-          Cell: ({ cell }) => cell.getValue() || " ",
+        Cell: ({ cell }) => cell.getValue() || " ",
       },
     ],
     []
@@ -116,37 +123,27 @@ function Center() {
       MuiTableCell: {
         styleOverrides: {
           head: {
-            color: "#535454 !important",
-            backgroundColor: "#e6edf7 !important",
-            fontWeight: "400 !important",
-            fontSize: "13px !important",
-            textAlign: "center !important",
+            backgroundColor: "#EAE9FC",
+            fontWeight: "700",
+            fontSize: "14px",
+            color: "#4F46E5",
+            textAlign: "center",
+            textTransform: "capitalize",
+            borderRight: "1px solid #E0E0E0",
+          },
+          root: {
+            "&:last-child": {
+              borderRight: "none",
+            },
           },
         },
       },
-      MuiSwitch: {
+      MuiTableSortLabel: {
         styleOverrides: {
           root: {
-            "&.Mui-disabled .MuiSwitch-track": {
-              backgroundColor: "#f5e1d0",
-              opacity: 1,
-            },
-            "&.Mui-disabled .MuiSwitch-thumb": {
-              color: "#eb862a",
-            },
-          },
-          track: {
-            backgroundColor: "#e0e0e0",
-          },
-          thumb: {
-            color: "#eb862a",
-          },
-          switchBase: {
-            "&.Mui-checked": {
-              color: "#eb862a",
-            },
-            "&.Mui-checked + .MuiSwitch-track": {
-              backgroundColor: "#eb862a",
+            marginLeft: "8px",
+            "& svg": {
+              color: "#4F46E5 !important",
             },
           },
         },
@@ -154,39 +151,20 @@ function Center() {
     },
   });
 
-  const handleMenuClose = () => setMenuAnchor(null);
-
   return (
     <div className="container-fluid mb-4 px-0">
-      <ol
-        className="breadcrumb my-2 d-flex align-items-center"
-        style={{ listStyle: "none", padding: 0, margin: 0 }}
-      >
-        <li>
-          <Link to="/" className="custom-breadcrumb text-sm">
-            Home
-          </Link>
-          <span className="breadcrumb-separator"> &gt; </span>
-        </li>
-        <li className="breadcrumb-item active text-sm" aria-current="page">
-          &nbsp;Centre
-        </li>
-      </ol>
-      <div className="card">
-        <div className="d-flex justify-content-between align-items-center card_header p-1 py-2 mb-3">
+        <div className="d-flex justify-content-between align-items-center p-2 my-2">
           <div className="d-flex align-items-center">
-            <div className="d-flex">
-              <div className="dot active"></div>
-            </div>
-            <span className="me-2 text-muted text-sm">
-              This database shows the list of&nbsp;
-              <span className="database_name">Centre</span>
+            <span className="mx-3 table-heading">
+              Center -&nbsp;
+              <span className="table-subheading">List of Center</span>
             </span>
           </div>
           {storedScreens?.data[0]?.can_create === 1 && (
             <CenterAdd onSuccess={fetchData} />
           )}
         </div>
+        <div className="table-container my-2">
         {loading ? (
           <div className="loader-container">
             <div className="loader"></div>
@@ -203,7 +181,10 @@ function Center() {
                 enableFullScreenToggle={false}
                 initialState={{
                   columnVisibility: {
-                    id:!(storedScreens?.data?.[0]?.can_edit === 0 && storedScreens?.data?.[0]?.can_delete === 0),
+                    id: !(
+                      storedScreens?.data?.[0]?.can_edit === 0 &&
+                      storedScreens?.data?.[0]?.can_delete === 0
+                    ),
                     working_hrs: false,
                     citizenship: false,
                     nationality: false,
@@ -213,47 +194,37 @@ function Center() {
                     updated_at: false,
                   },
                 }}
-                muiTableBodyRowProps={({ row }) => ({
-                  style: { cursor: "pointer" },
-                  onClick: () => {
-                    setSelectedId(row.original.id);
-                    setShowView(true);
+                muiTableHeadCellProps={{
+                  sx: {
+                    backgroundColor: "#fff",
+                    color: "#4F46E5 !important",
+                    fontSize: "13px",
+                    fontWeight: 500,
+                    fontFamily: "Urbanist",
+                    textAlign: "center",
+                  },
+                }}
+                muiTableBodyRowProps={() => ({
+                  sx: {
+                    cursor: "pointer",
+                    transition: "background-color 0.2s ease-in-out",
+                    "&:hover": { backgroundColor: "#EAE9FC" },
+                    "&.Mui-selected": { backgroundColor: "#EAE9FC !important" },
                   },
                 })}
               />
             </ThemeProvider>
-            
-            <Menu
-              id="action-menu"
-              anchorEl={menuAnchor}
-              open={Boolean(menuAnchor)}
-              onClose={handleMenuClose}
-            >
-              {storedScreens?.data[0]?.can_edit === 1 && (
-                <MenuItem>
-                  <CenterEdit
-                    onSuccess={fetchData}
-                    id={selectedId}
-                    handleMenuClose={handleMenuClose}
-                  />
-                </MenuItem>
-              )}
-            {storedScreens?.data[0]?.can_delete === 1 && (  <MenuItem>
-                <Delete
-                  path={`/center/delete/${selectedId}`}
-                  onDeleteSuccess={fetchData}
-                  onOpen={handleMenuClose}
-                />
-              </MenuItem>)}
-            </Menu>
-            {storedScreens?.data[0]?.can_view === 1 && (
-              <CenterView
-                show={showView}
-                setShow={setShowView}
-                id={selectedId}
-              />
-            )}
           </>
+        )}
+        {deleteModalOpen && selectedId && (
+          <DeleteChange
+            path={`centers/delete/${selectedId}`}
+            onDeleteSuccess={() => {
+              fetchData();
+              setDeleteModalOpen(false);
+            }}
+            onOpen={() => setDeleteModalOpen(false)}
+          />
         )}
       </div>
     </div>

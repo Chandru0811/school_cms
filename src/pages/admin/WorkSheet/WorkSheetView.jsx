@@ -6,6 +6,9 @@ import toast from "react-hot-toast";
 import { useMemo } from "react";
 import { MaterialReactTable } from "material-react-table";
 import { ThemeProvider, createTheme } from "@mui/material";
+import { GoTrash } from "react-icons/go";
+import { MdKeyboardArrowLeft } from "react-icons/md";
+import { TbEdit } from "react-icons/tb";
 
 function WorkSheetView() {
   const [data, setData] = useState({});
@@ -13,6 +16,11 @@ function WorkSheetView() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const schoolCMS_access = localStorage.getItem("schoolCMS_access");
+  const [selectedId, setSelectedId] = useState(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const storedScreens = JSON.parse(
+    localStorage.getItem("schoolCMS_Permissions") || "{}"
+  );
   const assigned_id = id;
   console.log("idddss", assigned_id);
 
@@ -69,7 +77,7 @@ function WorkSheetView() {
   //   ],
   //   [data]
   // );
-  
+
   const columns = useMemo(
     () => [
       {
@@ -136,67 +144,64 @@ function WorkSheetView() {
       console.error("Status Update Error:", error);
     }
   };
-  const names = data.student_assigned?.map(student => student.student_names);
-  console.log("names", names)
+  const names = data.student_assigned?.map((student) => student.student_names);
+  console.log("names", names);
   useEffect(() => {
     getData();
   }, [id]);
 
+  const handleDeleteClick = (id) => {
+    setSelectedId(id);
+    setDeleteModalOpen(true);
+  };
+
   return (
     <div className="container-fluid px-0 vh-100 mb-4">
-      <ol
-        className="breadcrumb my-2 px-2 d-flex align-items-center"
-        style={{ listStyle: "none", padding: 0, margin: 0 }}
-      >
-        <li>
-          <Link to="/" className="custom-breadcrumb text-sm">
-            Home
-          </Link>
-          <span className="breadcrumb-separator text-sm"> &gt; </span>
-        </li>
-        <li>
-          <Link to="/worksheet" className="custom-breadcrumb text-sm">
-            &nbsp;Worksheet
-          </Link>
-          <span className="breadcrumb-separator text-sm"> &gt; </span>
-        </li>
-        <li className="breadcrumb-item active text-sm" aria-current="page">
-          &nbsp;Worksheet View
-        </li>
-      </ol>
-      <div className="card" style={{ border: "1px solid #dbd9d0" }}>
-        <div className="d-flex px-4 justify-content-between align-items-center card_header p-1 mb-4">
-          <div className="d-flex align-items-center">
-            <div className="d-flex">
-              <div className="dot active"></div>
-            </div>
-            <span className="me-2 text-muted text-sm">View Worksheet</span>
-          </div>
-          <div className="my-2 pe-3 d-flex align-items-center">
+      <div className="d-flex px-4 justify-content-between align-items-center  p-1 mb-4">
+        <div className="d-flex align-items-center">
+          <div>
             <Link to="/worksheet">
-              <button type="button " className="btn btn-sm btn-back">
-                Back
+              <button type="button " className="btn btn-sm add-btn">
+                <MdKeyboardArrowLeft size={20} />
               </button>
             </Link>
             &nbsp;&nbsp;
-            {/* {schoolCMS_access === "Limited Access" ? (
-              <></>
-            ) : (
-              <>
-                <WorkSheetAsign
-                  grade_ids={data.grade_id ? JSON.parse(data.grade_id) : []}
-                  assignedId={assigned_id}
-                  onSuccess={getData}
-                />
-              </>
-            )} */}
+          </div>
+          <span className="mx-3 table-heading">
+            Worksheet Details -&nbsp;
+            <span className="table-subheading">
+              Details of Selected Worksheet
+            </span>
+          </span>
+        </div>
+        <div className="my-2 d-flex align-items-center">
+          {storedScreens?.data[1]?.can_delete === 1 && (
+            <button
+              className="btn view-delete-btn"
+              onClick={() => {
+                handleDeleteClick(id);
+              }}
+            >
+              <GoTrash className="trash-icon" /> &nbsp;&nbsp; Delete Worksheet
+            </button>
+          )}
+        </div>
+      </div>
+      <div className="card" style={{ border: "1px solid #dbd9d0" }}>
+        <div
+          className="card-header d-flex justify-content-between"
+          style={{ marginBottom: "1px solid #F4F4F4" }}
+        >
+          <p className="view-header">Worksheet Info</p>
+          <div className="d-flex justify-content-end">
             {schoolCMS_access === "Limited Access" ? (
               <></>
             ) : (
               <>
                 <button
-                  className={`btn btn-sm ${data.active === 1 ? "btn-danger" : "btn-success"
-                    }`}
+                  className={`btn btn-sm ${
+                    data.active === 1 ? "btn-danger" : "btn-success"
+                  }`}
                   onClick={handleStatusToggle}
                 >
                   {data.active === 1 ? "Deactivate" : "Activate"}
@@ -226,15 +231,26 @@ function WorkSheetView() {
               <>
                 <button
                   type="button"
-                  className="btn btn-sm btn-button"
+                  className="add-btn rounded-2"
                   onClick={() => navigate(`/worksheet/edit/${id}`)}
                 >
-                  Edit
+                  <TbEdit style={{ color: "#C0C0C0", fontSize: "16px" }} />
                 </button>
               </>
             )}
+            {/* {storedScreens?.data[1]?.can_edit === 1 && (
+              <button
+                className="btn edit-btn ms-2"
+                onClick={() => {
+                  navigate(`/worksheet/edit/${id}`);
+                }}
+              >
+                <TbEdit style={{ color: "#C0C0C0", fontSize: "16px" }} />
+              </button>
+            )} */}
           </div>
         </div>
+
         <>
           {loading ? (
             <div className="loader-container">
@@ -246,10 +262,10 @@ function WorkSheetView() {
                 <div className="col-md-6 col-12 my-2">
                   <div className="row">
                     <div className="col-6">
-                      <p className="fw-medium text-sm">Centre</p>
+                      <p className="view-label-text">Centre</p>
                     </div>
                     <div className="col-6">
-                      <p className="text-muted text-sm">
+                      <p className="view-value">
                         :{" "}
                         {data.center_names && data.center_names.length > 0
                           ? data.center_names.join(", ")
@@ -261,23 +277,26 @@ function WorkSheetView() {
                 <div className="col-md-6 col-12 my-2">
                   <div className="row">
                     <div className="col-6">
-                      <p className="fw-medium text-sm">Grade</p>
+                      <p className="view-label-text">Grade</p>
                     </div>
                     <div className="col-6">
-                      <p className="text-muted text-sm">                     :{" "}
+                      <p className="view-value">
+                        {" "}
+                        :{" "}
                         {data.grade_names && data.grade_names.length > 0
                           ? data.grade_names.join(", ")
-                          : "N/A"}</p>
+                          : "N/A"}
+                      </p>
                     </div>
                   </div>
                 </div>
                 <div className="col-md-6 col-12 my-2">
                   <div className="row">
                     <div className="col-6">
-                      <p className="fw-medium text-sm">Topic</p>
+                      <p className="view-label-text">Topic</p>
                     </div>
                     <div className="col-6">
-                      <p className="text-muted text-sm">
+                      <p className="view-value">
                         :{" "}
                         {Array.isArray(data.topic_names)
                           ? data.topic_names.join(", ")
@@ -289,30 +308,30 @@ function WorkSheetView() {
                 <div className="col-md-6 col-12 my-2">
                   <div className="row">
                     <div className="col-6">
-                      <p className="fw-medium text-sm">Title</p>
+                      <p className="view-label-text">Title</p>
                     </div>
                     <div className="col-6">
-                      <p className="text-muted text-sm">: {data.title}</p>
-                    </div>
-                  </div>
-                </div>
-                <div className="col-md-6 col-12 my-2">
-                  <div className="row">
-                    <div className="col-6">
-                      <p className="fw-medium text-sm">Type</p>
-                    </div>
-                    <div className="col-6">
-                      <p className="text-muted text-sm">: {data.type}</p>
+                      <p className="view-value">: {data.title}</p>
                     </div>
                   </div>
                 </div>
                 <div className="col-md-6 col-12 my-2">
                   <div className="row">
                     <div className="col-6">
-                      <p className="fw-medium text-sm">Subject</p>
+                      <p className="view-label-text">Type</p>
                     </div>
                     <div className="col-6">
-                      <p className="text-muted text-sm">
+                      <p className="view-value">: {data.type}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12 my-2">
+                  <div className="row">
+                    <div className="col-6">
+                      <p className="view-label-text">Subject</p>
+                    </div>
+                    <div className="col-6">
+                      <p className="view-value">
                         :{" "}
                         {Array.isArray(data.subject_names)
                           ? data.subject_names.join(", ")
@@ -324,10 +343,10 @@ function WorkSheetView() {
                 <div className="col-md-6 col-12 my-2">
                   <div className="row">
                     <div className="col-6">
-                      <p className="fw-medium text-sm">Question Type</p>
+                      <p className="view-label-text">Question Type</p>
                     </div>
                     <div className="col-6">
-                      <p className="text-muted text-sm">
+                      <p className="view-value">
                         :{" "}
                         {data.ques_type
                           ? JSON.parse(data.ques_type).join(", ")
@@ -339,10 +358,10 @@ function WorkSheetView() {
                 <div className="col-md-6 col-12 my-2">
                   <div className="row">
                     <div className="col-6">
-                      <p className="fw-medium text-sm">Difficult Level</p>
+                      <p className="view-label-text">Difficult Level</p>
                     </div>
                     <div className="col-6">
-                      <p className="text-muted text-sm text-break ">
+                      <p className="view-value text-break ">
                         : {data.difficult_level}
                       </p>
                     </div>
@@ -351,10 +370,10 @@ function WorkSheetView() {
                 <div className="col-md-6 col-12 my-2">
                   <div className="row">
                     <div className="col-6">
-                      <p className="fw-medium text-sm">Total Score</p>
+                      <p className="view-label-text">Total Score</p>
                     </div>
                     <div className="col-6">
-                      <p className="text-muted text-sm text-break ">
+                      <p className="view-value text-break ">
                         : {data.total_score}
                       </p>
                     </div>
@@ -363,10 +382,10 @@ function WorkSheetView() {
                 <div className="col-md-6 col-12 my-2">
                   <div className="row">
                     <div className="col-6">
-                      <p className="fw-medium text-sm">Traget Score</p>
+                      <p className="view-label-text">Traget Score</p>
                     </div>
                     <div className="col-6">
-                      <p className="text-muted text-sm text-break ">
+                      <p className="view-value text-break ">
                         : {data.target_score}
                       </p>
                     </div>
@@ -375,12 +394,10 @@ function WorkSheetView() {
                 <div className="col-md-6 col-12 my-2 mb-5">
                   <div className="row">
                     <div className="col-6">
-                      <p className="fw-medium text-sm">Reward</p>
+                      <p className="view-label-text">Reward</p>
                     </div>
                     <div className="col-6">
-                      <p className="text-muted text-sm text-break ">
-                        : {data.reward}
-                      </p>
+                      <p className="view-value text-break ">: {data.reward}</p>
                     </div>
                   </div>
                 </div>

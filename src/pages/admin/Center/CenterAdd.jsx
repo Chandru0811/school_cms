@@ -6,6 +6,7 @@ import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
+import { FaPlus } from "react-icons/fa";
 
 function CenterAdd({ onSuccess }) {
   const navigate = useNavigate();
@@ -76,10 +77,10 @@ function CenterAdd({ onSuccess }) {
       <div className="d-flex justify-content-end me-2">
         <button
           type="button"
-          className="btn btn-button btn-sm d-flex align-items-center"
+          className="btn add-btn btn-sm d-flex align-items-center"
           onClick={handleShow}
         >
-          Add
+          <FaPlus fontSize={12} className="me-1" /> Add Center
         </button>
       </div>
 
@@ -91,42 +92,54 @@ function CenterAdd({ onSuccess }) {
           <form onSubmit={formik.handleSubmit}>
             <div className="container">
               <div className="row">
-                <div className="col-md-6 col-12 mb-3">
-                  <label className="form-label">
-                    Name<span className="text-danger">*</span>
-                  </label>
-                  <input
-                    aria-label="Default select example"
-                    className={`form-control ${
-                      formik.touched.name && formik.errors.name
-                        ? "is-invalid"
-                        : ""
-                    }`}
-                    {...formik.getFieldProps("name")}
-                  />
-                  {formik.touched.name && formik.errors.name && (
-                    <div className="invalid-feedback">{formik.errors.name}</div>
-                  )}
-                </div>
-                <div className="col-md-6 col-12 mb-3">
-                  <label className="form-label">
-                    Location<span className="text-danger">*</span>
-                  </label>
-                  <textarea
-                    rows={5}
-                    className={`form-control ${
-                      formik.touched.location && formik.errors.location
-                        ? "is-invalid"
-                        : ""
-                    }`}
-                    {...formik.getFieldProps("location")}
-                    maxLength={825}
-                  />
-                  {formik.touched.location && formik.errors.location && (
-                    <div className="invalid-feedback">
-                      {formik.errors.location}
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-5">
+                      <p className="view-label-text">Name</p>
                     </div>
-                  )}
+                    <div className="col-7">
+                      <input
+                      placeholder="Enter Text"
+                        aria-label="Default select example"
+                        className={`form-control ${
+                          formik.touched.name && formik.errors.name
+                            ? "is-invalid"
+                            : ""
+                        }`}
+                        {...formik.getFieldProps("name")}
+                      />
+                      {formik.touched.name && formik.errors.name && (
+                        <div className="invalid-feedback">
+                          {formik.errors.name}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-4">
+                      <p className="view-label-text">Location</p>
+                    </div>
+                    <div className="col-8">
+                      <textarea
+                        rows={5}
+                          placeholder="Enter Text"
+                        className={`form-control ${
+                          formik.touched.location && formik.errors.location
+                            ? "is-invalid"
+                            : ""
+                        }`}
+                        {...formik.getFieldProps("location")}
+                        maxLength={825}
+                      />
+                      {formik.touched.location && formik.errors.location && (
+                        <div className="invalid-feedback">
+                          {formik.errors.location}
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

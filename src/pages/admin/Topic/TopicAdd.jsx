@@ -11,12 +11,14 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import PropTypes from "prop-types";
 import api from "../../../config/URL";
+import { FaPlus } from "react-icons/fa";
 
-function TopicAdd({ id, show, setShow, onSuccess }) {
+function TopicAdd({ onSuccess }) {
   const navigate = useNavigate();
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState({});
+  const [show, setShow] = useState(false);
   const [centerList, setCenterList] = useState([]);
 
   const validationSchema = yup.object().shape({
@@ -105,10 +107,10 @@ function TopicAdd({ id, show, setShow, onSuccess }) {
     <>
       <button
         type="button"
-        className="btn btn-button btn-sm d-flex align-items-center"
+        className="btn add-btn btn-sm d-flex align-items-center"
         onClick={handleShow}
       >
-        Add
+        <FaPlus fontSize={12} className="me-1" /> Add Topic
       </button>
       <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
         <form
@@ -123,33 +125,49 @@ function TopicAdd({ id, show, setShow, onSuccess }) {
           <hr className="m-0"></hr>
           <DialogContent>
             <div className="row">
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
-                  Topic Name<span className="text-danger">*</span>
-                </label>
-                <input
-                  type="text"
-                  onKeyDown={(e) => e.stopPropagation()}
-                  className={`form-control form-control-sm ${formik.touched.topic_name && formik.errors.topic_name
-                    ? "is-invalid"
-                    : ""
-                    }`}
-                  {...formik.getFieldProps("topic_name")}
-                />
-                {formik.touched.topic_name && formik.errors.topic_name && (
-                  <div className="invalid-feedback">{formik.errors.topic_name}</div>
-                )}
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text">Topic Name</p>
+                  </div>
+                  <div className="col-7">
+                    <input
+                    placeholder="Enter Text"
+                      type="text"
+                      onKeyDown={(e) => e.stopPropagation()}
+                      className={`form-control form-control-sm ${
+                        formik.touched.topic_name && formik.errors.topic_name
+                          ? "is-invalid"
+                          : ""
+                      }`}
+                      {...formik.getFieldProps("topic_name")}
+                    />
+                    {formik.touched.topic_name && formik.errors.topic_name && (
+                      <div className="invalid-feedback">
+                        {formik.errors.topic_name}
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">Description</label>
-                <textarea
-                  className={`form-control ${formik.touched.description && formik.errors.description
-                    ? "is-invalid"
-                    : ""
-                    }`}
-                  rows="3"
-                  {...formik.getFieldProps("description")}
-                />
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text">Description</p>
+                  </div>
+                  <div className="col-7">
+                    <textarea
+                    placeholder="Enter Text"
+                      className={`form-control ${
+                        formik.touched.description && formik.errors.description
+                          ? "is-invalid"
+                          : ""
+                      }`}
+                      rows="3"
+                      {...formik.getFieldProps("description")}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </DialogContent>

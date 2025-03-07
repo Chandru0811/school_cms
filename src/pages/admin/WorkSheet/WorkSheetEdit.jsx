@@ -11,6 +11,9 @@ import { ThemeProvider } from "react-bootstrap";
 import { createTheme } from "@mui/material";
 import toast from "react-hot-toast";
 import api from "../../../config/URL";
+import { FiSave } from "react-icons/fi";
+import { GoTrash } from "react-icons/go";
+import { MdKeyboardArrowLeft } from "react-icons/md";
 
 function WorkSheetEdit() {
   const { id } = useParams();
@@ -474,19 +477,25 @@ function WorkSheetEdit() {
         formik.setFieldValue("grade_id", []);
         return;
       }
-      const centerIds = selectedCenter.map((center) => `center_id[]=${center.value}`).join("&");
+      const centerIds = selectedCenter
+        .map((center) => `center_id[]=${center.value}`)
+        .join("&");
       const response = await api.get(`filter/grades?${centerIds}`);
       const formattedGrades = response.data?.data?.map((grade) => ({
         value: grade.id,
         label: grade.name,
       }));
       setGrades(formattedGrades);
-      if (!formattedGrades.some((g) => formik.values.grade_id.includes(g.value))) {
+      if (
+        !formattedGrades.some((g) => formik.values.grade_id.includes(g.value))
+      ) {
         formik.setFieldValue("grade_id", []);
         formik.setFieldValue("subject_id", []);
       }
     } catch (e) {
-      toast.error(`Error Fetching Grades: ${e?.response?.data?.error || e.message}`);
+      toast.error(
+        `Error Fetching Grades: ${e?.response?.data?.error || e.message}`
+      );
     }
   };
   const getSubjectList = async () => {
@@ -496,19 +505,27 @@ function WorkSheetEdit() {
         formik.setFieldValue("subject_id", []);
         return;
       }
-      const gradeIds = formik.values.grade_id.map((grade) => `grade_id[]=${grade}`).join("&");
+      const gradeIds = formik.values.grade_id
+        .map((grade) => `grade_id[]=${grade}`)
+        .join("&");
       const response = await api.get(`filter/subjects?${gradeIds}`);
       const formattedSubjects = response.data?.data?.map((subject) => ({
         value: subject.id,
         label: subject.name,
       }));
       setSubjects(formattedSubjects);
-      if (!formattedSubjects.some((s) => formik.values.subject_id.includes(s.value))) {
+      if (
+        !formattedSubjects.some((s) =>
+          formik.values.subject_id.includes(s.value)
+        )
+      ) {
         formik.setFieldValue("subject_id", []);
         formik.setFieldValue("topic_id", []);
       }
     } catch (e) {
-      toast.error(`Error Fetching Subjects: ${e?.response?.data?.error || e.message}`);
+      toast.error(
+        `Error Fetching Subjects: ${e?.response?.data?.error || e.message}`
+      );
     }
   };
 
@@ -519,18 +536,24 @@ function WorkSheetEdit() {
         formik.setFieldValue("topic_id", []);
         return;
       }
-      const subjectIds = formik.values.subject_id.map((subject) => `subject_id[]=${subject}`).join("&");
+      const subjectIds = formik.values.subject_id
+        .map((subject) => `subject_id[]=${subject}`)
+        .join("&");
       const response = await api.get(`filter/topics?${subjectIds}`);
       const formattedTopics = response.data?.data?.map((topic) => ({
         value: topic.id,
         label: topic.name,
       }));
       setTopics(formattedTopics);
-      if (!formattedTopics.some((t) => formik.values.topic_id.includes(t.value))) {
+      if (
+        !formattedTopics.some((t) => formik.values.topic_id.includes(t.value))
+      ) {
         formik.setFieldValue("topic_id", []);
       }
     } catch (e) {
-      toast.error(`Error Fetching Topics: ${e?.response?.data?.error || e.message}`);
+      toast.error(
+        `Error Fetching Topics: ${e?.response?.data?.error || e.message}`
+      );
     }
   };
   const filterData = async () => {
@@ -622,26 +645,6 @@ function WorkSheetEdit() {
 
   return (
     <div className="container p-3">
-      <ol
-        className="breadcrumb my-3 d-flex align-items-center"
-        style={{ listStyle: "none", padding: 0, margin: 0 }}
-      >
-        <li>
-          <Link to="/" className="custom-breadcrumb text-sm">
-            Home
-          </Link>
-          <span className="breadcrumb-separator text-sm"> &gt; </span>
-        </li>
-        <li className="breadcrumb-item active" aria-current="page">
-          <Link to="/worksheet" className="custom-breadcrumb text-sm">
-            &nbsp;Worksheet
-          </Link>
-        </li>
-        <span className="breadcrumb-separator text-sm"> &gt; </span>
-        <li className="breadcrumb-item active text-sm" aria-current="page">
-          &nbsp;Worksheet Edit
-        </li>
-      </ol>
       <form
         onSubmit={formik.handleSubmit}
         onKeyDown={(e) => {
@@ -650,76 +653,91 @@ function WorkSheetEdit() {
           }
         }}
       >
-        <div className="card">
-          <div className="d-flex justify-content-between align-items-center card_header p-1 mb-4 px-4">
-            <div className="d-flex align-items-center">
-              <div className="d-flex">
-                <div className="dot active"></div>
-              </div>
-              <span className="me-2 text-muted text-sm">Add Worksheet</span>
-            </div>
-            <div className="my-2 pe-3 d-flex align-items-center">
+        <div className="d-flex justify-content-between align-items-center  p-1 mb-4">
+          <div className="d-flex align-items-center">
+            <div>
               <Link to="/worksheet">
-                <button type="button " className="btn btn-sm btn-back">
-                  Back
+                <button type="button" className="btn btn-sm add-btn p-1">
+                  <MdKeyboardArrowLeft size={25} />
                 </button>
               </Link>
               &nbsp;&nbsp;
-              <button
-                type="submit"
-                className="btn btn-button btn-sm"
-                disabled={loadIndicator}
-              >
-                {loadIndicator && (
-                  <span
-                    className="spinner-border spinner-border-sm me-2"
-                    aria-hidden="true"
-                  ></span>
-                )}
-                update
-              </button>
             </div>
+            <span className="mx-3 table-heading">
+              Update Worksheet -&nbsp;
+              <span className="table-subheading">Update a  Worksheet</span>
+            </span>
           </div>
-          {loading ? (
-            <div className="loader-container">
-              <div className="loader"></div>
-            </div>
-          ) : (
-            <>
-              <div className="container-fluid px-4">
-                <div className="row py-4">
-                  <div className="col-md-6 col-12 mb-3">
-                    <div className="d-flex gap-3">
-                      <div className="form-check">
-                        <input
-                          type="radio"
-                          name="type"
-                          value="question"
-                          className="form-check-input"
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                          checked={formik.values.type === "question"}
-                        />
-                        <label className="form-check-label">Q/A</label>
-                      </div>
-                      <div className="form-check">
-                        <input
-                          type="radio"
-                          name="type"
-                          value="challenge"
-                          className={`form-check-input ${formik.touched.type && formik.errors.type
-                            ? "is-invalid"
-                            : ""
-                            }`}
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                          checked={formik.values.type === "challenge"}
-                        />
-                        <label className="form-check-label">Challenge</label>
-                      </div>
-                    </div>
+          <div className="my-2 d-flex align-items-center justify-content-between gap-5">
+            <button
+              type="button"
+              className="btn view-delete-btn"
+              onClick={() => {
+                formik.resetForm();
+                formik.setErrors({});
+                formik.setTouched({}, false);
+              }}
+            >
+              <GoTrash className="trash-icon" /> &nbsp;&nbsp; Discard Changes
+            </button>
+            <button
+              type="submit"
+              className="btn add-btn"
+              disabled={loadIndicator}
+            >
+              {loadIndicator && (
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  aria-hidden="true"
+                ></span>
+              )}
+              <FiSave className="trash-icon" /> &nbsp;&nbsp; Save Worksheet
+            </button>
+          </div>
+        </div>
+        <div className="card" style={{ border: "1px solid #dbd9d0" }}>
+          <div className="d-flex justify-content-between px-5 my-2">
+            <p className="view-header">Worksheet Info</p>
+          </div>
+          <div className="container-fluid px-4">
+            <div className="row py-4">
+              <div className="col-md-6 col-12 mb-3">
+                <div className="d-flex gap-3">
+                  <div className="form-check">
+                    <input
+                      placeholder="Enter Text"
+                      type="radio"
+                      name="type"
+                      value="question"
+                      className="form-check-input"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      checked={formik.values.type === "question"}
+                    />
+                    <label className="form-check-label">Q/A</label>
                   </div>
-                  <div className="col-md-6 col-12 mb-3">
+                  <div className="form-check">
+                    <input
+                      placeholder="Enter Text"
+                      type="radio"
+                      name="type"
+                      value="challenge"
+                      className={`form-check-input ${
+                        formik.touched.type && formik.errors.type
+                          ? "is-invalid"
+                          : ""
+                      }`}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      checked={formik.values.type === "challenge"}
+                    />
+                    <label className="form-check-label">Challenge</label>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
                     {formik.values.type === "challenge" ? (
                       <label className="form-label">
                         Challenge Title<span className="text-danger">*</span>
@@ -729,12 +747,15 @@ function WorkSheetEdit() {
                         Q/A Title<span className="text-danger">*</span>
                       </label>
                     ) : null}
-
+                  </div>
+                  <div className="col-7">
                     <input
-                      className={`form-control form-control-sm ${formik.touched.title && formik.errors.title
-                        ? "is-invalid"
-                        : ""
-                        }`}
+                      placeholder="Enter Text"
+                      className={`form-control form-control-sm ${
+                        formik.touched.title && formik.errors.title
+                          ? "is-invalid"
+                          : ""
+                      }`}
                       {...formik.getFieldProps("title")}
                     />
                     {formik.touched.title && formik.errors.title && (
@@ -743,10 +764,14 @@ function WorkSheetEdit() {
                       </div>
                     )}
                   </div>
-                  <div className="col-md-6 col-12 mb-4">
-                    <label className="form-label">
-                      Centre<span className="text-danger">*</span>
-                    </label>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text">Centre</p>
+                  </div>
+                  <div className="col-7">
                     <MultiSelect
                       options={centerList}
                       value={selectedCenter}
@@ -769,10 +794,11 @@ function WorkSheetEdit() {
                         }
                       }}
                       labelledBy="Select Service"
-                      className={`form-multi-select form-multi-select-sm ${formik.touched.center_id && formik.errors.center_id
-                        ? "is-invalid"
-                        : ""
-                        }`}
+                      className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${
+                        formik.touched.center_id && formik.errors.center_id
+                          ? "is-invalid"
+                          : ""
+                      }`}
                     />
                     {formik.touched.center_id && formik.errors.center_id && (
                       <div className="invalid-feedback">
@@ -780,10 +806,14 @@ function WorkSheetEdit() {
                       </div>
                     )}
                   </div>
-                  <div className="col-md-6 col-12 mb-3">
-                    <label className="form-label">
-                      Grade<span className="text-danger">*</span>
-                    </label>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text">Grade</p>
+                  </div>
+                  <div className="col-7">
                     <MultiSelect
                       options={grades}
                       value={selectedGrades}
@@ -803,10 +833,11 @@ function WorkSheetEdit() {
                         }
                       }}
                       labelledBy="Select Service"
-                      className={`form-multi-select form-multi-select-sm ${formik.touched.grade_id && formik.errors.grade_id
-                        ? "is-invalid"
-                        : ""
-                        }`}
+                      className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${
+                        formik.touched.grade_id && formik.errors.grade_id
+                          ? "is-invalid"
+                          : ""
+                      }`}
                     />
 
                     {formik.touched.grade_id && formik.errors.grade_id && (
@@ -815,10 +846,14 @@ function WorkSheetEdit() {
                       </div>
                     )}
                   </div>
-                  <div className="col-md-6 col-12 mb-4">
-                    <label className="form-label">
-                      Subject
-                    </label>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text">Subject</p>
+                  </div>
+                  <div className="col-7">
                     <MultiSelect
                       options={subjects}
                       value={selectedSubjects}
@@ -835,13 +870,17 @@ function WorkSheetEdit() {
                         }
                       }}
                       labelledBy="Select Service"
-                      className="form-multi-select form-multi-select-sm"
+                      className="form-multi-select form-multi-select-sm border-1 rounded-1"
                     />
                   </div>
-                  <div className="col-md-6 col-12 mb-4">
-                    <label className="form-label">
-                      Topic
-                    </label>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text">Topic</p>
+                  </div>
+                  <div className="col-7">
                     <MultiSelect
                       options={topics}
                       value={selectedTopics}
@@ -853,10 +892,14 @@ function WorkSheetEdit() {
                         );
                       }}
                       labelledBy="Select Topic"
-                      className="form-multi-select form-multi-select-sm"
+                      className="form-multi-select form-multi-select-sm border-1 rounded-1"
                     />
                   </div>
-                  <div className="col-md-6 col-12 mb-4">
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
                     {formik.values.type === "challenge" ? (
                       <label className="form-label">
                         Challenge Type<span className="text-danger">*</span>
@@ -866,6 +909,8 @@ function WorkSheetEdit() {
                         Q/A Type<span className="text-danger">*</span>
                       </label>
                     ) : null}
+                  </div>
+                  <div className="col-7">
                     <MultiSelect
                       options={questionOption}
                       value={selectedQuestion}
@@ -877,10 +922,11 @@ function WorkSheetEdit() {
                         );
                       }}
                       labelledBy="Select Service"
-                      className={`form-multi-select form-multi-select-sm ${formik.touched.ques_type && formik.errors.ques_type
-                        ? "is-invalid"
-                        : ""
-                        }`}
+                      className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${
+                        formik.touched.ques_type && formik.errors.ques_type
+                          ? "is-invalid"
+                          : ""
+                      }`}
                     />
                     {formik.touched.ques_type && formik.errors.ques_type && (
                       <div className="invalid-feedback">
@@ -888,16 +934,21 @@ function WorkSheetEdit() {
                       </div>
                     )}
                   </div>
-                  <div className="col-md-6 col-12 mb-3">
-                    <label className="form-label">
-                      Difficulty Type<span className="text-danger">*</span>
-                    </label>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text">Difficulty Type</p>
+                  </div>
+                  <div className="col-7">
                     <select
-                      className={`form-select form-select-sm ${formik.touched.difficult_level &&
+                      className={`form-select form-select-sm ${
+                        formik.touched.difficult_level &&
                         formik.errors.difficult_level
-                        ? "is-invalid"
-                        : ""
-                        }`}
+                          ? "is-invalid"
+                          : ""
+                      }`}
                       {...formik.getFieldProps("difficult_level")}
                     >
                       <option value=""></option>
@@ -913,15 +964,22 @@ function WorkSheetEdit() {
                         </div>
                       )}
                   </div>
-                  <div className="col-md-6 col-12 mb-3">
-                    <label className="form-label">Total Score</label>
-                    <span className="text-danger">*</span>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text">Total Scoree</p>
+                  </div>
+                  <div className="col-7">
                     <input
+                      placeholder="Enter Text"
                       type="text"
-                      className={`form-control form-control-sm ${formik.touched.total_score && formik.errors.total_score
-                        ? "is-invalid"
-                        : ""
-                        }`}
+                      className={`form-control form-control-sm ${
+                        formik.touched.total_score && formik.errors.total_score
+                          ? "is-invalid"
+                          : ""
+                      }`}
                       {...formik.getFieldProps("total_score")}
                     />
                     {formik.touched.total_score &&
@@ -931,16 +989,23 @@ function WorkSheetEdit() {
                         </div>
                       )}
                   </div>
-                  <div className="col-md-6 col-12 mb-3">
-                    <label className="form-label">Target Score</label>
-                    <span className="text-danger">*</span>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text">Target Score</p>
+                  </div>
+                  <div className="col-7">
                     <input
+                      placeholder="Enter Text"
                       type="text"
-                      className={`form-control form-control-sm ${formik.touched.target_score &&
+                      className={`form-control form-control-sm ${
+                        formik.touched.target_score &&
                         formik.errors.target_score
-                        ? "is-invalid"
-                        : ""
-                        }`}
+                          ? "is-invalid"
+                          : ""
+                      }`}
                       {...formik.getFieldProps("target_score")}
                     />
                     {formik.touched.target_score &&
@@ -950,15 +1015,22 @@ function WorkSheetEdit() {
                         </div>
                       )}
                   </div>
-                  <div className="col-md-6 col-12 mb-3">
-                    <label className="form-label">Reward</label>
-                    <span className="text-danger">*</span>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text">Reward</p>
+                  </div>
+                  <div className="col-7">
                     <input
+                      placeholder="Enter Text"
                       type="text"
-                      className={`form-control form-control-sm ${formik.touched.reward && formik.errors.reward
-                        ? "is-invalid"
-                        : ""
-                        }`}
+                      className={`form-control form-control-sm ${
+                        formik.touched.reward && formik.errors.reward
+                          ? "is-invalid"
+                          : ""
+                      }`}
                       {...formik.getFieldProps("reward")}
                     />
                     {formik.touched.reward && formik.errors.reward && (
@@ -969,11 +1041,11 @@ function WorkSheetEdit() {
                   </div>
                 </div>
               </div>
-              <ThemeProvider theme={theme}>
-                <MaterialReactTable table={table} />
-              </ThemeProvider>
-            </>
-          )}
+            </div>
+          </div>
+          <ThemeProvider theme={theme}>
+            <MaterialReactTable table={table} />
+          </ThemeProvider>
         </div>
       </form>
     </div>

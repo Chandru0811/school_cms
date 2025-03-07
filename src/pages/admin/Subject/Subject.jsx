@@ -1,35 +1,31 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
 import { MaterialReactTable } from "material-react-table";
-import {
-  ThemeProvider,
-  createTheme,
-  Menu,
-  MenuItem,
-  IconButton,
-} from "@mui/material";
-import Delete from "../../../components/common/Delete";
+import { ThemeProvider, createTheme } from "@mui/material";
 import PropTypes from "prop-types";
-import { MoreVert as MoreVertIcon } from "@mui/icons-material";
 import SubjectAdd from "./SubjectAdd";
 import SubjectEdit from "./SubjectEdit";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import AddTopic from "../../admin/Subject/AddTopic";
+import { GoTrash } from "react-icons/go";
+import DeleteChange from "../../../components/common/DeleteChange";
+import { useNavigate } from "react-router-dom";
 
 function Subject() {
-  const navigate = useNavigate();
-  const [menuAnchor, setMenuAnchor] = useState(null);
-  const [showEdit, setShowEdit] = useState(false);
   const [showAddTopic, setShowAddTopic] = useState(false);
-  const [showView, setShowView] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
+  const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const storedScreens = JSON.parse(
     localStorage.getItem("schoolCMS_Permissions") || "{}"
   );
 
+  const handleDeleteClick = (id) => {
+    setSelectedId(id);
+    setDeleteModalOpen(true);
+  };
   const columns = useMemo(
     () => [
       {
@@ -43,21 +39,41 @@ function Subject() {
         ),
       },
       {
-        accessorKey: "id",
-        header: "",
-        enableHiding: false,
+        accessorKey: "actions",
+        header: "Actions",
         enableSorting: false,
-        size: 20,
         Cell: ({ row }) => (
-          <IconButton
-            onClick={(e) => {
-              e.stopPropagation();
-              setSelectedId(row.original.id);
-              setMenuAnchor(e.currentTarget);
-            }}
-          >
-            <MoreVertIcon />
-          </IconButton>
+          <div className="actions-column">
+            <button
+              className="btn edit-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              <AddTopic />
+            </button>
+            {storedScreens?.data[4]?.can_edit === 1 && (
+              <button
+                className="btn edit-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <SubjectEdit onSuccess={getData} id={row.original.id} />
+              </button>
+            )}
+            {storedScreens?.data[4]?.can_delete === 1 && (
+              <button
+                className="btn delete-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteClick(row.original.id);
+                }}
+              >
+                <GoTrash style={{ color: "#FB3748", fontSize: "16px" }} />
+              </button>
+            )}
+          </div>
         ),
       },
       { accessorKey: "name", header: "Name" },
@@ -100,45 +116,33 @@ function Subject() {
       MuiTableCell: {
         styleOverrides: {
           head: {
-            color: "#535454 !important",
-            backgroundColor: "#e6edf7 !important",
-            fontWeight: "400 !important",
-            fontSize: "13px !important",
-            textAlign: "center !important",
+            backgroundColor: "#EAE9FC",
+            fontWeight: "700",
+            fontSize: "14px",
+            color: "#4F46E5",
+            textAlign: "center",
+            textTransform: "capitalize",
+            borderRight: "1px solid #E0E0E0",
+          },
+          root: {
+            "&:last-child": {
+              borderRight: "none",
+            },
           },
         },
       },
-      MuiSwitch: {
+      MuiTableSortLabel: {
         styleOverrides: {
           root: {
-            "&.Mui-disabled .MuiSwitch-track": {
-              backgroundColor: "#f5e1d0",
-              opacity: 1,
-            },
-            "&.Mui-disabled .MuiSwitch-thumb": {
-              color: "#eb862a",
-            },
-          },
-          track: {
-            backgroundColor: "#e0e0e0",
-          },
-          thumb: {
-            color: "#eb862a",
-          },
-          switchBase: {
-            "&.Mui-checked": {
-              color: "#eb862a",
-            },
-            "&.Mui-checked + .MuiSwitch-track": {
-              backgroundColor: "#eb862a",
+            marginLeft: "8px",
+            "& svg": {
+              color: "#4F46E5 !important",
             },
           },
         },
       },
     },
   });
-
-  const handleMenuClose = () => setMenuAnchor(null);
 
   const getData = async () => {
     try {
@@ -158,35 +162,18 @@ function Subject() {
 
   return (
     <div className="container-fluid mb-4 px-0">
-      <ol
-        className="breadcrumb my-3 d-flex align-items-center"
-        style={{ listStyle: "none", padding: 0, margin: 0 }}
-      >
-        <li>
-          <Link to="/" className="custom-breadcrumb text-sm">
-            Home
-          </Link>
-          <span className="breadcrumb-separator"> &gt; </span>
-        </li>
-        <li className="breadcrumb-item active text-sm" aria-current="page">
-          &nbsp;Subject
-        </li>
-      </ol>
-      <div className="card">
-        <div className="d-flex justify-content-between align-items-center card_header p-2">
-          <div className="d-flex align-items-center">
-            <div className="d-flex">
-              <div className="dot active"></div>
-            </div>
-            <span className="me-2 text-muted text-sm">
-              This database shows the list of&nbsp;
-              <span className="database_name">Subject</span>
-            </span>
-          </div>
-          {storedScreens?.data[4]?.can_create === 1 && (
-            <SubjectAdd onSuccess={getData} />
-          )}
+      <div className="d-flex justify-content-between align-items-center p-2 my-2">
+        <div className="d-flex align-items-center">
+          <span className="mx-3 table-heading">
+            Subject -&nbsp;
+            <span className="table-subheading">List of Subject</span>
+          </span>
         </div>
+        {storedScreens?.data[4]?.can_create === 1 && (
+          <SubjectAdd onSuccess={getData} />
+        )}
+      </div>
+      <div className="table-container my-2">
         {loading ? (
           <div className="loader-container">
             <div className="loader"></div>
@@ -216,56 +203,45 @@ function Subject() {
                     updated_at: false,
                   },
                 }}
-                muiTableBodyRowProps={({ row }) => ({
-                  style: { cursor: "pointer" },
-                  onClick: () => {
-                    setSelectedId(row.original.id);
-                    navigate(`/subject/view/${row.original.id}`);
+                muiTableHeadCellProps={{
+                  sx: {
+                    backgroundColor: "#fff",
+                    color: "#4F46E5 !important",
+                    fontSize: "13px",
+                    fontWeight: 500,
+                    fontFamily: "Urbanist",
+                    textAlign: "center",
                   },
+                }}
+                muiTableBodyRowProps={({ row }) => ({
+                  sx: {
+                    cursor: "pointer",
+                    transition: "background-color 0.2s ease-in-out",
+                    "&:hover": { backgroundColor: "#EAE9FC" },
+                    "&.Mui-selected": { backgroundColor: "#EAE9FC !important" },
+                  },
+                  ...(storedScreens?.data?.[5]?.can_view === 1
+                    ? {
+                        style: { cursor: "pointer" },
+                        onClick: () => {
+                          setSelectedId(row.original.id);
+                          navigate(`/subject/view/${row.original.id}`)
+                        },
+                      }
+                    : {}),
                 })}
               />
             </ThemeProvider>
-            <Menu
-              id="action-menu"
-              anchorEl={menuAnchor}
-              open={Boolean(menuAnchor)}
-              onClose={handleMenuClose}
-            >
-              {storedScreens?.data[4]?.can_edit === 1 && (
-                <MenuItem
-                  onClick={() => {
-                    setShowEdit(true);
-                    handleMenuClose();
-                  }}
-                >
-                  Edit
-                </MenuItem>
-              )}
-              {storedScreens?.data[4]?.can_delete === 1 && (
-                <MenuItem>
-                  <Delete
-                    path={`subject/delete/${selectedId}`}
-                    onDeleteSuccess={getData}
-                    onOpen={handleMenuClose}
-                  />
-                </MenuItem>
-              )}
-
-              <MenuItem
-                onClick={() => {
-                  setShowAddTopic(true);
-                  handleMenuClose();
+            {deleteModalOpen && selectedId && (
+              <DeleteChange
+                path={`subjects/delete/${selectedId}`}
+                onDeleteSuccess={() => {
+                  getData();
+                  setDeleteModalOpen(false);
                 }}
-              >
-                Add Topic
-              </MenuItem>
-            </Menu>
-            <SubjectEdit
-              show={showEdit}
-              setShow={setShowEdit}
-              id={selectedId}
-              onSuccess={getData}
-            />
+                onOpen={() => setDeleteModalOpen(false)}
+              />
+            )}
             {/* <SubjectView
               show={showView}
               setShow={setShowView}

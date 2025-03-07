@@ -56,6 +56,37 @@ function Employee() {
         ),
       },
       {
+        accessorKey: "actions",
+        header: "Actions",
+        enableSorting: false,
+        Cell: ({ row }) => (
+          <div className="actions-column">
+            {storedScreens?.data[1]?.can_edit === 1 && (
+              <button
+                className="btn edit-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(`/employee/edit/${row.original.id}`);
+                }}
+              >
+                <TbEdit style={{ color: "#4F46E5", fontSize: "16px" }} />
+              </button>
+            )}
+            {storedScreens?.data[1]?.can_delete === 1 && (
+              <button
+                className="btn delete-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleDeleteClick(row.original.id);
+                }}
+              >
+                <GoTrash style={{ color: "#FB3748", fontSize: "16px" }} />
+              </button>
+            )}
+          </div>
+        ),
+      },
+      {
         accessorKey: "name",
         header: "Employee Name",
         Cell: ({ row }) => (
@@ -96,37 +127,7 @@ function Employee() {
           </div>
         ),
       },
-      {
-        accessorKey: "actions",
-        header: "Actions",
-        enableSorting: false,
-        Cell: ({ row }) => (
-          <div className="actions-column">
-            {storedScreens?.data[1]?.can_edit === 1 && (
-              <button
-                className="btn edit-btn"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  navigate(`/employee/edit/${row.original.id}`);
-                }}
-              >
-                <TbEdit style={{ color: "#4F46E5", fontSize: "16px" }} />
-              </button>
-            )}
-            {storedScreens?.data[1]?.can_delete === 1 && (
-              <button
-                className="btn delete-btn"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDeleteClick(row.original.id);
-                }}
-              >
-                <GoTrash style={{ color: "#FB3748", fontSize: "16px" }} />
-              </button>
-            )}
-          </div>
-        ),
-      },
+  
       {
         accessorKey: "created_by.name",
         header: "Created By",

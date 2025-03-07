@@ -10,10 +10,10 @@ import {
 import PropTypes from "prop-types";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
-import { MultiSelect } from "react-multi-select-component";
 import { useNavigate } from "react-router-dom";
+import { TbEdit } from "react-icons/tb";
 
-function TopicEdit({ id, show, setShow, onSuccess }) {
+function TopicEdit({ id, onSuccess }) {
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [selectedCenter, setSelectedCenter] = useState([]);
   const [centerList, setCenterList] = useState([]);
@@ -21,6 +21,7 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
   const [grades, setGrades] = useState([]);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const [show, setShow] = useState(false);
 
   const validationSchema = yup.object().shape({
     center_id: yup
@@ -154,11 +155,10 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
   };
 
   useEffect(() => {
-    if (show) {
       getTopicData();
       getCenterList();
-    }
-  }, [id, show]);
+
+  }, [id]);
 
   useEffect(() => {
     if (selectedCenter.length > 0) {
@@ -179,168 +179,108 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
     }
   }, [formik.values.grade_id]);
 
+  const handleShow = () => {
+    setShow(true);
+    formik.resetForm();
+  };
+
   const handleClose = () => {
     setShow(false);
     formik.resetForm();
   };
 
   return (
-    <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
-      <form
-        onSubmit={formik.handleSubmit}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-          }
-        }}
+    <>
+      <span
+        type="button"
+        className=" d-flex align-items-center"
+        onClick={handleShow}
       >
-        <DialogTitle>Edit Topic</DialogTitle>
-        <hr className="m-0" />
-        <DialogContent>
-          {loading ? (
-            <div className="loader-container">
-              <div className="loader"></div>
-            </div>
-          ) : (
+         <TbEdit style={{ color: "#4F46E5", fontSize: "16px" }} />
+      </span>
+      <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
+        <form
+          onSubmit={formik.handleSubmit}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !formik.isSubmitting) {
+              e.preventDefault();
+            }
+          }}
+        >
+          <DialogTitle>Topic Edit</DialogTitle>
+          <hr className="m-0"></hr>
+          <DialogContent>
             <div className="row">
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
-                  Centre Name<span className="text-danger">*</span>
-                </label>
-                <MultiSelect
-                  options={centerList}
-                  value={selectedCenter}
-                  onChange={(selected) => {
-                    setSelectedCenter(selected);
-                    formik.setFieldValue(
-                      "center_id",
-                      selected.map((option) => option.value)
-                    );
-                  }}
-                  labelledBy="Select Center"
-                  className={
-                    `form-multi-select form-multi-select-sm mb-5${formik.touched.center_id && formik.errors.center_id
-                      ? "is-invalid"
-                      : ""
-                    }`}
-                />
-                {formik.touched.center_id && formik.errors.center_id && (
-                  <div className="invalid-feedback">
-                    {formik.errors.center_id}
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text">Topic Name</p>
                   </div>
-                )}
-              </div>
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
-                  Grade<span className="text-danger">*</span>
-                </label>
-                <select
-                  className={`form-select form-select-sm ${formik.touched.grade_id && formik.errors.grade_id
-                    ? "is-invalid"
-                    : ""
-                    }`}
-                  value={formik.values.grade_id}
-                  onChange={(e) =>
-                    formik.setFieldValue("grade_id", e.target.value)
-                  }
-                >
-                  <option value="">Select Grade</option>
-                  {grades?.map((grade) => (
-                    <option key={grade.value} value={grade.value}>
-                      {grade.label}
-                    </option>
-                  ))}
-                </select>
-                {formik.touched.grade_id && formik.errors.grade_id && (
-                  <div className="invalid-feedback">
-                    {formik.errors.grade_id}
+                  <div className="col-7">
+                    <input
+                      type="text"
+                      onKeyDown={(e) => e.stopPropagation()}
+                      className={`form-control form-control-sm ${
+                        formik.touched.topic_name && formik.errors.topic_name
+                          ? "is-invalid"
+                          : ""
+                      }`}
+                      {...formik.getFieldProps("topic_name")}
+                    />
+                    {formik.touched.topic_name && formik.errors.topic_name && (
+                      <div className="invalid-feedback">
+                        {formik.errors.topic_name}
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
               </div>
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
-                  Subject<span className="text-danger">*</span>
-                </label>
-                <select
-                  className={`form-select form-select-sm ${formik.touched.subject_id && formik.errors.subject_id
-                    ? "is-invalid"
-                    : ""
-                    }`}
-                  value={formik.values.subject_id}
-                  onChange={(e) =>
-                    formik.setFieldValue("subject_id", e.target.value)
-                  }
-                >
-                  <option value="">Select Subject</option>
-                  {subjects?.map((subject) => (
-                    <option key={subject.value} value={subject.value}>
-                      {subject.label}
-                    </option>
-                  ))}
-                </select>
-                {formik.touched.subject_id && formik.errors.subject_id && (
-                  <div className="invalid-feedback">
-                    {formik.errors.subject_id}
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text">Description</p>
                   </div>
-                )}
-              </div>
-
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
-                  Name<span className="text-danger">*</span>
-                </label>
-                <input
-                  type="text"
-                  className={`form-control form-control-sm ${formik.touched.name && formik.errors.name ? "is-invalid" : ""
-                    }`}
-                  {...formik.getFieldProps("name")}
-                />
-                {formik.touched.name && formik.errors.name && (
-                  <div className="invalid-feedback">{formik.errors.name}</div>
-                )}
-              </div>
-
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
-                  Description
-                </label>
-                <textarea
-                  className={`form-control ${formik.touched.description && formik.errors.description
-                    ? "is-invalid"
-                    : ""
-                    }`}
-                  rows="3"
-                  {...formik.getFieldProps("description")}
-                />
+                  <div className="col-7">
+                    <textarea
+                      className={`form-control ${
+                        formik.touched.description && formik.errors.description
+                          ? "is-invalid"
+                          : ""
+                      }`}
+                      rows="3"
+                      {...formik.getFieldProps("description")}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
-          )}
-        </DialogContent>
-        <hr className="m-0" />
-        <DialogActions className="mt-3">
-          <button
-            className="btn btn-sm btn-back"
-            onClick={handleClose}
-            type="button"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="btn btn-button btn-sm"
-            disabled={loadIndicator}
-          >
-            {loadIndicator && (
-              <span
-                className="spinner-border spinner-border-sm me-2"
-                aria-hidden="true"
-              ></span>
-            )}
-            Update
-          </button>
-        </DialogActions>
-      </form>
-    </Dialog>
+          </DialogContent>
+          <hr className="m-0"></hr>
+          <DialogActions className="mt-3">
+            <button
+              type="button"
+              className="btn btn-sm btn-back"
+              onClick={handleClose}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="btn btn-button btn-sm"
+              disabled={loadIndicator}
+            >
+              {loadIndicator && (
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  aria-hidden="true"
+                ></span>
+              )}
+              Update
+            </button>
+          </DialogActions>
+        </form>
+      </Dialog>
+    </>
   );
 }
 
