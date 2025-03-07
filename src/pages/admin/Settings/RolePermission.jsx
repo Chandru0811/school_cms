@@ -1004,13 +1004,13 @@ function RolePermission() {
                                 </p>
                               </td>
                               <td>
-                                {/* <input
-                                className="form-check-input"
-                                type="checkbox"
-                                name="student_assigneds.canAccess"
-                                checked={formik.values?.student_assigneds?.canAccess}
-                                onChange={handleCheckboxChange(`student_assigneds.canAccess`)}
-                              /> */}
+                                <input
+                                  className="form-check-input"
+                                  type="checkbox"
+                                  name="student_assigneds.canAccess"
+                                  checked={formik.values?.student_assigneds?.canAccess}
+                                  onChange={handleCheckboxChange(`student_assigneds.canAccess`)}
+                                />
                               </td>
                               <td>
                                 <input
@@ -1040,13 +1040,13 @@ function RolePermission() {
                                 />
                               </td>
                               <td>
-                                {/* <input
-                                className="form-check-input"
-                                type="checkbox"
-                                name="student_assigneds.canDelete"
-                                checked={formik.values?.student_assigneds?.canDelete}
-                                onChange={handleCheckboxChange(`student_assigneds.canDelete`)}
-                              /> */}
+                                <input
+                                  className="form-check-input"
+                                  type="checkbox"
+                                  name="student_assigneds.canDelete"
+                                  checked={formik.values?.student_assigneds?.canDelete}
+                                  onChange={handleCheckboxChange(`student_assigneds.canDelete`)}
+                                />
                               </td>
                             </tr>
                             <tr>
@@ -1061,13 +1061,13 @@ function RolePermission() {
                                 </p>
                               </td>
                               <td>
-                                {/* <input
-                                className="form-check-input"
-                                type="checkbox"
-                                name="student_attempts.canAccess"
-                                checked={formik.values?.student_attempts?.canAccess}
-                                onChange={handleCheckboxChange(`student_attempts.canAccess`)}
-                              /> */}
+                                <input
+                                  className="form-check-input"
+                                  type="checkbox"
+                                  name="student_attempts.canAccess"
+                                  checked={formik.values?.student_attempts?.canAccess}
+                                  onChange={handleCheckboxChange(`student_attempts.canAccess`)}
+                                />
                               </td>
                               <td>
                                 <input
@@ -1097,13 +1097,13 @@ function RolePermission() {
                                 />
                               </td>
                               <td>
-                                {/* <input
-                                className="form-check-input"
-                                type="checkbox"
-                                name="student_attempts.canDelete"
-                                checked={formik.values?.student_attempts?.canDelete}
-                                onChange={handleCheckboxChange(`student_attempts.canDelete`)}
-                              /> */}
+                                <input
+                                  className="form-check-input"
+                                  type="checkbox"
+                                  name="student_attempts.canDelete"
+                                  checked={formik.values?.student_attempts?.canDelete}
+                                  onChange={handleCheckboxChange(`student_attempts.canDelete`)}
+                                />
                               </td>
                             </tr>
                             <tr>
