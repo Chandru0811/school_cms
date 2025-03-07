@@ -73,7 +73,7 @@ function QuestionAdd() {
       grade_id: "",
       subject_id: "",
       topic_id: "",
-      uploadType: "upload",
+      uploadType: "manual",
       bulkImg: null,
       difficult_level: "",
       question: "",
@@ -129,10 +129,10 @@ function QuestionAdd() {
         
         rows.forEach((row, index) => {
           formData.append(`questions[${index}][question]`, row["Question"] || "");
-          formData.append(`questions[${index}][options][Option 1]`, row["Option 1"] || "");
-          formData.append(`questions[${index}][options][Option 2]`, row["Option 2"] || "");
-          formData.append(`questions[${index}][options][Option 3]`, row["Option 3"] || "");
-          formData.append(`questions[${index}][options][Option 4]`, row["Option 4"] || "");
+          formData.append(`questions[${index}][options][]`, row["Option 1"] || "");
+          formData.append(`questions[${index}][options][]`, row["Option 2"] || "");
+          formData.append(`questions[${index}][options][]`, row["Option 3"] || "");
+          formData.append(`questions[${index}][options][]`, row["Option 4"] || "");
           formData.append(`questions[${index}][difficult_level]`, row["difficult_level"] || "");
           formData.append(`questions[${index}][hint]`, row["Hint"] || "");
 
@@ -333,7 +333,7 @@ function QuestionAdd() {
     const fileUrl = "/schoolCms/MCQ%20Format.xlsx";
     const link = document.createElement("a");
     link.href = fileUrl;
-    link.setAttribute("download", "MCQ Format.xlsx");
+    link.setAttribute("download", "MCQ Question Format.xlsx");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

@@ -75,15 +75,6 @@ function ChallengesAdd() {
       then: (schema) => schema.required("*File is required"),
       otherwise: (schema) => schema.notRequired(),
     }),
-    // multiChoices: yup.array().of(
-    //   yup.object().shape({
-    //     value: yup.string().required("*Multi choice value is required"),
-    //   })
-    // ),
-    // filledAnswer: yup.string().required("*Field is required"),
-    // closedOption: yup.string().required("*Select a one option"),
-    // shortAnswer: yup.string().required("*Field is required"),
-    // checkUploadFile: yup.string().required("*Please upload a file"),
   });
 
   const formik = useFormik({
@@ -93,7 +84,7 @@ function ChallengesAdd() {
       subject_id: "",
       topic_id: "",
       difficult_level: "",
-      uploadType: "upload",
+      uploadType: "manual",
       bulkImg: null,
       title: "",
       description: "",
@@ -158,19 +149,19 @@ function ChallengesAdd() {
             row["description"] || ""
           );
           formData.append(
-            `challenges[${index}][options][Option 1]`,
+            `challenges[${index}][options][]`,
             row["Option 1"] || ""
           );
           formData.append(
-            `challenges[${index}][options][Option 2]`,
+            `challenges[${index}][options][]`,
             row["Option 2"] || ""
           );
           formData.append(
-            `challenges[${index}][options][Option 3]`,
+            `challenges[${index}][options][]`,
             row["Option 3"] || ""
           );
           // formData.append(
-          //   `challenges[${index}][options][Option 4]`,
+          //   `challenges[${index}][options][]`,
           //   row["Option 4"] || ""
           // );
           formData.append(
@@ -387,10 +378,10 @@ function ChallengesAdd() {
   }, [formik.values.subject_id]);
 
   const handleDownload = () => {
-    const fileUrl = "/schoolCms/MCQ%20Format.xlsx";
+    const fileUrl = "/schoolCms/MCQ Challenge Format.xlsx";
     const link = document.createElement("a");
     link.href = fileUrl;
-    link.setAttribute("download", "MCQ Format.xlsx");
+    link.setAttribute("download", "MCQ Challenge Format.xlsx");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);

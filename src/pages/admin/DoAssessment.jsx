@@ -363,7 +363,7 @@ const DoAssessment = () => {
 
   const quesIdWithType = JSON.parse(data.ques_id_with_type);
   const currentQuestion = data.questions[currentQuestionIndex];
-  const matchedQues = quesIdWithType.find((q) => q.id === currentQuestion.id);
+  const matchedQues = quesIdWithType?.find((q) => q.id === currentQuestion?.id);
   let questionTypes = [];
   if (matchedQues) {
     try {
@@ -375,7 +375,7 @@ const DoAssessment = () => {
     }
   }
 
-  const options = JSON.parse(currentQuestion.options || "[]");
+  const options = JSON.parse(currentQuestion?.options || "[]");
 
   return (
     <section>
@@ -392,13 +392,13 @@ const DoAssessment = () => {
               style={{ width: "100%", minHeight: "50vh" }}
             >
               <p className="mb-3">
-                <strong>Question:</strong> {currentQuestion.question}
+                <strong>Question:</strong> {currentQuestion?.question}
               </p>
               <div className="p-2 flex-grow-1">
-                {questionTypes.map((quesType) =>
-                  renderInputField(quesType, currentQuestion.id, options)
+                {questionTypes?.map((quesType) =>
+                  renderInputField(quesType, currentQuestion?.id, options)
                 )}
-                {timeUpQuestions[currentQuestion.id] && (
+                {timeUpQuestions[currentQuestion?.id] && (
                   <div className="text-danger my-2">
                     Time's up! You can not answer this question.
                   </div>

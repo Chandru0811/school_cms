@@ -38,15 +38,6 @@ function ChallengesEdit() {
       .array()
       .min(1, "*Select at least one question type")
       .required("*Select a question type"),
-    // multiChoices: yup.array().of(
-    //   yup.object().shape({
-    //     value: yup.string().required("*Multi choice value is required"),
-    //   })
-    // ),
-    // filledAnswer: yup.string().required("*Field is required"),
-    // closedOption: yup.string().required("*Select a one option"),
-    // shortAnswer: yup.string().required("*Field is required"),
-    // checkUploadFile: yup.string().required("*Please upload a file"),
   });
 
   const formik = useFormik({
