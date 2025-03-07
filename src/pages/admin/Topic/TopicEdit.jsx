@@ -49,7 +49,7 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
           toast.success(response.data.message);
           onSuccess();
           handleClose();
-          navigate("/topic");
+          // navigate("/topic");
         }
       } catch (e) {
         toast.error(
@@ -66,11 +66,10 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
       setLoading(true);
       const response = await api.get(`topic/${id}`);
       const { data } = response.data;
-      const centerIds = JSON.parse(data.center_id);
+      const centerIds = JSON.parse(data.center_id).map(Number); // Parse and convert to numbers
       const selectedCenters = centerList.filter((center) =>
         centerIds.includes(center.value)
       );
-      await getCenterList();
       setSelectedCenter(selectedCenters);
       formik.setValues({
         center_id: centerIds,
@@ -128,6 +127,7 @@ function TopicEdit({ id, show, setShow, onSuccess }) {
       toast.error(`Error Fetching Grades: ${e?.response?.data?.error || e.message}`);
     }
   };
+
   const getSubjectList = async () => {
     try {
       if (!formik.values.grade_id) {

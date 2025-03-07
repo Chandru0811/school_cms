@@ -22,7 +22,7 @@ function AddTopic({ id, show, setShow, onSuccess }) {
   const handleClose = () => setShow(false);
 
   const validationSchema = yup.object().shape({
-    topic_name: yup.string().required("*Select a subject"),
+    topic_name: yup.string().required("*Select a Topic"),
   });
 
   const formik = useFormik({
@@ -96,13 +96,6 @@ function AddTopic({ id, show, setShow, onSuccess }) {
 
   return (
     <>
-      {/* <button
-        type="button"
-        className="btn btn-button btn-sm d-flex align-items-center"
-        onClick={show}
-      >
-        Add
-      </button> */}
       <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
         <form
           onSubmit={formik.handleSubmit}

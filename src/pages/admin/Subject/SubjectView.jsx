@@ -4,8 +4,8 @@ import toast from "react-hot-toast";
 import { MaterialReactTable } from "material-react-table";
 import { IconButton, Menu, MenuItem, ThemeProvider, createTheme } from "@mui/material";
 import api from "../../../config/URL";
+import { MoreVert as MoreVertIcon } from "@mui/icons-material";
 import PropTypes from "prop-types";
-import AddTopic from "./AddTopic";
 import Delete from "../../../components/common/Delete";
 import TopicEdit from "../Topic/TopicEdit";
 import TopicView from "../Topic/TopicView";
@@ -63,6 +63,24 @@ function SubjectView() {
         size: 40,
         cell: ({ cell }) => (
           <span style={{ textAlign: "center" }}>{cell.getValue()}</span>
+        ),
+      },
+      {
+        accessorKey: "id",
+        header: "",
+        enableHiding: false,
+        enableSorting: false,
+        size: 20,
+        Cell: ({ row }) => (
+          <IconButton
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedId(row.original.id);
+              setMenuAnchor(e.currentTarget);
+            }}
+          >
+            <MoreVertIcon />
+          </IconButton>
         ),
       },
       {
@@ -221,10 +239,13 @@ function SubjectView() {
                 </div>
               </div>
               <div className="d-flex justify-content-end me-2">
-                {/* {storedScreens?.data[5]?.can_create === 1 && ( */}
-                <TopicAdd onSuccess={getData}
-                  id={selectedId} />
-                {/* )} */}
+                {storedScreens?.data[5]?.can_create === 1 && (
+                  <TopicAdd
+                    show={showAddTopic}
+                    setShow={setShowAddTopic}
+                    id={id}
+                    onSuccess={getData} />
+                )}
               </div>
               <ThemeProvider theme={theme}>
                 <MaterialReactTable
@@ -234,6 +255,21 @@ function SubjectView() {
                   enableColumnFilters={false}
                   enableDensityToggle={false}
                   enableFullScreenToggle={false}
+                  initialState={{
+                    columnVisibility: {
+                      id: !(
+                        storedScreens?.data?.[5]?.can_edit === 0 &&
+                        storedScreens?.data?.[5]?.can_delete === 0
+                      ),
+                      working_hrs: false,
+                      citizenship: false,
+                      nationality: false,
+                      created_by: false,
+                      created_at: false,
+                      updated_by: false,
+                      updated_at: false,
+                    },
+                  }}
                   muiTableBodyRowProps={({ row }) =>
                     storedScreens?.data[5]?.can_view === 1
                       ? {
@@ -257,25 +293,25 @@ function SubjectView() {
                 open={Boolean(menuAnchor)}
                 onClose={handleMenuClose}
               >
-                {/* {storedScreens?.data[5]?.can_edit === 1 && ( */}
-                <MenuItem
-                  onClick={() => {
-                    setShowEdit(true);
-                    handleMenuClose();
-                  }}
-                >
-                  Edit
-                </MenuItem>
-                {/* )} */}
-                {/* {storedScreens?.data[5]?.can_delete === 1 && ( */}
-                <MenuItem>
-                  <Delete
-                    path={`topic/delete/${selectedId}`}
-                    onDeleteSuccess={getData}
-                    onOpen={handleMenuClose}
-                  />
-                </MenuItem>
-                {/* )} */}
+                {storedScreens?.data[5]?.can_edit === 1 && (
+                  <MenuItem
+                    onClick={() => {
+                      setShowEdit(true);
+                      handleMenuClose();
+                    }}
+                  >
+                    Edit
+                  </MenuItem>
+                )}
+                {storedScreens?.data[5]?.can_delete === 1 && (
+                  <MenuItem>
+                    <Delete
+                      path={`topic/delete/${selectedId}`}
+                      onDeleteSuccess={getData}
+                      onOpen={handleMenuClose}
+                    />
+                  </MenuItem>
+                )}
               </Menu>
               <TopicEdit
                 show={showEdit}
