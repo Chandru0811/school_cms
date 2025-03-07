@@ -1057,7 +1057,7 @@ function RolePermission() {
                                     marginBottom: "0px",
                                   }}
                                 >
-                                  Assessment
+                                  Do Assessment
                                 </p>
                               </td>
                               <td>
