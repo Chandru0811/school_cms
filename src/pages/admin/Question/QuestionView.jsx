@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
+import { TbEdit } from "react-icons/tb";
+import { GoTrash } from "react-icons/go";
+import { MdKeyboardArrowLeft } from "react-icons/md";
+import DeleteChange from "../../../components/common/DeleteChange";
 // import PropTypes from "prop-types";
 
 function QustionView() {
@@ -9,6 +13,11 @@ function QustionView() {
   const { id } = useParams();
   const [centerList, setCenterList] = useState([]);
   const navigate = useNavigate();
+  const [selectedId, setSelectedId] = useState(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const storedScreens = JSON.parse(
+    localStorage.getItem("schoolCMS_Permissions") || "{}"
+  );
 
   const [loading, setLoading] = useState(true);
 
@@ -58,50 +67,60 @@ function QustionView() {
     return FName.join(", ");
   };
 
+  const handleDeleteClick = (id) => {
+    setSelectedId(id);
+    setDeleteModalOpen(true);
+  };
+
   return (
     <div className="container-fluid px-0">
-      <ol
-        className="breadcrumb my-2 px-2"
-        style={{ listStyle: "none", padding: 0, margin: 0 }}
-      >
-        <li>
-          <Link to="/" className="custom-breadcrumb text-sm">
-            Home
-          </Link>
-          <span className="breadcrumb-separator"> &gt; </span>
-        </li>
-        <li>
-          <Link to="/question" className="custom-breadcrumb text-sm">
-            &nbsp;Question
-          </Link>
-          <span className="breadcrumb-separator"> &gt; </span>
-        </li>
-        <li className="breadcrumb-item active text-sm" aria-current="page">
-          &nbsp;Question View
-        </li>
-      </ol>
-      <div className="card vh-100" style={{ border: "1px solid #dbd9d0" }}>
-        <div className="d-flex px-4 justify-content-between align-items-center card_header p-1 mb-4">
-          <div className="d-flex align-items-center">
-            <div className="d-flex">
-              <div className="dot active"></div>
-            </div>
-            <span className="me-2 text-muted">View Question</span>
-          </div>
-          <div className="my-2 pe-3 d-flex align-items-center">
+      <div className="d-flex px-4 justify-content-between align-items-center  p-1 mb-4">
+        <div className="d-flex align-items-center">
+          <div>
             <Link to="/question">
-              <button type="button " className="btn btn-sm btn-back">
-                Back
+              <button type="button " className="btn btn-sm add-btn">
+                <MdKeyboardArrowLeft size={20} />
               </button>
             </Link>
             &nbsp;&nbsp;
+          </div>
+          <span className="mx-3 table-heading">
+            Question Details -&nbsp;
+            <span className="table-subheading">
+              Details of Selected Question
+            </span>
+          </span>
+        </div>
+        <div className="my-2 d-flex align-items-center">
+          {storedScreens?.data[1]?.can_delete === 1 && (
             <button
-              type="button"
-              className="btn btn-sm btn-button"
-              onClick={() => navigate(`/question/edit/${id}`)}
+              className="btn view-delete-btn"
+              onClick={() => {
+                handleDeleteClick(id);
+              }}
             >
-              Edit
+              <GoTrash className="trash-icon" /> &nbsp;&nbsp; Delete Question
             </button>
+          )}
+        </div>
+      </div>
+      <div className="mx-4 card vh-100" style={{ border: "1px solid #dbd9d0" }}>
+        <div
+          className="card-header d-flex justify-content-between"
+          style={{ marginBottom: "1px solid #F4F4F4" }}
+        >
+          <p className="view-header">Question Info</p>
+          <div className="d-flex justify-content-end">
+            {storedScreens?.data[6]?.can_edit === 1 && (
+              <button
+                className="btn edit-btn ms-2"
+                onClick={() => {
+                  navigate(`/question/edit/${id}`);
+                }}
+              >
+                <TbEdit style={{ color: "#C0C0C0", fontSize: "16px" }} />
+              </button>
+            )}
           </div>
         </div>
         {loading ? (
@@ -114,10 +133,10 @@ function QustionView() {
               <div className="col-md-6 col-12 my-2">
                 <div className="row">
                   <div className="col-6">
-                    <p className="fw-medium text-sm">Centre</p>
+                    <p className="view-label-text">Centre</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">
+                    <p className="view-value">
                       : {centerFind(data.question?.center_id) || "--"}
                     </p>
                   </div>
@@ -126,22 +145,20 @@ function QustionView() {
               <div className="col-md-6 col-12 my-2">
                 <div className="row">
                   <div className="col-6">
-                    <p className="fw-medium text-sm">Grade</p>
+                    <p className="view-label-text">Grade</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">
-                      : {data.question?.grand_name}
-                    </p>
+                    <p className="view-value">: {data.question?.grand_name}</p>
                   </div>
                 </div>
               </div>
               <div className="col-md-6 col-12 my-2">
                 <div className="row">
                   <div className="col-6">
-                    <p className="fw-medium text-sm">Subject</p>
+                    <p className="view-label-text">Subject</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">
+                    <p className="view-value">
                       : {data.question?.subject_name}
                     </p>
                   </div>
@@ -150,22 +167,20 @@ function QustionView() {
               <div className="col-md-6 col-12 my-2">
                 <div className="row">
                   <div className="col-6">
-                    <p className="fw-medium text-sm">Topic</p>
+                    <p className="view-label-text">Topic</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">
-                      : {data.question?.topic_name}
-                    </p>
+                    <p className="view-value">: {data.question?.topic_name}</p>
                   </div>
                 </div>
               </div>
               <div className="col-md-6 col-12 my-2">
                 <div className="row">
                   <div className="col-6">
-                    <p className="fw-medium text-sm">Question Type</p>
+                    <p className="view-label-text">Question Type</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">
+                    <p className="view-value">
                       :{" "}
                       {data.question?.ques_type
                         ? JSON.parse(data.question?.ques_type).join(", ")
@@ -177,25 +192,25 @@ function QustionView() {
               <div className="col-md-6 col-12 my-2">
                 <div className="row">
                   <div className="col-6">
-                    <p className="fw-medium text-sm">Question</p>
+                    <p className="view-label-text">Question</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">
-                      : {data.question?.question}
-                    </p>
+                    <p className="view-value">: {data.question?.question}</p>
                   </div>
                 </div>
               </div>
               <div className="col-md-6 col-12 my-2">
                 <div className="row">
                   <div className="col-6">
-                    <p className="fw-medium text-sm">Options</p>
+                    <p className="view-label-text">Options</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">
+                    <p className="view-value">
                       :{" "}
                       {data.question?.options
-                        ? Object.values(JSON.parse(data.question.options)).join(", ")
+                        ? Object.values(JSON.parse(data.question.options)).join(
+                            ", "
+                          )
                         : "N/A"}
                     </p>
                   </div>
@@ -204,10 +219,10 @@ function QustionView() {
               <div className="col-md-6 col-12 my-2">
                 <div className="row">
                   <div className="col-6">
-                    <p className="fw-medium text-sm">Difficulty Level</p>
+                    <p className="view-label-text">Difficulty Level</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">
+                    <p className="view-value">
                       : {data.question?.difficult_level}
                     </p>
                   </div>
@@ -216,22 +231,20 @@ function QustionView() {
               <div className="col-md-6 col-12 my-2">
                 <div className="row">
                   <div className="col-6">
-                    <p className="fw-medium text-sm">Hint</p>
+                    <p className="view-label-text">Hint</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">
-                      : {data.question?.hint}
-                    </p>
+                    <p className="view-value">: {data.question?.hint}</p>
                   </div>
                 </div>
               </div>
               <div className="col-md-6 col-12 my-2">
                 <div className="row">
                   <div className="col-6">
-                    <p className="fw-medium text-sm">Answer Type</p>
+                    <p className="view-label-text">Answer Type</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">
+                    <p className="view-value">
                       :{" "}
                       {data.answer?.answer_type
                         ? JSON.parse(data.answer?.answer_type).join(", ")
@@ -243,10 +256,10 @@ function QustionView() {
               <div className="col-md-6 col-12 my-2">
                 <div className="row">
                   <div className="col-6">
-                    <p className="fw-medium text-sm">Answer</p>
+                    <p className="view-label-text">Answer</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">
+                    <p className="view-value">
                       :{" "}
                       {data.answer?.answer &&
                         Object.entries(JSON.parse(data.answer.answer))
@@ -260,6 +273,16 @@ function QustionView() {
           </div>
         )}
       </div>
+      {deleteModalOpen && selectedId && (
+        <DeleteChange
+          path={`question/delete/${id}`}
+          onDeleteSuccess={() => {
+            setDeleteModalOpen(false);
+            navigate("/question");
+          }}
+          onClose={() => setDeleteModalOpen(false)}
+        />
+      )}
     </div>
   );
 }

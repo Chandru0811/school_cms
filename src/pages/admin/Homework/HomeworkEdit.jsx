@@ -11,6 +11,9 @@ import { ThemeProvider } from "react-bootstrap";
 import { createTheme } from "@mui/material";
 import toast from "react-hot-toast";
 import api from "../../../config/URL";
+import { MdKeyboardArrowLeft } from "react-icons/md";
+import { GoTrash } from "react-icons/go";
+import { FiSave } from "react-icons/fi";
 
 function HomeworkEdit() {
   const navigate = useNavigate();
@@ -605,27 +608,7 @@ function HomeworkEdit() {
   }, [formik.values.subject_id]);
 
   return (
-    <div className="container p-3">
-      <ol
-        className="breadcrumb my-3 d-flex align-items-center"
-        style={{ listStyle: "none", padding: 0, margin: 0 }}
-      >
-        <li>
-          <Link to="/" className="custom-breadcrumb text-sm">
-            Home
-          </Link>
-          <span className="breadcrumb-separator text-sm"> &gt; </span>
-        </li>
-        <li className="breadcrumb-item active" aria-current="page">
-          <Link to="/homework" className="custom-breadcrumb text-sm">
-            &nbsp;Homework
-          </Link>
-        </li>
-        <span className="breadcrumb-separator text-sm"> &gt; </span>
-        <li className="breadcrumb-item active text-sm" aria-current="page">
-          &nbsp;Homework Edit
-        </li>
-      </ol>
+   <div className="container p-3">
       <form
         onSubmit={formik.handleSubmit}
         onKeyDown={(e) => {
@@ -634,53 +617,67 @@ function HomeworkEdit() {
           }
         }}
       >
-        <div className="card">
-          <div className="d-flex justify-content-between align-items-center card_header p-1 mb-4 px-4">
-            <div className="d-flex align-items-center">
-              <div className="d-flex">
-                <div className="dot active"></div>
-              </div>
-              <span className="me-2 text-muted text-sm">Edit Homework</span>
-            </div>
-            <div className="my-2 pe-3 d-flex align-items-center">
+        <div className="d-flex justify-content-between align-items-center  p-1 mb-4">
+          <div className="d-flex align-items-center">
+            <div>
               <Link to="/homework">
-                <button type="button " className="btn btn-sm btn-back">
-                  Back
+                <button type="button" className="btn btn-sm add-btn p-1">
+                  <MdKeyboardArrowLeft size={25} />
                 </button>
               </Link>
               &nbsp;&nbsp;
-              <button
-                type="submit"
-                className="btn btn-button btn-sm"
-                disabled={loadIndicator}
-              >
-                {loadIndicator && (
-                  <span
-                    className="spinner-border spinner-border-sm me-2"
-                    aria-hidden="true"
-                  ></span>
-                )}
-                update
-              </button>
             </div>
+            <span className="mx-3 table-heading">
+              Update Home Work -&nbsp;
+              <span className="table-subheading">Update Home Work</span>
+            </span>
           </div>
-          {loading ? (
-            <div className="loader-container">
-              <div className="loader"></div>
-            </div>
-          ) : (
-            <>
-              <div className="container-fluid px-4">
-                <div className="row py-4">
-                  <div className="col-md-6 col-12 mb-3">
-                    <label className="form-label">Title</label>
-                    <span className="text-danger">*</span>
+          <div className="my-2 d-flex align-items-center justify-content-between gap-5">
+            <button
+              type="button"
+              className="btn view-delete-btn"
+              onClick={() => {
+                formik.resetForm();
+                formik.setErrors({});
+                formik.setTouched({}, false);
+              }}
+            >
+              <GoTrash className="trash-icon" /> &nbsp;&nbsp; Discard Changes
+            </button>
+            <button
+              type="submit"
+              className="btn add-btn"
+              disabled={loadIndicator}
+            >
+              {loadIndicator && (
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  aria-hidden="true"
+                ></span>
+              )}
+              <FiSave className="trash-icon" /> &nbsp;&nbsp; Save Home Work
+            </button>
+          </div>
+        </div>
+        <div className="card" style={{ border: "1px solid #dbd9d0" }}>
+          <div className="d-flex justify-content-between px-5 my-2">
+            <p className="view-header">Home Work Info</p>
+          </div>
+          <div className="container-fluid px-4">
+            <div className="row py-4">
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text">Title</p>
+                  </div>
+                  <div className="col-7">
                     <input
-                      type="text"
-                      className={`form-control form-control-sm ${formik.touched.title && formik.errors.title
+                        placeholder="Enter Text"
+                      className={`form-control form-control-sm ${
+                        formik.touched.title && formik.errors.title
                           ? "is-invalid"
                           : ""
-                        }`}
+                      }`}
                       {...formik.getFieldProps("title")}
                     />
                     {formik.touched.title && formik.errors.title && (
@@ -689,10 +686,14 @@ function HomeworkEdit() {
                       </div>
                     )}
                   </div>
-                  <div className="col-md-6 col-12 mb-4">
-                    <label className="form-label">
-                      Centre<span className="text-danger">*</span>
-                    </label>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text">Centre</p>
+                  </div>
+                  <div className="col-7">
                     <MultiSelect
                       options={centerList}
                       value={selectedCenter}
@@ -715,10 +716,11 @@ function HomeworkEdit() {
                         }
                       }}
                       labelledBy="Select Service"
-                      className={`form-multi-select form-multi-select-sm ${formik.touched.center_id && formik.errors.center_id
-                        ? "is-invalid"
-                        : ""
-                        }`}
+                      className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${
+                        formik.touched.center_id && formik.errors.center_id
+                          ? "is-invalid"
+                          : ""
+                      }`}
                     />
                     {formik.touched.center_id && formik.errors.center_id && (
                       <div className="invalid-feedback">
@@ -726,10 +728,14 @@ function HomeworkEdit() {
                       </div>
                     )}
                   </div>
-                  <div className="col-md-6 col-12 mb-3">
-                    <label className="form-label">
-                      Grade<span className="text-danger">*</span>
-                    </label>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text">Grade</p>
+                  </div>
+                  <div className="col-7">
                     <MultiSelect
                       options={grades}
                       value={selectedGrades}
@@ -749,10 +755,11 @@ function HomeworkEdit() {
                         }
                       }}
                       labelledBy="Select Service"
-                      className={`form-multi-select form-multi-select-sm ${formik.touched.grade_id && formik.errors.grade_id
-                        ? "is-invalid"
-                        : ""
-                        }`}
+                      className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${
+                        formik.touched.grade_id && formik.errors.grade_id
+                          ? "is-invalid"
+                          : ""
+                      }`}
                     />
 
                     {formik.touched.grade_id && formik.errors.grade_id && (
@@ -761,10 +768,14 @@ function HomeworkEdit() {
                       </div>
                     )}
                   </div>
-                  <div className="col-md-6 col-12 mb-4">
-                    <label className="form-label">
-                      Subject
-                    </label>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text">Subject</p>
+                  </div>
+                  <div className="col-7">
                     <MultiSelect
                       options={subjects}
                       value={selectedSubjects}
@@ -781,13 +792,17 @@ function HomeworkEdit() {
                         }
                       }}
                       labelledBy="Select Service"
-                      className="form-multi-select form-multi-select-sm"
+                      className="form-multi-select form-multi-select-sm border-1 rounded-1"
                     />
                   </div>
-                  <div className="col-md-6 col-12 mb-4">
-                    <label className="form-label">
-                      Topic
-                    </label>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text">Topic</p>
+                  </div>
+                  <div className="col-7">
                     <MultiSelect
                       options={topics}
                       value={selectedTopics}
@@ -799,13 +814,17 @@ function HomeworkEdit() {
                         );
                       }}
                       labelledBy="Select Topic"
-                      className="form-multi-select form-multi-select-sm"
+                      className="form-multi-select form-multi-select-sm border-1 rounded-1"
                     />
                   </div>
-                  <div className="col-md-6 col-12 mb-4">
-                    <label className="form-label">
-                      Question Type<span className="text-danger">*</span>
-                    </label>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text"> Question Type</p>
+                  </div>
+                  <div className="col-7">
                     <MultiSelect
                       options={questionOption}
                       value={selectedQuestion}
@@ -817,10 +836,11 @@ function HomeworkEdit() {
                         );
                       }}
                       labelledBy="Select Service"
-                      className={`form-multi-select form-multi-select-sm ${formik.touched.ques_type && formik.errors.ques_type
+                      className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${
+                        formik.touched.ques_type && formik.errors.ques_type
                           ? "is-invalid"
                           : ""
-                        }`}
+                      }`}
                     />
                     {formik.touched.ques_type && formik.errors.ques_type && (
                       <div className="invalid-feedback">
@@ -828,16 +848,21 @@ function HomeworkEdit() {
                       </div>
                     )}
                   </div>
-                  <div className="col-md-6 col-12 mb-3">
-                    <label className="form-label">
-                      Difficulty Type<span className="text-danger">*</span>
-                    </label>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text"> Difficulty Type</p>
+                  </div>
+                  <div className="col-7">
                     <select
-                      className={`form-select form-select-sm ${formik.touched.difficult_level &&
+                      className={`form-select form-select-sm ${
+                        formik.touched.difficult_level &&
                         formik.errors.difficult_level
-                        ? "is-invalid"
-                        : ""
-                        }`}
+                          ? "is-invalid"
+                          : ""
+                      }`}
                       {...formik.getFieldProps("difficult_level")}
                     >
                       <option value=""></option>
@@ -853,15 +878,21 @@ function HomeworkEdit() {
                         </div>
                       )}
                   </div>
-                  <div className="col-md-6 col-12 mb-3">
-                    <label className="form-label">Due Date</label>
-                    <span className="text-danger">*</span>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text">Due Date</p>
+                  </div>
+                  <div className="col-7">
                     <input
                       type="date"
-                      className={`form-control form-control-sm ${formik.touched.due_date && formik.errors.due_date
+                      className={`form-control form-control-sm ${
+                        formik.touched.due_date && formik.errors.due_date
                           ? "is-invalid"
                           : ""
-                        }`}
+                      }`}
                       {...formik.getFieldProps("due_date")}
                       min={today}
                     />
@@ -871,15 +902,22 @@ function HomeworkEdit() {
                       </div>
                     )}
                   </div>
-                  <div className="col-md-6 col-12 mb-3">
-                    <label className="form-label">Total Score</label>
-                    <span className="text-danger">*</span>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text">Total Score</p>
+                  </div>
+                  <div className="col-7">
                     <input
+                    placeholder="Enter Text"
                       type="text"
-                      className={`form-control form-control-sm ${formik.touched.total_score && formik.errors.total_score
+                      className={`form-control form-control-sm ${
+                        formik.touched.total_score && formik.errors.total_score
                           ? "is-invalid"
                           : ""
-                        }`}
+                      }`}
                       {...formik.getFieldProps("total_score")}
                     />
                     {formik.touched.total_score &&
@@ -891,11 +929,17 @@ function HomeworkEdit() {
                   </div>
                 </div>
               </div>
-              <ThemeProvider theme={theme}>
-                <MaterialReactTable table={table} />
-              </ThemeProvider>
-            </>
-          )}
+            </div>
+          </div>
+          <ThemeProvider theme={theme}>
+            <MaterialReactTable table={table} />
+            {formik.touched.ques_id_with_type &&
+              formik.errors.ques_id_with_type && (
+                <small className="text-danger ps-2 py-2">
+                  {formik.errors.ques_id_with_type}
+                </small>
+              )}
+          </ThemeProvider>
         </div>
       </form>
     </div>

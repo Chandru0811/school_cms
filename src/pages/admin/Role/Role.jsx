@@ -15,6 +15,9 @@ import RoleEdit from "./RoleEdit";
 import RoleView from "./RoleView";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
+import { GoTrash } from "react-icons/go";
+import { TbEdit } from "react-icons/tb";
+import DeleteChange from "../../../components/common/DeleteChange";
 
 function Role() {
   const [menuAnchor, setMenuAnchor] = useState(null);
@@ -23,8 +26,12 @@ function Role() {
   const [selectedId, setSelectedId] = useState(null);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
-
+  const handleDeleteClick = (id) => {
+    setSelectedId(id);
+    setDeleteModalOpen(true);
+  };
   const columns = useMemo(
     () => [
       {
@@ -38,21 +45,34 @@ function Role() {
         ),
       },
       {
-        accessorKey: "id",
-        header: "",
-        enableHiding: false,
+        accessorKey: "actions",
+        header: "Actions",
         enableSorting: false,
-        size: 20,
-        Cell: ({ cell }) => (
-          <IconButton
-            onClick={(e) => {
-              e.stopPropagation();
-              setMenuAnchor(e.currentTarget);
-              setSelectedId(cell.getValue()); setSelectedId(cell.getValue());
-            }}
-          >
-            <MoreVertIcon />
-          </IconButton>
+        Cell: ({ row }) => (
+          <div className="actions-column">
+            {/* {storedScreens?.data[3]?.can_edit === 1 && ( */}
+            <button
+              className="btn edit-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/reward/edit/${row.original.id}`);
+              }}
+            >
+              <TbEdit style={{ color: "#4F46E5", fontSize: "16px" }} />
+            </button>
+            {/* )} */}
+            {/* {storedScreens?.data[3]?.can_delete === 1 && ( */}
+            <button
+              className="btn delete-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDeleteClick(row.original.id);
+              }}
+            >
+              <GoTrash style={{ color: "#FB3748", fontSize: "16px" }} />
+            </button>
+            {/* )} */}
+          </div>
         ),
       },
       { accessorKey: "name", header: "Name" },
@@ -96,45 +116,33 @@ function Role() {
       MuiTableCell: {
         styleOverrides: {
           head: {
-            color: "#535454 !important",
-            backgroundColor: "#e6edf7 !important",
-            fontWeight: "400 !important",
-            fontSize: "13px !important",
-            textAlign: "center !important",
+            backgroundColor: "#EAE9FC",
+            fontWeight: "700",
+            fontSize: "14px",
+            color: "#4F46E5",
+            textAlign: "center",
+            textTransform: "capitalize",
+            borderRight: "1px solid #E0E0E0",
+          },
+          root: {
+            "&:last-child": {
+              borderRight: "none",
+            },
           },
         },
       },
-      MuiSwitch: {
+      MuiTableSortLabel: {
         styleOverrides: {
           root: {
-            "&.Mui-disabled .MuiSwitch-track": {
-              backgroundColor: "#f5e1d0",
-              opacity: 1,
-            },
-            "&.Mui-disabled .MuiSwitch-thumb": {
-              color: "#eb862a",
-            },
-          },
-          track: {
-            backgroundColor: "#e0e0e0",
-          },
-          thumb: {
-            color: "#eb862a",
-          },
-          switchBase: {
-            "&.Mui-checked": {
-              color: "#eb862a",
-            },
-            "&.Mui-checked + .MuiSwitch-track": {
-              backgroundColor: "#eb862a",
+            marginLeft: "8px",
+            "& svg": {
+              color: "#4F46E5 !important",
             },
           },
         },
       },
     },
   });
-
-  const handleMenuClose = () => setMenuAnchor(null);
 
   const getData = async () => {
     setLoading(true);
@@ -159,10 +167,16 @@ function Role() {
 
   return (
     <div className="container-fluid mb-4 px-0">
-      <div className="">
-        <div className=" d-flex justify-content-end">
-          <RoleAdd onSuccess={getData} />
+      <div className="d-flex justify-content-between align-items-center p-2 my-2">
+        <div className="d-flex align-items-center">
+          <span className="mx-3 table-heading">
+            Settings -&nbsp;
+            <span className="table-subheading">List of Settings</span>
+          </span>
         </div>
+        <RoleAdd onSuccess={getData} />
+      </div>
+      <div className="table-container my-2">
         {loading ? (
           <div className="loader-container">
             <div className="loader"></div>
@@ -188,36 +202,50 @@ function Role() {
                     updated_at: false,
                   },
                 }}
+                muiTableHeadCellProps={{
+                  sx: {
+                    backgroundColor: "#fff",
+                    color: "#4F46E5 !important",
+                    fontSize: "13px",
+                    fontWeight: 500,
+                    fontFamily: "Urbanist",
+                    textAlign: "center",
+                  },
+                }}
                 muiTableBodyRowProps={({ row }) => ({
                   style: { cursor: "pointer" },
                   onClick: () => {
                     setSelectedId(row.original.id);
                     setShowView(true);
                   },
+                  sx: {
+                    cursor: "pointer",
+                    transition: "background-color 0.2s ease-in-out",
+                    "&:hover": { backgroundColor: "#EAE9FC" },
+                    "&.Mui-selected": { backgroundColor: "#EAE9FC !important" },
+                  },
                 })}
               />
             </ThemeProvider>
-            <Menu
-              id="action-menu"
-              anchorEl={menuAnchor}
-              open={Boolean(menuAnchor)}
-              onClose={handleMenuClose}
-            >
-              <MenuItem
-                onClick={() => {
-                  setShowEdit(true);
-                  handleMenuClose();
-                }}
-              >
-                Edit
-              </MenuItem>
-              <MenuItem>
-                <Delete path={`admin/role/delete/${selectedId}`} onOpen={handleMenuClose} onDeleteSuccess={getData} />
-              </MenuItem>
-            </Menu>
-            <RoleEdit show={showEdit} setShow={setShowEdit} id={selectedId} onSuccess={getData} />
+            <RoleEdit
+              show={showEdit}
+              setShow={setShowEdit}
+              id={selectedId}
+              onSuccess={getData}
+            />
             <RoleView show={showView} setShow={setShowView} id={selectedId} />
           </>
+        )}
+
+        {deleteModalOpen && selectedId && (
+          <DeleteChange
+            path={`role/delete/${selectedId}`}
+            onDeleteSuccess={() => {
+              getData();
+              setDeleteModalOpen(false);
+            }}
+            onOpen={() => setDeleteModalOpen(false)}
+          />
         )}
       </div>
     </div>

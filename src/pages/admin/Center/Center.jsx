@@ -75,11 +75,9 @@ function Center() {
         ),
       },
       {
-        accessorKey: "created_by.name",
+        accessorKey: "created_by",
         header: "Created By",
-        enableSorting: true,
-        enableHiding: false,
-        Cell: ({ cell }) => cell.getValue() || " ",
+        Cell: ({ row }) => row.original.created_by?.name || " ",
       },
       {
         accessorKey: "created_at",
@@ -188,7 +186,6 @@ function Center() {
                     working_hrs: false,
                     citizenship: false,
                     nationality: false,
-                    created_by: false,
                     created_at: false,
                     updated_by: false,
                     updated_at: false,

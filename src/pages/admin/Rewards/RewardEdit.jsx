@@ -7,6 +7,9 @@ import api from "../../../config/URL";
 import PropTypes from "prop-types";
 import { MultiSelect } from "react-multi-select-component";
 import ImageURL from "../../../config/ImageURL";
+import { MdKeyboardArrowLeft } from "react-icons/md";
+import { GoTrash } from "react-icons/go";
+import { FiSave } from "react-icons/fi";
 
 function RewardEdit() {
   const [loadIndicator, setLoadIndicator] = useState(false);
@@ -154,26 +157,6 @@ function RewardEdit() {
 
   return (
     <div className="container-fluid px-0">
-      <ol
-        className="breadcrumb my-3 px-2 d-flex align-items-center"
-        style={{ listStyle: "none", padding: 0, margin: 0 }}
-      >
-        <li>
-          <Link to="/" className="custom-breadcrumb text-sm">
-            Home
-          </Link>
-          <span className="breadcrumb-separator text-sm"> &gt; </span>
-        </li>
-        <li>
-          <Link to="/rewards" className="custom-breadcrumb text-sm">
-            &nbsp;Rewards
-          </Link>
-          <span className="breadcrumb-separator text-sm"> &gt; </span>
-        </li>
-        <li className="breadcrumb-item active text-sm" aria-current="page">
-          &nbsp;Reward Edit
-        </li>
-      </ol>
       <form
         onSubmit={formik.handleSubmit}
         onKeyDown={(e) => {
@@ -182,189 +165,228 @@ function RewardEdit() {
           }
         }}
       >
-        <div className="card">
-          <div className="d-flex justify-content-between align-items-center card_header p-1 mb-4 px-4">
-            <div className="d-flex align-items-center">
-              <div className="d-flex">
-                <div className="dot active"></div>
-              </div>
-              <span className="me-2 text-muted text-sm">Add Rewards</span>
-            </div>
-            <div className="my-2 pe-3 d-flex align-items-center">
+        <div className="d-flex justify-content-between align-items-center  p-1 mb-4">
+          <div className="d-flex align-items-center">
+            <div>
               <Link to="/rewards">
-                <button type="button " className="btn btn-sm btn-back">
-                  Back
+                <button type="button" className="btn btn-sm add-btn p-1">
+                  <MdKeyboardArrowLeft size={25} />
                 </button>
               </Link>
               &nbsp;&nbsp;
-              <button
-                type="submit"
-                className="btn btn-button btn-sm"
-                disabled={loadIndicator}
-              >
-                {loadIndicator && (
-                  <span
-                    className="spinner-border spinner-border-sm me-2"
-                    aria-hidden="true"
-                  ></span>
-                )}
-                Update
-              </button>
             </div>
+            <span className="mx-3 table-heading">
+              Add Rewards -&nbsp;
+              <span className="table-subheading">Add a new Rewards</span>
+            </span>
           </div>
-          {loading ? (
-          <div className="loader-container">
-            <div className="loader"></div>
+          <div className="my-2 d-flex align-items-center justify-content-between gap-5">
+            <button
+              type="button"
+              className="btn view-delete-btn"
+              onClick={() => {
+                formik.resetForm();
+                formik.setErrors({});
+                formik.setTouched({}, false);
+              }}
+            >
+              <GoTrash className="trash-icon" /> &nbsp;&nbsp; Discard Changes
+            </button>
+            <button
+              type="submit"
+              className="btn add-btn"
+              disabled={loadIndicator}
+            >
+              {loadIndicator && (
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  aria-hidden="true"
+                ></span>
+              )}
+              <FiSave className="trash-icon" /> &nbsp;&nbsp; Save Rewards
+            </button>
           </div>
-        ) : (
+        </div>
+        <div className="card" style={{ border: "1px solid #dbd9d0" }}>
+          <div className="d-flex justify-content-between px-5 my-2">
+            <p className="view-header">Rewards Info</p>
+          </div>
           <div className="container-fluid px-4">
             <div className="row py-4">
-              <div className="col-md-6 col-12 mb-4">
-                <label className="form-label">
-                  Centre Name<span className="text-danger">*</span>
-                  </label>
-                  <MultiSelect
-                  options={centerList}
-                  value={selectedCenter}
-                  onChange={(selected) => {
-                    setSelectedCenter(selected);
-                    formik.setFieldValue(
-                      "center_id",
-                      selected.map((option) => option.value)
-                    );
-                  }}
-                  labelledBy="Select Center"
-                  className={`form-multi-select form-multi-select-sm ${formik.touched.center_id && formik.errors.center_id
-                    ? "is-invalid"
-                    : ""
-                    }`}
-                />
-                {formik.touched.center_id && formik.errors.center_id && (
-                  <div className="invalid-feedback">
-                    {formik.errors.center_id}
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text">Centre</p>
                   </div>
-                )}
-              </div>
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
-                  Name<span className="text-danger">*</span>
-                </label>
-                <input
-                  type="text"
-                  className={`form-control form-control-sm ${
-                    formik.touched.name && formik.errors.name
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  {...formik.getFieldProps("name")}
-                />
-                {formik.touched.name && formik.errors.name && (
-                  <div className="invalid-feedback">{formik.errors.name}</div>
-                )}
-              </div>
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
-                  Reward Value<span className="text-danger">*</span>
-                </label>
-                <input
-                  type="text"
-                  className={`form-control form-control-sm ${
-                    formik.touched.reward_value && formik.errors.reward_value
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  {...formik.getFieldProps("reward_value")}
-                />
-                {formik.touched.reward_value && formik.errors.reward_value && (
-                  <div className="invalid-feedback">
-                    {formik.errors.reward_value}
-                  </div>
-                )}
-              </div>
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
-                  Image
-                </label>
-                <input
-                  type="file"
-                  className={`form-control form-control-sm ${
-                    formik.touched.image && formik.errors.image
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  accept="image/*"
-                  onChange={(event) => {
-                    const file = event.currentTarget.files[0];
-                    formik.setFieldValue("image", file || null);
-                  }}
-                />
-                {formik.touched.image && formik.errors.image && (
-                  <div className="invalid-feedback">{formik.errors.image}</div>
-                )}
-              </div>
-
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
-                  Reward Type<span className="text-danger">*</span>
-                </label>
-                <div className="d-flex gap-3">
-                  <div className="form-check">
-                    <input
-                      type="radio"
-                      className="form-check-input"
-                      id="cash"
-                      value="cash"
-                      checked={formik.values.reward_type === "cash"}
-                      onChange={(e) =>
-                        formik.setFieldValue("reward_type", e.target.value)
-                      }
-                      name="reward_type"
+                  <div className="col-7">
+                    <MultiSelect
+                      options={centerList}
+                      value={selectedCenter}
+                      onChange={(selected) => {
+                        setSelectedCenter(selected);
+                        formik.setFieldValue(
+                          "center_id",
+                          selected.map((option) => option.value)
+                        );
+                      }}
+                      labelledBy="Select Service"
+                      className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${
+                        formik.touched.center_id && formik.errors.center_id
+                          ? "is-invalid"
+                          : ""
+                      }`}
                     />
-                    <label className="form-check-label" htmlFor="cash">
-                      Cash
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      type="radio"
-                      className="form-check-input"
-                      id="voucher"
-                      value="voucher"
-                      checked={formik.values.reward_type === "voucher"}
-                      onChange={(e) =>
-                        formik.setFieldValue("reward_type", e.target.value)
-                      }
-                      name="reward_type"
-                    />
-                    <label className="form-check-label" htmlFor="voucher">
-                      Voucher
-                    </label>
-                  </div>
-                  <div className="form-check">
-                    <input
-                      type="radio"
-                      className="form-check-input"
-                      id="gift"
-                      value="gift"
-                      checked={formik.values.reward_type === "gift"}
-                      onChange={(e) =>
-                        formik.setFieldValue("reward_type", e.target.value)
-                      }
-                      name="reward_type"
-                    />
-                    <label className="form-check-label" htmlFor="gift">
-                      Gift
-                    </label>
+                    {formik.touched.center_id && formik.errors.center_id && (
+                      <div className="invalid-feedback">
+                        {formik.errors.center_id}
+                      </div>
+                    )}
                   </div>
                 </div>
-                {formik.touched.reward_type && formik.errors.reward_type && (
-                  <div className="invalid-feedback d-block">
-                    {formik.errors.reward_type}
-                  </div>
-                )}
               </div>
-
-              <div className="col-md-6 col-12 mb-3">
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text">Name</p>
+                  </div>
+                  <div className="col-7">
+                    <input
+                      type="text"
+                      placeholder="Enter Text"
+                      className={`form-control form-control-sm ${
+                        formik.touched.name && formik.errors.name
+                          ? "is-invalid"
+                          : ""
+                      }`}
+                      {...formik.getFieldProps("name")}
+                    />
+                    {formik.touched.name && formik.errors.name && (
+                      <div className="invalid-feedback">
+                        {formik.errors.name}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text">Reward Value</p>
+                  </div>
+                  <div className="col-7">
+                    <input
+                      type="text"
+                      placeholder="Enter Text"
+                      className={`form-control form-control-sm ${
+                        formik.touched.reward_value &&
+                        formik.errors.reward_value
+                          ? "is-invalid"
+                          : ""
+                      }`}
+                      {...formik.getFieldProps("reward_value")}
+                    />
+                    {formik.touched.reward_value &&
+                      formik.errors.reward_value && (
+                        <div className="invalid-feedback">
+                          {formik.errors.reward_value}
+                        </div>
+                      )}
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text">Image</p>
+                  </div>
+                  <div className="col-7">
+                    <input
+                      type="file"
+                      className={`form-control form-control-sm ${
+                        formik.touched.image && formik.errors.image
+                          ? "is-invalid"
+                          : ""
+                      }`}
+                      accept="image/*"
+                      onChange={(event) => {
+                        const file = event.currentTarget.files[0];
+                        formik.setFieldValue("image", file || null);
+                      }}
+                    />
+                    {formik.touched.image && formik.errors.image && (
+                      <div className="invalid-feedback">
+                        {formik.errors.image}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text">Reward Type</p>
+                  </div>
+                  <div className="col-7">
+                    <div className="d-flex gap-3">
+                      <div className="form-check">
+                        <input
+                          type="radio"
+                          className="form-check-input"
+                          id="cash"
+                          value="cash"
+                          checked={formik.values.reward_type === "cash"}
+                          onChange={(e) =>
+                            formik.setFieldValue("reward_type", e.target.value)
+                          }
+                          name="reward_type"
+                        />
+                        <label className="form-check-label" htmlFor="cash">
+                          Cash
+                        </label>
+                      </div>
+                      <div className="form-check">
+                        <input
+                          type="radio"
+                          className="form-check-input"
+                          id="voucher"
+                          value="voucher"
+                          checked={formik.values.reward_type === "voucher"}
+                          onChange={(e) =>
+                            formik.setFieldValue("reward_type", e.target.value)
+                          }
+                          name="reward_type"
+                        />
+                        <label className="form-check-label" htmlFor="voucher">
+                          Voucher
+                        </label>
+                      </div>
+                      <div className="form-check">
+                        <input
+                          type="radio"
+                          className="form-check-input"
+                          id="gift"
+                          value="gift"
+                          checked={formik.values.reward_type === "gift"}
+                          onChange={(e) =>
+                            formik.setFieldValue("reward_type", e.target.value)
+                          }
+                          name="reward_type"
+                        />
+                        <label className="form-check-label" htmlFor="gift">
+                          Gift
+                        </label>
+                      </div>
+                    </div>
+                    {formik.touched.reward_type &&
+                      formik.errors.reward_type && (
+                        <div className="invalid-feedback d-block">
+                          {formik.errors.reward_type}
+                        </div>
+                      )}
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
                 <div className="form-check">
                   <input
                     type="checkbox"
@@ -384,23 +406,27 @@ function RewardEdit() {
                   </label>
                 </div>
               </div>
-
-              <div className="col-12 mb-3">
-                <label className="form-label">Description</label>
-                <textarea
-                  rows={5}
-                  className={`form-control form-control-sm ${
-                    formik.touched.description && formik.errors.description
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  {...formik.getFieldProps("description")}
-                  maxLength={250}
-                />
+              <div className="col-12">
+                <div className="row mb-4">
+                  <div className="col-2">
+                    <p className="view-label-text">Description</p>
+                  </div>
+                  <div className="col-10">
+                    <textarea
+                      rows={5}
+                      className={`form-control form-control-sm ${
+                        formik.touched.description && formik.errors.description
+                          ? "is-invalid"
+                          : ""
+                      }`}
+                      {...formik.getFieldProps("description")}
+                      maxLength={250}
+                    />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        )}
         </div>
       </form>
     </div>

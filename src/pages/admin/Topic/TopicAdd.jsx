@@ -13,7 +13,7 @@ import PropTypes from "prop-types";
 import api from "../../../config/URL";
 import { FaPlus } from "react-icons/fa";
 
-function TopicAdd({ onSuccess }) {
+function TopicAdd({ id, onSuccess }) {
   const navigate = useNavigate();
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -49,7 +49,7 @@ function TopicAdd({ onSuccess }) {
         const payload = {
           ...values,
           name: values.topic_name,
-          subject_id: values.subject_id,
+          subject_id: id,
         };
         delete payload.topic_name;
 
@@ -97,11 +97,9 @@ function TopicAdd({ onSuccess }) {
   };
 
   useEffect(() => {
-    if (show) {
-      getSubjectData();
-      getCenterList();
-    }
-  }, [show]);
+    getSubjectData();
+    getCenterList();
+  }, []);
 
   return (
     <>
@@ -132,7 +130,7 @@ function TopicAdd({ onSuccess }) {
                   </div>
                   <div className="col-7">
                     <input
-                    placeholder="Enter Text"
+                      placeholder="Enter Text"
                       type="text"
                       onKeyDown={(e) => e.stopPropagation()}
                       className={`form-control form-control-sm ${
@@ -157,7 +155,7 @@ function TopicAdd({ onSuccess }) {
                   </div>
                   <div className="col-7">
                     <textarea
-                    placeholder="Enter Text"
+                      placeholder="Enter Text"
                       className={`form-control ${
                         formik.touched.description && formik.errors.description
                           ? "is-invalid"

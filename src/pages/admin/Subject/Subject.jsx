@@ -12,7 +12,6 @@ import DeleteChange from "../../../components/common/DeleteChange";
 import { useNavigate } from "react-router-dom";
 
 function Subject() {
-  const [showAddTopic, setShowAddTopic] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
   const navigate = useNavigate();
   const [data, setData] = useState([]);
@@ -50,7 +49,7 @@ function Subject() {
                 e.stopPropagation();
               }}
             >
-              <AddTopic />
+              <AddTopic id={selectedId} onSuccess={getData} />
             </button>
             {storedScreens?.data[4]?.can_edit === 1 && (
               <button
@@ -225,7 +224,7 @@ function Subject() {
                         style: { cursor: "pointer" },
                         onClick: () => {
                           setSelectedId(row.original.id);
-                          navigate(`/subject/view/${row.original.id}`)
+                          navigate(`/subject/view/${row.original.id}`);
                         },
                       }
                     : {}),
@@ -248,12 +247,12 @@ function Subject() {
               id={selectedId}
             /> */}
 
-            <AddTopic
+            {/* <AddTopic
               show={showAddTopic}
               setShow={setShowAddTopic}
               id={selectedId}
               onSuccess={getData}
-            />
+            /> */}
           </>
         )}
       </div>

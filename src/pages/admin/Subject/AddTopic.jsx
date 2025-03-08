@@ -11,15 +11,25 @@ import {
   DialogTitle,
   DialogContent,
 } from "@mui/material";
+import { FaPlus } from "react-icons/fa";
 
-function AddTopic({ id, show, setShow, onSuccess }) {
+function AddTopic({ id, onSuccess }) {
   const navigate = useNavigate();
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [show, setShow] = useState(false);
   const [data, setData] = useState({});
   const [centerList, setCenterList] = useState([]);
 
-  const handleClose = () => setShow(false);
+  const handleShow = () => {
+    setShow(true);
+    formik.resetForm();
+  };
+
+  const handleClose = () => {
+    setShow(false);
+    formik.resetForm();
+  };
 
   const validationSchema = yup.object().shape({
     topic_name: yup.string().required("*Select a Topic"),
@@ -88,14 +98,19 @@ function AddTopic({ id, show, setShow, onSuccess }) {
   };
 
   useEffect(() => {
-    if (show) {
-      getSubjectData();
-      getCenterList();
-    }
-  }, [show]);
+    getSubjectData();
+    getCenterList();
+  }, []);
 
   return (
     <>
+      <button
+        type="button"
+        className="btn btn-sm d-flex align-items-center justify-content-center"
+        onClick={handleShow}
+      >
+        <FaPlus fontSize={12} className="me-1" />
+      </button>
       <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
         <form
           onSubmit={formik.handleSubmit}
@@ -120,10 +135,11 @@ function AddTopic({ id, show, setShow, onSuccess }) {
                   </label>
                   <input
                     type="text"
-                    className={`form-control form-control-sm ${formik.touched.topic_name && formik.errors.topic_name
-                      ? "is-invalid"
-                      : ""
-                      }`}
+                    className={`form-control form-control-sm ${
+                      formik.touched.topic_name && formik.errors.topic_name
+                        ? "is-invalid"
+                        : ""
+                    }`}
                     {...formik.getFieldProps("topic_name")}
                   />
                   {formik.touched.topic_name && formik.errors.topic_name && (
@@ -136,10 +152,11 @@ function AddTopic({ id, show, setShow, onSuccess }) {
                 <div className="col-md-6 col-12 mb-3">
                   <label className="form-label">Description</label>
                   <textarea
-                    className={`form-control ${formik.touched.description && formik.errors.description
-                      ? "is-invalid"
-                      : ""
-                      }`}
+                    className={`form-control ${
+                      formik.touched.description && formik.errors.description
+                        ? "is-invalid"
+                        : ""
+                    }`}
                     rows="4"
                     {...formik.getFieldProps("description")}
                   />
