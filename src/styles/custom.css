@@ -297,24 +297,24 @@
   z-index: 0 !important;
 }
 
-.table-heading{
+.table-heading {
   font-size: 24px;
   color: #333333;
 }
 
-.table-subheading{
-  color:#999999;
+.table-subheading {
+  color: #999999;
   font-size: 18px;
 }
 
-.add-btn{
+.add-btn {
   background-color: #EAE9FC;
   padding: 8px 12px;
   border-color: #4F46E5;
   color: #4F46E5;
 }
 
-.add-btn:hover{
+.add-btn:hover {
   background-color: #4F46E5;
   border-color: #4F46E5;
   color: #EAE9FC;
@@ -363,12 +363,13 @@
   color: #4F46E5;
   cursor: pointer;
 }
+
 .edit-btn {
-  border-radius: 50%;  
+  border-radius: 50%;
   background-color: #FAFAFA;
-  padding: 6px; 
+  padding: 6px;
   width: 32px;
-  height: 32px; 
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -376,29 +377,30 @@
   cursor: pointer;
 }
 
-.edit-btn:hover{
+.edit-btn:hover {
   background-color: #FAFAFA !important;
 }
 
 .delete-btn {
-  border-radius: 50%;  
+  border-radius: 50%;
   background-color: #FAFAFA;
-  padding: 6px; 
+  padding: 6px;
   width: 32px;
-  height: 32px; 
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
   border: none;
   cursor: pointer;
 }
-.delete-btn:hover{
+
+.delete-btn:hover {
   background-color: #FAFAFA !important;
 }
 
 .table-heading {
   font-size: 24px;
-  font-weight:  500 !important;
+  font-weight: 500 !important;
   color: #333333;
 }
 
@@ -418,15 +420,16 @@
   padding-top: 0 !important;
 }
 
-.MuiPaper-root{
+.MuiPaper-root {
   border-radius: 20px !important;
   box-shadow: none !important;
 }
 
-.MuiTableCell-root.MuiTableCell-head{
+.MuiTableCell-root.MuiTableCell-head {
   padding: 1.2rem;
 }
-.MuiTableRow-root.css-1klzrue-MuiTableRow-root:hover{
+
+.MuiTableRow-root.css-1klzrue-MuiTableRow-root:hover {
   background-color: #EAE9FC !important;
 }
 
@@ -434,7 +437,7 @@
   background-color: #FCE9EB;
   padding: 8px 12px;
   border-color: #FB3748;
-  color:#FB3748;
+  color: #FB3748;
   font-size: 16px;
 }
 
@@ -443,23 +446,24 @@
   color: #FCE9EB;
 }
 
-.trash-icon{
-  color: #FB3748,;
+.trash-icon {
+  color: #FB3748, ;
   font-size: 20px;
 }
 
-.view-header{
+.view-header {
   color: #4F46E5;
   font-size: 20px;
-  font-weight:  500 !important;
+  font-weight: 500 !important;
 }
 
-.view-label-text{
+.view-label-text {
   color: #5D5D5D;
   font-size: 15px !important;
   font-weight: 400 !important;
 }
-.view-value{
+
+.view-value {
   color: #333333;
   font-size: 18px !important;
   font-weight: 500 !important;
@@ -473,11 +477,13 @@
   margin-bottom: 5px;
   font-weight: 600;
 }
+
 .heading-color {
   color: #4f46e5;
   font-size: 20px;
   margin-bottom: 5px;
 }
+
 .sidebar-navlink {
   color: #333333;
   font-family: "Urbanist";
@@ -492,6 +498,7 @@
   border-radius: 5px;
   transition: all 0.3s ease-in-out;
 }
+
 .sidebar-navlink p {
   font-family: "Urbanist" !important;
 }
@@ -500,6 +507,7 @@
   background: #e0e7ff;
   color: #000;
 }
+
 .sidebar-navlink:hover svg {
   color: #4f46e5;
 }
@@ -509,17 +517,21 @@
   color: #fff;
   font-weight: bold;
 }
+
 .sidebar-navlink.active svg {
   color: white;
 }
-.dash-font{
+
+.dash-font {
   font-family: "Urbanist" !important;
 }
+
 .chart-heading {
   font-family: "Urbanist" !important;
   font-size: 13px;
   line-height: 20px;
 }
+
 .navbar::-webkit-scrollbar {
   display: none;
 }
@@ -528,9 +540,10 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
 .dash-scrool {
   -ms-overflow-style: none;
-  scrollbar-width: 2px; 
+  scrollbar-width: 2px;
 }
 
 .dash-scrool::-webkit-scrollbar {
@@ -538,18 +551,18 @@
 }
 
 .dash-scrool::-webkit-scrollbar-thumb {
-  background-color: #ccc; 
+  background-color: #ccc;
   border-radius: 10px;
 }
 
 .dash-scrool::-webkit-scrollbar-track {
-  background: transparent; 
+  background: transparent;
 }
 
-.dash-icon{
+.dash-icon {
   background-color: #e0e7ff;
   border-width: 1px;
-  border-color:#4f46e5 ;
+  border-color: #4f46e5;
 }
 
 
@@ -559,18 +572,22 @@
   font-weight: 400;
   font-size: 0.9rem;
 }
-.btn--underline:hover ,.btn--underline:active ,.btn--underline:focus{
+
+.btn--underline:hover,
+.btn--underline:active,
+.btn--underline:focus {
   color: #1a1a1a;
   box-shadow: none;
   border-color: transparent !important;
 }
+
 .form-multi-select .dropdown-container {
   border: none !important;
   box-shadow: none !important;
 }
 
 .MuiTableContainer-root::-webkit-scrollbar {
-  height: 4px; 
+  height: 4px;
 }
 
 .MuiTableContainer-root::-webkit-scrollbar-thumb {
@@ -578,3 +595,18 @@
   border-radius: 10px;
 }
 
+.apexcharts-legend.apexcharts-align-center.apx-legend-position-right {
+  display: none !important;
+}
+
+.apexcharts-toolbar {
+  display: none !important;
+}
+
+.fw-12 {
+  font-size: 12px;
+  letter-spacing: 0.8px;
+}
+.fw-14 {
+  font-size: 14px;
+}
