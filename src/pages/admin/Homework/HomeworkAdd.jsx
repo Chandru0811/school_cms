@@ -11,6 +11,9 @@ import { ThemeProvider } from "react-bootstrap";
 import { createTheme } from "@mui/material";
 import toast from "react-hot-toast";
 import api from "../../../config/URL";
+import { FiSave } from "react-icons/fi";
+import { GoTrash } from "react-icons/go";
+import { MdKeyboardArrowLeft } from "react-icons/md";
 
 function HomeworkAdd() {
   const navigate = useNavigate();
@@ -61,13 +64,13 @@ function HomeworkAdd() {
       .of(yup.string().required("*Select at least one question type"))
       .min(1, "*Select at least one question type")
       .required("*Select a question type name"),
-      due_date: yup
+    due_date: yup
       .string()
       .required("*Due Date is required")
-      .test("future-date", "*Past dates are not allowed", value => {
+      .test("future-date", "*Past dates are not allowed", (value) => {
         return value >= today;
       }),
-      total_score: yup
+    total_score: yup
       .number()
       .typeError("*Totle Score must be a number")
       .required("*Totle Score field is required")
@@ -366,7 +369,9 @@ function HomeworkAdd() {
         return;
       }
 
-      const centerIds = selectedCenter.map(center => `center_id[]=${center.value}`).join("&");
+      const centerIds = selectedCenter
+        .map((center) => `center_id[]=${center.value}`)
+        .join("&");
       const response = await api.get(`filter/grades?${centerIds}`);
 
       const formattedGrades = response.data?.data?.map((grade) => ({
@@ -377,12 +382,14 @@ function HomeworkAdd() {
       setGrades(formattedGrades);
 
       // Reset grade & subject if current values are no longer valid
-      if (!formattedGrades.some(g => g.value === formik.values.grade_id)) {
+      if (!formattedGrades.some((g) => g.value === formik.values.grade_id)) {
         formik.setFieldValue("grade_id", "");
         formik.setFieldValue("subject_id", "");
       }
     } catch (e) {
-      toast.error(`Error Fetching Grades: ${e?.response?.data?.error || e.message}`);
+      toast.error(
+        `Error Fetching Grades: ${e?.response?.data?.error || e.message}`
+      );
     }
   };
   const getSubjectList = async () => {
@@ -392,17 +399,23 @@ function HomeworkAdd() {
         formik.setFieldValue("subject_id", "");
         return;
       }
-      const response = await api.get(`filter/subjects?grade_id[]=${formik.values.grade_id}`);
+      const response = await api.get(
+        `filter/subjects?grade_id[]=${formik.values.grade_id}`
+      );
       const formattedSubjects = response.data?.data?.map((subject) => ({
         value: subject.id,
         label: subject.name,
       }));
       setSubjects(formattedSubjects);
-      if (!formattedSubjects.some(s => s.value === formik.values.subject_id)) {
+      if (
+        !formattedSubjects.some((s) => s.value === formik.values.subject_id)
+      ) {
         formik.setFieldValue("subject_id", "");
       }
     } catch (e) {
-      toast.error(`Error Fetching Subjects: ${e?.response?.data?.error || e.message}`);
+      toast.error(
+        `Error Fetching Subjects: ${e?.response?.data?.error || e.message}`
+      );
     }
   };
 
@@ -413,17 +426,21 @@ function HomeworkAdd() {
         formik.setFieldValue("topic_id", "");
         return;
       }
-      const response = await api.get(`filter/topics?subject_id[]=${formik.values.subject_id}`);
+      const response = await api.get(
+        `filter/topics?subject_id[]=${formik.values.subject_id}`
+      );
       const formattedTopics = response.data?.data?.map((topic) => ({
         value: topic.id,
         label: topic.name,
       }));
       setTopics(formattedTopics);
-      if (!formattedTopics.some(s => s.value === formik.values.topic_id)) {
+      if (!formattedTopics.some((s) => s.value === formik.values.topic_id)) {
         formik.setFieldValue("topic_id", "");
       }
     } catch (e) {
-      toast.error(`Error Fetching Topics: ${e?.response?.data?.error || e.message}`);
+      toast.error(
+        `Error Fetching Topics: ${e?.response?.data?.error || e.message}`
+      );
     }
   };
 
@@ -489,26 +506,6 @@ function HomeworkAdd() {
   }, [formik.values.subject_id]);
   return (
     <div className="container p-3">
-      <ol
-        className="breadcrumb my-3 d-flex align-items-center"
-        style={{ listStyle: "none", padding: 0, margin: 0 }}
-      >
-        <li>
-          <Link to="/" className="custom-breadcrumb text-sm">
-            Home
-          </Link>
-          <span className="breadcrumb-separator text-sm"> &gt; </span>
-        </li>
-        <li className="breadcrumb-item active text-sm" aria-current="page">
-          <Link to="/homework" className="custom-breadcrumb">
-            &nbsp;Homework
-          </Link>
-        </li>
-        <span className="breadcrumb-separator text-sm"> &gt; </span>
-        <li className="breadcrumb-item active text-sm" aria-current="page">
-          &nbsp;Homework Add
-        </li>
-      </ol>
       <form
         onSubmit={formik.handleSubmit}
         onKeyDown={(e) => {
@@ -517,250 +514,317 @@ function HomeworkAdd() {
           }
         }}
       >
-        <div className="card">
-          <div className="d-flex justify-content-between align-items-center card_header p-1 mb-4 px-4">
-            <div className="d-flex align-items-center">
-              <div className="d-flex">
-                <div className="dot active"></div>
-              </div>
-              <span className="me-2 text-muted text-sm">Add Homework</span>
-            </div>
-            <div className="my-2 pe-3 d-flex align-items-center">
+        <div className="d-flex justify-content-between align-items-center  p-1 mb-4">
+          <div className="d-flex align-items-center">
+            <div>
               <Link to="/homework">
-                <button type="button " className="btn btn-sm btn-back">
-                  Back
+                <button type="button" className="btn btn-sm add-btn p-1">
+                  <MdKeyboardArrowLeft size={25} />
                 </button>
               </Link>
               &nbsp;&nbsp;
-              <button
-                type="submit"
-                className="btn btn-button btn-sm"
-                disabled={loadIndicator}
-              >
-                {loadIndicator && (
-                  <span
-                    className="spinner-border spinner-border-sm me-2"
-                    aria-hidden="true"
-                  ></span>
-                )}
-                Save
-              </button>
             </div>
+            <span className="mx-3 table-heading">
+              Add Home Work -&nbsp;
+              <span className="table-subheading">Add a new Home Work</span>
+            </span>
+          </div>
+          <div className="my-2 d-flex align-items-center justify-content-between gap-5">
+            <button
+              type="button"
+              className="btn view-delete-btn"
+              onClick={() => {
+                formik.resetForm();
+                formik.setErrors({});
+                formik.setTouched({}, false);
+              }}
+            >
+              <GoTrash className="trash-icon" /> &nbsp;&nbsp; Discard Changes
+            </button>
+            <button
+              type="submit"
+              className="btn add-btn"
+              disabled={loadIndicator}
+            >
+              {loadIndicator && (
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  aria-hidden="true"
+                ></span>
+              )}
+              <FiSave className="trash-icon" /> &nbsp;&nbsp; Save Home Work
+            </button>
+          </div>
+        </div>
+        <div className="card" style={{ border: "1px solid #dbd9d0" }}>
+          <div className="d-flex justify-content-between px-5 my-2">
+            <p className="view-header">Home Work Info</p>
           </div>
           <div className="container-fluid px-4">
             <div className="row py-4">
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">Title</label>
-                <span className="text-danger">*</span>
-                <input
-                  className={`form-control form-control-sm ${formik.touched.title && formik.errors.title
-                    ? "is-invalid"
-                    : ""
-                    }`}
-                  {...formik.getFieldProps("title")}
-                />
-                {formik.touched.title && formik.errors.title && (
-                  <div className="invalid-feedback">{formik.errors.title}</div>
-                )}
-              </div>
-              <div className="col-md-6 col-12 mb-4">
-                <label className="form-label">
-                  Centre<span className="text-danger">*</span>
-                </label>
-                <MultiSelect
-                  options={centerList}
-                  value={selectedCenter}
-                  onChange={(selected) => {
-                    setSelectedCenter(selected);
-                    formik.setFieldValue(
-                      "center_id",
-                      selected.map((option) => option.value)
-                    );
-                    if (selected.length === 0) {
-                      setGrades([]);
-                      setSubjects([]);
-                      setTopics([]);
-                      formik.setFieldValue("grade_id", []);
-                      formik.setFieldValue("subject_id", []);
-                      formik.setFieldValue("topic_id", []);
-                      setSelectedGrades([]);
-                      setSelectedSubjects([]);
-                      setSelectedTopics([]);
-                    }
-                  }}
-                  labelledBy="Select Service"
-                  className={`form-multi-select form-multi-select-sm ${formik.touched.center_id && formik.errors.center_id
-                    ? "is-invalid"
-                    : ""
-                    }`}
-                />
-                {formik.touched.center_id && formik.errors.center_id && (
-                  <div className="invalid-feedback">
-                    {formik.errors.center_id}
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text">Title</p>
                   </div>
-                )}
+                  <div className="col-7">
+                    <input
+                        placeholder="Enter Text"
+                      className={`form-control form-control-sm ${
+                        formik.touched.title && formik.errors.title
+                          ? "is-invalid"
+                          : ""
+                      }`}
+                      {...formik.getFieldProps("title")}
+                    />
+                    {formik.touched.title && formik.errors.title && (
+                      <div className="invalid-feedback">
+                        {formik.errors.title}
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
-                  Grade<span className="text-danger">*</span>
-                </label>
-                <MultiSelect
-                  options={grades}
-                  value={selectedGrades}
-                  onChange={(selected) => {
-                    setSelectedGrades(selected);
-                    formik.setFieldValue(
-                      "grade_id",
-                      selected.map((option) => option.value)
-                    );
-                    if (selected.length === 0) {
-                      setSubjects([]);
-                      setTopics([]);
-                      formik.setFieldValue("subject_id", []);
-                      formik.setFieldValue("topic_id", []);
-                      setSelectedSubjects([]);
-                      setSelectedTopics([]);
-                    }
-                  }}
-                  labelledBy="Select Service"
-                  className={`form-multi-select form-multi-select-sm ${formik.touched.grade_id && formik.errors.grade_id
-                    ? "is-invalid"
-                    : ""
-                    }`}
-                />
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text">Centre</p>
+                  </div>
+                  <div className="col-7">
+                    <MultiSelect
+                      options={centerList}
+                      value={selectedCenter}
+                      onChange={(selected) => {
+                        setSelectedCenter(selected);
+                        formik.setFieldValue(
+                          "center_id",
+                          selected.map((option) => option.value)
+                        );
+                        if (selected.length === 0) {
+                          setGrades([]);
+                          setSubjects([]);
+                          setTopics([]);
+                          formik.setFieldValue("grade_id", []);
+                          formik.setFieldValue("subject_id", []);
+                          formik.setFieldValue("topic_id", []);
+                          setSelectedGrades([]);
+                          setSelectedSubjects([]);
+                          setSelectedTopics([]);
+                        }
+                      }}
+                      labelledBy="Select Service"
+                      className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${
+                        formik.touched.center_id && formik.errors.center_id
+                          ? "is-invalid"
+                          : ""
+                      }`}
+                    />
+                    {formik.touched.center_id && formik.errors.center_id && (
+                      <div className="invalid-feedback">
+                        {formik.errors.center_id}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text">Grade</p>
+                  </div>
+                  <div className="col-7">
+                    <MultiSelect
+                      options={grades}
+                      value={selectedGrades}
+                      onChange={(selected) => {
+                        setSelectedGrades(selected);
+                        formik.setFieldValue(
+                          "grade_id",
+                          selected.map((option) => option.value)
+                        );
+                        if (selected.length === 0) {
+                          setSubjects([]);
+                          setTopics([]);
+                          formik.setFieldValue("subject_id", []);
+                          formik.setFieldValue("topic_id", []);
+                          setSelectedSubjects([]);
+                          setSelectedTopics([]);
+                        }
+                      }}
+                      labelledBy="Select Service"
+                      className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${
+                        formik.touched.grade_id && formik.errors.grade_id
+                          ? "is-invalid"
+                          : ""
+                      }`}
+                    />
 
-                {formik.touched.grade_id && formik.errors.grade_id && (
-                  <div className="invalid-feedback">
-                    {formik.errors.grade_id}
+                    {formik.touched.grade_id && formik.errors.grade_id && (
+                      <div className="invalid-feedback">
+                        {formik.errors.grade_id}
+                      </div>
+                    )}
                   </div>
-                )}
+                </div>
               </div>
-              <div className="col-md-6 col-12 mb-4">
-                <label className="form-label">
-                  Subject
-                </label>
-                <MultiSelect
-                  options={subjects}
-                  value={selectedSubjects}
-                  onChange={(selected) => {
-                    setSelectedSubjects(selected);
-                    formik.setFieldValue(
-                      "subject_id",
-                      selected.map((option) => option.value)
-                    );
-                    if (selected.length === 0) {
-                      setTopics([]);
-                      formik.setFieldValue("topic_id", []);
-                      setSelectedTopics([]);
-                    }
-                  }}
-                  labelledBy="Select Service"
-                  className="form-multi-select form-multi-select-sm"
-                />
-              </div>
-              <div className="col-md-6 col-12 mb-4">
-                <label className="form-label">
-                  Topic
-                </label>
-                <MultiSelect
-                  options={topics}
-                  value={selectedTopics}
-                  onChange={(selected) => {
-                    setSelectedTopics(selected);
-                    formik.setFieldValue(
-                      "topic_id",
-                      selected.map((option) => option.value)
-                    );
-                  }}
-                  labelledBy="Select Topic"
-                  className="form-multi-select form-multi-select-sm"
-                />
-              </div>
-              <div className="col-md-6 col-12 mb-4">
-                <label className="form-label">
-                  Question Type<span className="text-danger">*</span>
-                </label>
-                <MultiSelect
-                  options={questionOption}
-                  value={selectedQuestion}
-                  onChange={(selected) => {
-                    setSelectedQuestion(selected);
-                    formik.setFieldValue(
-                      "ques_type",
-                      selected.map((option) => option.value)
-                    );
-                  }}
-                  labelledBy="Select Service"
-                  className={`form-multi-select form-multi-select-sm ${formik.touched.ques_type && formik.errors.ques_type
-                    ? "is-invalid"
-                    : ""
-                    }`}
-                />
-                {formik.touched.ques_type && formik.errors.ques_type && (
-                  <div className="invalid-feedback">
-                    {formik.errors.ques_type}
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text">Subject</p>
                   </div>
-                )}
-              </div>
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
-                  Difficulty Type<span className="text-danger">*</span>
-                </label>
-                <select
-                  className={`form-select form-select-sm ${formik.touched.difficult_level &&
-                      formik.errors.difficult_level
-                      ? "is-invalid"
-                      : ""
-                    }`}
-                  {...formik.getFieldProps("difficult_level")}
-                >
-                  <option value=""></option>
-                  <option value="All">All</option>
-                  <option value="Easy">Easy</option>
-                  <option value="Medium">Medium</option>
-                  <option value="Hard">Hard</option>
-                </select>
-                {formik.touched.difficult_level &&
-                  formik.errors.difficult_level && (
-                    <div className="invalid-feedback">
-                      {formik.errors.difficult_level}
-                    </div>
-                  )}
-              </div>
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">Due Date</label>
-                <span className="text-danger">*</span>
-                <input
-                  type="date"
-                  className={`form-control form-control-sm ${formik.touched.due_date && formik.errors.due_date
-                    ? "is-invalid"
-                    : ""
-                    }`}
-                  {...formik.getFieldProps("due_date")}
-                  min={today}
-                />
-                {formik.touched.due_date && formik.errors.due_date && (
-                  <div className="invalid-feedback">
-                    {formik.errors.due_date}
+                  <div className="col-7">
+                    <MultiSelect
+                      options={subjects}
+                      value={selectedSubjects}
+                      onChange={(selected) => {
+                        setSelectedSubjects(selected);
+                        formik.setFieldValue(
+                          "subject_id",
+                          selected.map((option) => option.value)
+                        );
+                        if (selected.length === 0) {
+                          setTopics([]);
+                          formik.setFieldValue("topic_id", []);
+                          setSelectedTopics([]);
+                        }
+                      }}
+                      labelledBy="Select Service"
+                      className="form-multi-select form-multi-select-sm border-1 rounded-1"
+                    />
                   </div>
-                )}
+                </div>
               </div>
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">Total Score</label>
-                <span className="text-danger">*</span>
-                <input
-                  type="text"
-                  className={`form-control form-control-sm ${formik.touched.total_score && formik.errors.total_score
-                      ? "is-invalid"
-                      : ""
-                    }`}
-                  {...formik.getFieldProps("total_score")}
-                />
-                {formik.touched.total_score && formik.errors.total_score && (
-                  <div className="invalid-feedback">
-                    {formik.errors.total_score}
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text">Topic</p>
                   </div>
-                )}
+                  <div className="col-7">
+                    <MultiSelect
+                      options={topics}
+                      value={selectedTopics}
+                      onChange={(selected) => {
+                        setSelectedTopics(selected);
+                        formik.setFieldValue(
+                          "topic_id",
+                          selected.map((option) => option.value)
+                        );
+                      }}
+                      labelledBy="Select Topic"
+                      className="form-multi-select form-multi-select-sm border-1 rounded-1"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text"> Question Type</p>
+                  </div>
+                  <div className="col-7">
+                    <MultiSelect
+                      options={questionOption}
+                      value={selectedQuestion}
+                      onChange={(selected) => {
+                        setSelectedQuestion(selected);
+                        formik.setFieldValue(
+                          "ques_type",
+                          selected.map((option) => option.value)
+                        );
+                      }}
+                      labelledBy="Select Service"
+                      className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${
+                        formik.touched.ques_type && formik.errors.ques_type
+                          ? "is-invalid"
+                          : ""
+                      }`}
+                    />
+                    {formik.touched.ques_type && formik.errors.ques_type && (
+                      <div className="invalid-feedback">
+                        {formik.errors.ques_type}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text"> Difficulty Type</p>
+                  </div>
+                  <div className="col-7">
+                    <select
+                      className={`form-select form-select-sm ${
+                        formik.touched.difficult_level &&
+                        formik.errors.difficult_level
+                          ? "is-invalid"
+                          : ""
+                      }`}
+                      {...formik.getFieldProps("difficult_level")}
+                    >
+                      <option value=""></option>
+                      <option value="All">All</option>
+                      <option value="Easy">Easy</option>
+                      <option value="Medium">Medium</option>
+                      <option value="Hard">Hard</option>
+                    </select>
+                    {formik.touched.difficult_level &&
+                      formik.errors.difficult_level && (
+                        <div className="invalid-feedback">
+                          {formik.errors.difficult_level}
+                        </div>
+                      )}
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text">Due Date</p>
+                  </div>
+                  <div className="col-7">
+                    <input
+                      type="date"
+                      className={`form-control form-control-sm ${
+                        formik.touched.due_date && formik.errors.due_date
+                          ? "is-invalid"
+                          : ""
+                      }`}
+                      {...formik.getFieldProps("due_date")}
+                      min={today}
+                    />
+                    {formik.touched.due_date && formik.errors.due_date && (
+                      <div className="invalid-feedback">
+                        {formik.errors.due_date}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
+                    <p className="view-label-text">Total Score</p>
+                  </div>
+                  <div className="col-7">
+                    <input
+                    placeholder="Enter Text"
+                      type="text"
+                      className={`form-control form-control-sm ${
+                        formik.touched.total_score && formik.errors.total_score
+                          ? "is-invalid"
+                          : ""
+                      }`}
+                      {...formik.getFieldProps("total_score")}
+                    />
+                    {formik.touched.total_score &&
+                      formik.errors.total_score && (
+                        <div className="invalid-feedback">
+                          {formik.errors.total_score}
+                        </div>
+                      )}
+                  </div>
+                </div>
               </div>
             </div>
           </div>

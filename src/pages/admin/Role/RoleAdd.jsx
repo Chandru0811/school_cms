@@ -13,6 +13,7 @@ import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { BsFillInfoCircleFill } from "react-icons/bs";
+import { FaPlus } from "react-icons/fa";
 function RoleAdd({ onSuccess }) {
   const [show, setShow] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
@@ -97,11 +98,11 @@ function RoleAdd({ onSuccess }) {
     <>
       <button
         type="button"
-        className="btn btn-button btn-sm me-2 m-3"
+        className="btn add-btn btn-sm me-2 m-3"
         style={{ fontWeight: "600px !important" }}
         onClick={handleShow}
       >
-        Add
+        <FaPlus fontSize={12} className="me-1" /> Add Role
       </button>
 
       <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
@@ -134,7 +135,7 @@ function RoleAdd({ onSuccess }) {
                     );
                   }}
                   labelledBy="Select Service"
-                  className={`form-multi-select form-multi-select-sm ${
+                  className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${
                     formik.touched.center_id && formik.errors.center_id
                       ? "is-invalid"
                       : ""
@@ -230,7 +231,9 @@ function RoleAdd({ onSuccess }) {
                     {formik.values.access && (
                       <>
                         <small className="text-muted">
-                          <BsFillInfoCircleFill style={{ marginBottom: "2px" }} />{" "}
+                          <BsFillInfoCircleFill
+                            style={{ marginBottom: "2px" }}
+                          />{" "}
                           {formik.values.access === "Full Access"
                             ? "Lorem ipsum dolor sit amet consectetur adipisicing elit. Nisi culpa, debitis accusantium cupiditate."
                             : formik.values.access === "Minimal Access"

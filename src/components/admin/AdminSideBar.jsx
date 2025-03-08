@@ -98,7 +98,7 @@ function AdminSidebar() {
                   to="/subscription"
                 >
                   <FiBell />
-                  <p>Subscribtion</p>
+                  <p>Subscription</p>
                 </NavLink>
               )}
             </div>

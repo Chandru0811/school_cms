@@ -84,7 +84,7 @@ function SubjectView() {
                   e.stopPropagation();
                 }}
               >
-                <TopicEdit id={selectedId} onSuccess={getData} />
+                <TopicEdit id={row.original.id} onSuccess={getData} />
               </button>
             )}
             {storedScreens?.data[5]?.can_delete === 1 && (
@@ -220,7 +220,7 @@ function SubjectView() {
                     </div>
                     <div className="col-6">
                       <p className="view-value">
-                        : {truncateText(data?.subject?.center_id)}
+                        : {JSON.parse(data?.subject?.center_names)?.[0]}
                       </p>
                     </div>
                   </div>
@@ -232,7 +232,7 @@ function SubjectView() {
                     </div>
                     <div className="col-6">
                       <p className="view-value">
-                        : {truncateText(data?.subject?.grade_id)}
+                        : {data?.subject?.grand_name}
                       </p>
                     </div>
                   </div>
