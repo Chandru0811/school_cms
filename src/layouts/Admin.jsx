@@ -61,6 +61,10 @@ import CenterView from "../pages/admin/Center/CenterView";
 import HomeDoAssessment from "../pages/admin/Homework/HomeDoAssessment";
 import Successfull from "../pages/admin/WorkSheet/Successfull";
 import HomeSuccessfull from "../pages/admin/Homework/HomeSuccessfull";
+import AvatarProfile from "../pages/admin/AvatarProfile/AvatarProfile";
+import AvatarProfileAdd from "../pages/admin/AvatarProfile/AvatarProfileAdd";
+import AvatarProfileEdit from "../pages/admin/AvatarProfile/AvatarProfileEdit";
+import AvatarProfileView from "../pages/admin/AvatarProfile/AvatarProfileView";
 
 function Admin({ handleLogout }) {
   return (
@@ -84,6 +88,17 @@ function Admin({ handleLogout }) {
                     <Route path="/center/edit" element={<CenterEdit />} />
                     <Route path="/center/view" element={<CenterView />} />
 
+                    {/* Avatar  */}
+                    <Route path="/avatar" element={<AvatarProfile />} />
+                    <Route path="/avatar/add" element={<AvatarProfileAdd />} />
+                    <Route
+                      path="/avatar/edit"
+                      element={<AvatarProfileEdit />}
+                    />
+                    <Route
+                      path="/avatar/view/:id"
+                      element={<AvatarProfileView />}
+                    />
                     {/* Grade */}
                     <Route path="/grade" element={<Grade />} />
                     <Route path="/grade/add" element={<GradeAdd />} />
@@ -93,8 +108,14 @@ function Admin({ handleLogout }) {
                     {/* Employee */}
                     <Route path="/employee" element={<Employee />} />
                     <Route path="/employee/add" element={<EmployeeAdd />} />
-                    <Route path="/employee/edit/:id" element={<EmployeeEdit />} />
-                    <Route path="/employee/view/:id" element={<EmployeeView />} />
+                    <Route
+                      path="/employee/edit/:id"
+                      element={<EmployeeEdit />}
+                    />
+                    <Route
+                      path="/employee/view/:id"
+                      element={<EmployeeView />}
+                    />
 
                     {/* Student */}
                     <Route path="/student" element={<Student />} />
@@ -117,8 +138,14 @@ function Admin({ handleLogout }) {
                     {/* Question  */}
                     <Route path="/question" element={<Question />} />
                     <Route path="/question/add" element={<QuestionAdd />} />
-                    <Route path="/question/edit/:id" element={<QuestionEdit />} />
-                    <Route path="/question/view/:id" element={<QuestionView />} />
+                    <Route
+                      path="/question/edit/:id"
+                      element={<QuestionEdit />}
+                    />
+                    <Route
+                      path="/question/view/:id"
+                      element={<QuestionView />}
+                    />
 
                     {/* Answer  */}
                     <Route path="/answer" element={<Answer />} />
@@ -132,18 +159,36 @@ function Admin({ handleLogout }) {
                     {/* Work Sheet  */}
                     <Route path="/worksheet" element={<WorkSheet />} />
                     <Route path="/worksheet/add" element={<WorkSheetAdd />} />
-                    <Route path="/worksheet/edit/:id" element={<WorkSheetEdit />} />
-                    <Route path="/worksheet/view/:id" element={<WorkSheetView />} />
+                    <Route
+                      path="/worksheet/edit/:id"
+                      element={<WorkSheetEdit />}
+                    />
+                    <Route
+                      path="/worksheet/view/:id"
+                      element={<WorkSheetView />}
+                    />
                     <Route path="/doassessment" element={<DoAssessment />} />
-                    <Route path="/homedoassessment" element={<HomeDoAssessment />} />
+                    <Route
+                      path="/homedoassessment"
+                      element={<HomeDoAssessment />}
+                    />
                     <Route path="/successfull" element={<Successfull />} />
-                    <Route path="/homesuccessfull" element={<HomeSuccessfull />} />
+                    <Route
+                      path="/homesuccessfull"
+                      element={<HomeSuccessfull />}
+                    />
 
                     {/* Home Work  */}
                     <Route path="/homework" element={<Homework />} />
                     <Route path="/homework/add" element={<HomeworkAdd />} />
-                    <Route path="/homework/edit/:id" element={<HomeworkEdit />} />
-                    <Route path="/homework/view/:id" element={<HomeworkView />} />
+                    <Route
+                      path="/homework/edit/:id"
+                      element={<HomeworkEdit />}
+                    />
+                    <Route
+                      path="/homework/view/:id"
+                      element={<HomeworkView />}
+                    />
 
                     {/* Challenges  */}
                     <Route path="/challenges" element={<Challenges />} />

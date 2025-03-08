@@ -24,15 +24,19 @@ function DeleteChange({ path, onDeleteSuccess, onOpen, navigate }) {
     try {
       setLoading(true);
       const response = await api.delete(path);
-      if (response.status === 200 || response.status === 201) {
-        onDeleteSuccess(); // Successful delete callback
+  
+      if (response.status === 200) {
+        onDeleteSuccess();
         toast.success(response?.data?.message || "Deleted successfully!");
-        handleCloseDialog(); // Close the dialog on success
-        navigate()
+        handleCloseDialog();
+        if (navigate) navigate(); 
       }
     } catch (error) {
+      console.error("Delete error:", error); 
       if (error.response) {
-        if (error.response.status === 422) {
+        if (error.response.status === 404) {
+          toast.error("Avatar not found. It may have already been deleted.");
+        } else if (error.response.status === 422) {
           const errors = error.response.data.errors;
           if (errors) {
             Object.keys(errors).forEach((key) => {
@@ -46,13 +50,16 @@ function DeleteChange({ path, onDeleteSuccess, onOpen, navigate }) {
         } else {
           toast.error(error.response.data.message || "Error occurred.");
         }
+      } else if (error.request) {
+        toast.error("Server did not respond. Please try again.");
       } else {
-        toast.error("Network error. Please check your connection.");
+        toast.error("An unexpected error occurred.");
       }
     } finally {
       setLoading(false);
     }
   };
+  
 
   return (
     <Dialog
