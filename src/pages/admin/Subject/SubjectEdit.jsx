@@ -128,11 +128,9 @@ function SubjectEdit({ id, onSuccess }) {
   };
 
   useEffect(() => {
-    if (show) {
-      getSubjectData();
-      getCenterList();
-    }
-  }, [id, show]);
+    getSubjectData();
+    getCenterList();
+  }, [id]);
 
   useEffect(() => {
     getGradeList();
@@ -188,11 +186,10 @@ function SubjectEdit({ id, onSuccess }) {
                         );
                       }}
                       labelledBy="Select Center"
-                      className={`form-multi-select form-multi-select-sm border-1 rounded-1 mb-5${
-                        formik.touched.center_id && formik.errors.center_id
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                      className={`form-multi-select form-multi-select-sm border-1 rounded-1 mb-5${formik.touched.center_id && formik.errors.center_id
+                        ? "is-invalid"
+                        : ""
+                        }`}
                     />
                     {formik.touched.center_id && formik.errors.center_id && (
                       <div className="invalid-feedback">
@@ -209,11 +206,10 @@ function SubjectEdit({ id, onSuccess }) {
                   </div>
                   <div className="col-7">
                     <select
-                      className={`form-select form-select-sm ${
-                        formik.touched.grade_id && formik.errors.grade_id
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                      className={`form-select form-select-sm ${formik.touched.grade_id && formik.errors.grade_id
+                        ? "is-invalid"
+                        : ""
+                        }`}
                       value={formik.values.grade_id}
                       onChange={(e) =>
                         formik.setFieldValue("grade_id", e.target.value)
@@ -243,11 +239,10 @@ function SubjectEdit({ id, onSuccess }) {
                     <input
                       type="text"
                       onKeyDown={(e) => e.stopPropagation()}
-                      className={`form-control form-control-sm ${
-                        formik.touched.name && formik.errors.name
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                      className={`form-control form-control-sm ${formik.touched.name && formik.errors.name
+                        ? "is-invalid"
+                        : ""
+                        }`}
                       {...formik.getFieldProps("name")}
                     />
                     {formik.touched.name && formik.errors.name && (
@@ -265,11 +260,10 @@ function SubjectEdit({ id, onSuccess }) {
                   </div>
                   <div className="col-7">
                     <textarea
-                      className={`form-control ${
-                        formik.touched.description && formik.errors.description
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                      className={`form-control ${formik.touched.description && formik.errors.description
+                        ? "is-invalid"
+                        : ""
+                        }`}
                       rows="4"
                       {...formik.getFieldProps("description")}
                     />

@@ -48,9 +48,8 @@ function AdminSidebar() {
           <span className="navbar-toggler-icon"></span>
         </button>
         <NavLink
-          className={`navbar-brand nav-logo logo_ats py-lg-2 px-lg-6 m-0 d-flex align-items-center justify-content-center gap-3 ${
-            leadMenuOpen || activeSubmenu ? "active" : ""
-          }`}
+          className={`navbar-brand nav-logo logo_ats py-lg-2 px-lg-6 m-0 d-flex align-items-center justify-content-center gap-3 ${leadMenuOpen || activeSubmenu ? "active" : ""
+            }`}
           to="/"
         >
           <img
@@ -155,15 +154,15 @@ function AdminSidebar() {
             </div>
             <div className="mb-2">
               <p className="sidebar-heading">STUDY MATERIALS</p>
-              {storedScreens?.data[8]?.can_access === 1 && (
+              {storedScreens?.data[6]?.can_access === 1 && (
                 <NavLink
                   className={({ isActive }) =>
                     `sidebar-navlink ${isActive ? "active" : ""}`
                   }
-                  to="/worksheet"
+                  to="/question"
                 >
-                  <AiOutlineEdit  />
-                  <p>Study Materials</p>
+                  <IoTrophyOutline className="sidebar_icon" size={17} />
+                  <p>Questions & Answer</p>
                 </NavLink>
               )}
               {storedScreens?.data[7]?.can_access === 1 && (
@@ -173,8 +172,19 @@ function AdminSidebar() {
                   }
                   to="/challenges"
                 >
-                  <IoTrophyOutline   className="sidebar_icon" size={17} />
+                  <IoTrophyOutline className="sidebar_icon" size={17} />
                   <p>Challenges & Quizzes</p>
+                </NavLink>
+              )}
+              {storedScreens?.data[8]?.can_access === 1 && (
+                <NavLink
+                  className={({ isActive }) =>
+                    `sidebar-navlink ${isActive ? "active" : ""}`
+                  }
+                  to="/worksheet"
+                >
+                  <AiOutlineEdit />
+                  <p>Study Materials</p>
                 </NavLink>
               )}
               {storedScreens?.data[10]?.can_access === 1 && (
@@ -186,17 +196,6 @@ function AdminSidebar() {
                 >
                   <IoLibraryOutline className="sidebar_icon" size={17} />
                   <p>Assignments & Homeworks</p>
-                </NavLink>
-              )}
-              {storedScreens?.data[6]?.can_access === 1 && (
-                <NavLink
-                  className={({ isActive }) =>
-                    `sidebar-navlink ${isActive ? "active" : ""}`
-                  }
-                  to="/question"
-                >
-                  <IoTrophyOutline className="sidebar_icon" size={17} />
-                  <p>Questions & Answer</p>
                 </NavLink>
               )}
             </div>

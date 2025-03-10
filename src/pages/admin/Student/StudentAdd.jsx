@@ -45,11 +45,18 @@ function StudentAdd() {
       .string()
       .max(255, "*Admission No must not exceed 255 characters")
       .required("*Admission number is required"),
-    date_of_birth: yup.string().required("*Date of Birth is required"),
+    student_gender: yup.string().required("*Gender is required"),
+    date_of_birth: yup.date()
+      .required("*Date of Birth is required")
+      .max(new Date(), "*Future date is not allowed"),
     admission_date: yup
       .string()
       .max(255, "*Admission Date must not exceed 255 characters")
       .required("*Admission date is required"),
+    subscription_id: yup
+      .array()
+      .min(1, "*Select at least one Subscription")
+      .required("*Select a center id"),
   });
 
   const formik = useFormik({
@@ -61,6 +68,7 @@ function StudentAdd() {
       last_name: "",
       middle_name: "",
       student_email: "",
+      student_gender: "",
       student_mobile: "",
       parent_name: "",
       parent_email: "",
@@ -265,11 +273,10 @@ function StudentAdd() {
                   </div>
                   <div className="col-7">
                     <select
-                      className={`form-select form-select-sm ${
-                        formik.touched.center_id && formik.errors.center_id
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                      className={`form-select form-select-sm ${formik.touched.center_id && formik.errors.center_id
+                        ? "is-invalid"
+                        : ""
+                        }`}
                       value={formik.values.center_id}
                       onChange={(e) => {
                         formik.setFieldValue("center_id", e.target.value);
@@ -299,11 +306,10 @@ function StudentAdd() {
                   </div>
                   <div className="col-7">
                     <select
-                      className={`form-select form-select-sm${
-                        formik.touched.grade_id && formik.errors.grade_id
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                      className={`form-select form-select-sm${formik.touched.grade_id && formik.errors.grade_id
+                        ? "is-invalid"
+                        : ""
+                        }`}
                       value={formik.values.grade_id}
                       onChange={(e) => {
                         formik.setFieldValue("grade_id", e.target.value);
@@ -343,8 +349,17 @@ function StudentAdd() {
                         );
                       }}
                       labelledBy="Select Subscriptions"
-                      className="form-multi-select form-multi-select-sm border-1 rounded-1"
+                      className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${formik.touched.subscription_id && formik.errors.subscription_id
+                        ? "is-invalid"
+                        : ""
+                        }`}
                     />
+                    {formik.touched.subscription_id &&
+                      formik.errors.subscription_id && (
+                        <div className="invalid-feedback">
+                          {formik.errors.subscription_id}
+                        </div>
+                      )}
                   </div>
                 </div>
               </div>
@@ -355,11 +370,10 @@ function StudentAdd() {
                   </div>
                   <div className="col-7">
                     <select
-                      className={`form-select form-select-sm ${
-                        formik.touched.role_id && formik.errors.role_id
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                      className={`form-select form-select-sm ${formik.touched.role_id && formik.errors.role_id
+                        ? "is-invalid"
+                        : ""
+                        }`}
                       value={formik.values.name}
                       onChange={(e) =>
                         formik.setFieldValue("role_id", e.target.value)
@@ -390,11 +404,10 @@ function StudentAdd() {
                     <input
                       type="text"
                       onKeyDown={(e) => e.stopPropagation()}
-                      className={`form-control form-control-sm ${
-                        formik.touched.first_name && formik.errors.first_name
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                      className={`form-control form-control-sm ${formik.touched.first_name && formik.errors.first_name
+                        ? "is-invalid"
+                        : ""
+                        }`}
                       placeholder="Enter Text"
                       {...formik.getFieldProps("first_name")}
                     />
@@ -452,6 +465,53 @@ function StudentAdd() {
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
                   <div className="col-5">
+                    <p className="view-label-text">Gender</p>
+                  </div>
+                  <div className="col-7">
+                    <div className="d-flex align-items-center">
+                      {/* Male Radio Button */}
+                      <div className="form-check me-3">
+                        <input
+                          type="radio"
+                          id="male"
+                          name="student_gender"
+                          value="Male"
+                          onKeyDown={(e) => e.stopPropagation()}
+                          className="form-check-input"
+                          {...formik.getFieldProps("student_gender")}
+                        />
+                        <label htmlFor="male" className="view-label-text form-check-label">Male</label>
+                      </div>
+
+                      {/* Female Radio Button */}
+                      <div className="form-check">
+                        <input
+                          type="radio"
+                          id="female"
+                          name="student_gender"
+                          value="Female"
+                          onKeyDown={(e) => e.stopPropagation()}
+                          className="form-check-input"
+                          {...formik.getFieldProps("student_gender")}
+                        />
+                        <label htmlFor="female" className="view-label-text form-check-label">Female</label>
+                      </div>
+                    </div>
+                    <div className="d-flex justify-content-start">
+                      <div>
+                        {formik.touched.student_gender && formik.errors.student_gender && (
+                          <div className="invalid-feedback d-block">
+                            {formik.errors.student_gender}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
                     <p className="view-label-text">Student Date of Birth</p>
                   </div>
                   <div className="col-7">
@@ -459,12 +519,11 @@ function StudentAdd() {
                       type="date"
                       max={new Date().toISOString().split("T")[0]}
                       onKeyDown={(e) => e.stopPropagation()}
-                      className={`form-control form-control-sm ${
-                        formik.touched.date_of_birth &&
+                      className={`form-control form-control-sm ${formik.touched.date_of_birth &&
                         formik.errors.date_of_birth
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                        ? "is-invalid"
+                        : ""
+                        }`}
                       {...formik.getFieldProps("date_of_birth")}
                     />
                     {formik.touched.date_of_birth &&
@@ -485,12 +544,11 @@ function StudentAdd() {
                     <input
                       type="email"
                       onKeyDown={(e) => e.stopPropagation()}
-                      className={`form-control form-control-sm ${
-                        formik.touched.student_email &&
+                      className={`form-control form-control-sm ${formik.touched.student_email &&
                         formik.errors.student_email
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                        ? "is-invalid"
+                        : ""
+                        }`}
                       {...formik.getFieldProps("student_email")}
                       placeholder="Enter Text"
                     />
@@ -512,12 +570,11 @@ function StudentAdd() {
                     <input
                       type="text"
                       onKeyDown={(e) => e.stopPropagation()}
-                      className={`form-control form-control-sm ${
-                        formik.touched.student_mobile &&
+                      className={`form-control form-control-sm ${formik.touched.student_mobile &&
                         formik.errors.student_mobile
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                        ? "is-invalid"
+                        : ""
+                        }`}
                       {...formik.getFieldProps("student_mobile")}
                       placeholder="Enter Number"
                     />
@@ -605,11 +662,10 @@ function StudentAdd() {
                     <input
                       type="text"
                       onKeyDown={(e) => e.stopPropagation()}
-                      className={`form-control form-control-sm ${
-                        formik.touched.roll_no && formik.errors.roll_no
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                      className={`form-control form-control-sm ${formik.touched.roll_no && formik.errors.roll_no
+                        ? "is-invalid"
+                        : ""
+                        }`}
                       placeholder="Enter Text"
                       {...formik.getFieldProps("roll_no")}
                     />
@@ -630,12 +686,11 @@ function StudentAdd() {
                     <input
                       type="text"
                       onKeyDown={(e) => e.stopPropagation()}
-                      className={`form-control form-control-sm ${
-                        formik.touched.admission_no &&
+                      className={`form-control form-control-sm ${formik.touched.admission_no &&
                         formik.errors.admission_no
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                        ? "is-invalid"
+                        : ""
+                        }`}
                       placeholder="Enter Text"
                       {...formik.getFieldProps("admission_no")}
                     />
@@ -657,12 +712,11 @@ function StudentAdd() {
                     <input
                       type="date"
                       onKeyDown={(e) => e.stopPropagation()}
-                      className={`form-control form-control-sm ${
-                        formik.touched.admission_date &&
+                      className={`form-control form-control-sm ${formik.touched.admission_date &&
                         formik.errors.admission_date
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                        ? "is-invalid"
+                        : ""
+                        }`}
                       {...formik.getFieldProps("admission_date")}
                     />
                     {formik.touched.admission_date &&

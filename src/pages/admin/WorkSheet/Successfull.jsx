@@ -41,7 +41,11 @@ function Successfull() {
                                         </h1>
                                         <p className="font-semibold mt-2">Total Questions: {total_questions}</p>
                                         <p className="font-semibold mt-2">Attend Questions: {total_attended_questions}</p>
-                                        <p className="font-semibold mt-2">Rewards: {rewards}</p>
+                                        {rewards > 0 ? (
+                                            <p className="font-semibold mt-2">Rewards: {rewards}</p>
+                                        ) : (
+                                            <p className="font-semibold mt-2">Rewards: Not get reward</p>
+                                        )}
                                         <p className="font-semibold mt-2">Well done!! You’re doing great.</p>
                                         <p className="text-gray-600 text-sm mt-3">
                                             Lorem ipsum dolor sit amet consectetur adipisicing elit.

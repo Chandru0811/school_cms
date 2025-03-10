@@ -12,12 +12,19 @@ import { MultiSelect } from "react-multi-select-component";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-
-function RoleEdit({ show, setShow, id, onSuccess }) {
+import { TbEdit } from "react-icons/tb";
+``
+function RoleEdit({ id, onSuccess }) {
+  const [show, setShow] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [selectedCenter, setSelectedCenter] = useState([]);
   const [centerList, setCenterList] = useState([]);
   const navigate = useNavigate();
+
+  const handleShow = () => {
+    setShow(true);
+    formik.resetForm();
+  };
   const handleClose = () => {
     setShow(false);
     formik.resetForm();
@@ -113,151 +120,157 @@ function RoleEdit({ show, setShow, id, onSuccess }) {
   }, [id, show]);
 
   return (
-    <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
-      <form
-        onSubmit={formik.handleSubmit}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" && !formik.isSubmitting) {
-            e.preventDefault();
-          }
-        }}
+    <>
+      <button
+        type="button"
+        className="btn btn-sm d-flex align-items-center"
+        onClick={handleShow}
       >
-        <DialogTitle>Edit School</DialogTitle>
-        <hr className="m-0"></hr>
-        <DialogContent>
-          <div className="row">
-            <div className="col-md-6 col-12 mb-3">
-              <label className="form-label">
-                Centre Name<span className="text-danger">*</span>
-              </label>
-              <MultiSelect
-                options={centerList}
-                value={selectedCenter}
-                onChange={(selected) => {
-                  setSelectedCenter(selected);
-                  formik.setFieldValue(
-                    "center_id",
-                    selected.map((option) => option.value)
-                  );
-                }}
-                labelledBy="Select Service"
-                className={`form-multi-select form-multi-select-sm mb-5 ${
-                  formik.touched.center_id && formik.errors.center_id
+        <TbEdit style={{ color: "#4F46E5", fontSize: "16px" }} />
+      </button>
+      <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
+        <form
+          onSubmit={formik.handleSubmit}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !formik.isSubmitting) {
+              e.preventDefault();
+            }
+          }}
+        >
+          <DialogTitle>Edit Role</DialogTitle>
+          <hr className="m-0"></hr>
+          <DialogContent>
+            <div className="row">
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Centre Name<span className="text-danger">*</span>
+                </label>
+                <MultiSelect
+                  options={centerList}
+                  value={selectedCenter}
+                  onChange={(selected) => {
+                    setSelectedCenter(selected);
+                    formik.setFieldValue(
+                      "center_id",
+                      selected.map((option) => option.value)
+                    );
+                  }}
+                  labelledBy="Select Service"
+                  className={`form-multi-select form-multi-select-sm mb-5 border-1 rounded-1 ${formik.touched.center_id && formik.errors.center_id
                     ? "is-invalid"
                     : ""
-                }`}
-              />
-              {formik.touched.center_id && formik.errors.center_id && (
-                <div className="invalid-feedback">
-                  {formik.errors.center_id}
-                </div>
-              )}
-            </div>
-            <div className="col-md-6 col-12 mb-3">
-              <label className="form-label">
-                Name<span className="text-danger">*</span>
-              </label>
-              <input
-                type="text"
-                className={`form-control form-control-sm ${
-                  formik.touched.name && formik.errors.name ? "is-invalid" : ""
-                }`}
-                {...formik.getFieldProps("name")}
-              />
-              {formik.touched.name && formik.errors.name && (
-                <div className="invalid-feedback">{formik.errors.name}</div>
-              )}
-            </div>
-            <div className="col-md-6 col-12 mb-3">
-              <label className="form-label">Description</label>
-              <textarea
-                className={`form-control form-control-sm ${
-                  formik.touched.description && formik.errors.description
-                    ? "is-invalid"
-                    : ""
-                }`}
-                rows="4" // Adjust the rows for better visibility
-                {...formik.getFieldProps("description")}
-              />
-            </div>
-            <div className="col-md-6 col-12 mb-3">
-              <label className="form-label">
-                Access<span className="text-danger">*</span>
-              </label>
-              <div className="d-flex gap-3">
-                <div className="form-check">
-                  <input
-                    type="radio"
-                    name="access"
-                    value="Full Access"
-                    className="form-check-input"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    checked={formik.values.access === "Full Access"}
-                  />
-                  <label className="form-check-label">Full Access</label>
-                </div>
-
-                <div className="form-check">
-                  <input
-                    type="radio"
-                    name="access"
-                    value="Minimal Access"
-                    className="form-check-input"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    checked={formik.values.access === "Minimal Access"}
-                  />
-                  <label className="form-check-label">Minimal Access</label>
-                </div>
-
-                <div className="form-check">
-                  <input
-                    type="radio"
-                    name="access"
-                    value="Limited Access"
-                    className="form-check-input"
-                    onChange={formik.handleChange}
-                    onBlur={formik.handleBlur}
-                    checked={formik.values.access === "Limited Access"}
-                  />
-                  <label className="form-check-label">Limited Access</label>
-                </div>
+                    }`}
+                />
+                {formik.touched.center_id && formik.errors.center_id && (
+                  <div className="invalid-feedback">
+                    {formik.errors.center_id}
+                  </div>
+                )}
               </div>
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Name<span className="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  className={`form-control form-control-sm ${formik.touched.name && formik.errors.name ? "is-invalid" : ""
+                    }`}
+                  {...formik.getFieldProps("name")}
+                />
+                {formik.touched.name && formik.errors.name && (
+                  <div className="invalid-feedback">{formik.errors.name}</div>
+                )}
+              </div>
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">Description</label>
+                <textarea
+                  className={`form-control form-control-sm ${formik.touched.description && formik.errors.description
+                    ? "is-invalid"
+                    : ""
+                    }`}
+                  rows="4" // Adjust the rows for better visibility
+                  {...formik.getFieldProps("description")}
+                />
+              </div>
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  Access<span className="text-danger">*</span>
+                </label>
+                <div className="d-flex gap-3">
+                  <div className="form-check">
+                    <input
+                      type="radio"
+                      name="access"
+                      value="Full Access"
+                      className="form-check-input"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      checked={formik.values.access === "Full Access"}
+                    />
+                    <label className="form-check-label">Full Access</label>
+                  </div>
 
-              {formik.touched.access && formik.errors.access && (
-                <div className="invalid-feedback d-block">
-                  {formik.errors.access}
+                  <div className="form-check">
+                    <input
+                      type="radio"
+                      name="access"
+                      value="Minimal Access"
+                      className="form-check-input"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      checked={formik.values.access === "Minimal Access"}
+                    />
+                    <label className="form-check-label">Minimal Access</label>
+                  </div>
+
+                  <div className="form-check">
+                    <input
+                      type="radio"
+                      name="access"
+                      value="Limited Access"
+                      className="form-check-input"
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      checked={formik.values.access === "Limited Access"}
+                    />
+                    <label className="form-check-label">Limited Access</label>
+                  </div>
                 </div>
-              )}
+
+                {formik.touched.access && formik.errors.access && (
+                  <div className="invalid-feedback d-block">
+                    {formik.errors.access}
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        </DialogContent>
-        <hr className="m-0"></hr>
-        <DialogActions className="mt-3">
-          <button
-            type="button"
-            className="btn btn-sm btn-back"
-            onClick={handleClose}
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="btn btn-button btn-sm"
-            disabled={loadIndicator}
-          >
-            {loadIndicator && (
-              <span
-                className="spinner-border spinner-border-sm me-2"
-                aria-hidden="true"
-              ></span>
-            )}
-            Update
-          </button>
-        </DialogActions>
-      </form>
-    </Dialog>
+          </DialogContent>
+          <hr className="m-0"></hr>
+          <DialogActions className="mt-3">
+            <button
+              type="button"
+              className="btn btn-sm btn-back"
+              onClick={handleClose}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="btn btn-button btn-sm"
+              disabled={loadIndicator}
+            >
+              {loadIndicator && (
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  aria-hidden="true"
+                ></span>
+              )}
+              Update
+            </button>
+          </DialogActions>
+        </form>
+      </Dialog>
+    </>
   );
 }
 

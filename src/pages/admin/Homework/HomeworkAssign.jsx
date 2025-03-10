@@ -194,7 +194,7 @@ function HomeworkAssign({ grade_ids, assignedId,onSuccess }) {
                     );
                   }}
                   labelledBy="Select Center"
-                  className={`form-multi-select form-multi-select-sm ${formik.touched.center_id && formik.errors.center_id
+                  className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${formik.touched.center_id && formik.errors.center_id
                     ? "is-invalid"
                     : ""
                     }`}
