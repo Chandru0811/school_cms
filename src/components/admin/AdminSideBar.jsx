@@ -83,10 +83,10 @@ function AdminSidebar() {
                   className={({ isActive }) =>
                     `sidebar-navlink ${isActive ? "active" : ""}`
                   }
-                  to="/center"
+                  to="/centre"
                 >
                   <IoGridOutline className="sidebar_icon" size={17} />
-                  <p>Center</p>
+                  <p>Centre</p>
                 </NavLink>
               )}{" "}
               {storedScreens?.data[13]?.can_access === 1 && (

@@ -59,7 +59,7 @@ function CenterAdd({ onSuccess }) {
           if (onSuccess) onSuccess();
           if (handleClose) handleClose();
           formik.resetForm();
-          navigate("/center");
+          navigate("/centre");
         } else {
           toast.error(response.data.message || "An unexpected error occurred.");
         }
@@ -80,7 +80,7 @@ function CenterAdd({ onSuccess }) {
           className="btn add-btn btn-sm d-flex align-items-center"
           onClick={handleShow}
         >
-          <FaPlus fontSize={12} className="me-1" /> Add Center
+          <FaPlus fontSize={12} className="me-1" /> Add Centre
         </button>
       </div>
 

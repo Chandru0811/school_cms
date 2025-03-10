@@ -182,8 +182,8 @@ function Center() {
       <div className="d-flex justify-content-between align-items-center p-2 my-2">
         <div className="d-flex align-items-center">
           <span className="mx-3 table-heading">
-            Center -&nbsp;
-            <span className="table-subheading">List of Center</span>
+            Centre -&nbsp;
+            <span className="table-subheading">List of Centre</span>
           </span>
         </div>
         {storedScreens?.data[0]?.can_create === 1 && (
