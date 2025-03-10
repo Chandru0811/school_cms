@@ -13,16 +13,24 @@ function SchoolAdd() {
   const [loadIndicator, setLoadIndicator] = useState(false);
 
   const validationSchema = Yup.object({
-    school_name: Yup.string().max(255, "*School Name must not exceed 255 characters").required("*School Name is required"),
-    center_name: Yup.string().max(255, "*Center Name must not exceed 255 characters").required("*Center Name is required"),
+    school_name: Yup.string()
+      .max(255, "*School Name must not exceed 255 characters")
+      .required("*School Name is required"),
+    center_name: Yup.string()
+      .max(255, "*Center Name must not exceed 255 characters")
+      .required("*Center Name is required"),
     location: Yup.string()
       .max(255, "*Location must be at most 255 characters")
       .required("*School Location is required"),
-    admin_name: Yup.string().max(255, "*Admin Name must be at most 255 characters").
-    required("*Admin Name is required"),
+    admin_name: Yup.string()
+      .max(255, "*Admin Name must be at most 255 characters")
+      .required("*Admin Name is required"),
     mobile: Yup.string()
-    .matches(/^(?:\d{8}|\d{10})$/, "*Mobile number must be either 8 or 10 digits")
-    .required("*Mobile number is required!"),  
+      .matches(
+        /^(?:\d{8}|\d{10})$/,
+        "*Mobile number must be either 8 or 10 digits"
+      )
+      .required("*Mobile number is required!"),
     email: Yup.string()
       .email("*Invalid email address")
       .max(255, "*Email must not exceed 255 characters")
@@ -34,6 +42,7 @@ function SchoolAdd() {
     password_confirmation: Yup.string()
       .required("*Admin Confirm Password is required")
       .oneOf([Yup.ref("password"), null], "Passwords must match"),
+    gender: Yup.string().required("*Gender is required"),
   });
 
   const formik = useFormik({
@@ -45,6 +54,7 @@ function SchoolAdd() {
       email: "",
       mobile: "",
       password: "",
+      gender: "",
       password_confirmation: "",
     },
     validationSchema: validationSchema,
@@ -189,26 +199,6 @@ function SchoolAdd() {
               </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
-                  School Address<span className="text-danger">*</span>
-                </label>
-                <textarea
-                  rows={3}
-                  className={`form-control ${
-                    formik.touched.location && formik.errors.location
-                      ? "is-invalid"
-                      : ""
-                  }`}
-                  {...formik.getFieldProps("location")}
-                  maxLength={825}
-                />
-                {formik.touched.location && formik.errors.location && (
-                  <div className="invalid-feedback">
-                    {formik.errors.location}
-                  </div>
-                )}
-              </div>
-              <div className="col-md-6 col-12 mb-3">
-                <label className="form-label">
                   Admin Name<span className="text-danger">*</span>
                 </label>
                 <input
@@ -225,6 +215,43 @@ function SchoolAdd() {
                     {formik.errors.admin_name}
                   </div>
                 )}
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-6">
+                    <label className="form-label view-label-text">Gender</label>
+                    <div className="d-flex gap-3">
+                      <div className="form-check">
+                        <input
+                          type="radio"
+                          className="form-check-input"
+                          id="male"
+                          name="users[0].gender"
+                          value="Male"
+                          checked={formik.values.gender === "Male"}
+                          onChange={formik.handleChange}
+                        />
+                        <label className="form-check-label" htmlFor="Male">
+                          Male
+                        </label>
+                      </div>
+                      <div className="form-check">
+                        <input
+                          type="radio"
+                          className="form-check-input"
+                          id="Female"
+                          name="users[0].gender"
+                          value="Female"
+                          checked={formik.values.gender === "Female"}
+                          onChange={formik.handleChange}
+                        />
+                        <label className="form-check-label" htmlFor="Female">
+                          Female
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
@@ -351,6 +378,26 @@ function SchoolAdd() {
                       )}
                   </div>
                 </div>
+              </div>
+              <div className="col-md-6 col-12 mb-3">
+                <label className="form-label">
+                  School Address<span className="text-danger">*</span>
+                </label>
+                <textarea
+                  rows={3}
+                  className={`form-control ${
+                    formik.touched.location && formik.errors.location
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  {...formik.getFieldProps("location")}
+                  maxLength={825}
+                />
+                {formik.touched.location && formik.errors.location && (
+                  <div className="invalid-feedback">
+                    {formik.errors.location}
+                  </div>
+                )}
               </div>
             </div>
           </div>

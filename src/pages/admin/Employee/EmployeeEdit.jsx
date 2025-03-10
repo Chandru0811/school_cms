@@ -16,7 +16,7 @@ function EmployeeEdit() {
   const [centerList, setCenterList] = useState([]);
   const navigate = useNavigate();
   const { id } = useParams();
-  const [roles, setRoles] = useState();
+  const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const validationSchema = yup.object().shape({
@@ -30,6 +30,7 @@ function EmployeeEdit() {
       .string()
       .email("*Email is Invalid")
       .required("*Employee email is required"),
+    gender: yup.string().required("*Gender is required"),
     mobile: yup
       .string()
       .matches(
@@ -54,18 +55,21 @@ function EmployeeEdit() {
       name: "",
       email: "",
       mobile: "",
+      gender: "",
       // password: "",
       // password_confirmation: "",
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       setLoadIndicator(true);
+    
+      const { created_by, updated_by, ...payload } = values;
+    
       try {
-        const response = await api.put(`employee/update/${id}`, values);
-
+        const response = await api.put(`employee/update/${id}`, payload);
+    
         if (response.status === 200) {
           toast.success(response.data.message);
-
           navigate("/employee");
         } else {
           toast.error(response.data.message);
@@ -83,12 +87,12 @@ function EmployeeEdit() {
             });
           }
         } else {
-          toast.error("An error occurred while deleting the record.");
+          toast.error("An error occurred while updating the record.");
         }
       } finally {
         setLoadIndicator(false);
       }
-    },
+    },    
   });
 
   const getEmployeeData = async () => {
@@ -97,8 +101,8 @@ function EmployeeEdit() {
       const response = await api.get(`employee/${id}`);
       const { data } = response.data;
 
-      const parsedCenterIds = JSON.parse(data.center_id);
-      const parsedCenterNames = JSON.parse(data.center_names);
+      const parsedCenterIds = JSON.parse(data.center_id || "[]");
+      const parsedCenterNames = JSON.parse(data.center_names || "[]");
 
       const selectedCenters = parsedCenterIds.map((id, index) => ({
         value: id,
@@ -349,6 +353,43 @@ function EmployeeEdit() {
                   </div>
                 </div>
               </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-6">
+                    <label className="form-label view-label-text">Gender</label>
+                    <div className="d-flex gap-3">
+                      <div className="form-check">
+                        <input
+                          type="radio"
+                          className="form-check-input"
+                          id="male"
+                          name="gender"
+                          value="Male"
+                          checked={formik.values.gender === "Male"}
+                          onChange={formik.handleChange}
+                        />
+                        <label className="form-check-label" htmlFor="Male">
+                          Male
+                        </label>
+                      </div>
+                      <div className="form-check">
+                        <input
+                          type="radio"
+                          className="form-check-input"
+                          id="Female"
+                          name="gender"
+                          value="Female"
+                          checked={formik.values.gender === "Female"}
+                          onChange={formik.handleChange}
+                        />
+                        <label className="form-check-label" htmlFor="Female">
+                          Female
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -356,9 +397,5 @@ function EmployeeEdit() {
     </div>
   );
 }
-
-EmployeeEdit.propTypes = {
-  id: PropTypes.number.isRequired,
-};
 
 export default EmployeeEdit;

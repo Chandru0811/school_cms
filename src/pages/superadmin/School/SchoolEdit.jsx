@@ -30,7 +30,7 @@ function SchoolEdit() {
           .email("*Invalid email address")
           .max(255, "*Email must not exceed 255 characters")
           .required("*Admin Email is required"),
-
+          gender: Yup.string().required("*Gender is required"),
         name: Yup.string()
           .max(255, "*Admin Name must be at most 255 characters")
           .required("*Admin Name is required"),
@@ -48,7 +48,7 @@ function SchoolEdit() {
     initialValues: {
       school_name: "",
       location: "",
-      users: [{ name: "", email: "", mobile: "" }],
+      users: [{ name: "", email: "", mobile: "",gender: ""}],
     },
     validationSchema: validationSchema,
     onSubmit: async (values) => {
@@ -60,6 +60,7 @@ function SchoolEdit() {
         location: values.location,
         admin_name: values.users[0].name,
         email: values.users[0].email,
+        gender: values.users[0].gender,
         mobile: values.users[0].mobile,
       };
 
@@ -111,6 +112,7 @@ function SchoolEdit() {
                   name: response.data.data.users[0].name,
                   email: response.data.data.users[0].email,
                   mobile: response.data.data.users[0].mobile,
+                  gender: response.data.data.users[0].gender
                 },
               ]
             : [{ name: "", email: "" }],
@@ -300,6 +302,45 @@ function SchoolEdit() {
                         {formik.errors.users?.[0]?.mobile}
                       </div>
                     )}
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-6">
+                      <label className="form-label view-label-text">
+                        Gender
+                      </label>
+                      <div className="d-flex gap-3">
+                        <div className="form-check">
+                          <input
+                            type="radio"
+                            className="form-check-input"
+                            id="male"
+                            name="users[0].gender"
+                            value="Male"
+                            checked={formik.values.users[0].gender === "Male"}
+                            onChange={formik.handleChange}
+                          />
+                          <label className="form-check-label" htmlFor="Male">
+                            Male
+                          </label>
+                        </div>
+                        <div className="form-check">
+                          <input
+                            type="radio"
+                            className="form-check-input"
+                            id="Female"
+                            name="users[0].gender"
+                            value="Female"
+                            checked={formik.values.users[0].gender === "Female"}
+                            onChange={formik.handleChange}
+                          />
+                          <label className="form-check-label" htmlFor="Female">
+                            Female
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>

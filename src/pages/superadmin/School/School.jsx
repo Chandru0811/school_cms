@@ -12,6 +12,9 @@ import Delete from "../../../components/common/Delete";
 import PropTypes from "prop-types";
 import { MoreVert as MoreVertIcon } from "@mui/icons-material";
 import api from "../../../config/URL";
+import ImageURL from "../../../config/ImageURL";
+import userImage from "../../../assets/images/user_image.png";
+
 
 function School() {
   const [menuAnchor, setMenuAnchor] = useState(null);
@@ -61,10 +64,39 @@ function School() {
         header: "School Name",
       },
       {
-        accessorFn: (row) => row.users?.[0]?.name,
-        enableHiding: false,
+        accessorKey: "users",
         header: "Admin Name",
+        Cell: ({ row }) => {
+          const admin = row.original.users?.[0]; 
+          const imageUrl =
+            admin?.avatar?.image
+              ? `${ImageURL.replace(/\/$/, '')}/${admin.avatar.image.replace(/^\//, '')}`
+              : userImage;       
+      
+          return admin ? (
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <img
+                src={imageUrl}
+                alt={admin.name}
+                onError={(e) => {
+                  console.error("Image failed to load:", imageUrl);
+                  e.target.src = userImage;
+                }}
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                }}
+              />
+              <span>{admin.name}</span>
+            </div>
+          ) : (
+            <span>No Admin</span>
+          );
+        },
       },
+      
       {
         accessorFn: (row) => row.users?.[0]?.email,
         header: "Admin Email",

@@ -17,7 +17,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import DeleteChange from "../../../components/common/DeleteChange";
 import { GoTrash } from "react-icons/go";
 import { TbEdit } from "react-icons/tb";
-import userImage from "../../../../src/assets/images/employee_image.png";
+import ImageURL from "../../../config/ImageURL";
 
 function EmployeeView() {
   const [data, setData] = useState({});
@@ -308,14 +308,15 @@ function EmployeeView() {
             <div className="row pb-3">
               <div className="col-md-2 col-12 my-2 d-flex align-items-center">
                 <img
-                  src={userImage}
-                  alt="Profile"
-                  className="img-fluid"
+                  src={`${ImageURL.replace(
+                    /\/$/,
+                    ""
+                  )}/${data.avatar.image.replace(/^\//, "")}`}
+                  alt="Avatar"
                   style={{
-                    width: "300px",
-                    height: "300px",
-                    objectFit: "cover",
-                    border: "1px solid #4F46E5",
+                    maxWidth: "100%",
+                    height: "auto",
+                    borderRadius: "5px",
                   }}
                 />
               </div>

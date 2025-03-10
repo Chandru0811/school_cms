@@ -12,6 +12,8 @@ import {
 } from "@mui/material";
 import * as yup from "yup";
 import PropTypes from "prop-types";
+import ImageURL from "../../../config/ImageURL";
+import userImage from "../../../assets/images/user_image.png";
 
 function SchoolView() {
   const { id } = useParams();
@@ -152,7 +154,7 @@ function SchoolView() {
             >
               Edit
             </button>
-              &nbsp;&nbsp;
+            &nbsp;&nbsp;
             <button
               className={`btn btn-sm ${
                 data.active === 1 ? "btn-danger" : "btn-success"
@@ -332,6 +334,34 @@ function SchoolView() {
                   <div className="col-6">
                     <p className="text-muted text-sm">
                       : {data.users[0].mobile}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="fw-medium text-sm">Admin Avatar</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="text-muted text-sm">
+                      : &nbsp;&nbsp;
+                      <img
+                        src={
+                          data.users[0].avatar
+                            ? `${ImageURL.replace(
+                                /\/$/,
+                                ""
+                              )}/${data.users[0].avatar.replace(/^\//, "")}`
+                            : userImage
+                        }
+                        alt="Admin Avatar"
+                        style={{
+                          maxWidth: "100px",
+                          height: "auto",
+                          borderRadius: "5px",
+                        }}
+                      />
                     </p>
                   </div>
                 </div>

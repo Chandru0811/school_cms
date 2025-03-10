@@ -19,7 +19,6 @@ function AvatarProfileAdd({ onSuccess }) {
       .string()
       .max(255, "*Name must not exceed 255 characters")
       .required("*Name is required"),
-    gender: yup.string().oneOf(["default_male", "default_female"]).required("*Gender is required"),
     image: yup.mixed().required("*Image is required"),
   });
 
@@ -36,8 +35,9 @@ function AvatarProfileAdd({ onSuccess }) {
   const formik = useFormik({
     initialValues: {
       name: "",
-      gender: "", 
       image: null,
+      default_male: 0,
+      default_female: 0,
     },
     validationSchema,
     onSubmit: async (values) => {
@@ -45,13 +45,14 @@ function AvatarProfileAdd({ onSuccess }) {
       try {
         const formData = new FormData();
         formData.append("name", values.name);
-        formData.append("gender", values.gender); 
         formData.append("image", values.image);
-  
+        formData.append("default_male", values.default_male ? 1 : 0);
+        formData.append("default_female", values.default_female ? 1 : 0);
+
         const response = await api.post("admin/avatar", formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
-  
+
         if (response.status === 200) {
           toast.success(response.data.message);
           if (onSuccess) onSuccess();
@@ -68,7 +69,6 @@ function AvatarProfileAdd({ onSuccess }) {
       }
     },
   });
-  
 
   return (
     <>
@@ -105,40 +105,44 @@ function AvatarProfileAdd({ onSuccess }) {
               )}
             </div>
 
-            {/* Gender Selection */}
             <div className="mb-3">
-              <label className="form-label">
-                Gender<span className="text-danger">*</span>
-              </label>
+              <label className="form-label">Default</label>
               <div className="d-flex gap-3">
                 <div className="form-check">
                   <input
                     type="radio"
                     className="form-check-input"
-                    id="male"
-                    name="gender"
-                    value="default_male"
-                    checked={formik.values.gender === "default_male"}
-                    onChange={formik.handleChange}
+                    id="Male"
+                    name="default_gender"
+                    value="1"
+                    checked={formik.values.default_male === 1}
+                    onChange={() => {
+                      formik.setFieldValue("default_male", 1);
+                      formik.setFieldValue("default_female", 0);
+                    }}
                   />
-                  <label className="form-check-label" htmlFor="male">Male</label>
+                  <label className="form-check-label" htmlFor="Male">
+                    Male
+                  </label>
                 </div>
                 <div className="form-check">
                   <input
                     type="radio"
                     className="form-check-input"
-                    id="female"
-                    name="gender"
-                    value="default_female"
-                    checked={formik.values.gender === "default_female"}
-                    onChange={formik.handleChange}
+                    id="Female"
+                    name="default_gender"
+                    value="1"
+                    checked={formik.values.default_female === 1}
+                    onChange={() => {
+                      formik.setFieldValue("default_female", 1);
+                      formik.setFieldValue("default_male", 0);
+                    }}
                   />
-                  <label className="form-check-label" htmlFor="female">Female</label>
+                  <label className="form-check-label" htmlFor="Female">
+                    Female
+                  </label>
                 </div>
               </div>
-              {formik.touched.gender && formik.errors.gender && (
-                <div className="text-danger mt-1">{formik.errors.gender}</div>
-              )}
             </div>
 
             <div className="mb-3">
@@ -148,7 +152,9 @@ function AvatarProfileAdd({ onSuccess }) {
               <input
                 type="file"
                 className={`form-control ${
-                  formik.touched.image && formik.errors.image ? "is-invalid" : ""
+                  formik.touched.image && formik.errors.image
+                    ? "is-invalid"
+                    : ""
                 }`}
                 accept="image/*"
                 onChange={(event) => {
@@ -160,7 +166,9 @@ function AvatarProfileAdd({ onSuccess }) {
               {formik.touched.image && formik.errors.image && (
                 <div className="invalid-feedback">{formik.errors.image}</div>
               )}
-              {selectedFile && <p className="mt-1 text-muted">Selected: {selectedFile}</p>}
+              {selectedFile && (
+                <p className="mt-1 text-muted">Selected: {selectedFile}</p>
+              )}
             </div>
 
             <div className="d-flex justify-content-end">

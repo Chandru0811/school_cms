@@ -88,31 +88,37 @@ function AvatarProfile() {
         accessorKey: "actions",
         header: "Actions",
         enableSorting: false,
-        Cell: ({ row }) => (
-          <div className="actions-column">
-            {storedScreens?.data[0]?.can_edit === 1 && (
-              <button
-                className="btn edit-btn"
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-              >
-                <AvatarProfileEdit onSuccess={fetchData} id={row.original.id} />
-              </button>
-            )}
-            {storedScreens?.data[0]?.can_delete === 1 && (
-              <button
-                className="btn delete-btn"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleDeleteClick(row.original.id);
-                }}
-              >
-                <GoTrash style={{ color: "#FB3748", fontSize: "16px" }} />
-              </button>
-            )}
-          </div>
-        ),
+        Cell: ({ row }) => {
+          const { id, default_male, default_female } = row.original;
+
+          return (
+            <div className="actions-column">
+              {storedScreens?.data[0]?.can_edit === 1 && (
+                <button
+                  className="btn edit-btn"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  <AvatarProfileEdit onSuccess={fetchData} id={id} />
+                </button>
+              )}
+              {storedScreens?.data[0]?.can_delete === 1 &&
+                default_male === 0 &&
+                default_female === 0 && (
+                  <button
+                    className="btn delete-btn"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteClick(id);
+                    }}
+                  >
+                    <GoTrash style={{ color: "#FB3748", fontSize: "16px" }} />
+                  </button>
+                )}
+            </div>
+          );
+        },
       },
       {
         accessorKey: "created_by.name",

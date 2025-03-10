@@ -217,7 +217,7 @@ function WorkSheetView() {
                     className="btn btn-success btn-sm me-2"
                     style={{ fontWeight: "600 !important" }}
                   >
-                    Do Worksheet
+                  Try Worksheet
                   </button>
                 </Link>
               </>

@@ -37,6 +37,7 @@ function EmployeeAdd() {
       .string()
       .email("*Email is Invlaid")
       .required("*Employee email is required"),
+    gender: yup.string().required("*Gender is required"),
     mobile: yup
       .string()
       .matches(
@@ -62,6 +63,7 @@ function EmployeeAdd() {
       email: "",
       mobile: "",
       password: "",
+      gender: "",
       password_confirmation: "",
     },
     validationSchema: validationSchema,
@@ -253,7 +255,7 @@ function EmployeeAdd() {
                   </div>
                   <div className="col-7">
                     <input
-                    placeholder="Enter Text"
+                      placeholder="Enter Text"
                       type="text"
                       onKeyDown={(e) => e.stopPropagation()}
                       className={`form-control form-control-sm ${
@@ -278,7 +280,7 @@ function EmployeeAdd() {
                   </div>
                   <div className="col-7">
                     <input
-                    placeholder="Enter Text"
+                      placeholder="Enter Text"
                       type="email"
                       onKeyDown={(e) => e.stopPropagation()}
                       className={`form-control form-control-sm ${
@@ -299,12 +301,74 @@ function EmployeeAdd() {
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
                   <div className="col-5">
+                    <p className="view-label-text"> Employee Mobile</p>
+                  </div>
+                  <div className="col-7">
+                    <input
+                      placeholder="Enter Text"
+                      type="text"
+                      onKeyDown={(e) => e.stopPropagation()}
+                      className={`form-control form-control-sm ${
+                        formik.touched.mobile && formik.errors.mobile
+                          ? "is-invalid"
+                          : ""
+                      }`}
+                      {...formik.getFieldProps("mobile")}
+                    />
+                    {formik.touched.mobile && formik.errors.mobile && (
+                      <div className="invalid-feedback">
+                        {formik.errors.mobile}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-6">
+                    <label className="form-label view-label-text">Gender</label>
+                    <div className="d-flex gap-3">
+                      <div className="form-check">
+                        <input
+                          type="radio"
+                          className="form-check-input"
+                          id="male"
+                          name="gender"
+                          value="Male"
+                          checked={formik.values.gender === "Male"}
+                          onChange={formik.handleChange}
+                        />
+                        <label className="form-check-label" htmlFor="Male">
+                          Male
+                        </label>
+                      </div>
+                      <div className="form-check">
+                        <input
+                          type="radio"
+                          className="form-check-input"
+                          id="Female"
+                          name="gender"
+                          value="Female"
+                          checked={formik.values.gender === "Female"}
+                          onChange={formik.handleChange}
+                        />
+                        <label className="form-check-label" htmlFor="Female">
+                          Female
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5">
                     <p className="view-label-text">Password</p>
                   </div>
                   <div className="col-7">
                     <div className="input-group">
                       <input
-                      placeholder="Enter Text"
+                        placeholder="Enter Text"
                         type={showPassword ? "text" : "password"}
                         onKeyDown={(e) => e.stopPropagation()}
                         className={`form-control form-control-sm ${
@@ -339,7 +403,7 @@ function EmployeeAdd() {
                   <div className="col-7">
                     <div className="input-group">
                       <input
-                      placeholder="Enter Text"
+                        placeholder="Enter Text"
                         type={showConfirmPassword ? "text" : "password"}
                         onKeyDown={(e) => e.stopPropagation()}
                         className={`form-control form-control-sm ${
@@ -365,31 +429,6 @@ function EmployeeAdd() {
                           {formik.errors.password_confirmation}
                         </div>
                       )}
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text"> Employee Mobile</p>
-                  </div>
-                  <div className="col-7">
-                    <input
-                    placeholder="Enter Text"
-                      type="text"
-                      onKeyDown={(e) => e.stopPropagation()}
-                      className={`form-control form-control-sm ${
-                        formik.touched.mobile && formik.errors.mobile
-                          ? "is-invalid"
-                          : ""
-                      }`}
-                      {...formik.getFieldProps("mobile")}
-                    />
-                    {formik.touched.mobile && formik.errors.mobile && (
-                      <div className="invalid-feedback">
-                        {formik.errors.mobile}
-                      </div>
-                    )}
                   </div>
                 </div>
               </div>

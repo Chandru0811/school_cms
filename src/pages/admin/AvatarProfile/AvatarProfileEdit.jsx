@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import toast from "react-hot-toast";
 import api from "../../../config/URL";
 import { TbEdit } from "react-icons/tb";
+import ImageURL from "../../../config/ImageURL";
 
 function AvatarProfileEdit({ id, onSuccess }) {
   const [loadIndicator, setLoadIndicator] = useState(false);
@@ -18,16 +19,14 @@ function AvatarProfileEdit({ id, onSuccess }) {
       .string()
       .max(255, "*Name must not exceed 255 characters")
       .required("*Name is required"),
-    gender: yup
-      .string()
-      .oneOf(["default_male", "default_female"])
-      .required("*Gender is required"),
+    image: yup.mixed().nullable(),
   });
 
   const formik = useFormik({
     initialValues: {
       name: "",
-      gender: "",
+      default_male: "",
+      default_female: "",
       image: null,
     },
     enableReinitialize: true,
@@ -36,35 +35,39 @@ function AvatarProfileEdit({ id, onSuccess }) {
       setLoadIndicator(true);
       try {
         const formData = new FormData();
-        formData.append("_method", "PUT");  
+        formData.append("_method", "PUT");
         formData.append("name", values.name);
-        formData.append("default_male", values.gender === "default_male" ? 1 : 0);
-        formData.append("default_female", values.gender === "default_female" ? 1 : 0);
-    
-        if (values.image) {
+        formData.append("default_male", values.default_male ? 1 : 0);
+        formData.append("default_female", values.default_female ? 1 : 0);
+
+        if (values.image && values.image instanceof File) {
           formData.append("image", values.image);
         }
-    
+
         const response = await api.post(`admin/avatar/update/${id}`, formData, {
           headers: { "Content-Type": "multipart/form-data" },
         });
-    
-        if (response.data.success) {  
+
+        if (response.data.success) {
           onSuccess();
-          toast.success(response.data.message || "Avatar profile updated successfully!");
+          toast.success(
+            response.data.message || "Avatar profile updated successfully!"
+          );
           handleClose();
         } else {
-          toast.error(response.data.message || "Failed to update avatar profile.");
+          toast.error(
+            response.data.message || "Failed to update avatar profile."
+          );
         }
       } catch (error) {
-        console.error("Update Error:", error.response);  
-        toast.error(error.response?.data?.message || "An error occurred while updating.");
+        console.error("Update Error:", error.response);
+        toast.error(
+          error.response?.data?.message || "An error occurred while updating."
+        );
       } finally {
         setLoadIndicator(false);
       }
-    }
-    
-    
+    },
   });
 
   const getData = async () => {
@@ -73,10 +76,10 @@ function AvatarProfileEdit({ id, onSuccess }) {
       if (response?.data?.data) {
         formik.setValues({
           name: response.data.data.name,
-          gender: response.data.data.default_male ? "default_male" : "default_female",
+          default_male: response.data.data.default_male === 1,
+          default_female: response.data.data.default_female === 1,
           image: null,
         });
-
         setAvatarImage(response.data.data.image || null);
       }
     } catch (error) {
@@ -107,36 +110,46 @@ function AvatarProfileEdit({ id, onSuccess }) {
           <Modal.Title>Edit Avatar Profile</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <form onSubmit={formik.handleSubmit}>
+          <form
+            onSubmit={(event) => {
+              console.log("Form Submitted");
+              formik.handleSubmit(event);
+            }}
+          >
             <div className="mb-3">
               <label className="form-label">
                 Name<span className="text-danger">*</span>
               </label>
               <input
                 type="text"
-                className={`form-control ${formik.touched.name && formik.errors.name ? "is-invalid" : ""}`}
+                className={`form-control ${
+                  formik.touched.name && formik.errors.name ? "is-invalid" : ""
+                }`}
                 placeholder="Enter Name"
                 {...formik.getFieldProps("name")}
               />
-              {formik.touched.name && formik.errors.name && <div className="invalid-feedback">{formik.errors.name}</div>}
+              {formik.touched.name && formik.errors.name && (
+                <div className="invalid-feedback">{formik.errors.name}</div>
+              )}
             </div>
 
             <div className="mb-3">
-              <label className="form-label">
-                Gender<span className="text-danger">*</span>
-              </label>
+              <label className="form-label">Default</label>
               <div className="d-flex gap-3">
                 <div className="form-check">
                   <input
                     type="radio"
                     className="form-check-input"
-                    id="male"
-                    name="gender"
-                    value="default_male"
-                    checked={formik.values.gender === "default_male"}
-                    onChange={formik.handleChange}
+                    id="Male"
+                    name="default_gender"
+                    value="male"
+                    checked={formik.values.default_male === true} 
+                    onChange={() => {
+                      formik.setFieldValue("default_male", true);
+                      formik.setFieldValue("default_female", false);
+                    }}
                   />
-                  <label className="form-check-label" htmlFor="male">
+                  <label className="form-check-label" htmlFor="Male">
                     Male
                   </label>
                 </div>
@@ -144,24 +157,24 @@ function AvatarProfileEdit({ id, onSuccess }) {
                   <input
                     type="radio"
                     className="form-check-input"
-                    id="female"
-                    name="gender"
-                    value="default_female"
-                    checked={formik.values.gender === "default_female"}
-                    onChange={formik.handleChange}
+                    id="Female"
+                    name="default_gender"
+                    value="female"
+                    checked={formik.values.default_female === true} 
+                    onChange={() => {
+                      formik.setFieldValue("default_male", false);
+                      formik.setFieldValue("default_female", true);
+                    }}
                   />
-                  <label className="form-check-label" htmlFor="female">
+                  <label className="form-check-label" htmlFor="Female">
                     Female
                   </label>
                 </div>
               </div>
-              {formik.touched.gender && formik.errors.gender && <div className="text-danger mt-1">{formik.errors.gender}</div>}
             </div>
 
             <div className="mb-3">
-              <label className="form-label">
-                Image (Optional)
-              </label>
+              <label className="form-label">Image (Optional)</label>
 
               <input
                 type="file"
@@ -169,24 +182,48 @@ function AvatarProfileEdit({ id, onSuccess }) {
                 accept="image/*"
                 onChange={(event) => {
                   const file = event.currentTarget.files[0];
-                  formik.setFieldValue("image", file || null);
-                  setSelectedFile(file ? file.name : null);
-                  setAvatarImage(file ? URL.createObjectURL(file) : null);
+                  if (file) {
+                    formik.setFieldValue("image", file);
+                    setSelectedFile(file.name);
+                    setAvatarImage(URL.createObjectURL(file));
+                  }
                 }}
               />
 
               {avatarImage && (
                 <div className="mt-2">
                   <p className="text-muted">Current Image:</p>
-                  <img src={avatarImage} alt="Avatar Preview" style={{ width: "100px", height: "100px", objectFit: "cover" }} />
+                  <img
+                    src={selectedFile ? avatarImage : ImageURL + avatarImage}
+                    alt="Avatar Preview"
+                    style={{
+                      width: "100px",
+                      height: "100px",
+                      objectFit: "cover",
+                    }}
+                  />
                 </div>
               )}
             </div>
 
             <div className="d-flex justify-content-end">
-              <Button className="btn btn-secondary btn-sm me-2" onClick={handleClose}>Close</Button>
-              <Button className="btn btn-primary btn-sm" type="submit" disabled={loadIndicator}>
-                {loadIndicator && <span className="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>}
+              <Button
+                className="btn btn-secondary btn-sm me-2"
+                onClick={handleClose}
+              >
+                Close
+              </Button>
+              <Button
+                className="btn btn-primary btn-sm"
+                type="submit"
+                disabled={loadIndicator}
+              >
+                {loadIndicator && (
+                  <span
+                    className="spinner-border spinner-border-sm me-2"
+                    aria-hidden="true"
+                  ></span>
+                )}
                 Submit
               </Button>
             </div>
