@@ -1,5 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
-import { MaterialReactTable } from "material-react-table";
+import {
+  MaterialReactTable,
+  MRT_GlobalFilterTextField,
+  MRT_ShowHideColumnsButton,
+  MRT_ToggleFullScreenButton,
+} from "material-react-table";
+import { LuPrinter } from "react-icons/lu";
+import { MdOutlineCloudDownload } from "react-icons/md";
+import { CiFilter } from "react-icons/ci";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import { ThemeProvider, createTheme } from "@mui/material";
 import PropTypes from "prop-types";
 import SubjectAdd from "./SubjectAdd";
@@ -24,6 +34,18 @@ function Subject() {
   const handleDeleteClick = (id) => {
     setSelectedId(id);
     setDeleteModalOpen(true);
+  };
+  const handleExportRows = (rows) => {
+    const doc = new jsPDF();
+    const tableData = rows.map((row) => Object.values(row.original));
+    const tableHeaders = columns.map((c) => c.header);
+
+    autoTable(doc, {
+      head: [tableHeaders],
+      body: tableData,
+    });
+
+    doc.save("mrt-pdf-example.pdf");
   };
   const columns = useMemo(
     () => [
@@ -121,7 +143,7 @@ function Subject() {
             color: "#4F46E5",
             textAlign: "center",
             textTransform: "capitalize",
-            borderRight: "1px solid #E0E0E0",
+            border: "1px solid #E0E0E0",
           },
           root: {
             "&:last-child": {
@@ -133,9 +155,15 @@ function Subject() {
       MuiTableSortLabel: {
         styleOverrides: {
           root: {
-            marginLeft: "8px",
-            "& svg": {
-              color: "#4F46E5 !important",
+            color: "#4F46E5 !important", // Default color
+            "&:hover": {
+              color: "#3B3BBF !important", // Hover color
+            },
+            "&.Mui-active": {
+              color: "#2C2C9D !important", // Active (sorted) color
+            },
+            "& .MuiTableSortLabel-icon": {
+              color: "#4F46E5 !important", // Sort icon color
             },
           },
         },
@@ -184,10 +212,12 @@ function Subject() {
                 columns={columns}
                 data={data}
                 enableColumnActions={false}
-                enableColumnFilters={false}
                 enableDensityToggle={false}
-                enableFullScreenToggle={false}
+                enableColumnFilters={true}
+                enableFullScreenToggle={true}
                 initialState={{
+                  showGlobalFilter: true,
+                  showColumnFilters: false,
                   columnVisibility: {
                     id: !(
                       storedScreens?.data?.[4]?.can_edit === 0 &&
@@ -229,6 +259,63 @@ function Subject() {
                       }
                     : {}),
                 })}
+                renderTopToolbar={({ table }) => (
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      padding: "10px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <MRT_GlobalFilterTextField
+                        table={table}
+                        placeholder="Search..."
+                        className="custom-global-filter"
+                      />
+                    </div>
+                    <div style={{ display: "flex", gap: "10px" }}>
+                      <MRT_ToggleFullScreenButton
+                        table={table}
+                        style={{ color: "#4F46E5" }}
+                      />
+                      <MdOutlineCloudDownload
+                        size={20}
+                        color="#4F46E5"
+                        className="mt-3 m-2 "
+                        disabled={table.getRowModel().rows.length === 0}
+                        onClick={() =>
+                          handleExportRows(table.getRowModel().rows)
+                        }
+                      />
+                      <LuPrinter
+                        size={20}
+                        color="#4F46E5"
+                        className="mt-3 m-2"
+                        onClick={() => window.print()}
+                      />
+
+                      <MRT_ShowHideColumnsButton
+                        table={table}
+                        style={{ color: "#4F46E5" }}
+                      />
+                      <CiFilter
+                        size={20}
+                        color="#4F46E5"
+                        className="mt-3 m-2 cursor-pointer"
+                        onClick={() => {
+                          table.setShowColumnFilters((prev) => !prev);
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
               />
             </ThemeProvider>
             {deleteModalOpen && selectedId && (

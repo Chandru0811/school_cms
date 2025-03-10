@@ -1,8 +1,18 @@
 /* eslint-disable react/prop-types */
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { MaterialReactTable } from "material-react-table";
-import { ThemeProvider, createTheme, IconButton } from "@mui/material";
+import {
+  MaterialReactTable,
+  MRT_GlobalFilterTextField,
+  MRT_ShowHideColumnsButton,
+  MRT_ToggleFullScreenButton,
+} from "material-react-table";
+import { LuPrinter } from "react-icons/lu";
+import { MdOutlineCloudDownload } from "react-icons/md";
+import { CiFilter } from "react-icons/ci";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import { ThemeProvider, createTheme } from "@mui/material";
 import DeleteChange from "../../../components/common/DeleteChange";
 import toast from "react-hot-toast";
 import api from "../../../config/URL";
@@ -10,6 +20,7 @@ import { FaPlus } from "react-icons/fa";
 import { TbEdit } from "react-icons/tb";
 import { GoTrash } from "react-icons/go";
 import userImage from "../../../assets/images/user_image.png";
+import ImageURL from "../../../config/ImageURL";
 
 function Employee() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -23,6 +34,18 @@ function Employee() {
     setDeleteModalOpen(true);
   };
 
+  const handleExportRows = (rows) => {
+    const doc = new jsPDF();
+    const tableData = rows.map((row) => Object.values(row.original));
+    const tableHeaders = columns.map((c) => c.header);
+
+    autoTable(doc, {
+      head: [tableHeaders],
+      body: tableData,
+    });
+
+    doc.save("mrt-pdf-example.pdf");
+  };
   const storedScreens = JSON.parse(
     localStorage.getItem("schoolCMS_Permissions") || "{}"
   );
@@ -89,21 +112,33 @@ function Employee() {
       {
         accessorKey: "name",
         header: "Employee Name",
-        Cell: ({ row }) => (
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <img
-              src={row.original.image || userImage}
-              alt={row.original.name}
-              style={{
-                width: "40px",
-                height: "40px",
-                borderRadius: "50%",
-                objectFit: "cover",
-              }}
-            />
-            <span>{row.original.name}</span>
-          </div>
-        ),
+        Cell: ({ row }) => {
+          const imageUrl = row.original.avatar?.image
+            ? `${ImageURL.replace(
+                /\/$/,
+                ""
+              )}/${row.original.avatar.image.replace(/^\//, "")}`
+            : userImage;
+          return (
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <img
+                src={imageUrl}
+                alt={row.original.name}
+                onError={(e) => {
+                  console.error("Image failed to load:", imageUrl);
+                  e.target.src = userImage;
+                }}
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                }}
+              />
+              <span>{row.original.name}</span>
+            </div>
+          );
+        },
       },
       {
         accessorKey: "role.name",
@@ -122,12 +157,12 @@ function Employee() {
         header: "Contact",
         Cell: ({ row }) => (
           <div>
-            <div className="mb-1">+{row.original.mobile}</div>
+            <div className="mb-1">{row.original.mobile}</div>
             <div style={{ color: "#4F46E5" }}>{row.original.email}</div>
           </div>
         ),
       },
-  
+
       {
         accessorKey: "created_by.name",
         header: "Created By",
@@ -157,7 +192,7 @@ function Employee() {
             color: "#4F46E5",
             textAlign: "center",
             textTransform: "capitalize",
-            borderRight: "1px solid #E0E0E0",
+            border: "1px solid #E0E0E0",
           },
           root: {
             "&:last-child": {
@@ -169,9 +204,15 @@ function Employee() {
       MuiTableSortLabel: {
         styleOverrides: {
           root: {
-            marginLeft: "8px",
-            "& svg": {
-              color: "#4F46E5 !important",
+            color: "#4F46E5 !important", // Default color
+            "&:hover": {
+              color: "#3B3BBF !important", // Hover color
+            },
+            "&.Mui-active": {
+              color: "#2C2C9D !important", // Active (sorted) color
+            },
+            "& .MuiTableSortLabel-icon": {
+              color: "#4F46E5 !important", // Sort icon color
             },
           },
         },
@@ -211,10 +252,12 @@ function Employee() {
               columns={columns}
               data={data}
               enableColumnActions={false}
-              enableColumnFilters={false}
               enableDensityToggle={false}
-              enableFullScreenToggle={false}
+              enableColumnFilters={true}
+              enableFullScreenToggle={true}
               initialState={{
+                showGlobalFilter: true,
+                showColumnFilters: false,
                 columnVisibility: {
                   id: !(
                     storedScreens?.data?.[1]?.can_edit === 0 &&
@@ -248,6 +291,61 @@ function Employee() {
                   "&.Mui-selected": { backgroundColor: "#EAE9FC !important" },
                 },
               })}
+              renderTopToolbar={({ table }) => (
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    padding: "10px",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
+                    <MRT_GlobalFilterTextField
+                      table={table}
+                      placeholder="Search..."
+                      className="custom-global-filter"
+                    />
+                  </div>
+                  <div style={{ display: "flex", gap: "10px" }}>
+                    <MRT_ToggleFullScreenButton
+                      table={table}
+                      style={{ color: "#4F46E5" }}
+                    />
+                    <MdOutlineCloudDownload
+                      size={20}
+                      color="#4F46E5"
+                      className="mt-3 m-2 "
+                      disabled={table.getRowModel().rows.length === 0}
+                      onClick={() => handleExportRows(table.getRowModel().rows)}
+                    />
+                    <LuPrinter
+                      size={20}
+                      color="#4F46E5"
+                      className="mt-3 m-2"
+                      onClick={() => window.print()}
+                    />
+
+                    <MRT_ShowHideColumnsButton
+                      table={table}
+                      style={{ color: "#4F46E5" }}
+                    />
+                    <CiFilter
+                      size={20}
+                      color="#4F46E5"
+                      className="mt-3 m-2 cursor-pointer"
+                      onClick={() => {
+                        table.setShowColumnFilters((prev) => !prev);
+                      }}
+                    />
+                  </div>
+                </div>
+              )}
             />
           </ThemeProvider>
         )}
