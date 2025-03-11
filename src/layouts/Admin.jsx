@@ -85,10 +85,10 @@ function Admin({ handleLogout }) {
                     <Route path="/studentdash" element={<StudentDashboard />} />
 
                     {/* Center  */}
-                    <Route path="/center" element={<Center />} />
-                    <Route path="/center/add" element={<CenterAdd />} />
-                    <Route path="/center/edit" element={<CenterEdit />} />
-                    <Route path="/center/view" element={<CenterView />} />
+                    <Route path="/centre" element={<Center />} />
+                    <Route path="/centre/add" element={<CenterAdd />} />
+                    <Route path="/centre/edit" element={<CenterEdit />} />
+                    <Route path="/centre/view" element={<CenterView />} />
 
                     {/* Avatar  */}
                     <Route path="/avatar" element={<AvatarProfile />} />
