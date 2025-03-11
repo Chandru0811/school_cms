@@ -6,11 +6,11 @@ import api from "../../../config/URL";
 
 const validationSchema = Yup.object().shape({});
 
-function RolePermission() {
+function RolePermission({ key }) {
   const role = localStorage.getItem("schoolCMS_role");
   const userName = localStorage.getItem("userName");
   const [roleName, setRoleName] = useState([]);
-  console.log("roless", roleName)
+  console.log("roless", roleName);
   const [selectedRole, setSelectedRole] = useState("");
   const [selectedRoleId, setSelectedRoleId] = useState("");
   const [loading, setLoading] = useState(false);
@@ -40,115 +40,116 @@ function RolePermission() {
 
   useEffect(() => {
     fetchRole();
-  }, []);
+  }, [key]);
 
   const handleRoleChange = (e) => {
     const selectedRoleId = e.target.value;
-    const selectedRole = roleName.find((role) => role.id === parseInt(selectedRoleId));
+    const selectedRole = roleName.find(
+      (role) => role.id === parseInt(selectedRoleId)
+    );
     setSelectedRole(selectedRole.name);
     setSelectedRoleId(selectedRoleId);
   };
 
   const formik = useFormik({
-    initialValues:
-    {
-      "centers": {
-        "canAccess": false,
-        "canCreate": false,
-        "canView": false,
-        "canEdit": false,
-        "canDelete": false
+    initialValues: {
+      centers: {
+        canAccess: false,
+        canCreate: false,
+        canView: false,
+        canEdit: false,
+        canDelete: false,
       },
-      "employees": {
-        "canAccess": false,
-        "canCreate": false,
-        "canView": false,
-        "canEdit": false,
-        "canDelete": false
+      employees: {
+        canAccess: false,
+        canCreate: false,
+        canView: false,
+        canEdit: false,
+        canDelete: false,
       },
-      "grades": {
-        "canAccess": false,
-        "canCreate": false,
-        "canView": false,
-        "canEdit": false,
-        "canDelete": false
+      grades: {
+        canAccess: false,
+        canCreate: false,
+        canView: false,
+        canEdit: false,
+        canDelete: false,
       },
-      "students": {
-        "canAccess": false,
-        "canCreate": false,
-        "canView": false,
-        "canEdit": false,
-        "canDelete": false
+      students: {
+        canAccess: false,
+        canCreate: false,
+        canView: false,
+        canEdit: false,
+        canDelete: false,
       },
-      "subjects": {
-        "canAccess": false,
-        "canCreate": false,
-        "canView": false,
-        "canEdit": false,
-        "canDelete": false
+      subjects: {
+        canAccess: false,
+        canCreate: false,
+        canView: false,
+        canEdit: false,
+        canDelete: false,
       },
-      "topics": {
-        "canAccess": false,
-        "canCreate": false,
-        "canView": false,
-        "canEdit": false,
-        "canDelete": false
+      topics: {
+        canAccess: false,
+        canCreate: false,
+        canView: false,
+        canEdit: false,
+        canDelete: false,
       },
-      "questions": {
-        "canAccess": false,
-        "canCreate": false,
-        "canView": false,
-        "canEdit": false,
-        "canDelete": false
+      questions: {
+        canAccess: false,
+        canCreate: false,
+        canView: false,
+        canEdit: false,
+        canDelete: false,
       },
-      "challenges": {
-        "canAccess": false,
-        "canCreate": false,
-        "canView": false,
-        "canEdit": false,
-        "canDelete": false
+      challenges: {
+        canAccess: false,
+        canCreate: false,
+        canView: false,
+        canEdit: false,
+        canDelete: false,
       },
-      "worksheets": {
-        "canAccess": false,
-        "canCreate": false,
-        "canView": false,
-        "canEdit": false,
-        "canDelete": false
+      worksheets: {
+        canAccess: false,
+        canCreate: false,
+        canView: false,
+        canEdit: false,
+        canDelete: false,
       },
-      "homeworks": {
-        "canAccess": false,
-        "canCreate": false,
-        "canView": false,
-        "canEdit": false,
-        "canDelete": false
+      homeworks: {
+        canAccess: false,
+        canCreate: false,
+        canView: false,
+        canEdit: false,
+        canDelete: false,
       },
-      "student_assigneds": {
-        "canAccess": false,
-        "canCreate": false,
-        "canView": false,
-        "canEdit": false,
-        "canDelete": false
+      student_assigneds: {
+        canAccess: false,
+        canCreate: false,
+        canView: false,
+        canEdit: false,
+        canDelete: false,
       },
-      "student_attempts": {
-        "canAccess": false,
-        "canCreate": false,
-        "canView": false,
-        "canEdit": false,
-        "canDelete": false
+      student_attempts: {
+        canAccess: false,
+        canCreate: false,
+        canView: false,
+        canEdit: false,
+        canDelete: false,
       },
-      "rewards": {
-        "canAccess": false,
-        "canCreate": false,
-        "canView": false,
-        "canEdit": false,
-        "canDelete": false
+      rewards: {
+        canAccess: false,
+        canCreate: false,
+        canView: false,
+        canEdit: false,
+        canDelete: false,
       },
-      "subscriptions": {
-        "canAccess": false,
-        "canCreate": false,
-        "canView": false,
-        "canEdit": false,
-        "canDelete": false
+      subscriptions: {
+        canAccess: false,
+        canCreate: false,
+        canView: false,
+        canEdit: false,
+        canDelete: false,
       },
     },
     validationSchema: validationSchema,
@@ -166,11 +167,15 @@ function RolePermission() {
       setLoadIndicator(true);
       try {
         setLoading(true);
-        const response = await api.put(`admin/role_permission/update/${role_id}`, transformedValues, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await api.put(
+          `admin/role_permission/update/${role_id}`,
+          transformedValues,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
         if (response.status === 200) {
           toast.success(response.data.message);
         } else {
@@ -250,25 +255,27 @@ function RolePermission() {
 
   const getRoleData = async () => {
     try {
-      const response = await api.get(`admin/role_permission/${role_id}`);
-      console.log(response.data, "response.data");
-      const permissions = response.data.data;
-      if (!Array.isArray(permissions)) {
-        throw new Error("permissions is not an array");
-      }
-      const transformedPermissions = permissions.reduce((acc, permission) => {
-        acc[permission.module_name] = {
-          canAccess: permission.can_access,
-          canView: permission.can_view,
-          canCreate: permission.can_create,
-          canEdit: permission.can_edit,
-          canDelete: permission.can_delete,
-        };
-        return acc;
-      }, {});
+      if(role_id){
+        const response = await api.get(`admin/role_permission/${role_id}`);
+        console.log(response.data, "response.data");
+        const permissions = response.data.data;
+        if (!Array.isArray(permissions)) {
+          throw new Error("permissions is not an array");
+        }
+        const transformedPermissions = permissions.reduce((acc, permission) => {
+          acc[permission.module_name] = {
+            canAccess: permission.can_access,
+            canView: permission.can_view,
+            canCreate: permission.can_create,
+            canEdit: permission.can_edit,
+            canDelete: permission.can_delete,
+          };
+          return acc;
+        }, {});
 
-      formik.setValues(transformedPermissions);
-      console.log(transformedPermissions, "transformedPermissions");
+        formik.setValues(transformedPermissions);
+        console.log(transformedPermissions, "transformedPermissions");
+      }
     } catch (error) {
       console.error("Error fetching role data:", error);
     }
@@ -324,11 +331,12 @@ function RolePermission() {
                     value={selectedRoleId}
                   >
                     <option disabled>Select Role</option>
-                    {roleName && roleName.map((role) => (
-                      <option key={role.id} value={role.id}>
-                        {role.name}
-                      </option>
-                    ))}
+                    {roleName &&
+                      roleName.map((role) => (
+                        <option key={role.id} value={role.id}>
+                          {role.name}
+                        </option>
+                      ))}
                   </select>
                 </div>
               </div>
@@ -404,7 +412,10 @@ function RolePermission() {
                         </div>
                       ) : (
                         <table className="table table-hover">
-                          <thead className="bg-light" style={{ position: "sticky", top: 0, zIndex: 1, }}>
+                          <thead
+                            className="bg-light"
+                            style={{ position: "sticky", top: 0, zIndex: 1 }}
+                          >
                             <tr>
                               <th scope="col" className="cms-header">
                                 Module Permission
@@ -429,7 +440,12 @@ function RolePermission() {
                           <tbody>
                             <tr>
                               <td>
-                                <p style={{ marginLeft: "30px", marginBottom: "0px" }}>
+                                <p
+                                  style={{
+                                    marginLeft: "30px",
+                                    marginBottom: "0px",
+                                  }}
+                                >
                                   Center
                                 </p>
                               </td>
@@ -439,7 +455,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="centers.canAccess"
                                   checked={formik.values?.centers?.canAccess}
-                                  onChange={handleCheckboxChange("centers.canAccess")}
+                                  onChange={handleCheckboxChange(
+                                    "centers.canAccess"
+                                  )}
                                 />
                               </td>
                               <td>
@@ -448,7 +466,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="centers.canView"
                                   checked={formik.values?.centers?.canView}
-                                  onChange={handleCheckboxChange("centers.canView")}
+                                  onChange={handleCheckboxChange(
+                                    "centers.canView"
+                                  )}
                                 />
                               </td>
                               <td>
@@ -457,7 +477,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="centers.canCreate"
                                   checked={formik.values?.centers?.canCreate}
-                                  onChange={handleCheckboxChange("centers.canCreate")}
+                                  onChange={handleCheckboxChange(
+                                    "centers.canCreate"
+                                  )}
                                 />
                               </td>
                               <td>
@@ -466,7 +488,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="centers.canEdit"
                                   checked={formik.values?.centers?.canEdit}
-                                  onChange={handleCheckboxChange("centers.canEdit")}
+                                  onChange={handleCheckboxChange(
+                                    "centers.canEdit"
+                                  )}
                                 />
                               </td>
                               <td>
@@ -475,7 +499,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="centers.canDelete"
                                   checked={formik.values?.centers?.canDelete}
-                                  onChange={handleCheckboxChange("centers.canDelete")}
+                                  onChange={handleCheckboxChange(
+                                    "centers.canDelete"
+                                  )}
                                 />
                               </td>
                             </tr>
@@ -496,7 +522,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="employees.canAccess"
                                   checked={formik.values?.employees?.canAccess}
-                                  onChange={handleCheckboxChange(`employees.canAccess`)}
+                                  onChange={handleCheckboxChange(
+                                    `employees.canAccess`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -505,7 +533,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="employees.canView"
                                   checked={formik.values?.employees?.canView}
-                                  onChange={handleCheckboxChange(`employees.canView`)}
+                                  onChange={handleCheckboxChange(
+                                    `employees.canView`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -514,7 +544,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="employees.canCreate"
                                   checked={formik.values?.employees?.canCreate}
-                                  onChange={handleCheckboxChange(`employees.canCreate`)}
+                                  onChange={handleCheckboxChange(
+                                    `employees.canCreate`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -523,7 +555,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="employees.canEdit"
                                   checked={formik.values?.employees?.canEdit}
-                                  onChange={handleCheckboxChange(`employees.canEdit`)}
+                                  onChange={handleCheckboxChange(
+                                    `employees.canEdit`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -532,7 +566,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="employees.canDelete"
                                   checked={formik.values?.employees?.canDelete}
-                                  onChange={handleCheckboxChange(`employees.canDelete`)}
+                                  onChange={handleCheckboxChange(
+                                    `employees.canDelete`
+                                  )}
                                 />
                               </td>
                             </tr>
@@ -553,7 +589,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="grades.canAccess"
                                   checked={formik.values?.grades?.canAccess}
-                                  onChange={handleCheckboxChange(`grades.canAccess`)}
+                                  onChange={handleCheckboxChange(
+                                    `grades.canAccess`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -562,7 +600,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="grades.canView"
                                   checked={formik.values?.grades?.canView}
-                                  onChange={handleCheckboxChange(`grades.canView`)}
+                                  onChange={handleCheckboxChange(
+                                    `grades.canView`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -571,7 +611,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="grades.canCreate"
                                   checked={formik.values?.grades?.canCreate}
-                                  onChange={handleCheckboxChange(`grades.canCreate`)}
+                                  onChange={handleCheckboxChange(
+                                    `grades.canCreate`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -580,7 +622,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="grades.canEdit"
                                   checked={formik.values?.grades?.canEdit}
-                                  onChange={handleCheckboxChange(`grades.canEdit`)}
+                                  onChange={handleCheckboxChange(
+                                    `grades.canEdit`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -589,7 +633,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="grades.canDelete"
                                   checked={formik.values?.grades?.canDelete}
-                                  onChange={handleCheckboxChange(`grades.canDelete`)}
+                                  onChange={handleCheckboxChange(
+                                    `grades.canDelete`
+                                  )}
                                 />
                               </td>
                             </tr>
@@ -610,7 +656,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="students.canAccess"
                                   checked={formik.values?.students?.canAccess}
-                                  onChange={handleCheckboxChange(`students.canAccess`)}
+                                  onChange={handleCheckboxChange(
+                                    `students.canAccess`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -619,7 +667,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="students.canView"
                                   checked={formik.values?.students?.canView}
-                                  onChange={handleCheckboxChange(`students.canView`)}
+                                  onChange={handleCheckboxChange(
+                                    `students.canView`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -628,7 +678,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="students.canCreate"
                                   checked={formik.values?.students?.canCreate}
-                                  onChange={handleCheckboxChange(`students.canCreate`)}
+                                  onChange={handleCheckboxChange(
+                                    `students.canCreate`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -637,7 +689,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="students.canEdit"
                                   checked={formik.values?.students?.canEdit}
-                                  onChange={handleCheckboxChange(`students.canEdit`)}
+                                  onChange={handleCheckboxChange(
+                                    `students.canEdit`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -646,7 +700,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="students.canDelete"
                                   checked={formik.values?.students?.canDelete}
-                                  onChange={handleCheckboxChange(`students.canDelete`)}
+                                  onChange={handleCheckboxChange(
+                                    `students.canDelete`
+                                  )}
                                 />
                               </td>
                             </tr>
@@ -667,7 +723,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="subjects.canAccess"
                                   checked={formik.values?.subjects?.canAccess}
-                                  onChange={handleCheckboxChange(`subjects.canAccess`)}
+                                  onChange={handleCheckboxChange(
+                                    `subjects.canAccess`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -676,7 +734,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="subjects.canView"
                                   checked={formik.values?.subjects?.canView}
-                                  onChange={handleCheckboxChange(`subjects.canView`)}
+                                  onChange={handleCheckboxChange(
+                                    `subjects.canView`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -685,7 +745,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="subjects.canCreate"
                                   checked={formik.values?.subjects?.canCreate}
-                                  onChange={handleCheckboxChange(`subjects.canCreate`)}
+                                  onChange={handleCheckboxChange(
+                                    `subjects.canCreate`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -694,7 +756,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="subjects.canEdit"
                                   checked={formik.values?.subjects?.canEdit}
-                                  onChange={handleCheckboxChange(`subjects.canEdit`)}
+                                  onChange={handleCheckboxChange(
+                                    `subjects.canEdit`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -703,7 +767,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="subjects.canDelete"
                                   checked={formik.values?.subjects?.canDelete}
-                                  onChange={handleCheckboxChange(`subjects.canDelete`)}
+                                  onChange={handleCheckboxChange(
+                                    `subjects.canDelete`
+                                  )}
                                 />
                               </td>
                             </tr>
@@ -724,7 +790,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="topics.canAccess"
                                   checked={formik.values?.topics?.canAccess}
-                                  onChange={handleCheckboxChange(`topics.canAccess`)}
+                                  onChange={handleCheckboxChange(
+                                    `topics.canAccess`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -733,7 +801,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="topics.canView"
                                   checked={formik.values?.topics?.canView}
-                                  onChange={handleCheckboxChange(`topics.canView`)}
+                                  onChange={handleCheckboxChange(
+                                    `topics.canView`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -742,7 +812,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="topics.canCreate"
                                   checked={formik.values?.topics?.canCreate}
-                                  onChange={handleCheckboxChange(`topics.canCreate`)}
+                                  onChange={handleCheckboxChange(
+                                    `topics.canCreate`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -751,7 +823,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="topics.canEdit"
                                   checked={formik.values?.topics?.canEdit}
-                                  onChange={handleCheckboxChange(`topics.canEdit`)}
+                                  onChange={handleCheckboxChange(
+                                    `topics.canEdit`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -760,7 +834,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="topics.canDelete"
                                   checked={formik.values?.topics?.canDelete}
-                                  onChange={handleCheckboxChange(`topics.canDelete`)}
+                                  onChange={handleCheckboxChange(
+                                    `topics.canDelete`
+                                  )}
                                 />
                               </td>
                             </tr>
@@ -781,7 +857,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="questions.canAccess"
                                   checked={formik.values?.questions?.canAccess}
-                                  onChange={handleCheckboxChange(`questions.canAccess`)}
+                                  onChange={handleCheckboxChange(
+                                    `questions.canAccess`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -790,7 +868,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="questions.canView"
                                   checked={formik.values?.questions?.canView}
-                                  onChange={handleCheckboxChange(`questions.canView`)}
+                                  onChange={handleCheckboxChange(
+                                    `questions.canView`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -799,7 +879,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="questions.canCreate"
                                   checked={formik.values?.questions?.canCreate}
-                                  onChange={handleCheckboxChange(`questions.canCreate`)}
+                                  onChange={handleCheckboxChange(
+                                    `questions.canCreate`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -808,7 +890,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="questions.canEdit"
                                   checked={formik.values?.questions?.canEdit}
-                                  onChange={handleCheckboxChange(`questions.canEdit`)}
+                                  onChange={handleCheckboxChange(
+                                    `questions.canEdit`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -817,7 +901,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="questions.canDelete"
                                   checked={formik.values?.questions?.canDelete}
-                                  onChange={handleCheckboxChange(`questions.canDelete`)}
+                                  onChange={handleCheckboxChange(
+                                    `questions.canDelete`
+                                  )}
                                 />
                               </td>
                             </tr>
@@ -838,7 +924,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="challenges.canAccess"
                                   checked={formik.values?.challenges?.canAccess}
-                                  onChange={handleCheckboxChange(`challenges.canAccess`)}
+                                  onChange={handleCheckboxChange(
+                                    `challenges.canAccess`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -847,7 +935,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="challenges.canView"
                                   checked={formik.values?.challenges?.canView}
-                                  onChange={handleCheckboxChange(`challenges.canView`)}
+                                  onChange={handleCheckboxChange(
+                                    `challenges.canView`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -856,7 +946,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="challenges.canCreate"
                                   checked={formik.values?.challenges?.canCreate}
-                                  onChange={handleCheckboxChange(`challenges.canCreate`)}
+                                  onChange={handleCheckboxChange(
+                                    `challenges.canCreate`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -865,7 +957,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="challenges.canEdit"
                                   checked={formik.values?.challenges?.canEdit}
-                                  onChange={handleCheckboxChange(`challenges.canEdit`)}
+                                  onChange={handleCheckboxChange(
+                                    `challenges.canEdit`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -874,7 +968,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="challenges.canDelete"
                                   checked={formik.values?.challenges?.canDelete}
-                                  onChange={handleCheckboxChange(`challenges.canDelete`)}
+                                  onChange={handleCheckboxChange(
+                                    `challenges.canDelete`
+                                  )}
                                 />
                               </td>
                             </tr>
@@ -895,7 +991,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="worksheets.canAccess"
                                   checked={formik.values?.worksheets?.canAccess}
-                                  onChange={handleCheckboxChange(`worksheets.canAccess`)}
+                                  onChange={handleCheckboxChange(
+                                    `worksheets.canAccess`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -904,7 +1002,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="worksheets.canView"
                                   checked={formik.values?.worksheets?.canView}
-                                  onChange={handleCheckboxChange(`worksheets.canView`)}
+                                  onChange={handleCheckboxChange(
+                                    `worksheets.canView`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -913,7 +1013,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="worksheets.canCreate"
                                   checked={formik.values?.worksheets?.canCreate}
-                                  onChange={handleCheckboxChange(`worksheets.canCreate`)}
+                                  onChange={handleCheckboxChange(
+                                    `worksheets.canCreate`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -922,7 +1024,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="worksheets.canEdit"
                                   checked={formik.values?.worksheets?.canEdit}
-                                  onChange={handleCheckboxChange(`worksheets.canEdit`)}
+                                  onChange={handleCheckboxChange(
+                                    `worksheets.canEdit`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -931,7 +1035,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="worksheets.canDelete"
                                   checked={formik.values?.worksheets?.canDelete}
-                                  onChange={handleCheckboxChange(`worksheets.canDelete`)}
+                                  onChange={handleCheckboxChange(
+                                    `worksheets.canDelete`
+                                  )}
                                 />
                               </td>
                             </tr>
@@ -952,7 +1058,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="homeworks.canAccess"
                                   checked={formik.values?.homeworks?.canAccess}
-                                  onChange={handleCheckboxChange(`homeworks.canAccess`)}
+                                  onChange={handleCheckboxChange(
+                                    `homeworks.canAccess`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -961,7 +1069,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="homeworks.canView"
                                   checked={formik.values?.homeworks?.canView}
-                                  onChange={handleCheckboxChange(`homeworks.canView`)}
+                                  onChange={handleCheckboxChange(
+                                    `homeworks.canView`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -970,7 +1080,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="homeworks.canCreate"
                                   checked={formik.values?.homeworks?.canCreate}
-                                  onChange={handleCheckboxChange(`homeworks.canCreate`)}
+                                  onChange={handleCheckboxChange(
+                                    `homeworks.canCreate`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -979,7 +1091,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="homeworks.canEdit"
                                   checked={formik.values?.homeworks?.canEdit}
-                                  onChange={handleCheckboxChange(`homeworks.canEdit`)}
+                                  onChange={handleCheckboxChange(
+                                    `homeworks.canEdit`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -988,7 +1102,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="homeworks.canDelete"
                                   checked={formik.values?.homeworks?.canDelete}
-                                  onChange={handleCheckboxChange(`homeworks.canDelete`)}
+                                  onChange={handleCheckboxChange(
+                                    `homeworks.canDelete`
+                                  )}
                                 />
                               </td>
                             </tr>
@@ -1008,8 +1124,12 @@ function RolePermission() {
                                   className="form-check-input"
                                   type="checkbox"
                                   name="student_assigneds.canAccess"
-                                  checked={formik.values?.student_assigneds?.canAccess}
-                                  onChange={handleCheckboxChange(`student_assigneds.canAccess`)}
+                                  checked={
+                                    formik.values?.student_assigneds?.canAccess
+                                  }
+                                  onChange={handleCheckboxChange(
+                                    `student_assigneds.canAccess`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -1017,8 +1137,12 @@ function RolePermission() {
                                   className="form-check-input"
                                   type="checkbox"
                                   name="student_assigneds.canView"
-                                  checked={formik.values?.student_assigneds?.canView}
-                                  onChange={handleCheckboxChange(`student_assigneds.canView`)}
+                                  checked={
+                                    formik.values?.student_assigneds?.canView
+                                  }
+                                  onChange={handleCheckboxChange(
+                                    `student_assigneds.canView`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -1026,8 +1150,12 @@ function RolePermission() {
                                   className="form-check-input"
                                   type="checkbox"
                                   name="student_assigneds.canCreate"
-                                  checked={formik.values?.student_assigneds?.canCreate}
-                                  onChange={handleCheckboxChange(`student_assigneds.canCreate`)}
+                                  checked={
+                                    formik.values?.student_assigneds?.canCreate
+                                  }
+                                  onChange={handleCheckboxChange(
+                                    `student_assigneds.canCreate`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -1035,8 +1163,12 @@ function RolePermission() {
                                   className="form-check-input"
                                   type="checkbox"
                                   name="student_assigneds.canEdit"
-                                  checked={formik.values?.student_assigneds?.canEdit}
-                                  onChange={handleCheckboxChange(`student_assigneds.canEdit`)}
+                                  checked={
+                                    formik.values?.student_assigneds?.canEdit
+                                  }
+                                  onChange={handleCheckboxChange(
+                                    `student_assigneds.canEdit`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -1044,8 +1176,12 @@ function RolePermission() {
                                   className="form-check-input"
                                   type="checkbox"
                                   name="student_assigneds.canDelete"
-                                  checked={formik.values?.student_assigneds?.canDelete}
-                                  onChange={handleCheckboxChange(`student_assigneds.canDelete`)}
+                                  checked={
+                                    formik.values?.student_assigneds?.canDelete
+                                  }
+                                  onChange={handleCheckboxChange(
+                                    `student_assigneds.canDelete`
+                                  )}
                                 />
                               </td>
                             </tr>
@@ -1065,8 +1201,12 @@ function RolePermission() {
                                   className="form-check-input"
                                   type="checkbox"
                                   name="student_attempts.canAccess"
-                                  checked={formik.values?.student_attempts?.canAccess}
-                                  onChange={handleCheckboxChange(`student_attempts.canAccess`)}
+                                  checked={
+                                    formik.values?.student_attempts?.canAccess
+                                  }
+                                  onChange={handleCheckboxChange(
+                                    `student_attempts.canAccess`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -1074,8 +1214,12 @@ function RolePermission() {
                                   className="form-check-input"
                                   type="checkbox"
                                   name="student_attempts.canView"
-                                  checked={formik.values?.student_attempts?.canView}
-                                  onChange={handleCheckboxChange(`student_attempts.canView`)}
+                                  checked={
+                                    formik.values?.student_attempts?.canView
+                                  }
+                                  onChange={handleCheckboxChange(
+                                    `student_attempts.canView`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -1083,8 +1227,12 @@ function RolePermission() {
                                   className="form-check-input"
                                   type="checkbox"
                                   name="student_attempts.canCreate"
-                                  checked={formik.values?.student_attempts?.canCreate}
-                                  onChange={handleCheckboxChange(`student_attempts.canCreate`)}
+                                  checked={
+                                    formik.values?.student_attempts?.canCreate
+                                  }
+                                  onChange={handleCheckboxChange(
+                                    `student_attempts.canCreate`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -1092,8 +1240,12 @@ function RolePermission() {
                                   className="form-check-input"
                                   type="checkbox"
                                   name="student_attempts.canEdit"
-                                  checked={formik.values?.student_attempts?.canEdit}
-                                  onChange={handleCheckboxChange(`student_attempts.canEdit`)}
+                                  checked={
+                                    formik.values?.student_attempts?.canEdit
+                                  }
+                                  onChange={handleCheckboxChange(
+                                    `student_attempts.canEdit`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -1101,8 +1253,12 @@ function RolePermission() {
                                   className="form-check-input"
                                   type="checkbox"
                                   name="student_attempts.canDelete"
-                                  checked={formik.values?.student_attempts?.canDelete}
-                                  onChange={handleCheckboxChange(`student_attempts.canDelete`)}
+                                  checked={
+                                    formik.values?.student_attempts?.canDelete
+                                  }
+                                  onChange={handleCheckboxChange(
+                                    `student_attempts.canDelete`
+                                  )}
                                 />
                               </td>
                             </tr>
@@ -1123,7 +1279,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="rewards.canAccess"
                                   checked={formik.values?.rewards?.canAccess}
-                                  onChange={handleCheckboxChange(`rewards.canAccess`)}
+                                  onChange={handleCheckboxChange(
+                                    `rewards.canAccess`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -1132,7 +1290,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="rewards.canView"
                                   checked={formik.values?.rewards?.canView}
-                                  onChange={handleCheckboxChange(`rewards.canView`)}
+                                  onChange={handleCheckboxChange(
+                                    `rewards.canView`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -1141,7 +1301,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="rewards.canCreate"
                                   checked={formik.values?.rewards?.canCreate}
-                                  onChange={handleCheckboxChange(`rewards.canCreate`)}
+                                  onChange={handleCheckboxChange(
+                                    `rewards.canCreate`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -1150,7 +1312,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="rewards.canEdit"
                                   checked={formik.values?.rewards?.canEdit}
-                                  onChange={handleCheckboxChange(`rewards.canEdit`)}
+                                  onChange={handleCheckboxChange(
+                                    `rewards.canEdit`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -1159,7 +1323,9 @@ function RolePermission() {
                                   type="checkbox"
                                   name="rewards.canDelete"
                                   checked={formik.values?.rewards?.canDelete}
-                                  onChange={handleCheckboxChange(`rewards.canDelete`)}
+                                  onChange={handleCheckboxChange(
+                                    `rewards.canDelete`
+                                  )}
                                 />
                               </td>
                             </tr>
@@ -1179,8 +1345,12 @@ function RolePermission() {
                                   className="form-check-input"
                                   type="checkbox"
                                   name="subscriptions.canAccess"
-                                  checked={formik.values?.subscriptions?.canAccess}
-                                  onChange={handleCheckboxChange(`subscriptions.canAccess`)}
+                                  checked={
+                                    formik.values?.subscriptions?.canAccess
+                                  }
+                                  onChange={handleCheckboxChange(
+                                    `subscriptions.canAccess`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -1188,8 +1358,12 @@ function RolePermission() {
                                   className="form-check-input"
                                   type="checkbox"
                                   name="subscriptions.canView"
-                                  checked={formik.values?.subscriptions?.canView}
-                                  onChange={handleCheckboxChange(`subscriptions.canView`)}
+                                  checked={
+                                    formik.values?.subscriptions?.canView
+                                  }
+                                  onChange={handleCheckboxChange(
+                                    `subscriptions.canView`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -1197,8 +1371,12 @@ function RolePermission() {
                                   className="form-check-input"
                                   type="checkbox"
                                   name="subscriptions.canCreate"
-                                  checked={formik.values?.subscriptions?.canCreate}
-                                  onChange={handleCheckboxChange(`subscriptions.canCreate`)}
+                                  checked={
+                                    formik.values?.subscriptions?.canCreate
+                                  }
+                                  onChange={handleCheckboxChange(
+                                    `subscriptions.canCreate`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -1206,8 +1384,12 @@ function RolePermission() {
                                   className="form-check-input"
                                   type="checkbox"
                                   name="subscriptions.canEdit"
-                                  checked={formik.values?.subscriptions?.canEdit}
-                                  onChange={handleCheckboxChange(`subscriptions.canEdit`)}
+                                  checked={
+                                    formik.values?.subscriptions?.canEdit
+                                  }
+                                  onChange={handleCheckboxChange(
+                                    `subscriptions.canEdit`
+                                  )}
                                 />
                               </td>
                               <td>
@@ -1215,8 +1397,12 @@ function RolePermission() {
                                   className="form-check-input"
                                   type="checkbox"
                                   name="subscriptions.canDelete"
-                                  checked={formik.values?.subscriptions?.canDelete}
-                                  onChange={handleCheckboxChange(`subscriptions.canDelete`)}
+                                  checked={
+                                    formik.values?.subscriptions?.canDelete
+                                  }
+                                  onChange={handleCheckboxChange(
+                                    `subscriptions.canDelete`
+                                  )}
                                 />
                               </td>
                             </tr>

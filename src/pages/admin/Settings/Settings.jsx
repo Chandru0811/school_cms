@@ -35,7 +35,7 @@ function Settings() {
               <Role />
             </Tab>
             <Tab eventKey="role_permission" title="Role Permission">
-              <RolePermission />
+              <RolePermission key={key} />
             </Tab>
             <Tab eventKey="avatar" title="Avatar Profile">
               <AvatarProfile />
