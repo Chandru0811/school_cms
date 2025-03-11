@@ -1,5 +1,6 @@
 import PropTypes from "prop-types";
 import AdminDashboard from "../pages/admin/AdminDashboard";
+import StudentDashboard from "../pages/admin/StudentDashboard";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AdminSideBar from "../components/admin/AdminSideBar";
 import AdminHeader from "../components/admin/AdminHeader";
@@ -81,12 +82,13 @@ function Admin({ handleLogout }) {
                   <Routes>
                     <Route path="/" element={<AdminDashboard />} />
                     <Route path="*" element={<AdminDashboard />} />
+                    <Route path="/studentdash" element={<StudentDashboard />} />
 
                     {/* Center  */}
-                    <Route path="/centre" element={<Center />} />
-                    <Route path="/centre/add" element={<CenterAdd />} />
-                    <Route path="/centre/edit" element={<CenterEdit />} />
-                    <Route path="/centre/view" element={<CenterView />} />
+                    <Route path="/center" element={<Center />} />
+                    <Route path="/center/add" element={<CenterAdd />} />
+                    <Route path="/center/edit" element={<CenterEdit />} />
+                    <Route path="/center/view" element={<CenterView />} />
 
                     {/* Avatar  */}
                     <Route path="/avatar" element={<AvatarProfile />} />

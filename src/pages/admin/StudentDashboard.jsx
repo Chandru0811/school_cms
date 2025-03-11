@@ -16,6 +16,8 @@ import api from "../../config/URL";
 import { RiArrowDropRightLine } from "react-icons/ri";
 import ReactApexChart from "react-apexcharts";
 import { TiStarFullOutline } from "react-icons/ti";
+import userImage from "../../assets/images/user_profile.svg";
+import ImageURL from "../../config/ImageURL";
 
 function AdminDashboard() {
   const [data, setData] = useState();
@@ -115,8 +117,6 @@ function AdminDashboard() {
         toast.error(e?.response?.data?.error);
         toast.error(e?.response?.data?.message);
       }
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -483,9 +483,21 @@ function AdminDashboard() {
                           className="rounded-circle bg-light d-flex align-items-center justify-content-center me-2"
                           style={{ width: "40px", height: "40px" }}
                         >
-                          {student.profile && (
-                            <img src={student.profile} alt="" className="img-fluid" />
-                          )}
+                          <img
+                            src={
+                              student.profile
+                                ? `${ImageURL.replace(/\/$/, "")}/${student.profile.replace(/^\//, "")}`
+                                : userImage
+                            }
+                            alt="user"
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              borderRadius: "50%",
+                              objectFit: "cover",
+                            }}
+                            onError={(e) => (e.target.src = userImage)}
+                          />
                         </div>
                         <span className="me-2 fw-12 fw-semibold">{student.rank}</span>
                         <span className="fw-semibold dash-font fw-14">
@@ -540,10 +552,21 @@ function AdminDashboard() {
                           className="rounded-circle bg-light d-flex align-items-center justify-content-center me-2"
                           style={{ width: "40px", height: "40px" }}
                         >
-                          {/* Display student image if available */}
-                          {student.profile && (
-                            <img src={student.profile} alt="" className="img-fluid" />
-                          )}
+                          <img
+                            src={
+                              student.profile
+                                ? `${ImageURL.replace(/\/$/, "")}/${student.profile.replace(/^\//, "")}`
+                                : userImage
+                            }
+                            alt="user"
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              borderRadius: "50%",
+                              objectFit: "cover",
+                            }}
+                            onError={(e) => (e.target.src = userImage)}
+                          />
                         </div>
                         <span className="me-2 fw-12 fw-semibold">{student.rank}</span>
                         <span className="fw-semibold dash-font fw-14">
