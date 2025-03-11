@@ -19,6 +19,8 @@ import { useEffect, useState } from "react";
 import { FaMedal } from "react-icons/fa";
 import toast from "react-hot-toast";
 import api from "../../config/URL";
+import userImage from "../../assets/images/user_profile.svg";
+import ImageURL from "../../config/ImageURL";
 
 function AdminDashboard() {
   const [data, setData] = useState();
@@ -331,7 +333,20 @@ function AdminDashboard() {
                       className="rounded-circle bg-light d-flex align-items-center justify-content-center me-2"
                       style={{ width: "40px", height: "40px" }}
                     >
-                      <img src={student.image} alt="" className="img-fluid" />
+                      <img
+                        src={
+                          student?.profile
+                            ? `${ImageURL.replace(/\/$/, "")}/${student.profile.replace(/^\//, "")}`
+                            : userImage
+                        }
+                        alt="user"
+                        style={{
+                          maxWidth: "100%",
+                          height: "auto",
+                          borderRadius: "5px",
+                        }}
+                        onError={(e) => (e.target.src = userImage)}
+                      />
                     </div>
                     <span className="me-2">{student.rank}.</span>
                     <span className="fw-narmal dash-font">{student.student_name}</span>

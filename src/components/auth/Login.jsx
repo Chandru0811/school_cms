@@ -82,13 +82,17 @@ const Login = ({ loginAsAdmin, loginAsSuperAdmin }) => {
           } else {
             toast.error("Failed to fetch permissions");
           }
-          if (data.data.user.role_id !== "1" && data.data.user.role_id !== 1) {
-            navigate("/dashboard");
-            loginAsAdmin();
-          }
-          if (data.data.user.role_id === "1" || data.data.user.role_id === 1) {
+          if (roleId === 1) {
             navigate("/dashboard");
             loginAsSuperAdmin();
+          } else {
+            if (data.data.user.role_access === "Full Access") {
+              console.log("full", data.data.user.role_access)
+              navigate("/dashboard");
+            } else if (data.data.user.role_access === "Limited Access") {
+              console.log("studen", data.data.user.role_access)
+              navigate("/studentdash");
+            } loginAsAdmin();
           }
           toast.success(data.message);
           // else {
