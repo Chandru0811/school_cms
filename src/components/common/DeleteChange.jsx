@@ -24,15 +24,15 @@ function DeleteChange({ path, onDeleteSuccess, onOpen, navigate }) {
     try {
       setLoading(true);
       const response = await api.delete(path);
-  
+
       if (response.status === 200) {
         onDeleteSuccess();
         toast.success(response?.data?.message || "Deleted successfully!");
         handleCloseDialog();
-        if (navigate) navigate(); 
+        if (navigate) navigate();
       }
     } catch (error) {
-      console.error("Delete error:", error); 
+      console.error("Delete error:", error);
       if (error.response) {
         if (error.response.status === 404) {
           toast.error("Avatar not found. It may have already been deleted.");
@@ -59,7 +59,6 @@ function DeleteChange({ path, onDeleteSuccess, onOpen, navigate }) {
       setLoading(false);
     }
   };
-  
 
   return (
     <Dialog
@@ -88,9 +87,9 @@ function DeleteChange({ path, onDeleteSuccess, onOpen, navigate }) {
           disabled={loading}
           className="btn btn-button"
         >
-          {loading && (
+          {loadIndicator && (
             <span
-              className="spinner-border spinner-border-sm me-2"
+              className="spinner-border spinner-border-sm button-spinner me-2 text-light"
               aria-hidden="true"
             ></span>
           )}

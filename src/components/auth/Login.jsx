@@ -248,12 +248,12 @@ const Login = ({ loginAsAdmin, loginAsSuperAdmin }) => {
               className="w-100 mt-4 common-button"
               disabled={loadIndicator}
             >
-              {loadIndicator && (
-                <span
-                  className="spinner-border spinner-border-sm me-2"
-                  aria-hidden="true"
-                ></span>
-              )}
+               {loadIndicator && (
+                  <span
+                    className="spinner-border spinner-border-sm button-spinner me-2 text-light"
+                    aria-hidden="true"
+                  ></span>
+                )}
               Login
             </Button>
 
