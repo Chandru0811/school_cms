@@ -668,3 +668,79 @@
 .spinner-border{
   color: var(--client-primary-color) !important;
 }
+
+.worksheet-header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 70px;
+  background: white;
+  border-radius: 15px;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Left Section */
+.left-section {
+  flex: 1;
+  padding-left: 20px;
+}
+
+.worksheet-title {
+  font-size: 16px;
+  font-weight: bold;
+  color: #4f3cc9;
+}
+.right-section {
+  padding: 40px;
+  flex: 1.5;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  background-color:#EAE9FC ;
+  padding-right: 30px;
+  border-top-left-radius: 50px;
+  border-bottom-left-radius: 50px;
+  position: relative;
+}
+
+/* First Circle (Using ::before) */
+.right-section::before {
+  content: "";
+  position: absolute;
+  right: 0px;
+  top: 50%;
+  width: 17rem;
+  height: 200px;
+  background:#4F46E51A;
+  border-radius: 70%;
+  transform: translateY(-50%);
+}
+
+.right-section::after {
+  content: "";
+  position: absolute;
+  right: 40px;
+  top: 50%;
+  width: 120px;
+  height: 90px;
+  background: #4F46E51A;
+  border-radius: 50%;
+  transform: translateY(-50%);
+}
+
+.start-btn {
+  background-color: #4f3cc9;
+  color: white;
+  font-weight: 600;
+  border-radius: 10px;
+  padding: 5px 14px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  border: none;
+}
+
+.arrow-icon {
+  margin-left: 8px;
+}

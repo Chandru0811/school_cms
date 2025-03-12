@@ -6,6 +6,13 @@
   box-sizing: border-box;
   /* font-family: "Poppins", serif; */
 }
+.admin-bg-image {
+  background-image: url("../assets/images/BG.svg");
+  background-size: cover;
+  background-position: center; 
+  background-repeat: no-repeat;
+}
+
 
 /*
  * Webpixels CSS v1.1.5 (https://webpixels.io/)
