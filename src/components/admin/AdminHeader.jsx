@@ -168,7 +168,7 @@ function AdminHeader({ handleLogout }) {
                 </span>
                 <span style={{ cursor: "pointer" }} onClick={toggleDropdown}>
                   {/* <FaBell className="me-3" style={{ color: "#8b99b5" }} /> */}
-                  <img
+                  {/* <img
                     src={user}
                     className="img-fluid header-user"
                     alt="User"
@@ -176,6 +176,26 @@ function AdminHeader({ handleLogout }) {
                     data-bs-toggle="tooltip"
                     data-bs-placement="bottom"
                     style={{ cursor: "pointer" }}
+                  /> */}
+                  <img
+                    src={
+                      data?.avatar?.image
+                        ? `${ImageURL.replace(/\/$/, "")}/${data?.avatar?.image.replace(/^\//, "")}`
+                        : user
+                    }
+                    // alt="profile"
+                    // style={{
+                    //   width: "80px",
+                    //   height: "80px",
+                    //   borderRadius: "50%",
+                    //   objectFit: "cover",
+                    // }}
+                    className="img-fluid header-user"
+                    alt="User"
+                    width={40}
+                    data-bs-toggle="tooltip"
+                    data-bs-placement="bottom"
+                    style={{ cursor: "pointer", borderRadius: "50%", objectFit: "cover" }}
                   />
                   <span
                     style={{

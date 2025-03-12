@@ -26,6 +26,7 @@ function AdminSidebar() {
   // };
   const storedScreens = JSON.parse(localStorage.getItem("schoolCMS_Permissions") || "{}");
   const schoolCMS_role = localStorage.getItem("schoolCMS_role");
+  const schoolCMS_access = localStorage.getItem("schoolCMS_access");
   const [leadMenuOpen] = useState(false);
 
   const [activeSubmenu] = useState(null);
@@ -67,10 +68,14 @@ function AdminSidebar() {
             <div className="mb-2">
               <p className="sidebar-heading">DASHBOARD</p>
               <NavLink
-                className={({ isActive }) =>
-                  `sidebar-navlink ${isActive ? "active" : ""}`
+                to={
+                  schoolCMS_access === "Full Access"
+                    ? "/dashboard"
+                    : schoolCMS_access === "Limited Access"
+                      ? "/studentdash"
+                      : "/dashboard"
                 }
-                to="/dashboard"
+                className={({ isActive }) => `sidebar-navlink ${isActive ? "active" : ""}`}
               >
                 <RiHome6Line className="sidebar_icon" size={17} />
                 <p>Home</p>

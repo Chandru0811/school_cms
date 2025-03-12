@@ -160,7 +160,7 @@ function AdminDashboard() {
                     <img src={icon} alt="" className=" img-fluid ms-2 py-3 " />
                   </div>
                   <div className="col-md-7 col-12 py-3">
-                    <p className="dash-font ">Centers</p>
+                    <p className="dash-font fw-12 fw-semibold">CENTRES</p>
                     <p className="dash-font heading-color fw-bold">
                       {data?.total_centers}
                     </p>
@@ -178,7 +178,7 @@ function AdminDashboard() {
                     <div className="row m-0">
                       <div className="col-6">
                         <div className="border-end pe-2">
-                          <p className="dash-font text-nowrap">Students</p>
+                          <p className="dash-font text-nowrap fw-12 fw-semibold">STUDENTS</p>
                           <p className="dash-font heading-color fw-bold">
                             {data?.total_students}
                           </p>
@@ -186,7 +186,7 @@ function AdminDashboard() {
                       </div>
                       <div className="col-6">
                         <div className="">
-                          <p className="dash-font text-nowrap">Average</p>
+                          <p className="dash-font text-nowrap fw-12 fw-semibold">AVERAGE</p>
                           <p className="dash-font heading-color fw-bold">
                             {data?.average_score}
                           </p>
@@ -204,7 +204,7 @@ function AdminDashboard() {
                     <img src={icon2} alt="" className="py-3 img-fluid ms-2 " />
                   </div>
                   <div className="col-md-7 col-12 py-3">
-                    <p className="dash-font">Teacher</p>
+                    <p className="dash-font fw-12 fw-semibold">TEACHER</p>
                     <p className="heading-color fw-bold">
                       {data?.total_employees}
                     </p>
@@ -219,7 +219,7 @@ function AdminDashboard() {
                     <img src={icon3} alt="" className="py-3 img-fluid ms-2 " />
                   </div>
                   <div className="col-md-7 col-12 py-3">
-                    <p className="dash-font ">Parents</p>
+                    <p className="dash-font fw-12 fw-semibold">PARENTS</p>
                     <p className="dash-font heading-color fw-bold">
                       {data?.total_parents}
                     </p>
@@ -234,7 +234,7 @@ function AdminDashboard() {
                     <img src={icon4} alt="" className="py-3 img-fluid ms-2 " />
                   </div>
                   <div className="col-md-7 col-12 py-3">
-                    <p className="dash-font ">Active WS</p>
+                    <p className="dash-font fw-12 fw-semibold">ACTIVE WS</p>
                     <p className="dash-font heading-color fw-bold">
                       {data?.active_worksheets}
                     </p>
@@ -362,7 +362,8 @@ function AdminDashboard() {
                   {leaderboardData?.map((student, index) => (
                     <div
                       key={index}
-                      className={`d-flex align-items-center justify-content-between p-2 rounded`}
+                      className={`d-flex align-items-center justify-content-between px-2 pt-2 pb-3 mb-3`}
+                      style={{ borderBottom: "rgb(228 228 228) 1px solid" }}
                     >
                       <div className="d-flex align-items-center">
                         <div
@@ -373,27 +374,28 @@ function AdminDashboard() {
                             src={
                               student?.profile
                                 ? `${ImageURL.replace(
-                                    /\/$/,
-                                    ""
-                                  )}/${student.profile.replace(/^\//, "")}`
+                                  /\/$/,
+                                  ""
+                                )}/${student.profile.replace(/^\//, "")}`
                                 : userImage
                             }
                             alt="user"
                             style={{
-                              maxWidth: "100%",
-                              height: "auto",
-                              borderRadius: "5px",
+                              width: "100%",
+                              height: "100%",
+                              borderRadius: "50%",
+                              objectFit: "cover",
                             }}
                             onError={(e) => (e.target.src = userImage)}
                           />
                         </div>
-                        <span className="me-2">{student.rank}.</span>
-                        <span className="fw-narmal dash-font">
+                        <span className="me-2 fw-12 fw-semibold">{student.rank}.</span>
+                        <span className="fw-semibold dash-font fw-14">
                           {student.student_name}
                         </span>
                       </div>
                       <div className="d-flex align-items-center">
-                        <span className="me-2 fw-light dash-font">
+                        <span className="me-2 dash-font fw-12">
                           {student.total_score} Units
                         </span>
                         <div className="d-flex">
@@ -413,7 +415,7 @@ function AdminDashboard() {
                             className="rounded-circle dash-icon d-flex align-items-center justify-content-center"
                             style={{ width: "35px", height: "35px" }}
                           >
-                            {student.attempted_worksheets}
+                            <p className="fw-semibold dash-font fw-14"> {student.attended_worksheets}</p>
                           </div>
                         </div>
                       </div>
