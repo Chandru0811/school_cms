@@ -10,18 +10,16 @@ import {
   createTheme,
 } from "@mui/material";
 import api from "../../../config/URL";
-import { MoreVert as MoreVertIcon } from "@mui/icons-material";
 import PropTypes from "prop-types";
 import TopicEdit from "../Topic/TopicEdit";
 import TopicView from "../Topic/TopicView";
 import TopicAdd from "../Topic/TopicAdd";
+import SubjectEdit from "./SubjectEdit";
 import { GoTrash } from "react-icons/go";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import DeleteChange from "../../../components/common/DeleteChange";
 
 function SubjectView() {
-  const [menuAnchor, setMenuAnchor] = useState(null);
-  const [showEdit, setShowEdit] = useState(false);
   const [showView, setShowView] = useState(false);
   const [data, setData] = useState({});
   const { id } = useParams();
@@ -198,19 +196,37 @@ function SubjectView() {
           )}
         </div>
       </div>
-      <div className="mx-4 card vh-100" style={{ border: "1px solid #dbd9d0" }}>
+      {loading ? (
         <div
-          className="card-header d-flex justify-content-between"
-          style={{ marginBottom: "1px solid #F4F4F4" }}
+          className="d-flex justify-content-center align-items-center"
+          style={{ height: "500px" }}
         >
-          <p className="view-header">Student Info</p>
+          <div className="spinner-border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
         </div>
-        <>
-          {loading ? (
-            <div className="loader-container">
-              <div className="loader"></div>
-            </div>
-          ) : (
+      ) : (
+        <div
+          className="mx-4 card vh-100"
+          style={{ border: "1px solid #dbd9d0" }}
+        >
+          <div
+            className="card-header d-flex justify-content-between"
+            style={{ marginBottom: "1px solid #F4F4F4" }}
+          >
+            <p className="view-header">Subject Info</p>
+            {storedScreens?.data[4]?.can_edit === 1 && (
+              <button
+                className="btn edit-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <SubjectEdit onSuccess={getData} id={id} />
+              </button>
+            )}
+          </div>
+          <>
             <div className="container-fluid px-4 mb-5">
               <div className="row pb-3">
                 <div className="col-md-6 col-12 my-2">
@@ -220,7 +236,7 @@ function SubjectView() {
                     </div>
                     <div className="col-6">
                       <p className="view-value">
-                        : {JSON.parse(data?.subject?.center_names)?.[0]}
+                        {JSON.parse(data?.subject?.center_names)?.[0]}
                       </p>
                     </div>
                   </div>
@@ -231,9 +247,7 @@ function SubjectView() {
                       <p className="view-label-text">Grade</p>
                     </div>
                     <div className="col-6">
-                      <p className="view-value">
-                        : {data?.subject?.grand_name}
-                      </p>
+                      <p className="view-value">{data?.subject?.grand_name}</p>
                     </div>
                   </div>
                 </div>
@@ -244,7 +258,7 @@ function SubjectView() {
                     </div>
                     <div className="col-6">
                       <p className="view-value">
-                        : {truncateText(data?.subject?.name)}
+                        {truncateText(data?.subject?.name)}
                       </p>
                     </div>
                   </div>
@@ -256,7 +270,7 @@ function SubjectView() {
                     </div>
                     <div className="col-6">
                       <p className="view-value">
-                        : {truncateText(data?.subject?.description)}
+                        {truncateText(data?.subject?.description)}
                       </p>
                     </div>
                   </div>
@@ -281,6 +295,7 @@ function SubjectView() {
                   enableDensityToggle={false}
                   enableFullScreenToggle={false}
                   initialState={{
+                    pagination: { pageSize: 50, pageIndex: 0 },
                     columnVisibility: {
                       id: !(
                         storedScreens?.data?.[5]?.can_edit === 0 &&
@@ -338,9 +353,9 @@ function SubjectView() {
                 id={selectedId}
               />
             </div>
-          )}
-        </>
-      </div>
+          </>
+        </div>
+      )}
       {deleteModalOpen && selectedId && (
         <DeleteChange
           path={`subjects/delete/${selectedId}`}

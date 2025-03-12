@@ -1,17 +1,12 @@
 import { useEffect, useState } from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import {
-  Dialog,
-  DialogActions,
-  DialogTitle,
-  DialogContent,
-} from "@mui/material";
 import PropTypes from "prop-types";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { TbEdit } from "react-icons/tb";
+import { Button, Modal } from "react-bootstrap";
 
 function TopicEdit({ id, onSuccess }) {
   const [loadIndicator, setLoadIndicator] = useState(false);
@@ -30,7 +25,10 @@ function TopicEdit({ id, onSuccess }) {
       .required("*Select a center id"),
     grade_id: yup.string().required("*Select a grade"),
     subject_id: yup.string().required("*Selected a subject"),
-    name: yup.string().max(255, "*Topic Name must not exceed 255 characters").required("*Topic Name is required"),
+    name: yup
+      .string()
+      .max(255, "*Topic Name must not exceed 255 characters")
+      .required("*Topic Name is required"),
   });
 
   const formik = useFormik({
@@ -97,7 +95,9 @@ function TopicEdit({ id, onSuccess }) {
       }));
       setCenterList(formattedCenters);
     } catch (e) {
-      toast.error(`Error Fetching Data: ${e?.response?.data?.error || e.message}`);
+      toast.error(
+        `Error Fetching Data: ${e?.response?.data?.error || e.message}`
+      );
     }
   };
 
@@ -109,7 +109,9 @@ function TopicEdit({ id, onSuccess }) {
         return;
       }
 
-      const centerIds = selectedCenter.map(center => `center_id[]=${center.value}`).join("&");
+      const centerIds = selectedCenter
+        .map((center) => `center_id[]=${center.value}`)
+        .join("&");
       const response = await api.get(`filter/grades?${centerIds}`);
 
       const formattedGrades = response.data?.data?.map((grade) => ({
@@ -120,12 +122,14 @@ function TopicEdit({ id, onSuccess }) {
       setGrades(formattedGrades);
 
       // Reset grade & subject if current values are no longer valid
-      if (!formattedGrades.some(g => g.value === formik.values.grade_id)) {
+      if (!formattedGrades.some((g) => g.value === formik.values.grade_id)) {
         formik.setFieldValue("grade_id", "");
         formik.setFieldValue("subject_id", "");
       }
     } catch (e) {
-      toast.error(`Error Fetching Grades: ${e?.response?.data?.error || e.message}`);
+      toast.error(
+        `Error Fetching Grades: ${e?.response?.data?.error || e.message}`
+      );
     }
   };
 
@@ -137,7 +141,9 @@ function TopicEdit({ id, onSuccess }) {
         return;
       }
 
-      const response = await api.get(`filter/subjects?grade_id[]=${formik.values.grade_id}`);
+      const response = await api.get(
+        `filter/subjects?grade_id[]=${formik.values.grade_id}`
+      );
 
       const formattedSubjects = response.data?.data?.map((subject) => ({
         value: subject.id,
@@ -146,18 +152,21 @@ function TopicEdit({ id, onSuccess }) {
 
       setSubjects(formattedSubjects);
 
-      if (!formattedSubjects.some(s => s.value === formik.values.subject_id)) {
+      if (
+        !formattedSubjects.some((s) => s.value === formik.values.subject_id)
+      ) {
         formik.setFieldValue("subject_id", "");
       }
     } catch (e) {
-      toast.error(`Error Fetching Subjects: ${e?.response?.data?.error || e.message}`);
+      toast.error(
+        `Error Fetching Subjects: ${e?.response?.data?.error || e.message}`
+      );
     }
   };
 
   useEffect(() => {
-      getTopicData();
-      getCenterList();
-
+    getTopicData();
+    getCenterList();
   }, [id]);
 
   useEffect(() => {
@@ -196,90 +205,88 @@ function TopicEdit({ id, onSuccess }) {
         className=" d-flex align-items-center"
         onClick={handleShow}
       >
-         <TbEdit style={{ color: "#4F46E5", fontSize: "16px" }} />
+        <TbEdit style={{ color: "#4F46E5", fontSize: "16px" }} />
       </span>
-      <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
+      <Modal show={show} onHide={handleClose} size="lg">
         <form
           onSubmit={formik.handleSubmit}
           onKeyDown={(e) => {
-            if (e.key === "Enter" && !formik.isSubmitting) {
+            if (e.key === "Enter") {
               e.preventDefault();
             }
           }}
         >
-          <DialogTitle>Topic Edit</DialogTitle>
-          <hr className="m-0"></hr>
-          <DialogContent>
-            <div className="row">
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Topic Name</p>
-                  </div>
-                  <div className="col-7">
-                    <input
-                      type="text"
-                      onKeyDown={(e) => e.stopPropagation()}
-                      className={`form-control form-control-sm ${
-                        formik.touched.topic_name && formik.errors.topic_name
-                          ? "is-invalid"
-                          : ""
-                      }`}
-                      {...formik.getFieldProps("topic_name")}
-                    />
-                    {formik.touched.topic_name && formik.errors.topic_name && (
-                      <div className="invalid-feedback">
-                        {formik.errors.topic_name}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Description</p>
-                  </div>
-                  <div className="col-7">
-                    <textarea
-                      className={`form-control ${
-                        formik.touched.description && formik.errors.description
-                          ? "is-invalid"
-                          : ""
-                      }`}
-                      rows="3"
-                      {...formik.getFieldProps("description")}
-                    />
-                  </div>
-                </div>
-              </div>
+          <Modal.Header>
+            <Modal.Title>Topic Edit</Modal.Title>
+            <div className="d-flex gap-3">
+              <Button
+                className="btn btn-secondary btn-sm py-0"
+                onClick={handleClose}
+              >
+                Close
+              </Button>
+              <Button
+                className="btn add-btn "
+                type="submit"
+                disabled={loadIndicator}
+                onClick={formik.handleSubmit}
+              >
+                {loadIndicator && (
+                  <span
+                    className="spinner-border spinner-border-sm me-2"
+                    aria-hidden="true"
+                  ></span>
+                )}
+                <small>Update</small>
+              </Button>
             </div>
-          </DialogContent>
-          <hr className="m-0"></hr>
-          <DialogActions className="mt-3">
-            <button
-              type="button"
-              className="btn btn-sm btn-back"
-              onClick={handleClose}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="btn btn-button btn-sm"
-              disabled={loadIndicator}
-            >
-              {loadIndicator && (
-                <span
-                  className="spinner-border spinner-border-sm me-2"
-                  aria-hidden="true"
-                ></span>
-              )}
-              Update
-            </button>
-          </DialogActions>
+          </Modal.Header>
+          <Modal.Body>
+            {loading ? (
+              <div className="d-flex justify-content-center align-items-center">
+                <div className="spinner-border" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
+              </div>
+            ) : (
+              <div className="row">
+                <div className="col-md-6 col-12 mb-3">
+                  <label className="form-label">
+                    Topic Name<span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className={`form-control form-control-sm ${
+                      formik.touched.topic_name && formik.errors.topic_name
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("topic_name")}
+                  />
+                  {formik.touched.topic_name && formik.errors.topic_name && (
+                    <div className="invalid-feedback">
+                      {formik.errors.topic_name}
+                    </div>
+                  )}
+                </div>
+
+                <div className="col-md-6 col-12 mb-3">
+                  <label className="form-label">Description</label>
+                  <textarea
+                    className={`form-control ${
+                      formik.touched.description && formik.errors.description
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    rows="4"
+                    {...formik.getFieldProps("description")}
+                  />
+                </div>
+              </div>
+            )}
+          </Modal.Body>
         </form>
-      </Dialog>
+      </Modal>
     </>
   );
 }

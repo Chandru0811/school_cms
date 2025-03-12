@@ -186,8 +186,9 @@ function EmployeeAdd() {
             <div className="row">
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Centre</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Centre</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <MultiSelect
@@ -217,8 +218,9 @@ function EmployeeAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Role</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Role</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <select
@@ -250,8 +252,9 @@ function EmployeeAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text"> Employee Name</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text"> Employee Name</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <input
@@ -275,8 +278,9 @@ function EmployeeAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Employee Email</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Employee Email</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <input
@@ -300,8 +304,9 @@ function EmployeeAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text"> Employee Mobile</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text"> Employee Mobile</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <input
@@ -325,45 +330,59 @@ function EmployeeAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-6">
-                    <label className="form-label view-label-text">Gender</label>
-                    <div className="d-flex gap-3">
-                      <div className="form-check">
-                        <input
-                          type="radio"
-                          className="form-check-input"
-                          id="male"
-                          name="gender"
-                          value="Male"
-                          checked={formik.values.gender === "Male"}
-                          onChange={formik.handleChange}
-                        />
-                        <label className="form-check-label" htmlFor="Male">
-                          Male
-                        </label>
-                      </div>
-                      <div className="form-check">
-                        <input
-                          type="radio"
-                          className="form-check-input"
-                          id="Female"
-                          name="gender"
-                          value="Female"
-                          checked={formik.values.gender === "Female"}
-                          onChange={formik.handleChange}
-                        />
-                        <label className="form-check-label" htmlFor="Female">
-                          Female
-                        </label>
-                      </div>
+                  <div className="col-5">
+                    <label className="form-label view-label-text">
+                      Gender <span className="text-danger">*</span>
+                    </label>
+                  </div>
+                  <div className="col-7 d-flex gap-3">
+                    <div className="form-check">
+                      <input
+                        type="radio"
+                        className="form-check-input"
+                        id="male"
+                        name="gender"
+                        value="Male"
+                        checked={formik.values.gender === "Male"}
+                        onChange={formik.handleChange}
+                      />
+                      <label
+                        className="form-check-label view-label-text"
+                        htmlFor="male"
+                      >
+                        Male
+                      </label>
                     </div>
+                    <div className="form-check">
+                      <input
+                        type="radio"
+                        className="form-check-input"
+                        id="female"
+                        name="gender"
+                        value="Female"
+                        checked={formik.values.gender === "Female"}
+                        onChange={formik.handleChange}
+                      />
+                      <label
+                        className="form-check-label view-label-text"
+                        htmlFor="female"
+                      >
+                        Female
+                      </label>
+                    </div>
+                  </div>
+                  <div className="col-12 text-center mx-5">
+                    {formik.touched.gender && formik.errors.gender && (
+                      <div className="text-danger">{formik.errors.gender}</div>
+                    )}
                   </div>
                 </div>
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Password</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Password</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <div className="input-group">
@@ -397,8 +416,9 @@ function EmployeeAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Confirm Password</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Confirm Password</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <div className="input-group">

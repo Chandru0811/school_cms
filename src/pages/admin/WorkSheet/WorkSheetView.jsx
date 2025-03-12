@@ -217,7 +217,7 @@ function WorkSheetView() {
                     className="btn btn-success btn-sm me-2"
                     style={{ fontWeight: "600 !important" }}
                   >
-                  Try Worksheet
+                    Try Worksheet
                   </button>
                 </Link>
               </>
@@ -253,8 +253,13 @@ function WorkSheetView() {
 
         <>
           {loading ? (
-            <div className="loader-container">
-              <div className="loader"></div>
+            <div
+              className="d-flex justify-content-center align-items-center"
+              style={{ height: "500px" }}
+            >
+              <div className="spinner-border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
             </div>
           ) : (
             <div className="container-fluid px-4 mb-5">

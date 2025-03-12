@@ -1,18 +1,13 @@
 import { useEffect, useState } from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import {
-  Dialog,
-  DialogActions,
-  DialogTitle,
-  DialogContent,
-} from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import PropTypes from "prop-types";
 import { MultiSelect } from "react-multi-select-component";
 import api from "../../../config/URL";
 import { FaPlus } from "react-icons/fa";
+import { Button, Modal, ModalBody } from "react-bootstrap";
 
 function TopicAdd({ onSuccess }) {
   const [show, setShow] = useState(false);
@@ -124,7 +119,7 @@ function TopicAdd({ onSuccess }) {
       >
         <FaPlus fontSize={12} className="me-1" /> Add Subject
       </button>
-      <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
+      <Modal show={show} onHide={handleClose} size="lg">
         <form
           onSubmit={formik.handleSubmit}
           onKeyDown={(e) => {
@@ -133,14 +128,38 @@ function TopicAdd({ onSuccess }) {
             }
           }}
         >
-          <DialogTitle>Add Subject</DialogTitle>
-          <hr className="m-0"></hr>
-          <DialogContent>
+          <Modal.Header>
+            <Modal.Title>Subject Add</Modal.Title>
+            <div className="d-flex gap-3">
+              <Button
+                className="btn btn-secondary btn-sm py-0"
+                onClick={handleClose}
+              >
+                Close
+              </Button>
+              <Button
+                className="btn add-btn button-spinner text-light"
+                type="submit"
+                disabled={loadIndicator}
+                onClick={formik.handleSubmit}
+              >
+                {loadIndicator && (
+                  <span
+                    className="spinner-border spinner-border-sm me-2"
+                    aria-hidden="true"
+                  ></span>
+                )}
+                <small> Submit</small>
+              </Button>
+            </div>
+          </Modal.Header>
+          <ModalBody>
             <div className="row">
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Centre Name</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Centre Name</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <MultiSelect
@@ -170,8 +189,9 @@ function TopicAdd({ onSuccess }) {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Grade</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Grade</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <select
@@ -202,12 +222,13 @@ function TopicAdd({ onSuccess }) {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Name</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Name</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <input
-                    placeholder="Enter Text"
+                      placeholder="Enter Text"
                       type="text"
                       onKeyDown={(e) => e.stopPropagation()}
                       className={`form-control form-control-sm ${
@@ -227,12 +248,12 @@ function TopicAdd({ onSuccess }) {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
+                  <div className="col-5 d-flex">
                     <p className="view-label-text">Description</p>
                   </div>
                   <div className="col-7">
                     <textarea
-                    placeholder="Enter Text"
+                      placeholder="Enter Text"
                       className={`form-control ${
                         formik.touched.description && formik.errors.description
                           ? "is-invalid"
@@ -245,32 +266,9 @@ function TopicAdd({ onSuccess }) {
                 </div>
               </div>
             </div>
-          </DialogContent>
-          <hr className="m-0"></hr>
-          <DialogActions className="mt-3">
-            <button
-              type="button"
-              className="btn btn-sm btn-back"
-              onClick={handleClose}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="btn btn-button btn-sm"
-              disabled={loadIndicator}
-            >
-              {loadIndicator && (
-                <span
-                  className="spinner-border spinner-border-sm me-2"
-                  aria-hidden="true"
-                ></span>
-              )}
-              Save
-            </button>
-          </DialogActions>
+          </ModalBody>
         </form>
-      </Dialog>
+      </Modal>
     </>
   );
 }

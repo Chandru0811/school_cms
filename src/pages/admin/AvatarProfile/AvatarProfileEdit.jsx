@@ -10,6 +10,7 @@ import ImageURL from "../../../config/ImageURL";
 
 function AvatarProfileEdit({ id, onSuccess }) {
   const [loadIndicator, setLoadIndicator] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [show, setShow] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [avatarImage, setAvatarImage] = useState(null);
@@ -72,6 +73,7 @@ function AvatarProfileEdit({ id, onSuccess }) {
 
   const getData = async () => {
     try {
+      setLoading(true);
       const response = await api.get(`admin/avatar/${id}`);
       if (response?.data?.data) {
         formik.setValues({
@@ -84,10 +86,13 @@ function AvatarProfileEdit({ id, onSuccess }) {
       }
     } catch (error) {
       toast.error("Failed to fetch avatar details.");
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleShow = () => {
+    setLoadIndicator(false);
     getData();
     setShow(true);
   };
@@ -97,6 +102,7 @@ function AvatarProfileEdit({ id, onSuccess }) {
     formik.resetForm();
     setSelectedFile(null);
     setAvatarImage(null);
+    setLoadIndicator(false);
   };
 
   return (
@@ -106,128 +112,129 @@ function AvatarProfileEdit({ id, onSuccess }) {
       </span>
 
       <Modal show={show} onHide={handleClose} size="md">
-        <Modal.Header closeButton>
+        <Modal.Header>
           <Modal.Title>Edit Avatar Profile</Modal.Title>
+          <div className="d-flex gap-3">
+            <Button
+              className="btn btn-secondary btn-sm py-0"
+              onClick={handleClose}
+            >
+              Close
+            </Button>
+            <Button
+              className="btn add-btn "
+              type="submit"
+              disabled={loadIndicator}
+              onClick={formik.handleSubmit}
+            >
+              {loadIndicator && (
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  aria-hidden="true"
+                ></span>
+              )}
+              <small>Update</small>
+            </Button>
+          </div>
         </Modal.Header>
         <Modal.Body>
-          <form
-            onSubmit={(event) => {
-              console.log("Form Submitted");
-              formik.handleSubmit(event);
-            }}
-          >
-            <div className="mb-3">
-              <label className="form-label">
-                Name<span className="text-danger">*</span>
-              </label>
-              <input
-                type="text"
-                className={`form-control ${
-                  formik.touched.name && formik.errors.name ? "is-invalid" : ""
-                }`}
-                placeholder="Enter Name"
-                {...formik.getFieldProps("name")}
-              />
-              {formik.touched.name && formik.errors.name && (
-                <div className="invalid-feedback">{formik.errors.name}</div>
-              )}
-            </div>
-
-            <div className="mb-3">
-              <label className="form-label">Default</label>
-              <div className="d-flex gap-3">
-                <div className="form-check">
-                  <input
-                    type="radio"
-                    className="form-check-input"
-                    id="Male"
-                    name="default_gender"
-                    value="male"
-                    checked={formik.values.default_male === true} 
-                    onChange={() => {
-                      formik.setFieldValue("default_male", true);
-                      formik.setFieldValue("default_female", false);
-                    }}
-                  />
-                  <label className="form-check-label" htmlFor="Male">
-                    Male
-                  </label>
-                </div>
-                <div className="form-check">
-                  <input
-                    type="radio"
-                    className="form-check-input"
-                    id="Female"
-                    name="default_gender"
-                    value="female"
-                    checked={formik.values.default_female === true} 
-                    onChange={() => {
-                      formik.setFieldValue("default_male", false);
-                      formik.setFieldValue("default_female", true);
-                    }}
-                  />
-                  <label className="form-check-label" htmlFor="Female">
-                    Female
-                  </label>
-                </div>
+          {loading ? (
+            <div
+              className="d-flex justify-content-center align-items-center"
+              style={{ height: "500px" }}
+            >
+              <div className="spinner-border" role="status">
+                <span className="visually-hidden">Loading...</span>
               </div>
             </div>
-
-            <div className="mb-3">
-              <label className="form-label">Image (Optional)</label>
-
-              <input
-                type="file"
-                className="form-control"
-                accept="image/*"
-                onChange={(event) => {
-                  const file = event.currentTarget.files[0];
-                  if (file) {
-                    formik.setFieldValue("image", file);
-                    setSelectedFile(file.name);
-                    setAvatarImage(URL.createObjectURL(file));
-                  }
-                }}
-              />
-
-              {avatarImage && (
-                <div className="mt-2">
-                  <p className="text-muted">Current Image:</p>
-                  <img
-                    src={selectedFile ? avatarImage : ImageURL + avatarImage}
-                    alt="Avatar Preview"
-                    style={{
-                      width: "100px",
-                      height: "100px",
-                      objectFit: "cover",
-                    }}
-                  />
-                </div>
-              )}
-            </div>
-
-            <div className="d-flex justify-content-end">
-              <Button
-                className="btn btn-secondary btn-sm me-2"
-                onClick={handleClose}
-              >
-                Close
-              </Button>
-              <Button
-                className="btn btn-primary btn-sm"
-                type="submit"
-                disabled={loadIndicator}
-              >
-                {loadIndicator && (
-                  <span
-                    className="spinner-border spinner-border-sm me-2"
-                    aria-hidden="true"
-                  ></span>
+          ) : (
+            <form onSubmit={formik.handleSubmit}>
+              <div className="mb-3">
+                <label className="form-label">
+                  Name<span className="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  className={`form-control ${
+                    formik.touched.name && formik.errors.name
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  placeholder="Enter Name"
+                  {...formik.getFieldProps("name")}
+                />
+                {formik.touched.name && formik.errors.name && (
+                  <div className="invalid-feedback">{formik.errors.name}</div>
                 )}
-                Submit
-              </Button>
-            </div>
-          </form>
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label">Default</label>
+                <div className="d-flex gap-3">
+                  <div className="form-check">
+                    <input
+                      type="radio"
+                      className="form-check-input"
+                      id="Male"
+                      name="default_gender"
+                      value="1"
+                      checked={formik.values.default_male === 1}
+                      onChange={() => {
+                        formik.setFieldValue("default_male", 1);
+                        formik.setFieldValue("default_female", 0);
+                      }}
+                    />
+                    <label className="form-check-label" htmlFor="Male">
+                      Male
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      type="radio"
+                      className="form-check-input"
+                      id="Female"
+                      name="default_gender"
+                      value="1"
+                      checked={formik.values.default_female === 1}
+                      onChange={() => {
+                        formik.setFieldValue("default_female", 1);
+                        formik.setFieldValue("default_male", 0);
+                      }}
+                    />
+                    <label className="form-check-label" htmlFor="Female">
+                      Female
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mb-3">
+                <label className="form-label">
+                  Image<span className="text-danger">*</span>
+                </label>
+                <input
+                  type="file"
+                  className={`form-control ${
+                    formik.touched.image && formik.errors.image
+                      ? "is-invalid"
+                      : ""
+                  }`}
+                  accept="image/*"
+                  onChange={(event) => {
+                    const file = event.currentTarget.files[0];
+                    formik.setFieldValue("image", file || null);
+                    setSelectedFile(file ? file.name : null);
+                  }}
+                />
+                {formik.touched.image && formik.errors.image && (
+                  <div className="invalid-feedback">{formik.errors.image}</div>
+                )}
+                {selectedFile && (
+                  <p className="mt-1 text-muted">Selected: {selectedFile}</p>
+                )}
+              </div>
+            </form>
+          )}
         </Modal.Body>
       </Modal>
     </>

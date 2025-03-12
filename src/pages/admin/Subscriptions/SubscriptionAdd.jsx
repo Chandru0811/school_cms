@@ -272,7 +272,7 @@ function SubscriptionAdd() {
             </button>
             <button
               type="submit"
-              className="btn add-btn"
+              className="btn add-btn text-light"
               disabled={loadIndicator}
             >
               {loadIndicator && (
@@ -293,8 +293,9 @@ function SubscriptionAdd() {
             <div className="row py-4">
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
+                  <div className="col-5 d-flex">
                     <p className="view-label-text">Grade</p>
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <select
@@ -326,7 +327,7 @@ function SubscriptionAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
+                  <div className="col-5 d-flex">
                     <p className="view-label-text">Worksheet</p>
                   </div>
                   <div className="col-7">
@@ -354,12 +355,13 @@ function SubscriptionAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Name</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Name</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
-                     <input
-                    placeholder="Enter Text"
+                    <input
+                      placeholder="Enter Text"
                       type="text"
                       className={`form-control form-control-sm ${
                         formik.touched.name && formik.errors.name
@@ -379,12 +381,13 @@ function SubscriptionAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Price</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Price</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
-                     <input
-                    placeholder="Enter Text"
+                    <input
+                      placeholder="Enter Text"
                       type="text"
                       className={`form-control form-control-sm ${
                         formik.touched.price && formik.errors.price
@@ -404,8 +407,9 @@ function SubscriptionAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Duration</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Duration</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <select
@@ -432,12 +436,12 @@ function SubscriptionAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
+                  <div className="col-5 d-flex">
                     <p className="view-label-text">Description</p>
                   </div>
                   <div className="col-7">
-                     <input
-                    placeholder="Enter Text"
+                    <input
+                      placeholder="Enter Text"
                       type="text"
                       className={`form-control form-control-sm ${
                         formik.touched.description && formik.errors.description

@@ -17,6 +17,7 @@ import { MdKeyboardArrowLeft } from "react-icons/md";
 import { GoTrash } from "react-icons/go";
 import { TbEdit } from "react-icons/tb";
 import DeleteChange from "../../../components/common/DeleteChange";
+import ImageURL from "../../../config/ImageURL";
 
 function StudentView() {
   const [data, setData] = useState({});
@@ -189,7 +190,7 @@ function StudentView() {
           <div className="d-flex justify-content-end">
             <button
               type="button"
-              className="btn btn-sm btn-button"
+              className="btn btn-sm add-btn"
               onClick={handleShow}
             >
               Change Student Password
@@ -201,7 +202,7 @@ function StudentView() {
               <>
                 <button
                   type="button"
-                  className="btn btn-sm btn-button"
+                  className="btn btn-sm add-btn"
                   onClick={handleParentShow}
                 >
                   Change Parent Password
@@ -221,8 +222,13 @@ function StudentView() {
           </div>
         </div>
         {loading ? (
-          <div className="loader-container">
-            <div className="loader"></div>
+          <div
+            className="d-flex justify-content-center align-items-center"
+            style={{ height: "500px" }}
+          >
+            <div className="spinner-border" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
           </div>
         ) : (
           <div className="container-fluid px-4">
@@ -233,7 +239,7 @@ function StudentView() {
                     <p className="view-label-text">Centre</p>
                   </div>
                   <div className="col-6">
-                    <p className="view-value">: {data.center_name}</p>
+                    <p className="view-value"> {data.center_name}</p>
                   </div>
                 </div>
               </div>
@@ -243,7 +249,31 @@ function StudentView() {
                     <p className="view-label-text">Role</p>
                   </div>
                   <div className="col-6">
-                    <p className="view-value">: {data.role_name}</p>
+                    <p className="view-value"> {data.role_name}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="view-label-text">Student Profile</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="view-value">
+                      :{" "}
+                      <img
+                        src={`${ImageURL.replace(
+                          /\/$/,
+                          ""
+                        )}/${data.student.avatar.image.replace(/^\//, "")}`}
+                        alt="Avatar"
+                        style={{
+                          maxWidth: "50%",
+                          height: "auto",
+                          borderRadius: "5px",
+                        }}
+                      />
+                    </p>
                   </div>
                 </div>
               </div>
@@ -253,7 +283,7 @@ function StudentView() {
                     <p className="view-label-text">Student First Name</p>
                   </div>
                   <div className="col-6">
-                    <p className="view-value">: {data.first_name}</p>
+                    <p className="view-value"> {data.first_name}</p>
                   </div>
                 </div>
               </div>
@@ -263,7 +293,7 @@ function StudentView() {
                     <p className="view-label-text">Student Middle Name</p>
                   </div>
                   <div className="col-6">
-                    <p className="view-value">: {data.middle_name || "--"}</p>
+                    <p className="view-value"> {data.middle_name || "--"}</p>
                   </div>
                 </div>
               </div>
@@ -273,7 +303,7 @@ function StudentView() {
                     <p className="view-label-text">Student Last Name</p>
                   </div>
                   <div className="col-6">
-                    <p className="view-value">: {data.last_name}</p>
+                    <p className="view-value"> {data.last_name}</p>
                   </div>
                 </div>
               </div>
@@ -284,7 +314,7 @@ function StudentView() {
                   </div>
                   <div className="col-6">
                     <p className="view-value text-break">
-                      : {data?.student?.email}
+                      {data?.student?.email}
                     </p>
                   </div>
                 </div>
@@ -296,7 +326,19 @@ function StudentView() {
                   </div>
                   <div className="col-6">
                     <p className="view-value text-break">
-                      : {data?.student?.mobile}
+                      {data?.student?.mobile}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="view-label-text">Student Gender</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="view-value text-break">
+                      : {data?.student?.gender}
                     </p>
                   </div>
                 </div>
@@ -307,9 +349,7 @@ function StudentView() {
                     <p className="view-label-text">Parent Name</p>
                   </div>
                   <div className="col-6">
-                    <p className="view-value text-break">
-                      : {data?.parent_name}
-                    </p>
+                    <p className="view-value text-break">{data?.parent_name}</p>
                   </div>
                 </div>
               </div>
@@ -320,7 +360,7 @@ function StudentView() {
                   </div>
                   <div className="col-6">
                     <p className="view-value text-break">
-                      : {data?.parent_email || "--"}
+                      {data?.parent_email || "--"}
                     </p>
                   </div>
                 </div>
@@ -332,7 +372,43 @@ function StudentView() {
                   </div>
                   <div className="col-6">
                     <p className="view-value text-break">
-                      : {data?.parent_mobile || "--"}
+                      {data?.parent_mobile || "--"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="view-label-text">Parent Profile</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="view-value">
+                      :{" "}
+                      <img
+                        src={`${ImageURL.replace(
+                          /\/$/,
+                          ""
+                        )}/${data.parent.avatar.image.replace(/^\//, "")}`}
+                        alt="Avatar"
+                        style={{
+                          maxWidth: "50%",
+                          height: "auto",
+                          borderRadius: "5px",
+                        }}
+                      />
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="view-label-text">Parent Gender</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="view-value text-break">
+                      : {data?.parent_gender || "--"}
                     </p>
                   </div>
                 </div>
@@ -343,7 +419,7 @@ function StudentView() {
                     <p className="view-label-text">Grade</p>
                   </div>
                   <div className="col-6">
-                    <p className="view-value">: {data.grade_name}</p>
+                    <p className="view-value"> {data.grade_name}</p>
                   </div>
                 </div>
               </div>
@@ -354,7 +430,7 @@ function StudentView() {
                   </div>
                   <div className="col-6">
                     <p className="view-value">
-                      :{"--"}
+                      :
                       {data.subscriptions_names
                         ? JSON.parse(data.subscriptions_names).join(", ")
                         : ""}

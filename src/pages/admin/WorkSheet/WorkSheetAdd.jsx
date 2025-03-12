@@ -193,7 +193,7 @@ function WorkSheetAdd() {
                   <div className="form-check" key={`${row.id}-${i}`}>
                     <label className="form-check-label">
                       <input
-                      placeholder="Enter Text"
+                        placeholder="Enter Text"
                         type="radio"
                         // name={`ques_id_with_type_${row.id}`}
                         value={t}
@@ -568,7 +568,7 @@ function WorkSheetAdd() {
                 <div className="d-flex gap-3">
                   <div className="form-check">
                     <input
-                    placeholder="Enter Text"
+                      placeholder="Enter Text"
                       type="radio"
                       name="type"
                       value="question"
@@ -581,7 +581,7 @@ function WorkSheetAdd() {
                   </div>
                   <div className="form-check">
                     <input
-                    placeholder="Enter Text"
+                      placeholder="Enter Text"
                       type="radio"
                       name="type"
                       value="challenge"
@@ -600,7 +600,7 @@ function WorkSheetAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
+                  <div className="col-5 d-flex">
                     {formik.values.type === "challenge" ? (
                       <label className="form-label">
                         Challenge Title<span className="text-danger">*</span>
@@ -613,7 +613,7 @@ function WorkSheetAdd() {
                   </div>
                   <div className="col-7">
                     <input
-                    placeholder="Enter Text"
+                      placeholder="Enter Text"
                       className={`form-control form-control-sm ${
                         formik.touched.title && formik.errors.title
                           ? "is-invalid"
@@ -631,8 +631,9 @@ function WorkSheetAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Centre</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Centre</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <MultiSelect
@@ -673,8 +674,9 @@ function WorkSheetAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Grade</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Grade</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <MultiSelect
@@ -713,7 +715,7 @@ function WorkSheetAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
+                  <div className="col-5 d-flex">
                     <p className="view-label-text">Subject</p>
                   </div>
                   <div className="col-7">
@@ -740,7 +742,7 @@ function WorkSheetAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
+                  <div className="col-5 d-flex">
                     <p className="view-label-text">Topic</p>
                   </div>
                   <div className="col-7">
@@ -762,7 +764,7 @@ function WorkSheetAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
+                  <div className="col-5 d-flex">
                     {formik.values.type === "challenge" ? (
                       <label className="form-label">
                         Challenge Type<span className="text-danger">*</span>
@@ -801,8 +803,9 @@ function WorkSheetAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Difficulty Type</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Difficulty Type</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <select
@@ -831,12 +834,13 @@ function WorkSheetAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Total Scoree</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Total Scoree</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <input
-                    placeholder="Enter Text"
+                      placeholder="Enter Text"
                       type="text"
                       className={`form-control form-control-sm ${
                         formik.touched.total_score && formik.errors.total_score
@@ -856,12 +860,13 @@ function WorkSheetAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Target Score</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Target Score</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <input
-                    placeholder="Enter Text"
+                      placeholder="Enter Text"
                       type="text"
                       className={`form-control form-control-sm ${
                         formik.touched.target_score &&
@@ -882,12 +887,13 @@ function WorkSheetAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Reward</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Reward</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <input
-                    placeholder="Enter Text"
+                      placeholder="Enter Text"
                       type="text"
                       className={`form-control form-control-sm ${
                         formik.touched.reward && formik.errors.reward

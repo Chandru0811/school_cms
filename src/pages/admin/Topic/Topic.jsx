@@ -202,7 +202,8 @@ function Topic() {
                 enableColumnFilters={false}
                 enableDensityToggle={false}
                 enableFullScreenToggle={false}
-                initialState={{
+                   initialState={{
+                  pagination: { pageSize: 50, pageIndex: 0 },
                   columnVisibility: {
                     id:!(storedScreens?.data?.[5]?.can_edit === 0 && storedScreens?.data?.[5]?.can_delete === 0),
                     working_hrs: false,

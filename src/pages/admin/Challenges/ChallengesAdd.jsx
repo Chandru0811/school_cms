@@ -431,7 +431,9 @@ function ChallengesAdd() {
         );
 
       // Extract option fields dynamically
-      const optionFields = headers.filter((header) => header.startsWith("Option"));
+      const optionFields = headers.filter((header) =>
+        header.startsWith("Option")
+      );
 
       const gridColumns = headers.map((header) => {
         if (header === "difficult_level") {
@@ -477,7 +479,7 @@ function ChallengesAdd() {
     setColumns([]);
     setRows([]);
     formik.setFieldValue("bulkImg", null);
-  }
+  };
   return (
     <div className="container p-3">
       <form
@@ -538,8 +540,9 @@ function ChallengesAdd() {
             <div className="row">
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Centre Name</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Centre Name</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <MultiSelect
@@ -559,10 +562,11 @@ function ChallengesAdd() {
                         }
                       }}
                       labelledBy="Select Center"
-                      className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${formik.touched.center_id && formik.errors.center_id
+                      className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${
+                        formik.touched.center_id && formik.errors.center_id
                           ? "is-invalid"
                           : ""
-                        }`}
+                      }`}
                     />
                     {formik.touched.center_id && formik.errors.center_id && (
                       <div className="invalid-feedback">
@@ -574,15 +578,17 @@ function ChallengesAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Grade</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Grade</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <select
-                      className={`form-select form-select-sm ${formik.touched.grade_id && formik.errors.grade_id
+                      className={`form-select form-select-sm ${
+                        formik.touched.grade_id && formik.errors.grade_id
                           ? "is-invalid"
                           : ""
-                        }`}
+                      }`}
                       value={formik.values.grade_id}
                       onChange={(e) =>
                         formik.setFieldValue("grade_id", e.target.value)
@@ -605,15 +611,17 @@ function ChallengesAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Subject</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Subject</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <select
-                      className={`form-select form-select-sm ${formik.touched.subject_id && formik.errors.subject_id
+                      className={`form-select form-select-sm ${
+                        formik.touched.subject_id && formik.errors.subject_id
                           ? "is-invalid"
                           : ""
-                        }`}
+                      }`}
                       value={formik.values.subject_id}
                       onChange={(e) =>
                         formik.setFieldValue("subject_id", e.target.value)
@@ -636,15 +644,17 @@ function ChallengesAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Topic</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Topic</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <select
-                      className={`form-select form-select-sm ${formik.touched.topic_id && formik.errors.topic_id
+                      className={`form-select form-select-sm ${
+                        formik.touched.topic_id && formik.errors.topic_id
                           ? "is-invalid"
                           : ""
-                        }`}
+                      }`}
                       {...formik.getFieldProps("topic_id")}
                     >
                       <option value="">Select Topic</option>
@@ -664,15 +674,16 @@ function ChallengesAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
+                  <div className="col-5 d-flex">
                     <p className="view-label-text">Question Upload Type</p>
                   </div>
                   <div className="col-7">
                     <select
-                      className={`form-select form-select-sm ${formik.touched.uploadType && formik.errors.uploadType
+                      className={`form-select form-select-sm ${
+                        formik.touched.uploadType && formik.errors.uploadType
                           ? "is-invalid"
                           : ""
-                        }`}
+                      }`}
                       {...formik.getFieldProps("uploadType")}
                     >
                       <option value="" disabled>
@@ -693,8 +704,9 @@ function ChallengesAdd() {
                 <>
                   <div className="col-md-6 col-12">
                     <div className="row mb-4">
-                      <div className="col-5">
-                        <p className="view-label-text"> Difficult Level</p>
+                      <div className="col-5 d-flex">
+                        <p className="view-label-text"> Difficult Level</p>{" "}
+                        <span className="text-danger">*</span>
                       </div>
                       <div className="col-7">
                         <div className="d-flex gap-3">
@@ -754,17 +766,19 @@ function ChallengesAdd() {
                   </div>
                   <div className="col-md-6 col-12">
                     <div className="row mb-4">
-                      <div className="col-5">
-                        <p className="view-label-text">Challenge Title</p>
+                      <div className="col-5 d-flex">
+                        <p className="view-label-text">Challenge Title</p>{" "}
+                        <span className="text-danger">*</span>
                       </div>
                       <div className="col-7">
                         <input
                           placeholder="Enter Text"
                           type="text"
-                          className={`form-control form-control-sm ${formik.touched.title && formik.errors.title
+                          className={`form-control form-control-sm ${
+                            formik.touched.title && formik.errors.title
                               ? "is-invalid"
                               : ""
-                            }`}
+                          }`}
                           {...formik.getFieldProps("title")}
                         ></input>
                         {formik.touched.title && formik.errors.title && (
@@ -777,7 +791,7 @@ function ChallengesAdd() {
                   </div>
                   <div className="col-md-6 col-12">
                     <div className="row mb-4">
-                      <div className="col-5">
+                      <div className="col-5 d-flex">
                         <p className="view-label-text">
                           Challenge Descriptione
                         </p>
@@ -785,11 +799,12 @@ function ChallengesAdd() {
                       <div className="col-7">
                         <textarea
                           rows={5}
-                          className={`form-control ${formik.touched.description &&
-                              formik.errors.description
+                          className={`form-control ${
+                            formik.touched.description &&
+                            formik.errors.description
                               ? "is-invalid"
                               : ""
-                            }`}
+                          }`}
                           {...formik.getFieldProps("description")}
                           maxLength={825}
                         />
@@ -798,18 +813,20 @@ function ChallengesAdd() {
                   </div>
                   <div className="col-md-6 col-12">
                     <div className="row mb-4">
-                      <div className="col-5">
-                        <p className="view-label-text">Time Limit</p>
+                      <div className="col-5 d-flex">
+                        <p className="view-label-text">Time Limit</p>{" "}
+                        <span className="text-danger">*</span>
                       </div>
                       <div className="col-7">
                         <input
                           placeholder="Enter Text"
                           type="text"
-                          className={`form-control form-control-sm ${formik.touched.time_limit &&
-                              formik.errors.time_limit
+                          className={`form-control form-control-sm ${
+                            formik.touched.time_limit &&
+                            formik.errors.time_limit
                               ? "is-invalid"
                               : ""
-                            }`}
+                          }`}
                           {...formik.getFieldProps("time_limit")}
                           onInput={(e) =>
                             (e.target.value = e.target.value.replace(/\D/g, ""))
@@ -826,8 +843,9 @@ function ChallengesAdd() {
                   </div>
                   <div className="col-md-6 col-12">
                     <div className="row mb-4">
-                      <div className="col-5">
-                        <p className="view-label-text"> Question Type</p>
+                      <div className="col-5 d-flex">
+                        <p className="view-label-text"> Question Type</p>{" "}
+                        <span className="text-danger">*</span>
                       </div>
                       <div className="col-7">
                         {[
@@ -873,11 +891,12 @@ function ChallengesAdd() {
                         <input
                           type="text"
                           placeholder="Your Question & Answer"
-                          className={`form-control form-control-sm ${formik.touched.answer?.[0]?.fillable &&
-                              formik.errors.answer?.[0]?.fillable
+                          className={`form-control form-control-sm ${
+                            formik.touched.answer?.[0]?.fillable &&
+                            formik.errors.answer?.[0]?.fillable
                               ? "is-invalid"
                               : ""
-                            }`}
+                          }`}
                           name="answer"
                           value={formik.values.answer[0]?.fillable || ""}
                           onChange={(e) => {
@@ -1016,12 +1035,13 @@ function ChallengesAdd() {
                             <div className="input-group mb-2">
                               <input
                                 type="text"
-                                className={`form-control form-control-sm ${formik.errors.options &&
-                                    formik.touched.options &&
-                                    formik.errors.options[index]?.value
+                                className={`form-control form-control-sm ${
+                                  formik.errors.options &&
+                                  formik.touched.options &&
+                                  formik.errors.options[index]?.value
                                     ? "is-invalid"
                                     : ""
-                                  }`}
+                                }`}
                                 name={`options[${index}].value`}
                                 value={multiChoice.value}
                                 onChange={(e) => {
@@ -1039,12 +1059,12 @@ function ChallengesAdd() {
                                     updatedAnswers = updatedAnswers.map((ans) =>
                                       ans.multichoice === multiChoice.value
                                         ? {
-                                          ...ans,
-                                          multichoice: e.target.value.replace(
-                                            /,/g,
-                                            ""
-                                          ),
-                                        }
+                                            ...ans,
+                                            multichoice: e.target.value.replace(
+                                              /,/g,
+                                              ""
+                                            ),
+                                          }
                                         : ans
                                     );
                                   }
@@ -1117,11 +1137,12 @@ function ChallengesAdd() {
                         <label className="form-label">Short Answer</label>
                         <textarea
                           rows={3}
-                          className={`form-control form-control-sm ${formik.touched.answer?.[0]?.short_answer &&
-                              formik.errors.answer?.[0]?.short_answer
+                          className={`form-control form-control-sm ${
+                            formik.touched.answer?.[0]?.short_answer &&
+                            formik.errors.answer?.[0]?.short_answer
                               ? "is-invalid"
                               : ""
-                            }`}
+                          }`}
                           name="answer"
                           value={formik.values.answer[0]?.short_answer || ""}
                           onChange={(e) => {
@@ -1147,11 +1168,12 @@ function ChallengesAdd() {
                         <label className="form-label">Answer Upload</label>
                         <input
                           type="file"
-                          className={`form-control form-control-sm ${formik.touched.answer_upload &&
-                              formik.errors.answer_upload
+                          className={`form-control form-control-sm ${
+                            formik.touched.answer_upload &&
+                            formik.errors.answer_upload
                               ? "is-invalid"
                               : ""
-                            }`}
+                          }`}
                           name="answer_upload"
                           accept="image/*"
                           onChange={(event) => {
@@ -1172,7 +1194,7 @@ function ChallengesAdd() {
                   </div>
                   <div className="col-md-6 col-12">
                     <div className="row mb-4">
-                      <div className="col-5">
+                      <div className="col-5 d-flex">
                         <p className="view-label-text">Hint</p>
                       </div>
                       <div className="col-7">
@@ -1190,7 +1212,13 @@ function ChallengesAdd() {
                 showTable ? (
                   <div className="col-12 mb-3 mt-5">
                     <div className="text-end me-4">
-                      <button type="button" onClick={clearBulkData} className="btn btn--underline">Change File</button>
+                      <button
+                        type="button"
+                        onClick={clearBulkData}
+                        className="btn btn--underline"
+                      >
+                        Change File
+                      </button>
                     </div>
                     <div className="table-container pt-0">
                       <DataGrid
@@ -1250,7 +1278,10 @@ function ChallengesAdd() {
                         onChange={handleFileChange}
                       />
                       {formik.touched.bulkImg && formik.errors.bulkImg && (
-                        <small style={{ fontSize: "12px" }} className="text-danger mt-2">
+                        <small
+                          style={{ fontSize: "12px" }}
+                          className="text-danger mt-2"
+                        >
                           {formik.errors.bulkImg}
                         </small>
                       )}

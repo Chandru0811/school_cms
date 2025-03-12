@@ -13,7 +13,7 @@ import {
 import * as yup from "yup";
 import PropTypes from "prop-types";
 import ImageURL from "../../../config/ImageURL";
-import userImage from "../../../assets/images/user_image.png";
+import userImage from "../../../assets/images/user_profile.svg";
 
 function SchoolView() {
   const { id } = useParams();
@@ -272,13 +272,12 @@ function SchoolView() {
           </form>
         </Dialog>
         {loading ? (
-          <div className="loader-container">
-            <div className="loader">
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
+          <div
+            className="d-flex justify-content-center align-items-center"
+            style={{ height: "500px" }}
+          >
+            <div className="spinner-border" role="status">
+              <span className="visually-hidden">Loading...</span>
             </div>
           </div>
         ) : (
@@ -348,7 +347,8 @@ function SchoolView() {
                       : &nbsp;&nbsp;
                       <img
                         src={
-                          data.users[0].avatar
+                          data.users[0].avatar &&
+                          typeof data.users[0].avatar === "string"
                             ? `${ImageURL.replace(
                                 /\/$/,
                                 ""

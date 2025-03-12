@@ -411,16 +411,22 @@ function ChallengesEdit() {
             <p className="view-header">Challenges Info</p>
           </div>
           {loading ? (
-            <div className="loader-container">
-              <div className="loader"></div>
+            <div
+              className="d-flex justify-content-center align-items-center"
+              style={{ height: "500px" }}
+            >
+              <div className="spinner-border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
             </div>
           ) : (
             <div className="container-fluid px-4">
               <div className="row">
                 <div className="col-md-6 col-12">
                   <div className="row mb-4">
-                    <div className="col-5">
-                      <p className="view-label-text">Centre Name</p>
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text">Centre Name</p>{" "}
+                      <span className="text-danger">*</span>
                     </div>
                     <div className="col-7">
                       <MultiSelect
@@ -456,8 +462,9 @@ function ChallengesEdit() {
                 </div>
                 <div className="col-md-6 col-12">
                   <div className="row mb-4">
-                    <div className="col-5">
-                      <p className="view-label-text">Grade</p>
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text">Grade</p>{" "}
+                      <span className="text-danger">*</span>
                     </div>
                     <div className="col-7">
                       <select
@@ -488,8 +495,9 @@ function ChallengesEdit() {
                 </div>
                 <div className="col-md-6 col-12">
                   <div className="row mb-4">
-                    <div className="col-5">
-                      <p className="view-label-text">Subject</p>
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text">Subject</p>{" "}
+                      <span className="text-danger">*</span>
                     </div>
                     <div className="col-7">
                       <select
@@ -521,8 +529,9 @@ function ChallengesEdit() {
                 </div>
                 <div className="col-md-6 col-12">
                   <div className="row mb-4">
-                    <div className="col-5">
-                      <p className="view-label-text">Topic</p>
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text">Topic</p>{" "}
+                      <span className="text-danger">*</span>
                     </div>
                     <div className="col-7">
                       <select
@@ -550,8 +559,9 @@ function ChallengesEdit() {
                 </div>
                 <div className="col-md-6 col-12">
                   <div className="row mb-4">
-                    <div className="col-5">
-                      <p className="view-label-text"> Difficult Level</p>
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text"> Difficult Level</p>{" "}
+                      <span className="text-danger">*</span>
                     </div>
                     <div className="col-7">
                       <div className="d-flex gap-3">
@@ -609,8 +619,9 @@ function ChallengesEdit() {
                 </div>
                 <div className="col-md-6 col-12">
                   <div className="row mb-4">
-                    <div className="col-5">
-                      <p className="view-label-text">Challenge Title</p>
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text">Challenge Title</p>{" "}
+                      <span className="text-danger">*</span>
                     </div>
                     <div className="col-7">
                       <input
@@ -633,7 +644,7 @@ function ChallengesEdit() {
                 </div>
                 <div className="col-md-6 col-12">
                   <div className="row mb-4">
-                    <div className="col-5">
+                    <div className="col-5 d-flex">
                       <p className="view-label-text">Challenge Descriptione</p>
                     </div>
                     <div className="col-7">
@@ -653,8 +664,9 @@ function ChallengesEdit() {
                 </div>
                 <div className="col-md-6 col-12">
                   <div className="row mb-4">
-                    <div className="col-5">
-                      <p className="view-label-text">Time Limit</p>
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text">Time Limit</p>{" "}
+                      <span className="text-danger">*</span>
                     </div>
                     <div className="col-7">
                       <input
@@ -681,8 +693,9 @@ function ChallengesEdit() {
                 </div>
                 <div className="col-md-6 col-12">
                   <div className="row mb-4">
-                    <div className="col-5">
-                      <p className="view-label-text"> Question Type</p>
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text"> Question Type</p>{" "}
+                      <span className="text-danger">*</span>
                     </div>
                     <div className="col-7">
                       {[
@@ -1004,7 +1017,7 @@ function ChallengesEdit() {
                 </div>
                 <div className="col-md-6 col-12">
                   <div className="row mb-4">
-                    <div className="col-5">
+                    <div className="col-5 d-flex">
                       <p className="view-label-text">Hint</p>
                     </div>
                     <div className="col-7">

@@ -1,16 +1,11 @@
 import { useState } from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import {
-  Dialog,
-  DialogActions,
-  DialogTitle,
-  DialogContent,
-} from "@mui/material";
 import PropTypes from "prop-types";
 import toast from "react-hot-toast";
 import api from "../../../config/URL";
 import { TbEdit } from "react-icons/tb";
+import { Button, Modal } from "react-bootstrap";
 
 function CenterEdit({ id, onSuccess }) {
   const [loadIndicator, setLoadIndicator] = useState(false);
@@ -38,8 +33,10 @@ function CenterEdit({ id, onSuccess }) {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       setLoadIndicator(true);
+      const { created_by, updated_by, ...filteredValues } = values;
+
       try {
-        const response = await api.put(`center/update/${id}`, values, {
+        const response = await api.put(`center/update/${id}`, filteredValues, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -71,7 +68,8 @@ function CenterEdit({ id, onSuccess }) {
       setLoading(true);
       const response = await api.get(`center/${id}`);
       if (response?.data?.data) {
-        formik.setValues(response.data.data);
+        const { created_by, updated_by, ...filteredData } = response.data.data;
+        formik.setValues(filteredData);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -182,36 +180,52 @@ function CenterEdit({ id, onSuccess }) {
         <TbEdit style={{ color: "#4F46E5", fontSize: "16px" }} />
       </span>
 
-      <Dialog
-        open={open} // Controlled by local state
-        onClose={handleClose} // Trigger handleClose on dialog close
-        fullWidth
-        maxWidth="md"
-      >
-        <form
-          onSubmit={formik.handleSubmit}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !formik.isSubmitting) {
-              e.preventDefault();
-            }
-          }}
-        >
-          <DialogTitle>Edit Centre</DialogTitle>
-          <DialogContent>
+      <Modal show={open} onHide={handleClose} size="lg">
+        <Modal.Header>
+          <Modal.Title>Edit Centre</Modal.Title>
+          <div className="d-flex gap-3">
+            <Button
+              className="btn btn-secondary btn-sm py-0"
+              onClick={handleClose}
+            >
+              Close
+            </Button>
+            <Button
+              className="btn add-btn button-spinner text-light"
+              type="submit"
+              disabled={loadIndicator}
+              onClick={formik.handleSubmit}
+            >
+              {loadIndicator && (
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  aria-hidden="true"
+                ></span>
+              )}
+              <small> Update</small>
+            </Button>
+          </div>
+        </Modal.Header>
+        <Modal.Body>
+          <form onSubmit={formik.handleSubmit}>
             {loading ? (
-              <div className="loader-container">
-                <div className="loader"></div>
+              <div className="d-flex justify-content-center align-items-center">
+                <div className="spinner-border" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </div>
               </div>
             ) : (
               <div className="container">
                 <div className="row">
                   <div className="col-md-6 col-12">
                     <div className="row mb-4">
-                      <div className="col-5">
+                      <div className="col-5 d-flex">
                         <p className="view-label-text">Name</p>
+                        <span className="text-danger">*</span>
                       </div>
                       <div className="col-7">
                         <input
+                          placeholder="Enter Text"
                           aria-label="Default select example"
                           className={`form-control ${
                             formik.touched.name && formik.errors.name
@@ -230,12 +244,14 @@ function CenterEdit({ id, onSuccess }) {
                   </div>
                   <div className="col-md-6 col-12">
                     <div className="row mb-4">
-                      <div className="col-4">
-                        <p className="view-label-text">Location</p>
+                      <div className="col-4 d-flex">
+                        <p className="view-label-text">Location</p>{" "}
+                        <span className="text-danger">*</span>
                       </div>
                       <div className="col-8">
                         <textarea
                           rows={5}
+                          placeholder="Enter Text"
                           className={`form-control ${
                             formik.touched.location && formik.errors.location
                               ? "is-invalid"
@@ -254,33 +270,10 @@ function CenterEdit({ id, onSuccess }) {
                   </div>
                 </div>
               </div>
-            )}
-          </DialogContent>
-          <DialogActions>
-            <button
-              type="button"
-              className="btn btn-sm btn-back"
-              onClick={handleClose}
-              disabled={loadIndicator} // Disable close button during submission
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="btn btn-button"
-              disabled={loadIndicator}
-            >
-              {loadIndicator && (
-                <span
-                  className="spinner-border spinner-border-sm me-2"
-                  aria-hidden="true"
-                ></span>
-              )}
-              Update
-            </button>
-          </DialogActions>
-        </form>
-      </Dialog>
+            )}{" "}
+          </form>
+        </Modal.Body>
+      </Modal>
     </>
   );
 }

@@ -10,7 +10,7 @@ import { MdOutlineCloudDownload } from "react-icons/md";
 import { CiFilter } from "react-icons/ci";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import { ThemeProvider, createTheme } from "@mui/material";
+import { ThemeProvider, Tooltip, createTheme } from "@mui/material";
 import PropTypes from "prop-types";
 import SubjectAdd from "./SubjectAdd";
 import SubjectEdit from "./SubjectEdit";
@@ -201,11 +201,16 @@ function Subject() {
         )}
       </div>
       <div className="table-container my-2">
-        {loading ? (
-          <div className="loader-container">
-            <div className="loader"></div>
-          </div>
-        ) : (
+      {loading ? (
+            <div
+              className="d-flex justify-content-center align-items-center"
+              style={{ height: "500px" }}
+            >
+              <div className="spinner-border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          ) : (
           <>
             <ThemeProvider theme={theme}>
               <MaterialReactTable
@@ -215,7 +220,8 @@ function Subject() {
                 enableDensityToggle={false}
                 enableColumnFilters={true}
                 enableFullScreenToggle={true}
-                initialState={{
+                   initialState={{
+                  pagination: { pageSize: 50, pageIndex: 0 },
                   showGlobalFilter: true,
                   showColumnFilters: false,
                   columnVisibility: {
@@ -265,7 +271,7 @@ function Subject() {
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "center",
-                      padding: "10px",
+                      padding: "15px",
                     }}
                   >
                     <div
@@ -285,34 +291,46 @@ function Subject() {
                         table={table}
                         style={{ color: "#4F46E5" }}
                       />
-                      <MdOutlineCloudDownload
-                        size={20}
-                        color="#4F46E5"
-                        className="mt-3 m-2 "
-                        disabled={table.getRowModel().rows.length === 0}
-                        onClick={() =>
-                          handleExportRows(table.getRowModel().rows)
-                        }
-                      />
-                      <LuPrinter
-                        size={20}
-                        color="#4F46E5"
-                        className="mt-3 m-2"
-                        onClick={() => window.print()}
-                      />
+                      <Tooltip title="Download Data">
+                        <span>
+                          <MdOutlineCloudDownload
+                            size={20}
+                            color="#4F46E5"
+                            className="mt-3 m-2"
+                            disabled={table.getRowModel().rows.length === 0}
+                            onClick={() =>
+                              handleExportRows(table.getRowModel().rows)
+                            }
+                          />
+                        </span>
+                      </Tooltip>
+                      <Tooltip title="Print" >
+                        <span>
+                          <LuPrinter
+                            size={20}
+                            color="#4F46E5"
+                            className="mt-3 m-2"
+                            onClick={() => window.print()}
+                          />
+                        </span>
+                      </Tooltip>
 
                       <MRT_ShowHideColumnsButton
                         table={table}
                         style={{ color: "#4F46E5" }}
                       />
-                      <CiFilter
-                        size={20}
-                        color="#4F46E5"
-                        className="mt-3 m-2 cursor-pointer"
-                        onClick={() => {
-                          table.setShowColumnFilters((prev) => !prev);
-                        }}
-                      />
+                      <Tooltip title="Toggle Filters">
+                        <span>
+                          <CiFilter
+                            size={20}
+                            color="#4F46E5"
+                            className="mt-3 m-2 cursor-pointer"
+                            onClick={() => {
+                              table.setShowColumnFilters((prev) => !prev);
+                            }}
+                          />
+                        </span>
+                      </Tooltip>
                     </div>
                   </div>
                 )}

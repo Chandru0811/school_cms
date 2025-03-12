@@ -125,7 +125,8 @@ function Grade() {
               enableColumnFilters={false}
               enableDensityToggle={false}
               enableFullScreenToggle={false}
-              initialState={{
+                 initialState={{
+                  pagination: { pageSize: 50, pageIndex: 0 },
                 columnVisibility: {
                   working_hrs: false,
                   citizenship: false,

@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 import PropTypes from "prop-types";
 import api from "../../../config/URL";
 import { FaPlus } from "react-icons/fa";
+import { Button, Modal } from "react-bootstrap";
 
 function TopicAdd({ id, onSuccess }) {
   const navigate = useNavigate();
@@ -110,90 +111,84 @@ function TopicAdd({ id, onSuccess }) {
       >
         <FaPlus fontSize={12} className="me-1" /> Add Topic
       </button>
-      <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
+      <Modal show={show} onHide={handleClose} size="lg">
         <form
           onSubmit={formik.handleSubmit}
           onKeyDown={(e) => {
-            if (e.key === "Enter" && !formik.isSubmitting) {
+            if (e.key === "Enter") {
               e.preventDefault();
             }
           }}
         >
-          <DialogTitle>Topic Add</DialogTitle>
-          <hr className="m-0"></hr>
-          <DialogContent>
-            <div className="row">
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Topic Name</p>
-                  </div>
-                  <div className="col-7">
-                    <input
-                      placeholder="Enter Text"
-                      type="text"
-                      onKeyDown={(e) => e.stopPropagation()}
-                      className={`form-control form-control-sm ${
-                        formik.touched.topic_name && formik.errors.topic_name
-                          ? "is-invalid"
-                          : ""
-                      }`}
-                      {...formik.getFieldProps("topic_name")}
-                    />
-                    {formik.touched.topic_name && formik.errors.topic_name && (
-                      <div className="invalid-feedback">
-                        {formik.errors.topic_name}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Description</p>
-                  </div>
-                  <div className="col-7">
-                    <textarea
-                      placeholder="Enter Text"
-                      className={`form-control ${
-                        formik.touched.description && formik.errors.description
-                          ? "is-invalid"
-                          : ""
-                      }`}
-                      rows="3"
-                      {...formik.getFieldProps("description")}
-                    />
-                  </div>
-                </div>
-              </div>
+          <Modal.Header>
+            <Modal.Title>Topic Add</Modal.Title>
+            <div className="d-flex gap-3">
+              <Button
+                className="btn btn-secondary btn-sm py-0"
+                onClick={handleClose}
+              >
+                Close
+              </Button>
+              <Button
+                className="btn add-btn "
+                type="submit"
+                disabled={loadIndicator}
+                onClick={formik.handleSubmit}
+              >
+                {loadIndicator && (
+                  <span
+                    className="spinner-border spinner-border-sm me-2"
+                    aria-hidden="true"
+                  ></span>
+                )}
+                <small>Submit</small>
+              </Button>
             </div>
-          </DialogContent>
-          <hr className="m-0"></hr>
-          <DialogActions className="mt-3">
-            <button
-              type="button"
-              className="btn btn-sm btn-back"
-              onClick={handleClose}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="btn btn-button btn-sm"
-              disabled={loadIndicator}
-            >
-              {loadIndicator && (
-                <span
-                  className="spinner-border spinner-border-sm me-2"
-                  aria-hidden="true"
-                ></span>
-              )}
-              Save
-            </button>
-          </DialogActions>
+          </Modal.Header>
+          <Modal.Body>
+            {loading ? (
+              <div className="loader-container">
+                <div className="loader"></div>
+              </div>
+            ) : (
+              <div className="row">
+                <div className="col-md-6 col-12 mb-3">
+                  <label className="form-label">
+                    Topic Name<span className="text-danger">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    className={`form-control form-control-sm ${
+                      formik.touched.topic_name && formik.errors.topic_name
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("topic_name")}
+                  />
+                  {formik.touched.topic_name && formik.errors.topic_name && (
+                    <div className="invalid-feedback">
+                      {formik.errors.topic_name}
+                    </div>
+                  )}
+                </div>
+
+                <div className="col-md-6 col-12 mb-3">
+                  <label className="form-label">Description</label>
+                  <textarea
+                    className={`form-control ${
+                      formik.touched.description && formik.errors.description
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    rows="4"
+                    {...formik.getFieldProps("description")}
+                  />
+                </div>
+              </div>
+            )}
+          </Modal.Body>
         </form>
-      </Dialog>
+      </Modal>
     </>
   );
 }

@@ -5,13 +5,8 @@ import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
-import {
-  Dialog,
-  DialogActions,
-  DialogTitle,
-  DialogContent,
-} from "@mui/material";
 import { FaPlus } from "react-icons/fa";
+import { Button, Modal } from "react-bootstrap";
 
 function AddTopic({ id, onSuccess }) {
   const navigate = useNavigate();
@@ -24,6 +19,8 @@ function AddTopic({ id, onSuccess }) {
   const handleShow = () => {
     setShow(true);
     formik.resetForm();
+    getSubjectData();
+    getCenterList();
   };
 
   const handleClose = () => {
@@ -97,21 +94,16 @@ function AddTopic({ id, onSuccess }) {
     }
   };
 
-  useEffect(() => {
-    getSubjectData();
-    getCenterList();
-  }, []);
-
   return (
     <>
       <button
         type="button"
-        className="btn btn-sm d-flex align-items-center justify-content-center"
+        className="d-flex align-items-center justify-content-center"
         onClick={handleShow}
       >
-        <FaPlus fontSize={12} className="me-1" />
+        <FaPlus fontSize={12} className="" />
       </button>
-      <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
+      <Modal show={show} onHide={handleClose} size="lg">
         <form
           onSubmit={formik.handleSubmit}
           onKeyDown={(e) => {
@@ -120,9 +112,32 @@ function AddTopic({ id, onSuccess }) {
             }
           }}
         >
-          <DialogTitle>Add Topic</DialogTitle>
-          <hr className="m-0" />
-          <DialogContent>
+          <Modal.Header>
+            <Modal.Title>Topic Add</Modal.Title>
+            <div className="d-flex gap-3">
+              <Button
+                className="btn btn-secondary btn-sm py-0"
+                onClick={handleClose}
+              >
+                Close
+              </Button>
+              <Button
+                className="btn add-btn button-spinner text-light"
+                type="submit"
+                disabled={loadIndicator}
+                onClick={formik.handleSubmit}
+              >
+                {loadIndicator && (
+                  <span
+                    className="spinner-border spinner-border-sm me-2"
+                    aria-hidden="true"
+                  ></span>
+                )}
+                <small>Submit</small>
+              </Button>
+            </div>
+          </Modal.Header>
+          <Modal.Body>
             {loading ? (
               <div className="loader-container">
                 <div className="loader"></div>
@@ -163,32 +178,9 @@ function AddTopic({ id, onSuccess }) {
                 </div>
               </div>
             )}
-          </DialogContent>
-          <hr className="m-0" />
-          <DialogActions className="mt-3">
-            <button
-              className="btn btn-sm btn-back"
-              onClick={handleClose}
-              type="button"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="btn btn-button btn-sm"
-              disabled={loadIndicator}
-            >
-              {loadIndicator && (
-                <span
-                  className="spinner-border spinner-border-sm me-2"
-                  aria-hidden="true"
-                ></span>
-              )}
-              Save
-            </button>
-          </DialogActions>
+          </Modal.Body>
         </form>
-      </Dialog>
+      </Modal>
     </>
   );
 }

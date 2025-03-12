@@ -23,7 +23,7 @@ function Delete({ path, onDeleteSuccess, onOpen }) {
     if (typeof onOpen === "function") onOpen();
     setDeleteDialogOpen(false);
     document.body.style.overflow = "";
-  };                   
+  };
 
   const handleDelete = async () => {
     try {
@@ -48,15 +48,16 @@ function Delete({ path, onDeleteSuccess, onOpen }) {
             });
           }
         } else if (error.response.status === 400) {
-          toast.error(error.response.data.message || "Bad request. Please try again.");
+          toast.error(
+            error.response.data.message || "Bad request. Please try again."
+          );
         } else {
           toast.error("An error occurred while deleting the record.");
         }
       } else {
         toast.error("Network error. Please check your connection.");
       }
-    }
-     finally {
+    } finally {
       handleCloseDialog();
       setLoadIndicator(false);
     }
@@ -100,7 +101,7 @@ function Delete({ path, onDeleteSuccess, onOpen }) {
           >
             {loadIndicator && (
               <span
-                className="spinner-border spinner-border-sm me-2"
+                className="spinner-border spinner-border-sm button-spinner me-2 text-light"
                 aria-hidden="true"
               ></span>
             )}

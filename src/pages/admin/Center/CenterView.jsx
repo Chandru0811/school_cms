@@ -45,11 +45,15 @@ function CenterView({ id, handleMenuClose, show, setShow }) {
       <DialogTitle>View Centre</DialogTitle>
       <hr className="m-0"></hr>
       <DialogContent>
-        {loading ? (
-          <div className="loader-container">
-            <div className="loader"></div>
-          </div>
-        ) : (
+      {loading ? (
+            <div
+              className="d-flex justify-content-center align-items-center"
+            >
+              <div className="spinner-border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          ) : (
           <>
             <div className="container">
               <div className="row">

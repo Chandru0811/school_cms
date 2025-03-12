@@ -16,7 +16,7 @@ import AvatarProfileAdd from "./AvatarProfileAdd";
 import api from "../../../config/URL";
 import ImageURL from "../../../config/ImageURL";
 import { GoTrash } from "react-icons/go";
-import userImage from "../../../assets/images/user_image.png";
+import userImage from "../../../assets/images/user_profile.svg";
 import AvatarProfileEdit from "./AvatarProfileEdit";
 import DeleteChange from "../../../components/common/DeleteChange";
 import { useNavigate } from "react-router-dom";
@@ -212,11 +212,16 @@ function AvatarProfile() {
         )}
       </div>
       <div className="table-container my-2">
-        {loading ? (
-          <div className="loader-container">
-            <div className="loader"></div>
-          </div>
-        ) : (
+      {loading ? (
+            <div
+              className="d-flex justify-content-center align-items-center"
+              style={{ height: "500px" }}
+            >
+              <div className="spinner-border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          ) : (
           <>
             <ThemeProvider theme={theme}>
               <MaterialReactTable
@@ -228,6 +233,7 @@ function AvatarProfile() {
                 enableFullScreenToggle={true}
                 initialState={{
                   showGlobalFilter: true,
+                  pagination: { pageSize: 50, pageIndex: 0 },
                   showColumnFilters: false,
                   columnVisibility: {
                     id: !(

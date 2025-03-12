@@ -292,7 +292,7 @@
 }
 
 .MuiTableBody-root tr td {
-  height: 57px !important;
+  /* height: 57px !important; */
   padding: 8px 17px !important;
   font-family: "Poppins", serif;
 }
@@ -327,7 +327,7 @@
 
 .add-btn {
   background-color: #eae9fc;
-  padding: 8px 12px;
+  padding: 6px 12px;
   border-color: #4f46e5;
   color: #4f46e5;
 }
@@ -453,7 +453,7 @@
 
 .view-delete-btn {
   background-color: #fce9eb;
-  padding: 8px 12px;
+  padding: 6px 12px;
   border-color: #fb3748;
   color: #fb3748;
   font-size: 16px;
@@ -465,7 +465,6 @@
 }
 
 .trash-icon {
-  color: #fb3748;
   font-size: 20px;
 }
 
@@ -627,11 +626,20 @@
   font-size: 14px;
 }
 .custom-global-filter .MuiOutlinedInput-root {
+  margin: 5px 0px !important;
   border-radius: 8px;
 }
 
 .custom-global-filter .MuiOutlinedInput-root fieldset {
   border-color: #4f46e5;
+}
+.modal-title {
+  color: #4f46e5 !important;
+  font-size: 20px !important;
+  font-weight: 600 !important;
+}
+.modal-header{
+  padding-bottom: 10px !important;
 }
 
 .custom-global-filter .MuiOutlinedInput-root:hover fieldset {
@@ -648,4 +656,19 @@
 .MuiTableHead-root .MuiTableCell-root {
   padding: 5px 20px !important;
   border: 1px solid #e0e0e0;
+}
+.modal-content {
+  border-radius: 0.5rem !important;
+}
+.MuiPaper-root {
+  border-radius: 0.5rem !important;
+  box-shadow: none !important;
+}
+
+.spinner-border{
+  color: var(--client-primary-color) !important;
+}
+
+.button-spinner{
+  color: #fff !important;
 }
