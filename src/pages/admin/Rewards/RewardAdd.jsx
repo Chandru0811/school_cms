@@ -166,8 +166,9 @@ function RewardAdd() {
             <div className="row py-4">
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Centre</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Centre</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <MultiSelect
@@ -197,8 +198,9 @@ function RewardAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Name</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Name</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <input
@@ -221,8 +223,9 @@ function RewardAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Reward Value</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Reward Value</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <input
@@ -247,7 +250,7 @@ function RewardAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
+                  <div className="col-5 d-flex">
                     <p className="view-label-text">Image</p>
                   </div>
                   <div className="col-7">
@@ -274,8 +277,9 @@ function RewardAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Reward Type</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Reward Type</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <div className="d-flex gap-3">

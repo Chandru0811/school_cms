@@ -10,10 +10,11 @@ import { MdOutlineCloudDownload } from "react-icons/md";
 import { CiFilter } from "react-icons/ci";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import { ThemeProvider, createTheme } from "@mui/material";
+import { ThemeProvider, Tooltip, createTheme } from "@mui/material";
 import PropTypes from "prop-types";
 import GradeAdd from "./GradeAdd";
 import GradeEdit from "./GradeEdit";
+import GradeView from "./GradeView";
 import api from "../../../config/URL";
 import { GoTrash } from "react-icons/go";
 import DeleteChange from "../../../components/common/DeleteChange";
@@ -23,6 +24,7 @@ function Grade() {
   const [selectedId, setSelectedId] = useState(null);
   const [data, setData] = useState([]);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [showView, setShowView] = useState(false);
   const storedScreens = JSON.parse(
     localStorage.getItem("schoolCMS_Permissions") || "{}"
   );
@@ -64,7 +66,7 @@ function Grade() {
           <div className="actions-column">
             {storedScreens?.data[2]?.can_edit === 1 && (
               <button
-                className="btn edit-btn"
+                className="edit-btn"
                 onClick={(e) => {
                   e.stopPropagation();
                 }}
@@ -202,8 +204,13 @@ function Grade() {
       </div>
       <div className="table-container my-2">
         {loading ? (
-          <div className="loader-container">
-            <div className="loader"></div>
+          <div
+            className="d-flex justify-content-center align-items-center"
+            style={{ height: "500px" }}
+          >
+            <div className="spinner-border" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
           </div>
         ) : (
           <>
@@ -216,6 +223,7 @@ function Grade() {
                 enableColumnFilters={true}
                 enableFullScreenToggle={true}
                 initialState={{
+                  pagination: { pageSize: 50, pageIndex: 0 },
                   showGlobalFilter: true,
                   showColumnFilters: false,
                   columnVisibility: {
@@ -242,7 +250,11 @@ function Grade() {
                     textAlign: "center",
                   },
                 }}
-                muiTableBodyRowProps={() => ({
+                muiTableBodyRowProps={({ row }) => ({
+                  onClick: () => {
+                    setSelectedId(row.original.id);
+                    setShowView(true);
+                  },
                   sx: {
                     cursor: "pointer",
                     transition: "background-color 0.2s ease-in-out",
@@ -256,7 +268,7 @@ function Grade() {
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "center",
-                      padding: "10px",
+                      padding: "15px",
                     }}
                   >
                     <div
@@ -276,34 +288,46 @@ function Grade() {
                         table={table}
                         style={{ color: "#4F46E5" }}
                       />
-                      <MdOutlineCloudDownload
-                        size={20}
-                        color="#4F46E5"
-                        className="mt-3 m-2 "
-                        disabled={table.getRowModel().rows.length === 0}
-                        onClick={() =>
-                          handleExportRows(table.getRowModel().rows)
-                        }
-                      />
-                      <LuPrinter
-                        size={20}
-                        color="#4F46E5"
-                        className="mt-3 m-2"
-                        onClick={() => window.print()}
-                      />
+                      <Tooltip title="Download Data">
+                        <span>
+                          <MdOutlineCloudDownload
+                            size={20}
+                            color="#4F46E5"
+                            className="mt-3 m-2"
+                            disabled={table.getRowModel().rows.length === 0}
+                            onClick={() =>
+                              handleExportRows(table.getRowModel().rows)
+                            }
+                          />
+                        </span>
+                      </Tooltip>
+                      <Tooltip title="Print">
+                        <span>
+                          <LuPrinter
+                            size={20}
+                            color="#4F46E5"
+                            className="mt-3 m-2"
+                            onClick={() => window.print()}
+                          />
+                        </span>
+                      </Tooltip>
 
                       <MRT_ShowHideColumnsButton
                         table={table}
                         style={{ color: "#4F46E5" }}
                       />
-                      <CiFilter
-                        size={20}
-                        color="#4F46E5"
-                        className="mt-3 m-2 cursor-pointer"
-                        onClick={() => {
-                          table.setShowColumnFilters((prev) => !prev);
-                        }}
-                      />
+                      <Tooltip title="Toggle Filters">
+                        <span>
+                          <CiFilter
+                            size={20}
+                            color="#4F46E5"
+                            className="mt-3 m-2 cursor-pointer"
+                            onClick={() => {
+                              table.setShowColumnFilters((prev) => !prev);
+                            }}
+                          />
+                        </span>
+                      </Tooltip>
                     </div>
                   </div>
                 )}
@@ -319,6 +343,7 @@ function Grade() {
                 onOpen={() => setDeleteModalOpen(false)}
               />
             )}
+            <GradeView show={showView} setShow={setShowView} id={selectedId} />
           </>
         )}
       </div>

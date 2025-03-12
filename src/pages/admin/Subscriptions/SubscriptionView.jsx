@@ -89,16 +89,15 @@ function SubscriptionView() {
             </button>
           )}
         </div>
+      </div>
+      <div className="mx-4 card vh-100" style={{ border: "1px solid #dbd9d0" }}>
         <div
-          className="mx-4 card vh-100"
-          style={{ border: "1px solid #dbd9d0" }}
+          className="card-header d-flex justify-content-between"
+          style={{ marginBottom: "1px solid #F4F4F4" }}
         >
-          <div
-            className="card-header d-flex justify-content-between"
-            style={{ marginBottom: "1px solid #F4F4F4" }}
-          >
-            <p className="view-header">Subscription Info</p>
+          <p className="view-header">Subscription Info</p>
 
+          <div className="d-flex gap-3">
             <button
               className={`btn btn-sm ${
                 data.active === 1 ? "btn-danger" : "btn-success"
@@ -120,6 +119,7 @@ function SubscriptionView() {
             )}
           </div>
         </div>
+
         {loading ? (
           <div className="loader-container">
             <div className="loader"></div>
@@ -134,7 +134,7 @@ function SubscriptionView() {
                       <p className="view-label-text">Grade</p>
                     </div>
                     <div className="col-6">
-                      <p className="view-value">: {data.grand_name}</p>
+                      <p className="view-value"> {data.grand_name}</p>
                     </div>
                   </div>
                 </div>
@@ -145,7 +145,6 @@ function SubscriptionView() {
                     </div>
                     <div className="col-6">
                       <p className="view-value">
-                        :{" "}
                         {data.worksheets_names
                           ? JSON.parse(data.worksheets_names).join(", ")
                           : ""}
@@ -159,7 +158,7 @@ function SubscriptionView() {
                       <p className="view-label-text">Name</p>
                     </div>
                     <div className="col-6">
-                      <p className="view-value">: {data.name}</p>
+                      <p className="view-value"> {data.name}</p>
                     </div>
                   </div>
                 </div>
@@ -169,7 +168,7 @@ function SubscriptionView() {
                       <p className="view-label-text">Price</p>
                     </div>
                     <div className="col-6">
-                      <p className="view-value">: {data.price}</p>
+                      <p className="view-value">{data.price}</p>
                     </div>
                   </div>
                 </div>
@@ -179,7 +178,7 @@ function SubscriptionView() {
                       <p className="view-label-text">Duration</p>
                     </div>
                     <div className="col-6">
-                      <p className="view-value">: {data.duration}</p>
+                      <p className="view-value">{data.duration}</p>
                     </div>
                   </div>
                 </div>
@@ -189,7 +188,7 @@ function SubscriptionView() {
                       <p className="view-label-text">Description</p>
                     </div>
                     <div className="col-6">
-                      <p className="view-value">: {data.description}</p>
+                      <p className="view-value">{data.description}</p>
                     </div>
                   </div>
                 </div>

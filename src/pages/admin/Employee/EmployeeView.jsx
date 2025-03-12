@@ -17,6 +17,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import DeleteChange from "../../../components/common/DeleteChange";
 import { GoTrash } from "react-icons/go";
 import { TbEdit } from "react-icons/tb";
+import userImage from "../../../assets/images/user_profile.svg";
 import ImageURL from "../../../config/ImageURL";
 
 function EmployeeView() {
@@ -300,28 +301,36 @@ function EmployeeView() {
           </form>
         </Dialog>
         {loading ? (
-          <div className="loader-container">
-            <div className="loader"></div>
+          <div
+            className="d-flex justify-content-center align-items-center"
+            style={{ height: "500px" }}
+          >
+            <div className="spinner-border" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
           </div>
         ) : (
           <div className="container-fluid px-4">
             <div className="row pb-3">
-              <div className="col-md-2 col-12 my-2 d-flex align-items-center">
-                <img
-                  src={`${ImageURL.replace(
-                    /\/$/,
-                    ""
-                  )}/${data.avatar.image.replace(/^\//, "")}`}
-                  alt="Avatar"
-                  style={{
-                    maxWidth: "100%",
-                    height: "auto",
-                    borderRadius: "5px",
-                  }}
-                />
-              </div>
+              <img
+                src={
+                  data?.avatar
+                    ? `${ImageURL.replace(/\/$/, "")}/${data.avatar.replace(
+                        /^\//,
+                        ""
+                      )}`
+                    : userImage
+                }
+                alt="user"
+                style={{
+                  maxWidth: "100%",
+                  height: "auto",
+                  borderRadius: "5px",
+                }}
+                onError={(e) => (e.target.src = userImage)}
+              />
 
-              <div className="col-md-5 col-12 my-2">
+              <div className="col-md-6 col-12 my-2">
                 <div className="row mb-4">
                   <div className="col-6">
                     <p className="view-label-text">Centre</p>
@@ -345,7 +354,7 @@ function EmployeeView() {
                 </div>
               </div>
 
-              <div className="col-md-5 col-12 my-2">
+              <div className="col-md-6 col-12 my-2">
                 <div className="row mb-4">
                   <div className="col-6">
                     <p className="view-label-text">Employee Name</p>

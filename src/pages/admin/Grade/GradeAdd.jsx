@@ -1,18 +1,13 @@
 import { useEffect, useState } from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import {
-  Dialog,
-  DialogActions,
-  DialogTitle,
-  DialogContent,
-} from "@mui/material";
 import { MultiSelect } from "react-multi-select-component";
 import { useNavigate } from "react-router-dom";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import PropTypes from "prop-types";
 import { FaPlus } from "react-icons/fa";
+import { Button, Modal } from "react-bootstrap";
 
 function GradeAdd({ onSuccess }) {
   const [selectedCenter, setSelectedCenter] = useState([]);
@@ -35,6 +30,7 @@ function GradeAdd({ onSuccess }) {
 
   const handleShow = () => {
     setShow(true);
+    getCenterList();
     formik.resetForm();
     setIsModified(false);
   };
@@ -110,10 +106,6 @@ function GradeAdd({ onSuccess }) {
     }
   };
 
-  useEffect(() => {
-    getCenterList();
-  }, []);
-
   return (
     <>
       <button
@@ -124,14 +116,7 @@ function GradeAdd({ onSuccess }) {
         <FaPlus fontSize={12} className="me-1" /> Add Grade
       </button>
 
-      <Dialog
-        open={show}
-        onClose={handleClose}
-        disableBackdropClick={isModified}
-        disableEscapeKeyDown={isModified}
-        maxWidth="md"
-        fullWidth
-      >
+      <Modal show={show} onHide={handleClose} size="lg">
         <form
           onSubmit={formik.handleSubmit}
           onKeyDown={(e) => {
@@ -140,14 +125,39 @@ function GradeAdd({ onSuccess }) {
             }
           }}
         >
-          <DialogTitle>Add Grade</DialogTitle>
-          <hr className="m-0"></hr>
-          <DialogContent>
+          <Modal.Header>
+            <Modal.Title>Grade Add</Modal.Title>
+            <div className="d-flex gap-3">
+              <Button
+                className="btn btn-secondary btn-sm py-0"
+                onClick={handleClose}
+              >
+                Close
+              </Button>
+              <Button
+                className="btn add-btn button-spinner text-light"
+                type="submit"
+                disabled={loadIndicator}
+                onClick={formik.handleSubmit}
+              >
+                {loadIndicator && (
+                  <span
+                    className="spinner-border spinner-border-sm me-2"
+                    aria-hidden="true"
+                  ></span>
+                )}
+                <small>Submit</small>
+              </Button>
+            </div>
+          </Modal.Header>
+
+          <Modal.Body>
             <div className="row">
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Centre Name</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Centre Name</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <MultiSelect
@@ -177,13 +187,14 @@ function GradeAdd({ onSuccess }) {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Name</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Name</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <input
                       type="text"
-                        placeholder="Enter Text"
+                      placeholder="Enter Text"
                       onKeyDown={(e) => e.stopPropagation()}
                       className={`form-control form-control-sm ${
                         formik.touched.name && formik.errors.name
@@ -220,32 +231,9 @@ function GradeAdd({ onSuccess }) {
                 </div>
               </div>
             </div>
-          </DialogContent>
-          <hr className="m-0"></hr>
-          <DialogActions className="mt-3">
-            <button
-              type="button"
-              className="btn btn-sm btn-back"
-              onClick={handleClose}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="btn btn-button btn-sm"
-              disabled={loadIndicator}
-            >
-              {loadIndicator && (
-                <span
-                  className="spinner-border spinner-border-sm me-2"
-                  aria-hidden="true"
-                ></span>
-              )}
-              Submit
-            </button>
-          </DialogActions>
+          </Modal.Body>
         </form>
-      </Dialog>
+      </Modal>
     </>
   );
 }

@@ -11,7 +11,7 @@ import { MdOutlineCloudDownload } from "react-icons/md";
 import { CiFilter } from "react-icons/ci";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import { ThemeProvider, createTheme } from "@mui/material";
+import { ThemeProvider, Tooltip, createTheme } from "@mui/material";
 import { FaPlus } from "react-icons/fa";
 // import Delete from "../../../components/common/Delete";
 import PropTypes from "prop-types";
@@ -20,6 +20,8 @@ import toast from "react-hot-toast";
 import DeleteChange from "../../../components/common/DeleteChange";
 import { TbEdit } from "react-icons/tb";
 import { GoTrash } from "react-icons/go";
+import userImage from "../../../assets/images/user_profile.svg";
+import ImageURL from "../../../config/ImageURL";
 
 function Student() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -108,6 +110,33 @@ function Student() {
       {
         accessorKey: "first_name",
         header: "Student Name",
+        Cell: ({ row }) => {
+          const imageUrl = row.original.student?.avatar?.image
+            ? `${ImageURL.replace(
+                /\/$/,
+                ""
+              )}/${row.original.student.avatar.image.replace(/^\//, "")}`
+            : userImage;
+          return (
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <img
+                src={imageUrl}
+                alt={row.original.first_name}
+                onError={(e) => {
+                  console.error("Image failed to load:", imageUrl);
+                  e.target.src = userImage;
+                }}
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                }}
+              />
+              <span>{row.original.first_name}</span>
+            </div>
+          );
+        },
       },
       {
         accessorKey: "last_name",
@@ -211,11 +240,16 @@ function Student() {
         )}
       </div>
       <div className="table-container my-2">
-        {loading ? (
-          <div className="loader-container">
-            <div className="loader"></div>
-          </div>
-        ) : (
+      {loading ? (
+            <div
+              className="d-flex justify-content-center align-items-center"
+              style={{ height: "500px" }}
+            >
+              <div className="spinner-border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          ) : (
           <>
             <ThemeProvider theme={theme}>
               <MaterialReactTable
@@ -226,6 +260,7 @@ function Student() {
                 enableColumnFilters={true}
                 enableFullScreenToggle={true}
                 initialState={{
+                  pagination: { pageSize: 50, pageIndex: 0 },
                   showGlobalFilter: true,
                   showColumnFilters: false,
                   columnVisibility: {
@@ -274,7 +309,7 @@ function Student() {
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "center",
-                      padding: "10px",
+                      padding: "15px",
                     }}
                   >
                     <div
@@ -294,34 +329,46 @@ function Student() {
                         table={table}
                         style={{ color: "#4F46E5" }}
                       />
-                      <MdOutlineCloudDownload
-                        size={20}
-                        color="#4F46E5"
-                        className="mt-3 m-2 "
-                        disabled={table.getRowModel().rows.length === 0}
-                        onClick={() =>
-                          handleExportRows(table.getRowModel().rows)
-                        }
-                      />
-                      <LuPrinter
-                        size={20}
-                        color="#4F46E5"
-                        className="mt-3 m-2"
-                        onClick={() => window.print()}
-                      />
+                      <Tooltip title="Download Data">
+                        <span>
+                          <MdOutlineCloudDownload
+                            size={20}
+                            color="#4F46E5"
+                            className="mt-3 m-2"
+                            disabled={table.getRowModel().rows.length === 0}
+                            onClick={() =>
+                              handleExportRows(table.getRowModel().rows)
+                            }
+                          />
+                        </span>
+                      </Tooltip>
+                      <Tooltip title="Print">
+                        <span>
+                          <LuPrinter
+                            size={20}
+                            color="#4F46E5"
+                            className="mt-3 m-2"
+                            onClick={() => window.print()}
+                          />
+                        </span>
+                      </Tooltip>
 
                       <MRT_ShowHideColumnsButton
                         table={table}
                         style={{ color: "#4F46E5" }}
                       />
-                      <CiFilter
-                        size={20}
-                        color="#4F46E5"
-                        className="mt-3 m-2 cursor-pointer"
-                        onClick={() => {
-                          table.setShowColumnFilters((prev) => !prev);
-                        }}
-                      />
+                      <Tooltip title="Toggle Filters">
+                        <span>
+                          <CiFilter
+                            size={20}
+                            color="#4F46E5"
+                            className="mt-3 m-2 cursor-pointer"
+                            onClick={() => {
+                              table.setShowColumnFilters((prev) => !prev);
+                            }}
+                          />
+                        </span>
+                      </Tooltip>
                     </div>
                   </div>
                 )}

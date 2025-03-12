@@ -28,14 +28,14 @@ function Challenges() {
       time_limit: 20,
     },
     {
-        id: 2,
-        type: "Math",
-        title: "Solving for x",
-        description: "Solve for x in the equation 3x - 4 = 11.",
-        level: "Medium",
-        solution: "x = 5",
-        hint: "First, add 4 to both sides, then divide by 3.",
-        time_limit: 15,
+      id: 2,
+      type: "Math",
+      title: "Solving for x",
+      description: "Solve for x in the equation 3x - 4 = 11.",
+      level: "Medium",
+      solution: "x = 5",
+      hint: "First, add 4 to both sides, then divide by 3.",
+      time_limit: 15,
     },
   ];
 
@@ -223,9 +223,14 @@ function Challenges() {
             open={Boolean(menuAnchor)}
             onClose={handleMenuClose}
           >
-            <MenuItem onClick={() => navigate(`/challenges/edit`)}>Edit</MenuItem>
+            <MenuItem onClick={() => navigate(`/challenges/edit`)}>
+              Edit
+            </MenuItem>
             <MenuItem>
-              <Delete path={`admin/challenges/delete`} onOpen={handleMenuClose} />
+              <Delete
+                path={`admin/challenges/delete`}
+                onOpen={handleMenuClose}
+              />
             </MenuItem>
           </Menu>
         </>

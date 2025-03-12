@@ -16,6 +16,7 @@ function SubscriptionEdit() {
   const [grades, setGrades] = useState([]);
   const [worksheets, setWorksheets] = useState([]);
   const [loadIndicator, setLoadIndicator] = useState(false);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -75,6 +76,7 @@ function SubscriptionEdit() {
 
   const getData = async () => {
     try {
+      setLoading(true);
       const response = await api.get(`subscription/${id}`);
       const { data } = response.data;
       const worksheetIds = JSON.parse(data.worksheet_id);
@@ -101,6 +103,8 @@ function SubscriptionEdit() {
       toast.error(
         `Error Fetching Data: ${e?.response?.data?.error || e.message}`
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -276,8 +280,8 @@ function SubscriptionEdit() {
               &nbsp;&nbsp;
             </div>
             <span className="mx-3 table-heading">
-              Add Subscription -&nbsp;
-              <span className="table-subheading">Add a new Subscription</span>
+              Update Subscription -&nbsp;
+              <span className="table-subheading">Update a Subscription</span>
             </span>
           </div>
           <div className="my-2 d-flex align-items-center justify-content-between gap-5">
@@ -307,6 +311,15 @@ function SubscriptionEdit() {
             </button>
           </div>
         </div>
+        {loading ? (
+            <div
+              className="d-flex justify-content-center align-items-center"
+            >
+              <div className="spinner-border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          ) : (
         <div className="card" style={{ border: "1px solid #dbd9d0" }}>
           <div className="d-flex justify-content-between px-5 my-2">
             <p className="view-header">Subscription Info</p>
@@ -315,8 +328,9 @@ function SubscriptionEdit() {
             <div className="row py-4">
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Grade</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Grade</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <select
@@ -348,7 +362,7 @@ function SubscriptionEdit() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
+                  <div className="col-5 d-flex">
                     <p className="view-label-text">Worksheet</p>
                   </div>
                   <div className="col-7">
@@ -376,8 +390,9 @@ function SubscriptionEdit() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Name</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Name</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <input
@@ -401,8 +416,9 @@ function SubscriptionEdit() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Price</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Price</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <input
@@ -426,8 +442,9 @@ function SubscriptionEdit() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Duration</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Duration</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <select
@@ -454,7 +471,7 @@ function SubscriptionEdit() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
+                  <div className="col-5 d-flex">
                     <p className="view-label-text">Description</p>
                   </div>
                   <div className="col-7">
@@ -507,6 +524,7 @@ function SubscriptionEdit() {
             </div>
           </div>
         </div>
+          )}
       </form>
     </div>
   );

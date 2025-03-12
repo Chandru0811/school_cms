@@ -62,12 +62,12 @@ function EmployeeEdit() {
     validationSchema: validationSchema,
     onSubmit: async (values) => {
       setLoadIndicator(true);
-    
+
       const { created_by, updated_by, ...payload } = values;
-    
+
       try {
         const response = await api.put(`employee/update/${id}`, payload);
-    
+
         if (response.status === 200) {
           toast.success(response.data.message);
           navigate("/employee");
@@ -92,7 +92,7 @@ function EmployeeEdit() {
       } finally {
         setLoadIndicator(false);
       }
-    },    
+    },
   });
 
   const getEmployeeData = async () => {
@@ -177,8 +177,8 @@ function EmployeeEdit() {
               &nbsp;&nbsp;
             </div>
             <span className="mx-3 table-heading">
-              Add Employee -&nbsp;
-              <span className="table-subheading">Add a new Employee</span>
+              Update Employee -&nbsp;
+              <span className="table-subheading">Update a Employee</span>
             </span>
           </div>
           <div className="my-2 d-flex align-items-center justify-content-between gap-5">
@@ -212,152 +212,170 @@ function EmployeeEdit() {
           <div className="d-flex justify-content-between px-5 my-2">
             <p className="view-header">Employee Info</p>
           </div>
-          <div className="container-fluid px-4">
-            <div className="row">
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Centre</p>
-                  </div>
-                  <div className="col-7">
-                    <MultiSelect
-                      options={centerList}
-                      value={selectedCenter}
-                      onChange={(selected) => {
-                        setSelectedCenter(selected);
-                        formik.setFieldValue(
-                          "center_id",
-                          selected.map((option) => option.value)
-                        );
-                      }}
-                      labelledBy="Select Service"
-                      className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${
-                        formik.touched.center_id && formik.errors.center_id
-                          ? "is-invalid"
-                          : ""
-                      }`}
-                    />
-                    {formik.touched.center_id && formik.errors.center_id && (
-                      <div className="invalid-feedback">
-                        {formik.errors.center_id}
-                      </div>
-                    )}
+          {loading ? (
+            <div
+              className="d-flex justify-content-center align-items-center"
+              style={{ height: "500px" }}
+            >
+              <div className="spinner-border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          ) : (
+            <div className="container-fluid px-4">
+              <div className="row">
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text">Centre</p>{" "}
+                      <span className="text-danger">*</span>
+                    </div>
+                    <div className="col-7">
+                      <MultiSelect
+                        options={centerList}
+                        value={selectedCenter}
+                        onChange={(selected) => {
+                          setSelectedCenter(selected);
+                          formik.setFieldValue(
+                            "center_id",
+                            selected.map((option) => option.value)
+                          );
+                        }}
+                        labelledBy="Select Service"
+                        className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${
+                          formik.touched.center_id && formik.errors.center_id
+                            ? "is-invalid"
+                            : ""
+                        }`}
+                      />
+                      {formik.touched.center_id && formik.errors.center_id && (
+                        <div className="invalid-feedback">
+                          {formik.errors.center_id}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Role</p>
-                  </div>
-                  <div className="col-7">
-                    <select
-                      className={`form-select form-select-sm ${
-                        formik.touched.role_id && formik.errors.role_id
-                          ? "is-invalid"
-                          : ""
-                      }`}
-                      value={formik.values.role_id} // Ensure it's bound to formik values
-                      onChange={(e) =>
-                        formik.setFieldValue("role_id", e.target.value)
-                      }
-                    >
-                      <option value="">Select Role</option>
-                      {roles.map((role) => (
-                        <option key={role.value} value={role.value}>
-                          {role.label}
-                        </option>
-                      ))}
-                    </select>
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text">Role</p>{" "}
+                      <span className="text-danger">*</span>
+                    </div>
+                    <div className="col-7">
+                      <select
+                        className={`form-select form-select-sm ${
+                          formik.touched.role_id && formik.errors.role_id
+                            ? "is-invalid"
+                            : ""
+                        }`}
+                        value={formik.values.role_id} // Ensure it's bound to formik values
+                        onChange={(e) =>
+                          formik.setFieldValue("role_id", e.target.value)
+                        }
+                      >
+                        <option value="">Select Role</option>
+                        {roles.map((role) => (
+                          <option key={role.value} value={role.value}>
+                            {role.label}
+                          </option>
+                        ))}
+                      </select>
 
-                    {formik.touched.role_id && formik.errors.role_id && (
-                      <div className="invalid-feedback">
-                        {formik.errors.role_id}
-                      </div>
-                    )}
+                      {formik.touched.role_id && formik.errors.role_id && (
+                        <div className="invalid-feedback">
+                          {formik.errors.role_id}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text"> Employee Name</p>
-                  </div>
-                  <div className="col-7">
-                    <input
-                      placeholder="Enter Text"
-                      type="text"
-                      onKeyDown={(e) => e.stopPropagation()}
-                      className={`form-control form-control-sm ${
-                        formik.touched.name && formik.errors.name
-                          ? "is-invalid"
-                          : ""
-                      }`}
-                      {...formik.getFieldProps("name")}
-                    />
-                    {formik.touched.name && formik.errors.name && (
-                      <div className="invalid-feedback">
-                        {formik.errors.name}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Employee Email</p>
-                  </div>
-                  <div className="col-7">
-                    <input
-                      placeholder="Enter Text"
-                      type="email"
-                      onKeyDown={(e) => e.stopPropagation()}
-                      className={`form-control form-control-sm ${
-                        formik.touched.email && formik.errors.email
-                          ? "is-invalid"
-                          : ""
-                      }`}
-                      {...formik.getFieldProps("email")}
-                    />
-                    {formik.touched.email && formik.errors.email && (
-                      <div className="invalid-feedback">
-                        {formik.errors.email}
-                      </div>
-                    )}
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text"> Employee Name</p>{" "}
+                      <span className="text-danger">*</span>
+                    </div>
+                    <div className="col-7">
+                      <input
+                        placeholder="Enter Text"
+                        type="text"
+                        onKeyDown={(e) => e.stopPropagation()}
+                        className={`form-control form-control-sm ${
+                          formik.touched.name && formik.errors.name
+                            ? "is-invalid"
+                            : ""
+                        }`}
+                        {...formik.getFieldProps("name")}
+                      />
+                      {formik.touched.name && formik.errors.name && (
+                        <div className="invalid-feedback">
+                          {formik.errors.name}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text"> Employee Mobile</p>
-                  </div>
-                  <div className="col-7">
-                    <input
-                      placeholder="Enter Text"
-                      type="text"
-                      onKeyDown={(e) => e.stopPropagation()}
-                      className={`form-control form-control-sm ${
-                        formik.touched.mobile && formik.errors.mobile
-                          ? "is-invalid"
-                          : ""
-                      }`}
-                      {...formik.getFieldProps("mobile")}
-                    />
-                    {formik.touched.mobile && formik.errors.mobile && (
-                      <div className="invalid-feedback">
-                        {formik.errors.mobile}
-                      </div>
-                    )}
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text">Employee Email</p>{" "}
+                      <span className="text-danger">*</span>
+                    </div>
+                    <div className="col-7">
+                      <input
+                        placeholder="Enter Text"
+                        type="email"
+                        onKeyDown={(e) => e.stopPropagation()}
+                        className={`form-control form-control-sm ${
+                          formik.touched.email && formik.errors.email
+                            ? "is-invalid"
+                            : ""
+                        }`}
+                        {...formik.getFieldProps("email")}
+                      />
+                      {formik.touched.email && formik.errors.email && (
+                        <div className="invalid-feedback">
+                          {formik.errors.email}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-6">
-                    <label className="form-label view-label-text">Gender</label>
-                    <div className="d-flex gap-3">
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text"> Employee Mobile</p>{" "}
+                      <span className="text-danger">*</span>
+                    </div>
+                    <div className="col-7">
+                      <input
+                        placeholder="Enter Text"
+                        type="text"
+                        onKeyDown={(e) => e.stopPropagation()}
+                        className={`form-control form-control-sm ${
+                          formik.touched.mobile && formik.errors.mobile
+                            ? "is-invalid"
+                            : ""
+                        }`}
+                        {...formik.getFieldProps("mobile")}
+                      />
+                      {formik.touched.mobile && formik.errors.mobile && (
+                        <div className="invalid-feedback">
+                          {formik.errors.mobile}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-5">
+                      <label className="form-label view-label-text">
+                        Gender <span className="text-danger">*</span>
+                      </label>
+                    </div>
+                    <div className="col-7 d-flex gap-3">
                       <div className="form-check">
                         <input
                           type="radio"
@@ -368,7 +386,10 @@ function EmployeeEdit() {
                           checked={formik.values.gender === "Male"}
                           onChange={formik.handleChange}
                         />
-                        <label className="form-check-label" htmlFor="Male">
+                        <label
+                          className="form-check-label view-label-text"
+                          htmlFor="male"
+                        >
                           Male
                         </label>
                       </div>
@@ -376,22 +397,32 @@ function EmployeeEdit() {
                         <input
                           type="radio"
                           className="form-check-input"
-                          id="Female"
+                          id="female"
                           name="gender"
                           value="Female"
                           checked={formik.values.gender === "Female"}
                           onChange={formik.handleChange}
                         />
-                        <label className="form-check-label" htmlFor="Female">
+                        <label
+                          className="form-check-label view-label-text"
+                          htmlFor="female"
+                        >
                           Female
                         </label>
                       </div>
+                    </div>
+                    <div className="col-12 text-center mx-5">
+                      {formik.touched.gender && formik.errors.gender && (
+                        <div className="text-danger">
+                          {formik.errors.gender}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </form>
     </div>

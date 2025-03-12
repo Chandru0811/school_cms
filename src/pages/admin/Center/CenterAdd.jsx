@@ -85,8 +85,27 @@ function CenterAdd({ onSuccess }) {
       </div>
 
       <Modal show={show} onHide={handleClose} size="lg">
-        <Modal.Header closeButton>
+        <Modal.Header>
           <Modal.Title>Centre Add</Modal.Title>
+          <div className="d-flex gap-3">
+            <Button className="btn btn-secondary btn-sm py-0" onClick={handleClose}>
+              Close
+            </Button>
+            <Button
+              className="btn add-btn button-spinner text-light"
+              type="submit"
+              disabled={loadIndicator}
+              onClick={formik.handleSubmit}
+            >
+              {loadIndicator && (
+                <span
+                  className="spinner-border spinner-border-sm me-2"
+                  aria-hidden="true"
+                ></span>
+              )}
+             <small> Submit</small>
+            </Button>
+          </div>
         </Modal.Header>
         <Modal.Body>
           <form onSubmit={formik.handleSubmit}>
@@ -94,12 +113,13 @@ function CenterAdd({ onSuccess }) {
               <div className="row">
                 <div className="col-md-6 col-12">
                   <div className="row mb-4">
-                    <div className="col-5">
+                    <div className="col-5 d-flex">
                       <p className="view-label-text">Name</p>
+                      <span className="text-danger">*</span>
                     </div>
                     <div className="col-7">
                       <input
-                      placeholder="Enter Text"
+                        placeholder="Enter Text"
                         aria-label="Default select example"
                         className={`form-control ${
                           formik.touched.name && formik.errors.name
@@ -118,13 +138,14 @@ function CenterAdd({ onSuccess }) {
                 </div>
                 <div className="col-md-6 col-12">
                   <div className="row mb-4">
-                    <div className="col-4">
-                      <p className="view-label-text">Location</p>
+                    <div className="col-4 d-flex">
+                      <p className="view-label-text">Location</p>{" "}
+                      <span className="text-danger">*</span>
                     </div>
                     <div className="col-8">
                       <textarea
                         rows={5}
-                          placeholder="Enter Text"
+                        placeholder="Enter Text"
                         className={`form-control ${
                           formik.touched.location && formik.errors.location
                             ? "is-invalid"
@@ -145,25 +166,6 @@ function CenterAdd({ onSuccess }) {
             </div>
           </form>
         </Modal.Body>
-        <Modal.Footer>
-          <Button className="btn btn-secondary btn-sm" onClick={handleClose}>
-            Close
-          </Button>
-          <Button
-            className="btn btn-button"
-            type="submit"
-            disabled={loadIndicator}
-            onClick={formik.handleSubmit}
-          >
-            {loadIndicator && (
-              <span
-                className="spinner-border spinner-border-sm me-2"
-                aria-hidden="true"
-              ></span>
-            )}
-            Submit
-          </Button>
-        </Modal.Footer>
       </Modal>
     </>
   );

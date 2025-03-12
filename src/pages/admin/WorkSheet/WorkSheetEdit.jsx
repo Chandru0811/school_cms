@@ -665,7 +665,7 @@ function WorkSheetEdit() {
             </div>
             <span className="mx-3 table-heading">
               Update Worksheet -&nbsp;
-              <span className="table-subheading">Update a  Worksheet</span>
+              <span className="table-subheading">Update a Worksheet</span>
             </span>
           </div>
           <div className="my-2 d-flex align-items-center justify-content-between gap-5">
@@ -699,6 +699,16 @@ function WorkSheetEdit() {
           <div className="d-flex justify-content-between px-5 my-2">
             <p className="view-header">Worksheet Info</p>
           </div>
+          {loading ? (
+            <div
+              className="d-flex justify-content-center align-items-center"
+              style={{ height: "500px" }}
+            >
+              <div className="spinner-border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          ) : (
           <div className="container-fluid px-4">
             <div className="row py-4">
               <div className="col-md-6 col-12 mb-3">
@@ -737,7 +747,7 @@ function WorkSheetEdit() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
+                  <div className="col-5 d-flex">
                     {formik.values.type === "challenge" ? (
                       <label className="form-label">
                         Challenge Title<span className="text-danger">*</span>
@@ -768,8 +778,9 @@ function WorkSheetEdit() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Centre</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Centre</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <MultiSelect
@@ -810,8 +821,9 @@ function WorkSheetEdit() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Grade</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Grade</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <MultiSelect
@@ -850,7 +862,7 @@ function WorkSheetEdit() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
+                  <div className="col-5 d-flex">
                     <p className="view-label-text">Subject</p>
                   </div>
                   <div className="col-7">
@@ -877,7 +889,7 @@ function WorkSheetEdit() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
+                  <div className="col-5 d-flex">
                     <p className="view-label-text">Topic</p>
                   </div>
                   <div className="col-7">
@@ -899,7 +911,7 @@ function WorkSheetEdit() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
+                  <div className="col-5 d-flex">
                     {formik.values.type === "challenge" ? (
                       <label className="form-label">
                         Challenge Type<span className="text-danger">*</span>
@@ -938,8 +950,9 @@ function WorkSheetEdit() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Difficulty Type</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Difficulty Type</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <select
@@ -968,8 +981,9 @@ function WorkSheetEdit() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Total Scoree</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Total Scoree</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <input
@@ -993,8 +1007,9 @@ function WorkSheetEdit() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Target Score</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Target Score</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <input
@@ -1019,8 +1034,9 @@ function WorkSheetEdit() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Reward</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Reward</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <input
@@ -1043,6 +1059,7 @@ function WorkSheetEdit() {
               </div>
             </div>
           </div>
+          )}
           <ThemeProvider theme={theme}>
             <MaterialReactTable table={table} />
           </ThemeProvider>

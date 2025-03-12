@@ -124,8 +124,13 @@ function QustionView() {
           </div>
         </div>
         {loading ? (
-          <div className="loader-container">
-            <div className="loader"></div>
+          <div
+            className="d-flex justify-content-center align-items-center"
+            style={{ height: "500px" }}
+          >
+            <div className="spinner-border" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
           </div>
         ) : (
           <div className="container-fluid px-4">
@@ -137,7 +142,8 @@ function QustionView() {
                   </div>
                   <div className="col-6">
                     <p className="view-value">
-                      : {centerFind(data.question?.center_id) || "--"}
+                      {" "}
+                      {centerFind(data.question?.center_id) || "--"}
                     </p>
                   </div>
                 </div>
@@ -148,7 +154,7 @@ function QustionView() {
                     <p className="view-label-text">Grade</p>
                   </div>
                   <div className="col-6">
-                    <p className="view-value">: {data.question?.grand_name}</p>
+                    <p className="view-value"> {data.question?.grand_name}</p>
                   </div>
                 </div>
               </div>
@@ -158,9 +164,7 @@ function QustionView() {
                     <p className="view-label-text">Subject</p>
                   </div>
                   <div className="col-6">
-                    <p className="view-value">
-                      : {data.question?.subject_name}
-                    </p>
+                    <p className="view-value"> {data.question?.subject_name}</p>
                   </div>
                 </div>
               </div>
@@ -170,7 +174,7 @@ function QustionView() {
                     <p className="view-label-text">Topic</p>
                   </div>
                   <div className="col-6">
-                    <p className="view-value">: {data.question?.topic_name}</p>
+                    <p className="view-value"> {data.question?.topic_name}</p>
                   </div>
                 </div>
               </div>
@@ -181,7 +185,6 @@ function QustionView() {
                   </div>
                   <div className="col-6">
                     <p className="view-value">
-                      :{" "}
                       {data.question?.ques_type
                         ? JSON.parse(data.question?.ques_type).join(", ")
                         : ""}
@@ -195,7 +198,7 @@ function QustionView() {
                     <p className="view-label-text">Question</p>
                   </div>
                   <div className="col-6">
-                    <p className="view-value">: {data.question?.question}</p>
+                    <p className="view-value"> {data.question?.question}</p>
                   </div>
                 </div>
               </div>
@@ -206,7 +209,6 @@ function QustionView() {
                   </div>
                   <div className="col-6">
                     <p className="view-value">
-                      :{" "}
                       {data.question?.options
                         ? Object.values(JSON.parse(data.question.options)).join(
                             ", "
@@ -223,7 +225,8 @@ function QustionView() {
                   </div>
                   <div className="col-6">
                     <p className="view-value">
-                      : {data.question?.difficult_level}
+                      {" "}
+                      {data.question?.difficult_level}
                     </p>
                   </div>
                 </div>
@@ -234,7 +237,7 @@ function QustionView() {
                     <p className="view-label-text">Hint</p>
                   </div>
                   <div className="col-6">
-                    <p className="view-value">: {data.question?.hint}</p>
+                    <p className="view-value"> {data.question?.hint}</p>
                   </div>
                 </div>
               </div>
@@ -245,7 +248,6 @@ function QustionView() {
                   </div>
                   <div className="col-6">
                     <p className="view-value">
-                      :{" "}
                       {data.answer?.answer_type
                         ? JSON.parse(data.answer?.answer_type).join(", ")
                         : ""}
@@ -260,7 +262,6 @@ function QustionView() {
                   </div>
                   <div className="col-6">
                     <p className="view-value">
-                      :{" "}
                       {data.answer?.answer &&
                         Object.entries(JSON.parse(data.answer.answer))
                           .map(([key, value]) => `${key}: ${value}`)

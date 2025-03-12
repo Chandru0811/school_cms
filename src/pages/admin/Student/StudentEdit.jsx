@@ -47,8 +47,9 @@ function StudentEdit() {
       .string()
       .max(255, "*Admission No must not exceed 255 characters")
       .required("*Admission number is required"),
-    student_gender: yup.string().required("*Gender is required"),
-    date_of_birth: yup.date()
+    student_gender: yup.string().required("*Student Gender is required"),
+    date_of_birth: yup
+      .date()
       .required("*Date of Birth is required")
       .max(new Date(), "*Future date is not allowed"),
     admission_date: yup
@@ -75,6 +76,7 @@ function StudentEdit() {
       parent_name: "",
       parent_email: "",
       parent_mobile: "",
+      parent_gender: "",
       grade_id: "",
       roll_no: "",
       admission_no: "",
@@ -135,6 +137,7 @@ function StudentEdit() {
         parent_name: data.parent_name,
         parent_email: data.parent_email,
         parent_mobile: data.parent_mobile,
+        parent_gender: data.parent_gender,
         grade_id: data.grade_id,
         roll_no: data.roll_no,
         admission_no: data.admission_no,
@@ -321,472 +324,557 @@ function StudentEdit() {
           <div className="d-flex justify-content-between px-5 my-2">
             <p className="view-header">Student Info</p>
           </div>
-          <div className="container-fluid px-4">
-            <div className="row border-top py-5">
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Centre Name</p>
-                  </div>
-                  <div className="col-7">
-                    <select
-                      className={`form-select form-select-sm ${formik.touched.center_id && formik.errors.center_id
-                        ? "is-invalid"
-                        : ""
-                        }`}
-                      value={formik.values.center_id}
-                      onChange={(e) => {
-                        formik.setFieldValue("center_id", e.target.value);
-                        formik.setFieldValue("grade_id", "");
-                        getGradeList();
-                      }}
-                    >
-                      <option value="">Select Center</option>
-                      {center.map((center) => (
-                        <option key={center.value} value={center.value}>
-                          {center.label}
-                        </option>
-                      ))}
-                    </select>
-                    {formik.touched.center_id && formik.errors.center_id && (
-                      <div className="invalid-feedback">
-                        {formik.errors.center_id}
-                      </div>
-                    )}
-                  </div>
-                </div>
+          \
+          {loading ? (
+            <div
+              className="d-flex justify-content-center align-items-center"
+              style={{ height: "500px" }}
+            >
+              <div className="spinner-border" role="status">
+                <span className="visually-hidden">Loading...</span>
               </div>
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Grader List</p>
-                  </div>
-                  <div className="col-7">
-                    <select
-                      className={`form-select form-select-sm${formik.touched.grade_id && formik.errors.grade_id
-                        ? "is-invalid"
-                        : ""
+            </div>
+          ) : (
+            <div className="container-fluid px-4">
+              <div className="row border-top py-5">
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text">Centre Name</p>{" "}
+                      <span className="text-danger">*</span>
+                    </div>
+                    <div className="col-7">
+                      <select
+                        className={`form-select form-select-sm ${
+                          formik.touched.center_id && formik.errors.center_id
+                            ? "is-invalid"
+                            : ""
                         }`}
-                      value={formik.values.grade_id}
-                      onChange={(e) => {
-                        formik.setFieldValue("grade_id", e.target.value);
-                        getSubscriptionListByGrade(e.target.value);
-                      }}
-                    >
-                      <option value="">Select Grade</option>
-                      {grade.map((grade) => (
-                        <option key={grade.value} value={grade.value}>
-                          {grade.label}
-                        </option>
-                      ))}
-                    </select>
-
-                    {formik.touched.grade_id && formik.errors.grade_id && (
-                      <div className="invalid-feedback">
-                        {formik.errors.grade_id}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Subscriptions</p>
-                  </div>
-                  <div className="col-7">
-                    <MultiSelect
-                      options={subscriptions}
-                      value={selectedSubscriptions}
-                      onChange={(selected) => {
-                        setSelectedSubscriptions(selected);
-                        formik.setFieldValue(
-                          "subscription_id",
-                          selected.map((option) => option.value)
-                        );
-                      }}
-                      labelledBy="Select Subscriptions"
-                      className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${formik.touched.subscription_id && formik.errors.subscription_id
-                        ? "is-invalid"
-                        : ""
-                        }`}
-                    />
-                    {formik.touched.subscription_id &&
-                      formik.errors.subscription_id && (
+                        value={formik.values.center_id}
+                        onChange={(e) => {
+                          formik.setFieldValue("center_id", e.target.value);
+                          formik.setFieldValue("grade_id", "");
+                          getGradeList();
+                        }}
+                      >
+                        <option value="">Select Center</option>
+                        {center.map((center) => (
+                          <option key={center.value} value={center.value}>
+                            {center.label}
+                          </option>
+                        ))}
+                      </select>
+                      {formik.touched.center_id && formik.errors.center_id && (
                         <div className="invalid-feedback">
-                          {formik.errors.subscription_id}
+                          {formik.errors.center_id}
                         </div>
                       )}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Role</p>
-                  </div>
-                  <div className="col-7">
-                    <select
-                      className={`form-select form-select-sm ${formik.touched.role_id && formik.errors.role_id
-                        ? "is-invalid"
-                        : ""
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text">Grader List</p>
+                    </div>
+                    <div className="col-7">
+                      <select
+                        className={`form-select form-select-sm${
+                          formik.touched.grade_id && formik.errors.grade_id
+                            ? "is-invalid"
+                            : ""
                         }`}
-                      value={formik.values.name}
-                      onChange={(e) =>
-                        formik.setFieldValue("role_id", e.target.value)
-                      }
-                    >
-                      <option value="">Select Role</option>
-                      {roles.map((role) => (
-                        <option key={role.id} value={role.id}>
-                          {role.name}
-                        </option>
-                      ))}
-                    </select>
+                        value={formik.values.grade_id}
+                        onChange={(e) => {
+                          formik.setFieldValue("grade_id", e.target.value);
+                          getSubscriptionListByGrade(e.target.value);
+                        }}
+                      >
+                        <option value="">Select Grade</option>
+                        {grade.map((grade) => (
+                          <option key={grade.value} value={grade.value}>
+                            {grade.label}
+                          </option>
+                        ))}
+                      </select>
 
-                    {formik.touched.role_id && formik.errors.role_id && (
-                      <div className="invalid-feedback">
-                        {formik.errors.role_id}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Student First Name</p>
-                  </div>
-                  <div className="col-7">
-                    <input
-                      type="text"
-                      onKeyDown={(e) => e.stopPropagation()}
-                      className={`form-control form-control-sm ${formik.touched.first_name && formik.errors.first_name
-                        ? "is-invalid"
-                        : ""
-                        }`}
-                      placeholder="Enter Text"
-                      {...formik.getFieldProps("first_name")}
-                    />
-                    {formik.touched.first_name && formik.errors.first_name && (
-                      <div className="invalid-feedback">
-                        {formik.errors.first_name}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Student Middle Name</p>
-                  </div>
-                  <div className="col-7">
-                    <input
-                      type="text"
-                      onKeyDown={(e) => e.stopPropagation()}
-                      className="form-control form-control-sm"
-                      {...formik.getFieldProps("middle_name")}
-                      placeholder="Enter Text"
-                    />
-                    {formik.touched.middle_name &&
-                      formik.errors.middle_name && (
+                      {formik.touched.grade_id && formik.errors.grade_id && (
                         <div className="invalid-feedback">
-                          {formik.errors.middle_name}
+                          {formik.errors.grade_id}
                         </div>
                       )}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Student Last Name</p>
-                  </div>
-                  <div className="col-7">
-                    <input
-                      type="text"
-                      onKeyDown={(e) => e.stopPropagation()}
-                      className="form-control form-control-sm"
-                      {...formik.getFieldProps("last_name")}
-                      placeholder="Enter Text"
-                    />
-                    {formik.touched.last_name && formik.errors.last_name && (
-                      <div className="invalid-feedback">
-                        {formik.errors.last_name}
-                      </div>
-                    )}
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text">Subscriptions</p>{" "}
+                      <span className="text-danger">*</span>
+                    </div>
+                    <div className="col-7">
+                      <MultiSelect
+                        options={subscriptions}
+                        value={selectedSubscriptions}
+                        onChange={(selected) => {
+                          setSelectedSubscriptions(selected);
+                          formik.setFieldValue(
+                            "subscription_id",
+                            selected.map((option) => option.value)
+                          );
+                        }}
+                        labelledBy="Select Subscriptions"
+                        className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${
+                          formik.touched.subscription_id &&
+                          formik.errors.subscription_id
+                            ? "is-invalid"
+                            : ""
+                        }`}
+                      />
+                      {formik.touched.subscription_id &&
+                        formik.errors.subscription_id && (
+                          <div className="invalid-feedback">
+                            {formik.errors.subscription_id}
+                          </div>
+                        )}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Gender</p>
-                  </div>
-                  <div className="col-7">
-                    <div className="d-flex align-items-center">
-                      {/* Male Radio Button */}
-                      <div className="form-check me-3">
-                        <input
-                          type="radio"
-                          id="male"
-                          name="student_gender"
-                          value="Male"
-                          onKeyDown={(e) => e.stopPropagation()}
-                          className="form-check-input"
-                          {...formik.getFieldProps("student_gender")}
-                        />
-                        <label htmlFor="male" className="view-label-text form-check-label">Male</label>
-                      </div>
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text">Role</p>{" "}
+                      <span className="text-danger">*</span>
+                    </div>
+                    <div className="col-7">
+                      <select
+                        className={`form-select form-select-sm ${
+                          formik.touched.role_id && formik.errors.role_id
+                            ? "is-invalid"
+                            : ""
+                        }`}
+                        value={formik.values.name}
+                        onChange={(e) =>
+                          formik.setFieldValue("role_id", e.target.value)
+                        }
+                      >
+                        <option value="">Select Role</option>
+                        {roles.map((role) => (
+                          <option key={role.id} value={role.id}>
+                            {role.name}
+                          </option>
+                        ))}
+                      </select>
 
-                      {/* Female Radio Button */}
+                      {formik.touched.role_id && formik.errors.role_id && (
+                        <div className="invalid-feedback">
+                          {formik.errors.role_id}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text">Student First Name</p>{" "}
+                      <span className="text-danger">*</span>
+                    </div>
+                    <div className="col-7">
+                      <input
+                        type="text"
+                        onKeyDown={(e) => e.stopPropagation()}
+                        className={`form-control form-control-sm ${
+                          formik.touched.first_name && formik.errors.first_name
+                            ? "is-invalid"
+                            : ""
+                        }`}
+                        placeholder="Enter Text"
+                        {...formik.getFieldProps("first_name")}
+                      />
+                      {formik.touched.first_name &&
+                        formik.errors.first_name && (
+                          <div className="invalid-feedback">
+                            {formik.errors.first_name}
+                          </div>
+                        )}
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text">Student Middle Name</p>
+                    </div>
+                    <div className="col-7">
+                      <input
+                        type="text"
+                        onKeyDown={(e) => e.stopPropagation()}
+                        className="form-control form-control-sm"
+                        {...formik.getFieldProps("middle_name")}
+                        placeholder="Enter Text"
+                      />
+                      {formik.touched.middle_name &&
+                        formik.errors.middle_name && (
+                          <div className="invalid-feedback">
+                            {formik.errors.middle_name}
+                          </div>
+                        )}
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text">Student Last Name</p>
+                    </div>
+                    <div className="col-7">
+                      <input
+                        type="text"
+                        onKeyDown={(e) => e.stopPropagation()}
+                        className="form-control form-control-sm"
+                        {...formik.getFieldProps("last_name")}
+                        placeholder="Enter Text"
+                      />
+                      {formik.touched.last_name && formik.errors.last_name && (
+                        <div className="invalid-feedback">
+                          {formik.errors.last_name}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-5">
+                      <label className="form-label view-label-text">
+                        Student Gender <span className="text-danger">*</span>
+                      </label>
+                    </div>
+                    <div className="col-7 d-flex gap-3">
                       <div className="form-check">
                         <input
                           type="radio"
+                          className="form-check-input"
+                          id="male"
+                          name="student_gender"
+                          value="Male"
+                          checked={formik.values.student_gender === "Male"}
+                          onChange={formik.handleChange}
+                        />
+                        <label
+                          className="form-check-label view-label-text"
+                          htmlFor="male"
+                        >
+                          Male
+                        </label>
+                      </div>
+                      <div className="form-check">
+                        <input
+                          type="radio"
+                          className="form-check-input"
                           id="female"
                           name="student_gender"
                           value="Female"
-                          onKeyDown={(e) => e.stopPropagation()}
-                          className="form-check-input"
-                          {...formik.getFieldProps("student_gender")}
+                          checked={formik.values.student_gender === "Female"}
+                          onChange={formik.handleChange}
                         />
-                        <label htmlFor="female" className="view-label-text form-check-label">Female</label>
+                        <label
+                          className="form-check-label view-label-text"
+                          htmlFor="female"
+                        >
+                          Female
+                        </label>
                       </div>
                     </div>
-                    <div className="d-flex justify-content-start">
-                      <div>
-                        {formik.touched.student_gender && formik.errors.student_gender && (
-                          <div className="invalid-feedback d-block">
+                    <div className="col-12 text-center mx-5">
+                      {formik.touched.student_gender &&
+                        formik.errors.student_gender && (
+                          <div className="text-danger">
                             {formik.errors.student_gender}
                           </div>
                         )}
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text">Student Date of Birth</p>{" "}
+                      <span className="text-danger">*</span>
+                    </div>
+                    <div className="col-7">
+                      <input
+                        type="date"
+                        max={new Date().toISOString().split("T")[0]}
+                        onKeyDown={(e) => e.stopPropagation()}
+                        className={`form-control form-control-sm ${
+                          formik.touched.date_of_birth &&
+                          formik.errors.date_of_birth
+                            ? "is-invalid"
+                            : ""
+                        }`}
+                        {...formik.getFieldProps("date_of_birth")}
+                      />
+                      {formik.touched.date_of_birth &&
+                        formik.errors.date_of_birth && (
+                          <div className="invalid-feedback">
+                            {formik.errors.date_of_birth}
+                          </div>
+                        )}
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text"> Student Email</p>{" "}
+                      <span className="text-danger">*</span>
+                    </div>
+                    <div className="col-7">
+                      <input
+                        type="email"
+                        onKeyDown={(e) => e.stopPropagation()}
+                        className={`form-control form-control-sm ${
+                          formik.touched.student_email &&
+                          formik.errors.student_email
+                            ? "is-invalid"
+                            : ""
+                        }`}
+                        {...formik.getFieldProps("student_email")}
+                        placeholder="Enter Text"
+                      />
+                      {formik.touched.student_email &&
+                        formik.errors.student_email && (
+                          <div className="invalid-feedback">
+                            {formik.errors.student_email}
+                          </div>
+                        )}
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text">Student Mobile</p>{" "}
+                      <span className="text-danger">*</span>
+                    </div>
+                    <div className="col-7">
+                      <input
+                        type="text"
+                        onKeyDown={(e) => e.stopPropagation()}
+                        className={`form-control form-control-sm ${
+                          formik.touched.student_mobile &&
+                          formik.errors.student_mobile
+                            ? "is-invalid"
+                            : ""
+                        }`}
+                        {...formik.getFieldProps("student_mobile")}
+                        placeholder="Enter Number"
+                      />
+                      {formik.touched.student_mobile &&
+                        formik.errors.student_mobile && (
+                          <div className="invalid-feedback">
+                            {formik.errors.student_mobile}
+                          </div>
+                        )}
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text">Parent Name</p>
+                    </div>
+                    <div className="col-7">
+                      <input
+                        type="text"
+                        onKeyDown={(e) => e.stopPropagation()}
+                        className="form-control form-control-sm"
+                        {...formik.getFieldProps("parent_name")}
+                        placeholder="Enter Text"
+                      />
+                      {formik.touched.parent_name &&
+                        formik.errors.parent_name && (
+                          <div className="invalid-feedback">
+                            {formik.errors.parent_name}
+                          </div>
+                        )}
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text">Parent Email</p>
+                    </div>
+                    <div className="col-7">
+                      <input
+                        type="email"
+                        onKeyDown={(e) => e.stopPropagation()}
+                        className="form-control form-control-sm "
+                        {...formik.getFieldProps("parent_email")}
+                        placeholder="Enter Text"
+                      />
+                      {formik.touched.parent_email &&
+                        formik.errors.parent_email && (
+                          <div className="invalid-feedback">
+                            {formik.errors.parent_email}
+                          </div>
+                        )}
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text">Parent Mobile Number</p>
+                    </div>
+                    <div className="col-7">
+                      <input
+                        type="text"
+                        onKeyDown={(e) => e.stopPropagation()}
+                        className="form-control form-control-sm"
+                        {...formik.getFieldProps("parent_mobile")}
+                        placeholder="Enter Text"
+                      />
+                      {formik.touched.parent_mobile &&
+                        formik.errors.parent_mobile && (
+                          <div className="invalid-feedback">
+                            {formik.errors.parent_mobile}
+                          </div>
+                        )}
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-5">
+                      <label className="form-label view-label-text">
+                        Parent Gender
+                      </label>
+                    </div>
+                    <div className="col-7 d-flex gap-3">
+                      <div className="form-check">
+                        <input
+                          type="radio"
+                          className="form-check-input"
+                          id="male"
+                          name="parent_gender"
+                          value="Male"
+                          checked={formik.values.parent_gender === "Male"}
+                          onChange={formik.handleChange}
+                        />
+                        <label
+                          className="form-check-label view-label-text"
+                          htmlFor="male"
+                        >
+                          Male
+                        </label>
+                      </div>
+                      <div className="form-check">
+                        <input
+                          type="radio"
+                          className="form-check-input"
+                          id="female"
+                          name="parent_gender"
+                          value="Female"
+                          checked={formik.values.parent_gender === "Female"}
+                          onChange={formik.handleChange}
+                        />
+                        <label
+                          className="form-check-label view-label-text"
+                          htmlFor="female"
+                        >
+                          Female
+                        </label>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Student Date of Birth</p>
-                  </div>
-                  <div className="col-7">
-                    <input
-                      type="date"
-                      max={new Date().toISOString().split("T")[0]}
-                      onKeyDown={(e) => e.stopPropagation()}
-                      className={`form-control form-control-sm ${formik.touched.date_of_birth &&
-                        formik.errors.date_of_birth
-                        ? "is-invalid"
-                        : ""
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text">Roll Number</p>{" "}
+                      <span className="text-danger">*</span>
+                    </div>
+                    <div className="col-7">
+                      <input
+                        type="text"
+                        onKeyDown={(e) => e.stopPropagation()}
+                        className={`form-control form-control-sm ${
+                          formik.touched.roll_no && formik.errors.roll_no
+                            ? "is-invalid"
+                            : ""
                         }`}
-                      {...formik.getFieldProps("date_of_birth")}
-                    />
-                    {formik.touched.date_of_birth &&
-                      formik.errors.date_of_birth && (
+                        placeholder="Enter Text"
+                        {...formik.getFieldProps("roll_no")}
+                      />
+                      {formik.touched.roll_no && formik.errors.roll_no && (
                         <div className="invalid-feedback">
-                          {formik.errors.date_of_birth}
+                          {formik.errors.roll_no}
                         </div>
                       )}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text"> Student Email</p>
-                  </div>
-                  <div className="col-7">
-                    <input
-                      type="email"
-                      onKeyDown={(e) => e.stopPropagation()}
-                      className={`form-control form-control-sm ${formik.touched.student_email &&
-                        formik.errors.student_email
-                        ? "is-invalid"
-                        : ""
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text">Admission Number</p>{" "}
+                      <span className="text-danger">*</span>
+                    </div>
+                    <div className="col-7">
+                      <input
+                        type="text"
+                        onKeyDown={(e) => e.stopPropagation()}
+                        className={`form-control form-control-sm ${
+                          formik.touched.admission_no &&
+                          formik.errors.admission_no
+                            ? "is-invalid"
+                            : ""
                         }`}
-                      {...formik.getFieldProps("student_email")}
-                      placeholder="Enter Text"
-                    />
-                    {formik.touched.student_email &&
-                      formik.errors.student_email && (
-                        <div className="invalid-feedback">
-                          {formik.errors.student_email}
-                        </div>
-                      )}
+                        placeholder="Enter Text"
+                        {...formik.getFieldProps("admission_no")}
+                      />
+                      {formik.touched.admission_no &&
+                        formik.errors.admission_no && (
+                          <div className="invalid-feedback">
+                            {formik.errors.admission_no}
+                          </div>
+                        )}
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Student Mobile</p>
-                  </div>
-                  <div className="col-7">
-                    <input
-                      type="text"
-                      onKeyDown={(e) => e.stopPropagation()}
-                      className={`form-control form-control-sm ${formik.touched.student_mobile &&
-                        formik.errors.student_mobile
-                        ? "is-invalid"
-                        : ""
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text">Admission Date</p>
+                    </div>
+                    <div className="col-7">
+                      <input
+                        type="date"
+                        onKeyDown={(e) => e.stopPropagation()}
+                        className={`form-control form-control-sm ${
+                          formik.touched.admission_date &&
+                          formik.errors.admission_date
+                            ? "is-invalid"
+                            : ""
                         }`}
-                      {...formik.getFieldProps("student_mobile")}
-                      placeholder="Enter Number"
-                    />
-                    {formik.touched.student_mobile &&
-                      formik.errors.student_mobile && (
-                        <div className="invalid-feedback">
-                          {formik.errors.student_mobile}
-                        </div>
-                      )}
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Parent Name</p>
-                  </div>
-                  <div className="col-7">
-                    <input
-                      type="text"
-                      onKeyDown={(e) => e.stopPropagation()}
-                      className="form-control form-control-sm"
-                      {...formik.getFieldProps("parent_name")}
-                      placeholder="Enter Text"
-                    />
-                    {formik.touched.parent_name &&
-                      formik.errors.parent_name && (
-                        <div className="invalid-feedback">
-                          {formik.errors.parent_name}
-                        </div>
-                      )}
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Parent Email</p>
-                  </div>
-                  <div className="col-7">
-                    <input
-                      type="email"
-                      onKeyDown={(e) => e.stopPropagation()}
-                      className="form-control form-control-sm "
-                      {...formik.getFieldProps("parent_email")}
-                      placeholder="Enter Text"
-                    />
-                    {formik.touched.parent_email &&
-                      formik.errors.parent_email && (
-                        <div className="invalid-feedback">
-                          {formik.errors.parent_email}
-                        </div>
-                      )}
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Parent Mobile Number</p>
-                  </div>
-                  <div className="col-7">
-                    <input
-                      type="text"
-                      onKeyDown={(e) => e.stopPropagation()}
-                      className="form-control form-control-sm"
-                      {...formik.getFieldProps("parent_mobile")}
-                      placeholder="Enter Text"
-                    />
-                    {formik.touched.parent_mobile &&
-                      formik.errors.parent_mobile && (
-                        <div className="invalid-feedback">
-                          {formik.errors.parent_mobile}
-                        </div>
-                      )}
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Roll Number</p>
-                  </div>
-                  <div className="col-7">
-                    <input
-                      type="text"
-                      onKeyDown={(e) => e.stopPropagation()}
-                      className={`form-control form-control-sm ${formik.touched.roll_no && formik.errors.roll_no
-                        ? "is-invalid"
-                        : ""
-                        }`}
-                      placeholder="Enter Text"
-                      {...formik.getFieldProps("roll_no")}
-                    />
-                    {formik.touched.roll_no && formik.errors.roll_no && (
-                      <div className="invalid-feedback">
-                        {formik.errors.roll_no}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Admission Number</p>
-                  </div>
-                  <div className="col-7">
-                    <input
-                      type="text"
-                      onKeyDown={(e) => e.stopPropagation()}
-                      className={`form-control form-control-sm ${formik.touched.admission_no &&
-                        formik.errors.admission_no
-                        ? "is-invalid"
-                        : ""
-                        }`}
-                      placeholder="Enter Text"
-                      {...formik.getFieldProps("admission_no")}
-                    />
-                    {formik.touched.admission_no &&
-                      formik.errors.admission_no && (
-                        <div className="invalid-feedback">
-                          {formik.errors.admission_no}
-                        </div>
-                      )}
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Admission Date</p>
-                  </div>
-                  <div className="col-7">
-                    <input
-                      type="date"
-                      onKeyDown={(e) => e.stopPropagation()}
-                      className={`form-control form-control-sm ${formik.touched.admission_date &&
-                        formik.errors.admission_date
-                        ? "is-invalid"
-                        : ""
-                        }`}
-                      {...formik.getFieldProps("admission_date")}
-                    />
-                    {formik.touched.admission_date &&
-                      formik.errors.admission_date && (
-                        <div className="invalid-feedback">
-                          {formik.errors.admission_date}
-                        </div>
-                      )}
+                        {...formik.getFieldProps("admission_date")}
+                      />
+                      {formik.touched.admission_date &&
+                        formik.errors.admission_date && (
+                          <div className="invalid-feedback">
+                            {formik.errors.admission_date}
+                          </div>
+                        )}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
         </div>
       </form>
     </div>

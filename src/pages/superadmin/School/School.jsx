@@ -15,7 +15,6 @@ import api from "../../../config/URL";
 import ImageURL from "../../../config/ImageURL";
 import userImage from "../../../assets/images/user_image.png";
 
-
 function School() {
   const [menuAnchor, setMenuAnchor] = useState(null);
   const [data, setData] = useState([]);
@@ -67,12 +66,14 @@ function School() {
         accessorKey: "users",
         header: "Admin Name",
         Cell: ({ row }) => {
-          const admin = row.original.users?.[0]; 
-          const imageUrl =
-            admin?.avatar?.image
-              ? `${ImageURL.replace(/\/$/, '')}/${admin.avatar.image.replace(/^\//, '')}`
-              : userImage;       
-      
+          const admin = row.original.users?.[0];
+          const imageUrl = admin?.avatar?.image
+            ? `${ImageURL.replace(/\/$/, "")}/${admin.avatar.image.replace(
+                /^\//,
+                ""
+              )}`
+            : userImage;
+
           return admin ? (
             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
               <img
@@ -96,7 +97,6 @@ function School() {
           );
         },
       },
-      
       {
         accessorFn: (row) => row.users?.[0]?.email,
         header: "Admin Email",
@@ -249,6 +249,7 @@ function School() {
                 enableDensityToggle={false}
                 enableFullScreenToggle={false}
                 initialState={{
+                  pagination: { pageSize: 50, pageIndex: 0 },
                   columnVisibility: {
                     working_hrs: false,
                     citizenship: false,

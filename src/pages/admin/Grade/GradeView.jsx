@@ -1,19 +1,13 @@
-import {
-  Dialog,
-  DialogActions,
-  DialogTitle,
-  DialogContent,
-} from "@mui/material";
 import PropTypes from "prop-types";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import GradeEdit from "./GradeEdit";
+import { Button, Modal } from "react-bootstrap";
 
 function GradeView({ show, setShow, id }) {
   const [data, setData] = useState({});
   const [loading, setLoading] = useState(true);
-  const [showEdit, setShowEdit] = useState(false);
 
   const handleClose = () => {
     setShow(false);
@@ -55,13 +49,27 @@ function GradeView({ show, setShow, id }) {
     text?.length > length ? text.substring(0, length) + "..." : text;
 
   return (
-    <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
-      <DialogTitle>View Grade</DialogTitle>
-      <hr className="m-0"></hr>
-      <DialogContent>
+    <Modal show={show} onHide={handleClose} size="lg">
+      <Modal.Header>
+        <Modal.Title>Grade View</Modal.Title>
+        <div className="d-flex gap-3">
+          <Button
+            className="btn btn-secondary btn-sm py-0"
+            onClick={handleClose}
+          >
+            Close
+          </Button>
+          <button className="rounded-1">
+            <GradeEdit id={id} onSuccess={getGradeData} />
+          </button>
+        </div>
+      </Modal.Header>
+      <Modal.Body>
         {loading ? (
-          <div className="loader-container">
-            <div className="loader"></div>
+          <div className="d-flex justify-content-center align-items-center">
+            <div className="spinner-border" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
           </div>
         ) : (
           <div className="row">
@@ -109,28 +117,8 @@ function GradeView({ show, setShow, id }) {
             </div>
           </div>
         )}
-      </DialogContent>
-      <hr className="m-0"></hr>
-      <DialogActions className="mt-3">
-        <button className="btn btn-sm btn-back" onClick={handleClose}>
-          Back
-        </button>
-        <button
-          className="btn btn-sm btn-primary"
-          type="button"
-          onClick={() => setShowEdit(true)}
-        >
-          Edit
-        </button>
-
-        <GradeEdit
-          show={showEdit}
-          setShow={setShowEdit}
-          id={id}
-          onSuccess={getGradeData}
-        />
-      </DialogActions>
-    </Dialog>
+      </Modal.Body>
+    </Modal>
   );
 }
 

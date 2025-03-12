@@ -564,12 +564,13 @@ function HomeworkAdd() {
             <div className="row py-4">
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Title</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Title</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <input
-                        placeholder="Enter Text"
+                      placeholder="Enter Text"
                       className={`form-control form-control-sm ${
                         formik.touched.title && formik.errors.title
                           ? "is-invalid"
@@ -587,8 +588,9 @@ function HomeworkAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Centre</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Centre</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <MultiSelect
@@ -629,8 +631,9 @@ function HomeworkAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Grade</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Grade</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <MultiSelect
@@ -669,7 +672,7 @@ function HomeworkAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
+                  <div className="col-5 d-flex">
                     <p className="view-label-text">Subject</p>
                   </div>
                   <div className="col-7">
@@ -696,7 +699,7 @@ function HomeworkAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
+                  <div className="col-5 d-flex">
                     <p className="view-label-text">Topic</p>
                   </div>
                   <div className="col-7">
@@ -718,8 +721,9 @@ function HomeworkAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text"> Question Type</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text"> Question Type</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <MultiSelect
@@ -749,8 +753,9 @@ function HomeworkAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text"> Difficulty Type</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text"> Difficulty Type</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <select
@@ -779,8 +784,9 @@ function HomeworkAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Due Date</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Due Date</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <input
@@ -803,12 +809,13 @@ function HomeworkAdd() {
               </div>
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
-                  <div className="col-5">
-                    <p className="view-label-text">Total Score</p>
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Total Score</p>{" "}
+                    <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
                     <input
-                    placeholder="Enter Text"
+                      placeholder="Enter Text"
                       type="text"
                       className={`form-control form-control-sm ${
                         formik.touched.total_score && formik.errors.total_score

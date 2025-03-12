@@ -65,8 +65,13 @@ function TopicView({ show, setShow, id }) {
         <hr className="m-0" />
         <DialogContent>
           {loading ? (
-            <div className="loader-container">
-              <div className="loader"></div>
+            <div
+              className="d-flex justify-content-center align-items-center"
+              style={{ height: "500px" }}
+            >
+              <div className="spinner-border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
             </div>
           ) : (
             <div className="row">
@@ -105,9 +110,7 @@ function TopicView({ show, setShow, id }) {
                     <p className="view-label-text">Topic Name</p>
                   </div>
                   <div className="col-6">
-                    <p className="view-value">
-                      : {truncateText(data.name)}
-                    </p>
+                    <p className="view-value">: {truncateText(data.name)}</p>
                   </div>
                 </div>
               </div>
@@ -132,13 +135,13 @@ function TopicView({ show, setShow, id }) {
           <button className="btn btn-sm btn-back" onClick={handleClose}>
             Close
           </button>
-          <button
+          {/* <button
             className="btn btn-sm btn-primary "
             type="submit"
             onClick={() => setShowEdit(true)}
           >
             update
-          </button>
+          </button> */}
         </DialogActions>
       </Dialog>
     </>

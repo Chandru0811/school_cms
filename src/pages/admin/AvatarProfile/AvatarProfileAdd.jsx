@@ -4,12 +4,10 @@ import { Button, Modal } from "react-bootstrap";
 import * as yup from "yup";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { FaPlus } from "react-icons/fa";
 
 function AvatarProfileAdd({ onSuccess }) {
-  const navigate = useNavigate();
   const [show, setShow] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -57,7 +55,6 @@ function AvatarProfileAdd({ onSuccess }) {
           toast.success(response.data.message);
           if (onSuccess) onSuccess();
           handleClose();
-          navigate("/avatar");
         } else {
           toast.error(response.data.message || "An unexpected error occurred.");
         }
@@ -83,8 +80,30 @@ function AvatarProfileAdd({ onSuccess }) {
       </div>
 
       <Modal show={show} onHide={handleClose} size="md">
-        <Modal.Header closeButton>
+        <Modal.Header>
           <Modal.Title>Add Avatar Profile</Modal.Title>
+          <div className="d-flex gap-3">
+            <Button
+              className="btn btn-secondary btn-sm py-0"
+              onClick={handleClose}
+            >
+              Close
+            </Button>
+            <Button
+              className="btn add-btn button-spinner text-light"
+              type="submit"
+              disabled={loadIndicator}
+              onClick={formik.handleSubmit}
+            >
+              {loadIndicator && (
+                <span
+                  className="spinner-border spinner-border-sm me-2 "
+                  aria-hidden="true"
+                ></span>
+              )}
+              <small>Submit</small>
+            </Button>
+          </div>
         </Modal.Header>
         <Modal.Body>
           <form onSubmit={formik.handleSubmit}>
@@ -169,28 +188,6 @@ function AvatarProfileAdd({ onSuccess }) {
               {selectedFile && (
                 <p className="mt-1 text-muted">Selected: {selectedFile}</p>
               )}
-            </div>
-
-            <div className="d-flex justify-content-end">
-              <Button
-                className="btn btn-secondary btn-sm me-2"
-                onClick={handleClose}
-              >
-                Close
-              </Button>
-              <Button
-                className="btn btn-primary btn-sm"
-                type="submit"
-                disabled={loadIndicator}
-              >
-                {loadIndicator && (
-                  <span
-                    className="spinner-border spinner-border-sm me-2"
-                    aria-hidden="true"
-                  ></span>
-                )}
-                Submit
-              </Button>
             </div>
           </form>
         </Modal.Body>

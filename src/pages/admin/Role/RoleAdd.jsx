@@ -2,18 +2,13 @@ import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import * as yup from "yup";
 import { useFormik } from "formik";
-import {
-  Dialog,
-  DialogActions,
-  DialogTitle,
-  DialogContent,
-} from "@mui/material";
 import { MultiSelect } from "react-multi-select-component";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { BsFillInfoCircleFill } from "react-icons/bs";
 import { FaPlus } from "react-icons/fa";
+import { Button, Modal } from "react-bootstrap";
 function RoleAdd({ onSuccess }) {
   const [show, setShow] = useState(false);
   const [loadIndicator, setLoadIndicator] = useState(false);
@@ -105,7 +100,8 @@ function RoleAdd({ onSuccess }) {
         <FaPlus fontSize={12} className="me-1" /> Add Role
       </button>
 
-      <Dialog open={show} onClose={handleClose} maxWidth="md" fullWidth>
+
+      <Modal show={show} onHide={handleClose} size="lg">
         <form
           onSubmit={formik.handleSubmit}
           onKeyDown={(e) => {
@@ -114,11 +110,32 @@ function RoleAdd({ onSuccess }) {
             }
           }}
         >
-          <DialogTitle>
-            <p className="headColor">Add Role</p>
-          </DialogTitle>
-          <hr className="m-0"></hr>
-          <DialogContent>
+          <Modal.Header>
+            <Modal.Title>Role Add</Modal.Title>
+            <div className="d-flex gap-3">
+              <Button
+                className="btn btn-secondary btn-sm py-0"
+                onClick={handleClose}
+              >
+                Close
+              </Button>
+              <Button
+                className="btn add-btn button-spinner text-light"
+                type="submit"
+                disabled={loadIndicator}
+                onClick={formik.handleSubmit}
+              >
+                {loadIndicator && (
+                  <span
+                    className="spinner-border spinner-border-sm me-2"
+                    aria-hidden="true"
+                  ></span>
+                )}
+                <small>Submit</small>
+              </Button>
+            </div>
+          </Modal.Header>
+          <Modal.Body>
             <div className="row">
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">
@@ -248,32 +265,9 @@ function RoleAdd({ onSuccess }) {
                 </div>
               </div>
             </div>
-          </DialogContent>
-          <hr className="m-0"></hr>
-          <DialogActions className="mt-3">
-            <button
-              type="button"
-              className="btn btn-sm btn-back"
-              onClick={handleClose}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="btn btn-button btn-sm"
-              disabled={loadIndicator}
-            >
-              {loadIndicator && (
-                <span
-                  className="spinner-border spinner-border-sm me-2"
-                  aria-hidden="true"
-                ></span>
-              )}
-              Submit
-            </button>
-          </DialogActions>
+          </Modal.Body>
         </form>
-      </Dialog>
+      </Modal>
     </>
   );
 }
