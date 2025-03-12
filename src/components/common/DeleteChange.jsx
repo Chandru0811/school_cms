@@ -10,6 +10,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="down" ref={ref} {...props} />;
 });
 
+// eslint-disable-next-line react/prop-types
 function DeleteChange({ path, onDeleteSuccess, onOpen, navigate }) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(true);
   const [loading, setLoading] = useState(false);
@@ -87,7 +88,7 @@ function DeleteChange({ path, onDeleteSuccess, onOpen, navigate }) {
           disabled={loading}
           className="btn btn-button"
         >
-          {loadIndicator && (
+          {loading && (
             <span
               className="spinner-border spinner-border-sm button-spinner me-2 text-light"
               aria-hidden="true"

@@ -92,7 +92,7 @@ function CenterAdd({ onSuccess }) {
               Close
             </Button>
             <Button
-              className="btn add-btn button-spinner text-light"
+              className="btn add-btn"
               type="submit"
               disabled={loadIndicator}
               onClick={formik.handleSubmit}

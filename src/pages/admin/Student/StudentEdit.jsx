@@ -324,7 +324,6 @@ function StudentEdit() {
           <div className="d-flex justify-content-between px-5 my-2">
             <p className="view-header">Student Info</p>
           </div>
-          \
           {loading ? (
             <div
               className="d-flex justify-content-center align-items-center"

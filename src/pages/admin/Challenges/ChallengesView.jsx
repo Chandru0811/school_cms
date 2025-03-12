@@ -129,11 +129,11 @@ function ChallengesView() {
               <div className="col-md-6 col-12 my-2">
                 <div className="row">
                   <div className="col-6">
-                    <p className="fw-medium text-sm">Centre</p>
+                    <p className="view-label-text">Centre</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">
-                      : {centerFind(data.challenge?.center_id) || "--"}
+                    <p className="view-value">
+                       {centerFind(data.challenge?.center_id) || "--"}
                     </p>
                   </div>
                 </div>
@@ -141,11 +141,11 @@ function ChallengesView() {
               <div className="col-md-6 col-12 my-2">
                 <div className="row">
                   <div className="col-6">
-                    <p className="fw-medium text-sm">Grade</p>
+                    <p className="view-label-text">Grade</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">
-                      : {data.challenge?.grand_name}
+                    <p className="view-value">
+                       {data.challenge?.grand_name}
                     </p>
                   </div>
                 </div>
@@ -153,11 +153,11 @@ function ChallengesView() {
               <div className="col-md-6 col-12 my-2">
                 <div className="row">
                   <div className="col-6">
-                    <p className="fw-medium text-sm">Subject</p>
+                    <p className="view-label-text">Subject</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">
-                      : {data.challenge?.subject_name}
+                    <p className="view-value">
+                       {data.challenge?.subject_name}
                     </p>
                   </div>
                 </div>
@@ -165,11 +165,11 @@ function ChallengesView() {
               <div className="col-md-6 col-12 my-2">
                 <div className="row">
                   <div className="col-6">
-                    <p className="fw-medium text-sm">Topic</p>
+                    <p className="view-label-text">Topic</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">
-                      : {data.challenge?.topic_name}
+                    <p className="view-value">
+                       {data.challenge?.topic_name}
                     </p>
                   </div>
                 </div>
@@ -177,11 +177,11 @@ function ChallengesView() {
               <div className="col-md-6 col-12 my-2">
                 <div className="row">
                   <div className="col-6">
-                    <p className="fw-medium text-sm">Time Limit</p>
+                    <p className="view-label-text">Time Limit</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">
-                      : {data.challenge?.time_limit}
+                    <p className="view-value">
+                       {data.challenge?.time_limit}
                     </p>
                   </div>
                 </div>
@@ -189,12 +189,10 @@ function ChallengesView() {
               <div className="col-md-6 col-12 my-2">
                 <div className="row">
                   <div className="col-6">
-                    <p className="fw-medium text-sm">challenge Type</p>
+                    <p className="view-label-text">challenge Type</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">
-                      {" "}
-                      :{" "}
+                    <p className="view-value">
                       {data.challenge?.ques_type
                         ? JSON.parse(data.challenge?.ques_type).join(", ")
                         : ""}
@@ -205,11 +203,11 @@ function ChallengesView() {
               <div className="col-md-6 col-12 my-2">
                 <div className="row">
                   <div className="col-6">
-                    <p className="fw-medium text-sm">Challenges Title</p>
+                    <p className="view-label-text">Challenges Title</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">
-                      : {data.challenge?.title}
+                    <p className="view-value">
+                       {data.challenge?.title}
                     </p>
                   </div>
                 </div>
@@ -217,11 +215,11 @@ function ChallengesView() {
               <div className="col-md-6 col-12 my-2">
                 <div className="row">
                   <div className="col-6">
-                    <p className="fw-medium text-sm">Options</p>
+                    <p className="view-label-text">Options</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">
-                      : {data.challenge?.options}
+                    <p className="view-value">
+                       {data.challenge?.options}
                     </p>
                   </div>
                 </div>
@@ -229,11 +227,11 @@ function ChallengesView() {
               <div className="col-md-6 col-12 my-2">
                 <div className="row">
                   <div className="col-6">
-                    <p className="fw-medium text-sm">Description</p>
+                    <p className="view-label-text">Description</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">
-                      : {data.challenge?.description}
+                    <p className="view-value">
+                       {data.challenge?.description}
                     </p>
                   </div>
                 </div>
@@ -241,11 +239,11 @@ function ChallengesView() {
               <div className="col-md-6 col-12 my-2">
                 <div className="row">
                   <div className="col-6">
-                    <p className="fw-medium text-sm">Difficulty Level</p>
+                    <p className="view-label-text">Difficulty Level</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">
-                      : {data.challenge?.difficult_level}
+                    <p className="view-value">
+                       {data.challenge?.difficult_level}
                     </p>
                   </div>
                 </div>
@@ -253,11 +251,11 @@ function ChallengesView() {
               <div className="col-md-6 col-12 my-2">
                 <div className="row">
                   <div className="col-6">
-                    <p className="fw-medium text-sm">Hint</p>
+                    <p className="view-label-text">Hint</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">
-                      : {data.challenge?.hint}
+                    <p className="view-value">
+                       {data.challenge?.hint}
                     </p>
                   </div>
                 </div>
@@ -265,12 +263,10 @@ function ChallengesView() {
               <div className="col-md-6 col-12 my-2">
                 <div className="row">
                   <div className="col-6">
-                    <p className="fw-medium text-sm">Answer Type</p>
+                    <p className="view-label-text">Answer Type</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">
-                      {" "}
-                      :{" "}
+                    <p className="view-value">
                       {data.answer?.answer_type
                         ? JSON.parse(data.answer?.answer_type).join(", ")
                         : ""}
@@ -281,11 +277,11 @@ function ChallengesView() {
               <div className="col-md-6 col-12 my-2">
                 <div className="row">
                   <div className="col-6">
-                    <p className="fw-medium text-sm">Answer</p>
+                    <p className="view-label-text">Answer</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">
-                      :{" "}
+                    <p className="view-value">
+                      {" "}
                       {data.answer?.answer &&
                         Object.entries(JSON.parse(data.answer.answer))
                           .map(([key, value]) => `${key}: ${value}`)

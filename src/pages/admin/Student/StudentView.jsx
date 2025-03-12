@@ -260,19 +260,23 @@ function StudentView() {
                   </div>
                   <div className="col-6">
                     <p className="view-value">
-                      :{" "}
-                      <img
-                        src={`${ImageURL.replace(
-                          /\/$/,
-                          ""
-                        )}/${data.student.avatar.image.replace(/^\//, "")}`}
-                        alt="Avatar"
-                        style={{
-                          maxWidth: "50%",
-                          height: "auto",
-                          borderRadius: "5px",
-                        }}
-                      />
+                      
+                      {data?.student?.avatar ? (
+                        <img
+                          src={`${ImageURL.replace(
+                            /\/$/,
+                            ""
+                          )}/${data.student.avatar.replace(/^\//, "")}`}
+                          alt="Avatar"
+                          style={{
+                            maxWidth: "50%",
+                            height: "auto",
+                            borderRadius: "5px",
+                          }}
+                        />
+                      ) : (
+                        <></>
+                      )}
                     </p>
                   </div>
                 </div>
@@ -338,7 +342,7 @@ function StudentView() {
                   </div>
                   <div className="col-6">
                     <p className="view-value text-break">
-                      : {data?.student?.gender}
+                       {data?.student?.gender}
                     </p>
                   </div>
                 </div>
@@ -384,19 +388,23 @@ function StudentView() {
                   </div>
                   <div className="col-6">
                     <p className="view-value">
-                      :{" "}
-                      <img
-                        src={`${ImageURL.replace(
-                          /\/$/,
-                          ""
-                        )}/${data.parent.avatar.image.replace(/^\//, "")}`}
-                        alt="Avatar"
-                        style={{
-                          maxWidth: "50%",
-                          height: "auto",
-                          borderRadius: "5px",
-                        }}
-                      />
+                      
+                      {data?.parent?.avatar ? (
+                        <img
+                          src={`${ImageURL.replace(
+                            /\/$/,
+                            ""
+                          )}/${data.parent.avatar.replace(/^\//, "")}`}
+                          alt="Avatar"
+                          style={{
+                            maxWidth: "50%",
+                            height: "auto",
+                            borderRadius: "5px",
+                          }}
+                        />
+                      ) : (
+                        <></>
+                      )}
                     </p>
                   </div>
                 </div>
@@ -408,7 +416,7 @@ function StudentView() {
                   </div>
                   <div className="col-6">
                     <p className="view-value text-break">
-                      : {data?.parent_gender || "--"}
+                       {data?.parent_gender || "--"}
                     </p>
                   </div>
                 </div>

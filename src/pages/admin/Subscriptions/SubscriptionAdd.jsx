@@ -272,7 +272,7 @@ function SubscriptionAdd() {
             </button>
             <button
               type="submit"
-              className="btn add-btn text-light"
+              className="btn add-btn"
               disabled={loadIndicator}
             >
               {loadIndicator && (

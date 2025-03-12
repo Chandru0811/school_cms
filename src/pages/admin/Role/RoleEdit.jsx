@@ -147,7 +147,7 @@ function RoleEdit({ id, onSuccess }) {
                 Close
               </Button>
               <Button
-                className="btn add-btn button-spinner text-light"
+                className="btn add-btn button-spinner"
                 type="submit"
                 disabled={loadIndicator}
                 onClick={formik.handleSubmit}

@@ -668,7 +668,3 @@
 .spinner-border{
   color: var(--client-primary-color) !important;
 }
-
-.button-spinner{
-  color: #fff !important;
-}
