@@ -180,7 +180,7 @@ function CenterEdit({ id, onSuccess }) {
         <TbEdit style={{ color: "#4F46E5", fontSize: "16px" }} />
       </span>
 
-      <Modal show={open} onHide={handleClose} size="lg">
+      <Modal show={open} onHide={handleClose} size="lg" centered>
         <Modal.Header>
           <Modal.Title>Edit Centre</Modal.Title>
           <div className="d-flex gap-3">
@@ -191,7 +191,7 @@ function CenterEdit({ id, onSuccess }) {
               Close
             </Button>
             <Button
-              className="btn add-btn button-spinner text-light"
+              className="btn add-btn button-spinner"
               type="submit"
               disabled={loadIndicator}
               onClick={formik.handleSubmit}

@@ -119,7 +119,7 @@ function GradeEdit({ id, onSuccess }) {
         <TbEdit style={{ color: "#4F46E5", fontSize: "16px" }} />
       </button>
 
-      <Modal show={open} onHide={handleClose} size="lg">
+      <Modal show={open} onHide={handleClose} size="lg" centered>
         <form
           onSubmit={formik.handleSubmit}
           onKeyDown={(e) => {

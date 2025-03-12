@@ -128,7 +128,7 @@ function RoleEdit({ id, onSuccess }) {
       >
         <TbEdit style={{ color: "#4F46E5", fontSize: "16px" }} />
       </button>
-      <Modal show={show} onHide={handleClose} size="lg">
+      <Modal show={show} onHide={handleClose} size="lg" centered>
         <form
           onSubmit={formik.handleSubmit}
           onKeyDown={(e) => {
@@ -164,10 +164,7 @@ function RoleEdit({ id, onSuccess }) {
           </Modal.Header>
           <Modal.Body>
             {loading ? (
-              <div
-                className="d-flex justify-content-center align-items-center"
-                style={{ height: "500px" }}
-              >
+              <div className="d-flex justify-content-center align-items-center">
                 <div className="spinner-border" role="status">
                   <span className="visually-hidden">Loading...</span>
                 </div>

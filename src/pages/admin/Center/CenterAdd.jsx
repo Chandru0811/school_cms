@@ -84,7 +84,7 @@ function CenterAdd({ onSuccess }) {
         </button>
       </div>
 
-      <Modal show={show} onHide={handleClose} size="lg">
+      <Modal show={show} onHide={handleClose} size="lg" centered>
         <Modal.Header>
           <Modal.Title>Centre Add</Modal.Title>
           <div className="d-flex gap-3">

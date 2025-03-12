@@ -114,7 +114,7 @@ function SuperAdminHeader({ handleLogout }) {
   return (
     <header
       className="border-bottom py-3 sticky-top"
-      style={{ backgroundColor: "#fff" }}
+      style={{ backgroundColor: "#e0e7ff" }}
     >
       <div className="container-fluid">
         <div className="mb-npx">

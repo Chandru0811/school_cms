@@ -207,7 +207,7 @@ function TopicEdit({ id, onSuccess }) {
       >
         <TbEdit style={{ color: "#4F46E5", fontSize: "16px" }} />
       </span>
-      <Modal show={show} onHide={handleClose} size="lg">
+    <Modal show={show} onHide={handleClose} size="lg" centered>
         <form
           onSubmit={formik.handleSubmit}
           onKeyDown={(e) => {

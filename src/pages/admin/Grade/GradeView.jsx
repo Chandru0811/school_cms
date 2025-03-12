@@ -49,7 +49,7 @@ function GradeView({ show, setShow, id }) {
     text?.length > length ? text.substring(0, length) + "..." : text;
 
   return (
-    <Modal show={show} onHide={handleClose} size="lg">
+  <Modal show={show} onHide={handleClose} size="lg" centered>
       <Modal.Header>
         <Modal.Title>Grade View</Modal.Title>
         <div className="d-flex gap-3">

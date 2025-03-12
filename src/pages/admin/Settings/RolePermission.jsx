@@ -3,6 +3,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import toast from "react-hot-toast";
 import api from "../../../config/URL";
+import { FiSave } from "react-icons/fi";
 
 const validationSchema = Yup.object().shape({});
 
@@ -304,7 +305,7 @@ function RolePermission({ key }) {
             <div className="d-flex justify-content-end align-items-end">
               <button
                 type="submit"
-                className="btn btn-button btn-sm"
+                className="btn add-btn btn-sm"
                 disabled={loadIndicator}
               >
                 {loadIndicator && (
@@ -313,7 +314,7 @@ function RolePermission({ key }) {
                     aria-hidden="true"
                   ></span>
                 )}
-                Save
+                <FiSave className="trash-icon" /> Save
               </button>
             </div>
             <div className="row d-flex align-items-start">
@@ -346,49 +347,49 @@ function RolePermission({ key }) {
                 >
                   <button
                     type="button"
-                    className="btn find_roll"
+                    className="btn add-btn"
                     onClick={handleCheckAllIndex}
                   >
                     Index
                   </button>
                   <button
                     type="button"
-                    className="btn find_roll"
+                    className="btn add-btn"
                     onClick={handleCheckAllRead}
                   >
                     Read
                   </button>
                   <button
                     type="button"
-                    className="btn find_roll"
+                    className="btn add-btn"
                     onClick={handleCheckAllCreate}
                   >
                     Create
                   </button>
                   <button
                     type="button"
-                    className="btn find_roll"
+                    className="btn add-btn"
                     onClick={handleCheckAllUpdate}
                   >
                     Update
                   </button>
                   <button
                     type="button"
-                    className="btn find_roll"
+                    className="btn add-btn"
                     onClick={handleCheckAllDelete}
                   >
                     Delete
                   </button>
                   <button
                     type="button"
-                    className="btn find_roll"
+                    className="btn add-btn"
                     onClick={handleCheckAll}
                   >
                     Check All
                   </button>
                   <button
                     type="button"
-                    className="btn find_roll"
+                    className="btn add-btn"
                     onClick={handleUncheckAll}
                   >
                     Uncheck All

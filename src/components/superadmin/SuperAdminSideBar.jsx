@@ -50,44 +50,31 @@ function SuperAdminSidebar() {
             }}
           />
         </NavLink>
-        <div className="collapse navbar-collapse" id="sidebarCollapse">
-          <ul className="navbar-nav">
-            <li className="nav-item px-3">
-              <NavLink
-                className="nav-link"
-                style={{ borderRadius: "5px" }}
-                to="/dashboard"
-              >
-                <BsBarChart className="sidebar_icon" />
-                Dashboard
-              </NavLink>
-            </li>
-            <li className="nav-item px-3">
-              <NavLink
-                className="nav-link"
-                style={{ borderRadius: "5px" }}
-                to="/school"
-              >
-                <IoSchoolOutline className="sidebar_icon" />
-                Schools
-              </NavLink>
-            </li>
-          </ul>
-          {/* <div className="ps-4 mt-auto w-100 mb-4">
-            <div className="navbar-nav">
-              <div className="nav-item">
-                <button
-                  to={"#"}
-                  style={{ width: "100%" }}
-                  className="nav-link ps-6 logout_button"
-                  onClick={handelLogOutClick}
-                >
-                  <BiLogOut />
-                  &nbsp;&nbsp; Logout
-                </button>
-              </div>
-            </div>
-          </div> */}
+        <div className="collapse navbar-collapse ms-5 me-5 my-3" id="sidebarCollapse">
+          <div className="mb-2">
+            <p className="sidebar-heading">DASHBOARD</p>
+            <NavLink
+              className={({ isActive }) =>
+                `sidebar-navlink ${isActive ? "active" : ""}`
+              }
+              to="/dashboard"
+            >
+              <BsBarChart className="sidebar_icon" />
+              <p>Home</p>
+            </NavLink>
+          </div>
+          <div className="mb-2">
+            <p className="sidebar-heading fw-semibold">School</p>
+            <NavLink
+              className={({ isActive }) =>
+                `sidebar-navlink ${isActive ? "active" : ""}`
+              }
+              to="/school"
+            >
+              <IoSchoolOutline className="sidebar_icon" />
+              Schools
+            </NavLink>
+          </div>
         </div>
       </div>
     </nav>

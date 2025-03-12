@@ -116,7 +116,7 @@ function GradeAdd({ onSuccess }) {
         <FaPlus fontSize={12} className="me-1" /> Add Grade
       </button>
 
-      <Modal show={show} onHide={handleClose} size="lg">
+    <Modal show={show} onHide={handleClose} size="lg" centered>
         <form
           onSubmit={formik.handleSubmit}
           onKeyDown={(e) => {
