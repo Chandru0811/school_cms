@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import * as yup from "yup";
 import { useFormik } from "formik";
 import { Modal, Button } from "react-bootstrap";
@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import toast from "react-hot-toast";
 import api from "../../../config/URL";
 import { TbEdit } from "react-icons/tb";
-import ImageURL from "../../../config/ImageURL";
+import Cropper from "react-easy-crop";
 
 function AvatarProfileEdit({ id, onSuccess }) {
   const [loadIndicator, setLoadIndicator] = useState(false);
@@ -14,6 +14,73 @@ function AvatarProfileEdit({ id, onSuccess }) {
   const [show, setShow] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [avatarImage, setAvatarImage] = useState(null);
+  const [imageSrc, setImageSrc] = useState(null);
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  const [showCropper, setShowCropper] = useState(false);
+
+  const getCroppedImg = async (imageSrc, croppedAreaPixels) => {
+    const image = new Image();
+    image.src = imageSrc;
+
+    const canvas = document.createElement("canvas");
+    const ctx = canvas.getContext("2d");
+
+    canvas.width = croppedAreaPixels.width;
+    canvas.height = croppedAreaPixels.height;
+
+    ctx.drawImage(
+      image,
+      croppedAreaPixels.x,
+      croppedAreaPixels.y,
+      croppedAreaPixels.width,
+      croppedAreaPixels.height,
+      0,
+      0,
+      croppedAreaPixels.width,
+      croppedAreaPixels.height
+    );
+
+    return new Promise((resolve, reject) => {
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          reject(new Error("Canvas is empty"));
+          return;
+        }
+        blob.name = "cropped-image.jpeg";
+        resolve(blob);
+      }, "image/jpeg");
+    });
+  };
+
+  const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
+    setCroppedAreaPixels(croppedAreaPixels);
+  }, []);
+
+  const handleCrop = async () => {
+    if (imageSrc && croppedAreaPixels) {
+      try {
+        const croppedImage = await getCroppedImg(imageSrc, croppedAreaPixels);
+        formik.setFieldValue("image", croppedImage);
+        setSelectedFile(croppedImage.name);
+        setShowCropper(false);
+      } catch (error) {
+        console.error("Error cropping image:", error);
+        toast.error("Error cropping image");
+      }
+    }
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.currentTarget.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => setImageSrc(reader.result);
+      reader.readAsDataURL(file);
+      setShowCropper(true);
+    }
+  };
 
   const validationSchema = yup.object().shape({
     name: yup
@@ -26,8 +93,8 @@ function AvatarProfileEdit({ id, onSuccess }) {
   const formik = useFormik({
     initialValues: {
       name: "",
-      default_male: "",
-      default_female: "",
+      default_male: false,
+      default_female: false,
       image: null,
     },
     enableReinitialize: true,
@@ -41,8 +108,9 @@ function AvatarProfileEdit({ id, onSuccess }) {
         formData.append("default_male", values.default_male ? 1 : 0);
         formData.append("default_female", values.default_female ? 1 : 0);
 
-        if (values.image && values.image instanceof File) {
-          formData.append("image", values.image);
+        // Append the cropped image if it exists
+        if (values.image && values.image instanceof Blob) {
+          formData.append("image", values.image, values.image.name);
         }
 
         const response = await api.post(`admin/avatar/update/${id}`, formData, {
@@ -101,6 +169,7 @@ function AvatarProfileEdit({ id, onSuccess }) {
     setShow(false);
     formik.resetForm();
     setSelectedFile(null);
+    setShowCropper(false);
     setAvatarImage(null);
     setLoadIndicator(false);
   };
@@ -178,10 +247,10 @@ function AvatarProfileEdit({ id, onSuccess }) {
                       id="Male"
                       name="default_gender"
                       value="1"
-                      checked={formik.values.default_male === 1}
+                      checked={formik.values.default_male}
                       onChange={() => {
-                        formik.setFieldValue("default_male", 1);
-                        formik.setFieldValue("default_female", 0);
+                        formik.setFieldValue("default_male", true);
+                        formik.setFieldValue("default_female", false);
                       }}
                     />
                     <label className="form-check-label" htmlFor="Male">
@@ -195,10 +264,10 @@ function AvatarProfileEdit({ id, onSuccess }) {
                       id="Female"
                       name="default_gender"
                       value="1"
-                      checked={formik.values.default_female === 1}
+                      checked={formik.values.default_female}
                       onChange={() => {
-                        formik.setFieldValue("default_female", 1);
-                        formik.setFieldValue("default_male", 0);
+                        formik.setFieldValue("default_female", true);
+                        formik.setFieldValue("default_male", false);
                       }}
                     />
                     <label className="form-check-label" htmlFor="Female">
@@ -220,17 +289,51 @@ function AvatarProfileEdit({ id, onSuccess }) {
                       : ""
                   }`}
                   accept="image/*"
-                  onChange={(event) => {
-                    const file = event.currentTarget.files[0];
-                    formik.setFieldValue("image", file || null);
-                    setSelectedFile(file ? file.name : null);
-                  }}
+                  onChange={handleFileChange}
                 />
                 {formik.touched.image && formik.errors.image && (
                   <div className="invalid-feedback">{formik.errors.image}</div>
                 )}
-                {selectedFile && (
+                {/* {selectedFile && (
                   <p className="mt-1 text-muted">Selected: {selectedFile}</p>
+                )} */}
+
+                {showCropper && (
+                  <div
+                    className="crop-container"
+                    style={{ width: "300px", height: "200px", position: "relative" }}
+                  >
+                    <Cropper
+                      image={imageSrc}
+                      crop={crop}
+                      zoom={zoom}
+                      aspect={1}
+                      onCropChange={setCrop}
+                      onZoomChange={setZoom}
+                      onCropComplete={onCropComplete}
+                      cropShape="rect"
+                      showGrid={false}
+                    />
+                  </div>
+                )}
+
+                {showCropper && (
+                  <div className="d-flex justify-content-start mt-3 gap-2">
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-primary mt-3"
+                      onClick={handleCrop}
+                    >
+                      Save
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-secondary mt-3"
+                      onClick={() => setShowCropper(false)}
+                    >
+                      Cancel
+                    </button>
+                  </div>
                 )}
               </div>
             </form>

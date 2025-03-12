@@ -253,9 +253,9 @@ function AvatarProfileAdd({ onSuccess }) {
               {formik.touched.image && formik.errors.image && (
                 <div className="invalid-feedback">{formik.errors.image}</div>
               )}
-              {selectedFile && (
+              {/* {selectedFile && (
                 <p className="mt-1 text-muted">Selected: {selectedFile}</p>
-              )}
+              )} */}
             </div>
 
             {showCropper && (
