@@ -14,6 +14,10 @@ import * as yup from "yup";
 import PropTypes from "prop-types";
 import ImageURL from "../../../config/ImageURL";
 import userImage from "../../../assets/images/user_profile.svg";
+import { MdKeyboardArrowLeft } from "react-icons/md";
+import { GoTrash } from "react-icons/go";
+import { TbEdit } from "react-icons/tb";
+import DeleteChange from "../../../components/common/DeleteChange";
 
 function SchoolView() {
   const { id } = useParams();
@@ -24,6 +28,8 @@ function SchoolView() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
+  const [selectedId, setSelectedId] = useState(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
   const toggleConfirmPasswordVisibility = () =>
@@ -105,6 +111,11 @@ function SchoolView() {
     }
   };
 
+  const handleDeleteClick = (id) => {
+    setSelectedId(id);
+    setDeleteModalOpen(true);
+  };
+
   useEffect(() => {
     getData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -112,47 +123,45 @@ function SchoolView() {
 
   return (
     <div className="container-fluid px-0">
-      <ol
-        className="breadcrumb my-2 d-flex align-items-center"
-        style={{ listStyle: "none", padding: 0, margin: 0 }}
-      >
-        <li>
-          <Link to="/" className="custom-breadcrumb text-sm">
-            Home
-          </Link>
-          <span className="breadcrumb-separator"> &gt; </span>
-        </li>
-        <li>
-          <Link to="/school" className="custom-breadcrumb text-sm">
-            &nbsp;School
-          </Link>
-          <span className="breadcrumb-separator"> &gt; </span>
-        </li>
-        <li className="breadcrumb-item active text-sm" aria-current="page">
-          &nbsp;School View
-        </li>
-      </ol>
-      <div className="card vh-100" style={{ border: "1px solid #dbd9d0" }}>
-        <div className="d-flex px-4 justify-content-between align-items-center card_header p-2">
-          <div className="d-flex align-items-center">
-            <div className="d-flex">
-              <div className="dot active"></div>
-            </div>
-            <span className="me-2 text-muted text-sm">View School</span>
-          </div>
-          <div className="my-2 pe-3 d-flex align-items-center">
+      <div className="d-flex px-4 justify-content-between align-items-center  p-1 mb-4">
+        <div className="d-flex align-items-center">
+          <div>
             <Link to="/school">
-              <button type="button " className="btn btn-sm btn-back">
-                Back
+              <button type="button " className="btn btn-sm add-btn">
+                <MdKeyboardArrowLeft size={20} />
               </button>
             </Link>
             &nbsp;&nbsp;
+          </div>
+          <span className="mx-3 table-heading">
+            School Details -&nbsp;
+            <span className="table-subheading">Details of Selected School</span>
+          </span>
+        </div>
+        <div className="my-2 d-flex align-items-center">
+          <button
+            className="btn view-delete-btn"
+            onClick={() => {
+              handleDeleteClick(id);
+            }}
+          >
+            <GoTrash className="trash-icon" /> &nbsp;&nbsp; Delete School
+          </button>
+        </div>
+      </div>
+      <div className="mx-4 card vh-100" style={{ border: "1px solid #dbd9d0" }}>
+        <div
+          className="card-header d-flex justify-content-between"
+          style={{ marginBottom: "1px solid #F4F4F4" }}
+        >
+          <p className="view-header">School Info</p>
+          <div className="d-flex justify-content-end">
             <button
               type="button"
-              className="btn btn-sm btn-button"
-              onClick={() => navigate(`/school/edit/${id}`)}
+              className="btn btn-sm add-btn"
+              onClick={handleShow}
             >
-              Edit
+              Change Password
             </button>
             &nbsp;&nbsp;
             <button
@@ -166,14 +175,13 @@ function SchoolView() {
             &nbsp;&nbsp;
             <button
               type="button"
-              className="btn btn-sm btn-button"
-              onClick={handleShow}
+              className="btn btn-sm edit-btn"
+              onClick={() => navigate(`/school/edit/${id}`)}
             >
-              Change Password
+              <TbEdit style={{ color: "#C0C0C0", fontSize: "16px" }} />
             </button>
           </div>
         </div>
-
         {/* Modal for Changing Password */}
         <Dialog open={show} onClose={handleClose} maxWidth="sm" fullWidth>
           <form onSubmit={formik.handleSubmit}>
@@ -286,65 +294,62 @@ function SchoolView() {
               <div className="col-md-6 col-12 my-2">
                 <div className="row">
                   <div className="col-6">
-                    <p className="fw-medium text-sm">School Name</p>
+                    <p className="view-label-text">School Name</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">: {data.name}</p>
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6 col-12 my-2">
-                <div className="row">
-                  <div className="col-6">
-                    <p className="fw-medium text-sm">School Location</p>
-                  </div>
-                  <div className="col-6">
-                    <p className="text-muted text-sm">: {data.location}</p>
+                    <p className="view-value"> {data.name}</p>
                   </div>
                 </div>
               </div>
               <div className="col-md-6 col-12 my-2">
                 <div className="row">
                   <div className="col-6">
-                    <p className="fw-medium text-sm">Admin Name</p>
+                    <p className="view-label-text">School Location</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">: {data.users[0].name}</p>
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6 col-12 my-2">
-                <div className="row">
-                  <div className="col-6">
-                    <p className="fw-medium text-sm">Admin Email</p>
-                  </div>
-                  <div className="col-6">
-                    <p className="text-muted text-sm">
-                      : {data.users[0].email}
-                    </p>
+                    <p className="view-value"> {data.location}</p>
                   </div>
                 </div>
               </div>
               <div className="col-md-6 col-12 my-2">
                 <div className="row">
                   <div className="col-6">
-                    <p className="fw-medium text-sm">Admin Mobile</p>
+                    <p className="view-label-text">Admin Name</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">
-                      : {data.users[0].mobile}
-                    </p>
+                    <p className="view-value"> {data.users[0].name}</p>
                   </div>
                 </div>
               </div>
               <div className="col-md-6 col-12 my-2">
                 <div className="row">
                   <div className="col-6">
-                    <p className="fw-medium text-sm">Admin Avatar</p>
+                    <p className="view-label-text">Admin Email</p>
                   </div>
                   <div className="col-6">
-                    <p className="text-muted text-sm">
-                      : &nbsp;&nbsp;
+                    <p className="view-value"> {data.users[0].email}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="view-label-text">Admin Mobile</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="view-value"> {data.users[0].mobile}</p>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-12 my-2">
+                <div className="row">
+                  <div className="col-6">
+                    <p className="view-label-text">Admin Avatar</p>
+                  </div>
+                  <div className="col-6">
+                    <p className="view-value">
+                      {" "}
+                      &nbsp;&nbsp;
                       <img
                         src={
                           data.users[0].avatar &&
@@ -370,6 +375,16 @@ function SchoolView() {
           </div>
         )}
       </div>
+      {deleteModalOpen && selectedId && (
+        <DeleteChange
+          path={`superAdmin/school/delete/${id}`}
+          onDeleteSuccess={() => {
+            setDeleteModalOpen(false);
+            navigate("/student");
+          }}
+          onClose={() => setDeleteModalOpen(false)}
+        />
+      )}
     </div>
   );
 }
