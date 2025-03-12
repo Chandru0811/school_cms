@@ -4,27 +4,30 @@ import { Link, useNavigate } from "react-router-dom";
 import { IoIosArrowDown, IoMdNotificationsOutline } from "react-icons/io";
 import PropTypes from "prop-types";
 import { IoHomeOutline, IoSettingsOutline } from "react-icons/io5";
-import { TbLogout2 } from "react-icons/tb";
+import { TbEdit, TbLogout2 } from "react-icons/tb";
 import { GoMail, GoPencil } from "react-icons/go";
 import { Modal } from "react-bootstrap";
-import userImage from "../../assets/images/user_image.png";
 import api from "../../config/URL";
 import { useFormik } from "formik";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import * as yup from "yup";
 import toast from "react-hot-toast";
+import ImageURL from "../../config/ImageURL";
 
 function AdminHeader({ handleLogout }) {
   const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [selectedAvatar, setSelectedAvatar] = useState(null);
   const user_name = localStorage.getItem("schoolCMS_name");
   const dropdownRef = useRef(null);
   const [show, setShow] = useState(false);
   const [data, setData] = useState([]);
+  const [profiledata, setProfileData] = useState([]);
   const [loadIndicator, setLoadIndicator] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [isprofile, setIsProfile] = useState(false);
 
   const schoolCMS_role = localStorage.getItem("schoolCMS_role");
 
@@ -34,6 +37,7 @@ function AdminHeader({ handleLogout }) {
   };
 
   const handleCancel = () => {
+    setIsProfile(false);
     formik.resetForm();
     setIsChangingPassword(false);
   };
@@ -54,6 +58,7 @@ function AdminHeader({ handleLogout }) {
   });
 
   const handleClose = () => {
+    setIsProfile(false);
     formik.resetForm();
     setIsChangingPassword(false);
     setShow(false);
@@ -113,6 +118,33 @@ function AdminHeader({ handleLogout }) {
     }
   };
 
+  const profileData = async () => {
+    try {
+      const response = await api.get(`avatars`);
+      setProfileData(response.data.data);
+      setIsProfile(true);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const updateAvatar = async () => {
+    if (selectedAvatar && selectedAvatar !== data.avatar_id) {
+      setLoadIndicator(true);
+      try {
+        const response = await api.post("avatar/update", { avatar_id: selectedAvatar });
+        if (response.status === 200) {
+          toast.success(response.data.message);
+          fetchData();
+        }
+      } catch (error) {
+        toast.error("Error updating avatar", error?.response?.data?.error);
+      } finally {
+        setLoadIndicator(false);
+      }
+    }
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -143,7 +175,6 @@ function AdminHeader({ handleLogout }) {
                     width={40}
                     data-bs-toggle="tooltip"
                     data-bs-placement="bottom"
-                    title="Shop"
                     style={{ cursor: "pointer" }}
                   />
                   <span
@@ -238,31 +269,87 @@ function AdminHeader({ handleLogout }) {
                           {/* Profile image and edit button */}
                           <div className="position-relative d-inline-block mb-4">
                             <img
-                              src={userImage}
-                              alt="User Profile"
-                              className="img-fluid rounded-circle"
+                              src={
+                                data?.avatar?.image
+                                  ? `${ImageURL.replace(/\/$/, "")}/${data?.avatar?.image.replace(/^\//, "")}`
+                                  : user
+                              }
+                              alt="profile"
                               style={{
                                 width: "80px",
                                 height: "80px",
+                                borderRadius: "50%",
                                 objectFit: "cover",
                               }}
                             />
-                            {/* <button
-                              className="btn btn-sm btn-button position-absolute"
+                            <button
+                              className="btn edit-btn position-absolute d-flex align-items-center justify-content-center"
                               style={{
-                                top: "6px",
-                                right: "-15px",
+                                top: "8px",
+                                right: "-20px",
                                 transform: "translate(-50%, -50%)",
                                 width: "30px",
                                 height: "30px",
                                 borderRadius: "50%",
                                 padding: "0",
                               }}
+                              onClick={profileData}
                             >
-                              <GoPencil />
-                            </button> */}
+                              <TbEdit style={{ color: "#4F46E5", fontSize: "16px" }} size={16} />
+                            </button>
                           </div>
+                        </div>
 
+                        {isprofile ? (
+                          <>
+                            <div className="row py-4">
+                              {profiledata.map((profile) => (
+                                <div
+                                  key={profile.id}
+                                  className="col-3 text-center avatarImage"
+                                  onClick={() => setSelectedAvatar(profile.id)}
+                                >
+                                  <img
+                                    src={`${ImageURL.replace(/\/$/, "")}/${profile.image.replace(/^\//, "")}`}
+                                    alt={profile.name}
+                                    style={{
+                                      width: "100px",
+                                      height: "100px",
+                                      borderRadius: "8px",
+                                      objectFit: "cover",
+                                      cursor: "pointer",
+                                      border: selectedAvatar === profile.id ? "1.5px solid #4F46E5" : "none",
+                                      borderRadius: "8px",
+                                      padding: "5px",
+
+                                    }}
+                                  />
+                                  <p className="text-muted text-sm">{profile.name}</p>
+                                </div>
+                              ))}
+                            </div>
+                            <div className="d-flex justify-content-end align-items-center">
+                              <button type="button" className="btn btn-sm btn-back" onClick={handleCancel}>
+                                Back
+                              </button>
+                              &nbsp;&nbsp;
+                              <button
+                                type="submit"
+                                className="btn btn-sm btn-button"
+                                disabled={loadIndicator}
+                                onClick={updateAvatar}
+                              >
+                                {loadIndicator && (
+                                  <span
+                                    className="spinner-border spinner-border-sm me-2"
+                                    aria-hidden="true"
+                                  ></span>
+                                )}
+                                Update
+                              </button>
+                            </div>
+                          </>
+                        ) : (<>
                           <button
                             type="button"
                             className="btn btn-sm btn-button mb-3"
@@ -270,67 +357,62 @@ function AdminHeader({ handleLogout }) {
                           >
                             Change Password
                           </button>
-                        </div>
 
-                        {/* User details displayed */}
+                          <div className="row pb-2 justify-content-center">
+                            <div className="col-6 text-start pe-2">
+                              <p className="text-muted text-sm">Name</p>
+                            </div>
+                            <div className="col-6 text-start ps-2">
+                              <p className="text-muted text-sm">: {data.name}</p>
+                            </div>
+                          </div>
 
-                        {/* <div className="d-flex justify-content-center align-items-center">
-                          <div>
+                          <div className="row pb-2 justify-content-center">
+                            <div className="col-6 text-start pe-2">
+                              <p className="text-muted text-sm">Email</p>
+                            </div>
+                            <div className="col-6 text-start ps-2">
+                              <p className="text-muted text-sm">: {data.email}</p>
+                            </div>
+                          </div>
 
+                          <div className="row pb-2 justify-content-center">
+                            <div className="col-6 text-start pe-2">
+                              <p className="text-muted text-sm">Mobile</p>
+                            </div>
+                            <div className="col-6 text-start ps-2">
+                              <p className="text-muted text-sm">
+                                : {data.mobile}
+                              </p>
+                            </div>
                           </div>
-                        </div> */}
-                        <div className="row pb-2 justify-content-center">
-                          <div className="col-6 text-start pe-2">
-                            <p className="text-muted text-sm">Name</p>
-                          </div>
-                          <div className="col-6 text-start ps-2">
-                            <p className="text-muted text-sm">: {data.name}</p>
-                          </div>
-                        </div>
 
-                        <div className="row pb-2 justify-content-center">
-                          <div className="col-6 text-start pe-2">
-                            <p className="text-muted text-sm">Email</p>
+                          <div className="row pb-2 justify-content-center">
+                            <div className="col-6 text-start pe-2">
+                              <p className="text-muted text-sm">School Name</p>
+                            </div>
+                            <div className="col-6 text-start ps-2">
+                              <p className="text-muted text-sm">
+                                : {data?.school?.name}
+                              </p>
+                            </div>
                           </div>
-                          <div className="col-6 text-start ps-2">
-                            <p className="text-muted text-sm">: {data.email}</p>
-                          </div>
-                        </div>
 
-                        <div className="row pb-2 justify-content-center">
-                          <div className="col-6 text-start pe-2">
-                            <p className="text-muted text-sm">Mobile</p>
+                          <div className="row pb-2 justify-content-center">
+                            <div className="col-6 text-start pe-2">
+                              <p className="text-muted text-sm">
+                                School Location
+                              </p>
+                            </div>
+                            <div className="col-6 text-start ps-2">
+                              <p className="text-muted text-sm">
+                                : {data?.school?.location}
+                              </p>
+                            </div>
                           </div>
-                          <div className="col-6 text-start ps-2">
-                            <p className="text-muted text-sm">
-                              : {data.mobile}
-                            </p>
-                          </div>
-                        </div>
+                        </>
+                        )}
 
-                        <div className="row pb-2 justify-content-center">
-                          <div className="col-6 text-start pe-2">
-                            <p className="text-muted text-sm">School Name</p>
-                          </div>
-                          <div className="col-6 text-start ps-2">
-                            <p className="text-muted text-sm">
-                              : {data?.school?.name}
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="row pb-2 justify-content-center">
-                          <div className="col-6 text-start pe-2">
-                            <p className="text-muted text-sm">
-                              School Location
-                            </p>
-                          </div>
-                          <div className="col-6 text-start ps-2">
-                            <p className="text-muted text-sm">
-                              : {data?.school?.location}
-                            </p>
-                          </div>
-                        </div>
                       </>
                     ) : (
                       <form onSubmit={formik.handleSubmit}>
@@ -349,12 +431,11 @@ function AdminHeader({ handleLogout }) {
                             <div className="input-group">
                               <input
                                 type={showPassword ? "text" : "password"}
-                                className={`form-control form-control-sm ${
-                                  formik.touched.password &&
+                                className={`form-control form-control-sm ${formik.touched.password &&
                                   formik.errors.password
-                                    ? "is-invalid"
-                                    : ""
-                                }`}
+                                  ? "is-invalid"
+                                  : ""
+                                  }`}
                                 {...formik.getFieldProps("password")}
                               />
                               <button
@@ -384,12 +465,11 @@ function AdminHeader({ handleLogout }) {
                             <div className="input-group">
                               <input
                                 type={showConfirmPassword ? "text" : "password"} // Toggle between text and password
-                                className={`form-control form-control-sm ${
-                                  formik.touched.password_confirmation &&
+                                className={`form-control form-control-sm ${formik.touched.password_confirmation &&
                                   formik.errors.password_confirmation
-                                    ? "is-invalid"
-                                    : ""
-                                }`}
+                                  ? "is-invalid"
+                                  : ""
+                                  }`}
                                 {...formik.getFieldProps(
                                   "password_confirmation"
                                 )}

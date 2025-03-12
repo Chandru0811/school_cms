@@ -36,6 +36,7 @@ function TopicAdd({ onSuccess }) {
 
   const handleShow = () => {
     setShow(true);
+    getCenterList();
     formik.resetForm();
   };
 
@@ -111,7 +112,6 @@ function TopicAdd({ onSuccess }) {
   };
 
   useEffect(() => {
-    getCenterList();
     getGradeList();
   }, [selectedCenter]);
 

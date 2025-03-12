@@ -128,16 +128,13 @@ function SubjectEdit({ id, onSuccess }) {
   };
 
   useEffect(() => {
-    getSubjectData();
-    getCenterList();
-  }, [id]);
-
-  useEffect(() => {
     getGradeList();
   }, [selectedCenter]);
 
   const handleShow = () => {
     setShow(true);
+    getSubjectData();
+    getCenterList();
     formik.resetForm();
   };
 

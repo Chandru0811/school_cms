@@ -71,7 +71,7 @@ function Subject() {
                 e.stopPropagation();
               }}
             >
-              <AddTopic id={selectedId} onSuccess={getData} />
+              <AddTopic id={row.original.id} onSuccess={getData} />
             </button>
             {storedScreens?.data[4]?.can_edit === 1 && (
               <button
@@ -320,7 +320,7 @@ function Subject() {
             </ThemeProvider>
             {deleteModalOpen && selectedId && (
               <DeleteChange
-                path={`subjects/delete/${selectedId}`}
+                path={`subject/delete/${selectedId}`}
                 onDeleteSuccess={() => {
                   getData();
                   setDeleteModalOpen(false);
