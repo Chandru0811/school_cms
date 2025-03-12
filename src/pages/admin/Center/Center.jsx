@@ -21,8 +21,8 @@ import { MdOutlineCloudDownload } from "react-icons/md";
 function Center() {
   const [loading, setLoading] = useState(true);
   const [selectedId, setSelectedId] = useState(null);
-  const [data, setData] = useState([]);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [data, setData] = useState([]);
   const storedScreens = JSON.parse(
     localStorage.getItem("schoolCMS_Permissions") || "{}"
   );

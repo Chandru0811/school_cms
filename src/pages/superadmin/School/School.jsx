@@ -1,26 +1,49 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { MaterialReactTable } from "material-react-table";
 import {
-  ThemeProvider,
-  createTheme,
-  Menu,
-  MenuItem,
-  IconButton,
-} from "@mui/material";
-import Delete from "../../../components/common/Delete";
+  MaterialReactTable,
+  MRT_GlobalFilterTextField,
+  MRT_ShowHideColumnsButton,
+  MRT_ToggleFullScreenButton,
+} from "material-react-table";
+import { ThemeProvider, createTheme, Tooltip } from "@mui/material";
 import PropTypes from "prop-types";
-import { MoreVert as MoreVertIcon } from "@mui/icons-material";
 import api from "../../../config/URL";
 import ImageURL from "../../../config/ImageURL";
 import userImage from "../../../assets/images/user_image.png";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+import { TbEdit } from "react-icons/tb";
+import { GoTrash } from "react-icons/go";
+import { FaPlus } from "react-icons/fa";
+import { MdOutlineCloudDownload } from "react-icons/md";
+import { LuPrinter } from "react-icons/lu";
+import { CiFilter } from "react-icons/ci";
+import DeleteChange from "../../../components/common/DeleteChange";
 
 function School() {
-  const [menuAnchor, setMenuAnchor] = useState(null);
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedId, setSelectedId] = useState(null);
   const navigate = useNavigate();
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+
+  const handleDeleteClick = (id) => {
+    setSelectedId(id);
+    setDeleteModalOpen(true);
+  };
+  const handleExportRows = (rows) => {
+    const doc = new jsPDF();
+    const tableData = rows.map((row) => Object.values(row.original));
+    const tableHeaders = columns.map((c) => c.header);
+
+    autoTable(doc, {
+      head: [tableHeaders],
+      body: tableData,
+    });
+
+    doc.save("mrt-pdf-example.pdf");
+  };
 
   const columns = useMemo(
     () => [
@@ -35,21 +58,30 @@ function School() {
         ),
       },
       {
-        accessorKey: "id",
-        header: "",
-        enableHiding: false,
+        accessorKey: "actions",
+        header: "Actions",
         enableSorting: false,
-        size: 20,
-        Cell: ({ cell }) => (
-          <IconButton
-            onClick={(e) => {
-              e.stopPropagation();
-              setMenuAnchor(e.currentTarget);
-              setSelectedId(cell.getValue());
-            }}
-          >
-            <MoreVertIcon />
-          </IconButton>
+        Cell: ({ row }) => (
+          <div className="actions-column">
+            <button
+              className="btn edit-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/school/edit/${row.original.id}`);
+              }}
+            >
+              <TbEdit style={{ color: "#4F46E5", fontSize: "16px" }} />
+            </button>
+            <button
+              className="btn delete-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleDeleteClick(row.original.id);
+              }}
+            >
+              <GoTrash style={{ color: "#FB3748", fontSize: "16px" }} />
+            </button>
+          </div>
         ),
       },
       {
@@ -157,37 +189,33 @@ function School() {
       MuiTableCell: {
         styleOverrides: {
           head: {
-            color: "#535454 !important",
-            backgroundColor: "#e6edf7 !important",
-            fontWeight: "400 !important",
-            fontSize: "13px !important",
-            textAlign: "center !important",
+            backgroundColor: "#EAE9FC",
+            fontWeight: "700",
+            fontSize: "14px",
+            color: "#4F46E5",
+            textAlign: "center",
+            textTransform: "capitalize",
+            border: "1px solid #E0E0E0",
+          },
+          root: {
+            "&:last-child": {
+              borderRight: "none",
+            },
           },
         },
       },
-      MuiSwitch: {
+      MuiTableSortLabel: {
         styleOverrides: {
           root: {
-            "&.Mui-disabled .MuiSwitch-track": {
-              backgroundColor: "#f5e1d0",
-              opacity: 1,
+            color: "#4F46E5 !important", // Default color
+            "&:hover": {
+              color: "#3B3BBF !important", // Hover color
             },
-            "&.Mui-disabled .MuiSwitch-thumb": {
-              color: "#eb862a",
+            "&.Mui-active": {
+              color: "#2C2C9D !important", // Active (sorted) color
             },
-          },
-          track: {
-            backgroundColor: "#e0e0e0",
-          },
-          thumb: {
-            color: "#eb862a",
-          },
-          switchBase: {
-            "&.Mui-checked": {
-              color: "#eb862a",
-            },
-            "&.Mui-checked + .MuiSwitch-track": {
-              backgroundColor: "#eb862a",
+            "& .MuiTableSortLabel-icon": {
+              color: "#4F46E5 !important", // Sort icon color
             },
           },
         },
@@ -195,48 +223,30 @@ function School() {
     },
   });
 
-  const handleMenuClose = () => setMenuAnchor(null);
-
   return (
     <div className="container-fluid mb-4 px-0">
-      <ol
-        className="breadcrumb my-3 d-flex align-items-center"
-        style={{ listStyle: "none", padding: 0, margin: 0 }}
-      >
-        <li>
-          <Link to="/" className="custom-breadcrumb text-sm">
-            Home
-          </Link>
-          <span className="breadcrumb-separator"> &gt; </span>
-        </li>
-        <li className="breadcrumb-item active text-sm" aria-current="page">
-          &nbsp;Schools
-        </li>
-      </ol>
-      <div className="card">
-        <div className="d-flex justify-content-between align-items-center card_header p-2">
-          <div className="d-flex align-items-center">
-            <div className="d-flex">
-              <div className="dot active"></div>
-            </div>
-            <span className="me-2 text-muted text-sm">
-              This database shows the list of&nbsp;
-              <span className="database_name">Schools</span>
-            </span>
-          </div>
-          <Link to="/school/add">
-            <button
-              type="button"
-              className="btn btn-button btn-sm me-2"
-              style={{ fontWeight: "600px !important" }}
-            >
-              &nbsp; Add &nbsp;&nbsp; <i className="bi bi-plus-lg"></i>
-            </button>
-          </Link>
+      <div className="d-flex justify-content-between align-items-center p-2 my-2">
+        <div className="d-flex align-items-center">
+          <span className="mx-3 table-heading">
+            School -&nbsp;
+            <span className="table-subheading">List of School</span>
+          </span>
         </div>
+        <Link to="/school/add">
+          <button type="button" className="btn btn-sm me-2 add-btn">
+            <FaPlus fontSize={12} className="me-1" /> Add School
+          </button>
+        </Link>
+      </div>
+      <div className="table-container my-2">
         {loading ? (
-          <div className="loader-container">
-            <div className="loader"></div>
+          <div
+            className="d-flex justify-content-center align-items-center"
+            style={{ height: "500px" }}
+          >
+            <div className="spinner-border" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
           </div>
         ) : (
           <>
@@ -245,11 +255,13 @@ function School() {
                 columns={columns}
                 data={data}
                 enableColumnActions={false}
-                enableColumnFilters={false}
                 enableDensityToggle={false}
-                enableFullScreenToggle={false}
+                enableColumnFilters={true}
+                enableFullScreenToggle={true}
                 initialState={{
                   pagination: { pageSize: 50, pageIndex: 0 },
+                  showGlobalFilter: true,
+                  showColumnFilters: false,
                   columnVisibility: {
                     working_hrs: false,
                     citizenship: false,
@@ -260,30 +272,110 @@ function School() {
                     updated_at: false,
                   },
                 }}
+                positionGlobalFilter="left"
+                muiTableHeadCellProps={{
+                  sx: {
+                    backgroundColor: "#fff",
+                    color: "#4F46E5 !important",
+                    fontSize: "13px",
+                    fontWeight: 500,
+                    fontFamily: "Urbanist",
+                    textAlign: "center",
+                  },
+                }}
                 muiTableBodyRowProps={({ row }) => ({
                   onClick: () => navigate(`/school/view/${row.original.id}`),
                   style: { cursor: "pointer" },
+
+                  sx: {
+                    cursor: "pointer",
+                    transition: "background-color 0.2s ease-in-out",
+                    "&:hover": { backgroundColor: "#EAE9FC" },
+                    "&.Mui-selected": { backgroundColor: "#EAE9FC !important" },
+                  },
                 })}
+                renderTopToolbar={({ table }) => (
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      padding: "15px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                      }}
+                    >
+                      <MRT_GlobalFilterTextField
+                        table={table}
+                        placeholder="Search..."
+                        className="custom-global-filter"
+                      />
+                    </div>
+                    <div style={{ display: "flex", gap: "10px" }}>
+                      <MRT_ToggleFullScreenButton
+                        table={table}
+                        style={{ color: "#4F46E5" }}
+                      />
+                      <Tooltip title="Download Data">
+                        <span>
+                          <MdOutlineCloudDownload
+                            size={20}
+                            color="#4F46E5"
+                            className="mt-3 m-2"
+                            disabled={table.getRowModel().rows.length === 0}
+                            onClick={() =>
+                              handleExportRows(table.getRowModel().rows)
+                            }
+                          />
+                        </span>
+                      </Tooltip>
+                      <Tooltip title="Print">
+                        <span>
+                          <LuPrinter
+                            size={20}
+                            color="#4F46E5"
+                            className="mt-3 m-2"
+                            onClick={() => window.print()}
+                          />
+                        </span>
+                      </Tooltip>
+
+                      <MRT_ShowHideColumnsButton
+                        table={table}
+                        style={{ color: "#4F46E5" }}
+                      />
+                      <Tooltip title="Toggle Filters">
+                        <span>
+                          <CiFilter
+                            size={20}
+                            color="#4F46E5"
+                            className="mt-3 m-2 cursor-pointer"
+                            onClick={() => {
+                              table.setShowColumnFilters((prev) => !prev);
+                            }}
+                          />
+                        </span>
+                      </Tooltip>
+                    </div>
+                  </div>
+                )}
               />
             </ThemeProvider>
-            <Menu
-              id="action-menu"
-              anchorEl={menuAnchor}
-              open={Boolean(menuAnchor)}
-              onClose={handleMenuClose}
-            >
-              <MenuItem onClick={() => navigate(`/school/edit/${selectedId}`)}>
-                Edit
-              </MenuItem>
-              <MenuItem>
-                <Delete
-                  path={`superAdmin/school/delete/${selectedId}`}
-                  onDeleteSuccess={fetchData}
-                  onOpen={handleMenuClose}
-                />
-              </MenuItem>
-            </Menu>
           </>
+        )}
+        {deleteModalOpen && selectedId && (
+          <DeleteChange
+            path={`superAdmin/school/delete/${selectedId}`}
+            onDeleteSuccess={() => {
+              fetchData();
+              setDeleteModalOpen(false);
+            }}
+            onOpen={() => setDeleteModalOpen(false)}
+          />
         )}
       </div>
     </div>

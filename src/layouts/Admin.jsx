@@ -72,12 +72,12 @@ function Admin({ handleLogout }) {
     <div>
       <div>
         <BrowserRouter basename="/schoolCms">
-          <div className="d-flex flex-column flex-lg-row bg-surface-secondary ">
+          <div className="d-flex flex-column flex-lg-row">
             <AdminSideBar />
 
             <div className="flex-grow-1 h-screen overflow-y-auto">
               <AdminHeader handleLogout={handleLogout} />
-              <main className="pt-2 bg-surface-secondary">
+              <main className="pt-2 admin-bg-image">
                 <div style={{ minHeight: "80vh" }} className="px-2">
                   <Routes>
                     <Route path="/" element={<AdminDashboard />} />
