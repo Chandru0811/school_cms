@@ -135,10 +135,15 @@ function RewardView() {
           </div>
         </div>
         {loading ? (
-          <div className="loader-container">
-            <div className="loader"></div>
-          </div>
-        ) : (
+            <div
+              className="d-flex justify-content-center align-items-center"
+              style={{ height: "500px" }}
+            >
+              <div className="spinner-border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          ) : (
           <div className="container-fluid px-4">
             <div className="row pb-3">
               <div className="col-md-6 col-12 my-2">

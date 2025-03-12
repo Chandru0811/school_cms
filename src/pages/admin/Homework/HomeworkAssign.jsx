@@ -220,12 +220,12 @@ function HomeworkAssign({ grade_ids, assignedId,onSuccess }) {
               className="btn btn-button btn-sm"
               disabled={loadIndicator}
             >
-              {loadIndicator && (
-                <span
-                  className="spinner-border spinner-border-sm me-2"
-                  aria-hidden="true"
-                ></span>
-              )}
+               {loadIndicator && (
+                  <span
+                    className="spinner-border spinner-border-sm button-spinner me-2 text-light"
+                    aria-hidden="true"
+                  ></span>
+                )}
               Submit
             </button>
           </DialogActions>

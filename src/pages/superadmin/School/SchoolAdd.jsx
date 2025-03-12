@@ -149,7 +149,7 @@ function SchoolAdd() {
               >
                 {loadIndicator && (
                   <span
-                    className="spinner-border spinner-border-sm me-2 text-light"
+                    className="spinner-border spinner-border-sm button-spinner me-2 text-light"
                     aria-hidden="true"
                   ></span>
                 )}
@@ -217,41 +217,42 @@ function SchoolAdd() {
                 )}
               </div>
               <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-6">
-                    <label className="form-label view-label-text">Gender</label>
-                    <div className="d-flex gap-3">
-                      <div className="form-check">
-                        <input
-                          type="radio"
-                          className="form-check-input"
-                          id="male"
-                          name="users[0].gender"
-                          value="Male"
-                          checked={formik.values.gender === "Male"}
-                          onChange={formik.handleChange}
-                        />
-                        <label className="form-check-label" htmlFor="Male">
-                          Male
-                        </label>
-                      </div>
-                      <div className="form-check">
-                        <input
-                          type="radio"
-                          className="form-check-input"
-                          id="Female"
-                          name="users[0].gender"
-                          value="Female"
-                          checked={formik.values.gender === "Female"}
-                          onChange={formik.handleChange}
-                        />
-                        <label className="form-check-label" htmlFor="Female">
-                          Female
-                        </label>
-                      </div>
-                    </div>
+                <label className="form-label">
+                  Gender<span className="text-danger">*</span>
+                </label>
+                <div className="d-flex gap-3">
+                  <div className="form-check">
+                    <input
+                      type="radio"
+                      className="form-check-input"
+                      id="male"
+                      name="gender"
+                      value="Male"
+                      checked={formik.values.gender === "Male"}
+                      onChange={formik.handleChange}
+                    />
+                    <label className="form-check-label" htmlFor="Male">
+                      Male
+                    </label>
+                  </div>
+                  <div className="form-check">
+                    <input
+                      type="radio"
+                      className="form-check-input"
+                      id="Female"
+                      name="gender"
+                      value="Female"
+                      checked={formik.values.gender === "Female"}
+                      onChange={formik.handleChange}
+                    />
+                    <label className="form-check-label" htmlFor="Female">
+                      Female
+                    </label>
                   </div>
                 </div>
+                {formik.touched.gender && formik.errors.gender && (
+                  <div className="text-danger">{formik.errors.gender}</div>
+                )}
               </div>
               <div className="col-md-6 col-12 mb-3">
                 <label className="form-label">

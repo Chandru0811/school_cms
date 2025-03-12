@@ -11,16 +11,20 @@ import api from "../../../config/URL";
 
 function RoleView({ show, setShow, id }) {
   const [data, setData] = useState({});
+  const [loading, setLoading] = useState(true);
   // console.log(data)
   const handleClose = () => {
     setShow(false);
   };
   const getRoleData = async () => {
     try {
+      setLoading(true);
       const response = await api.get(`admin/role/${id}`);
       setData(response.data.data);
     } catch (e) {
       toast.error("Error Fetching Data ", e?.response?.data?.error);
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -35,6 +39,15 @@ function RoleView({ show, setShow, id }) {
       <DialogTitle>View Role</DialogTitle>
       <hr className="m-0"></hr>
       <DialogContent>
+      {loading ? (
+            <div
+              className="d-flex justify-content-center align-items-center"
+            >
+              <div className="spinner-border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          ) : (
         <div className="row">
           <div className="col-md-6 col-12 my-2">
             <div className="row">
@@ -82,6 +95,7 @@ function RoleView({ show, setShow, id }) {
             </div>
           </div>
         </div>
+          )}
       </DialogContent>
       <hr className="m-0"></hr>
       <DialogActions className="mt-3">

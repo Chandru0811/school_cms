@@ -49,9 +49,13 @@ function AvatarProfileView({ show, setShow, id }) {
         <DialogTitle>View Profile Avatar</DialogTitle>
         <hr className="m-0" />
         <DialogContent>
-          {loading ? (
-            <div className="loader-container">
-              <div className="loader"></div>
+        {loading ? (
+            <div
+              className="d-flex justify-content-center align-items-center"
+            >
+              <div className="spinner-border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
             </div>
           ) : (
             <div className="row">

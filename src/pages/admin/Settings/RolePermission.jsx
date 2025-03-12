@@ -25,7 +25,7 @@ function RolePermission({ key }) {
       console.log("API Response: ", response);
       if (response.data.data && response.data.data.length > 0) {
         setRoleName(response.data.data);
-        setSelectedRoleId(response.data.data[0].id);
+        // setSelectedRoleId(response.data.data[0].id);
       }
     } catch (error) {
       if (error?.response?.status === 403) {
@@ -40,16 +40,17 @@ function RolePermission({ key }) {
 
   useEffect(() => {
     fetchRole();
-  }, [key]);
+  }, [key,selectedRoleId]);
 
   const handleRoleChange = (e) => {
     const selectedRoleId = e.target.value;
     const selectedRole = roleName.find(
       (role) => role.id === parseInt(selectedRoleId)
     );
-    setSelectedRole(selectedRole.name);
+    setSelectedRole(selectedRole?.name || "");
     setSelectedRoleId(selectedRoleId);
   };
+  
 
   const formik = useFormik({
     initialValues: {
@@ -164,9 +165,8 @@ function RolePermission({ key }) {
         can_edit: values[moduleName].canEdit,
         can_delete: values[moduleName].canDelete,
       }));
-      setLoadIndicator(true);
       try {
-        setLoading(true);
+        setLoadIndicator(true);
         const response = await api.put(
           `admin/role_permission/update/${role_id}`,
           transformedValues,
@@ -184,7 +184,6 @@ function RolePermission({ key }) {
       } catch (error) {
         toast.error(error);
       } finally {
-        setLoading(false);
         setLoadIndicator(false);
       }
     },
@@ -291,17 +290,16 @@ function RolePermission({ key }) {
           }
         }}
       >
-        {loading ? (
-          <div className="loader-container">
-            <div className="loader">
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
-              <span></span>
+     {loading ? (
+            <div
+              className="d-flex justify-content-center align-items-center"
+              style={{ height: "500px" }}
+            >
+              <div className="spinner-border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
             </div>
-          </div>
-        ) : (
+          ) : (
           <div className="">
             <div className="d-flex justify-content-end align-items-end">
               <button
@@ -311,7 +309,7 @@ function RolePermission({ key }) {
               >
                 {loadIndicator && (
                   <span
-                    className="spinner-border spinner-border-sm me-2"
+                    className="spinner-border spinner-border-sm button-spinner me-2 text-light"
                     aria-hidden="true"
                   ></span>
                 )}
@@ -330,7 +328,7 @@ function RolePermission({ key }) {
                     onChange={handleRoleChange}
                     value={selectedRoleId}
                   >
-                    <option disabled>Select Role</option>
+                    <option selected>Select Role</option>
                     {roleName &&
                       roleName.map((role) => (
                         <option key={role.id} value={role.id}>
@@ -399,6 +397,15 @@ function RolePermission({ key }) {
               </div>
             </div>
             <div>
+            {loading ? (
+            <div
+              className="d-flex justify-content-center align-items-center"
+            >
+              <div className="spinner-border" role="status">
+                <span className="visually-hidden">Loading...</span>
+              </div>
+            </div>
+          ) : (
               <div className="row">
                 <div className="clo-12">
                   <div className="table-responsive">
@@ -406,11 +413,6 @@ function RolePermission({ key }) {
                       id="datatable"
                       style={{ maxHeight: "460px", overflowY: "auto" }}
                     >
-                      {loading ? (
-                        <div className="loader-container">
-                          <div className="loader"></div>
-                        </div>
-                      ) : (
                         <table className="table table-hover">
                           <thead
                             className="bg-light"
@@ -1408,11 +1410,11 @@ function RolePermission({ key }) {
                             </tr>
                           </tbody>
                         </table>
-                      )}
                     </div>
                   </div>
                 </div>
               </div>
+          )}
             </div>
           </div>
         )}
