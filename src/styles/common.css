@@ -13,7 +13,10 @@
   background-repeat: no-repeat;
 }
 
-
+.form-check-input:checked {
+  background-color: #4f46e5 !important;
+  border-color: #4f46e5 !important;
+}
 /*
  * Webpixels CSS v1.1.5 (https://webpixels.io/)
  * Copyright 2021 Webpixels

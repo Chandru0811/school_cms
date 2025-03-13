@@ -22,6 +22,7 @@ import DeleteChange from "../../../components/common/DeleteChange";
 function SubjectView() {
   const [showView, setShowView] = useState(false);
   const [data, setData] = useState({});
+  const navigate = useNavigate();
   const { id } = useParams();
   const [loading, setLoading] = useState(true);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
@@ -358,10 +359,11 @@ function SubjectView() {
       )}
       {deleteModalOpen && selectedId && (
         <DeleteChange
-          path={`subjects/delete/${selectedId}`}
+          path={`subject/delete/${selectedId}`}
           onDeleteSuccess={() => {
             getData();
             setDeleteModalOpen(false);
+            navigate("/subject");
           }}
           onOpen={() => setDeleteModalOpen(false)}
         />

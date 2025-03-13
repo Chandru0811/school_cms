@@ -186,9 +186,7 @@ function EmployeeEdit() {
               type="button"
               className="btn view-delete-btn"
               onClick={() => {
-                formik.resetForm();
-                formik.setErrors({});
-                formik.setTouched({}, false);
+                getEmployeeData();
               }}
             >
               <GoTrash className="trash-icon" /> &nbsp;&nbsp; Discard Changes

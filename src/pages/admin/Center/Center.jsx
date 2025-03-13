@@ -320,7 +320,7 @@ function Center() {
         )}
         {deleteModalOpen && selectedId && (
           <DeleteChange
-            path={`centers/delete/${selectedId}`}
+            path={`center/delete/${selectedId}`}
             onDeleteSuccess={() => {
               fetchData();
               setDeleteModalOpen(false);
