@@ -214,7 +214,7 @@ function SubscriptionView() {
             path={`subscription/delete/${id}`}
             onDeleteSuccess={() => {
               setDeleteModalOpen(false);
-              navigate("/studensubscriptiont");
+              navigate("/subscription");
             }}
             onClose={() => setDeleteModalOpen(false)}
           />

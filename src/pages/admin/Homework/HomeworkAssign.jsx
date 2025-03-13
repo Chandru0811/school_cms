@@ -129,7 +129,7 @@ function HomeworkAssign({ grade_ids, assignedId,onSuccess }) {
     <>
       <button
         type="button"
-        className="btn btn-button btn-sm me-2"
+        className="btn add-btn btn-sm me-2"
         style={{ fontWeight: "600px !important" }}
         onClick={handleShow}
       >

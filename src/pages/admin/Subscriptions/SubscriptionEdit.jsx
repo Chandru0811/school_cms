@@ -289,9 +289,7 @@ function SubscriptionEdit() {
               type="button"
               className="btn view-delete-btn"
               onClick={() => {
-                formik.resetForm();
-                formik.setErrors({});
-                formik.setTouched({}, false);
+                getData();
               }}
             >
               <GoTrash className="trash-icon" /> &nbsp;&nbsp; Discard Changes
@@ -312,219 +310,218 @@ function SubscriptionEdit() {
           </div>
         </div>
         {loading ? (
-            <div
-              className="d-flex justify-content-center align-items-center"
-            >
-              <div className="spinner-border" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </div>
-            </div>
-          ) : (
-        <div className="card" style={{ border: "1px solid #dbd9d0" }}>
-          <div className="d-flex justify-content-between px-5 my-2">
-            <p className="view-header">Subscription Info</p>
-          </div>
-          <div className="container-fluid px-4">
-            <div className="row py-4">
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-5 d-flex">
-                    <p className="view-label-text">Grade</p>{" "}
-                    <span className="text-danger">*</span>
-                  </div>
-                  <div className="col-7">
-                    <select
-                      className={`form-select form-select-sm ${
-                        formik.touched.grade_id && formik.errors.grade_id
-                          ? "is-invalid"
-                          : ""
-                      }`}
-                      value={formik.values.grade_id}
-                      onChange={(e) => {
-                        const selectedGradeId = e.target.value;
-                        formik.setFieldValue("grade_id", selectedGradeId);
-                      }}
-                    >
-                      <option value="">Select Grade ID</option>
-                      {grades.map((grade) => (
-                        <option key={grade.value} value={grade.value}>
-                          {grade.label}
-                        </option>
-                      ))}
-                    </select>
-                    {formik.touched.grade_id && formik.errors.grade_id && (
-                      <div className="invalid-feedback">
-                        {formik.errors.grade_id}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-5 d-flex">
-                    <p className="view-label-text">Worksheet</p>
-                  </div>
-                  <div className="col-7">
-                    <MultiSelect
-                      options={worksheets}
-                      value={selectedWorksheet}
-                      onChange={(selected) => {
-                        setSelectedWorksheet(selected);
-                        formik.setFieldValue(
-                          "worksheet_id",
-                          selected.map((option) => option.value)
-                        );
-                      }}
-                      labelledBy="Select Worksheet"
-                      className="form-multi-select form-multi-select-sm border-1 rounded-1"
-                    />
-                    {formik.touched.worksheet_id &&
-                      formik.errors.worksheet_id && (
-                        <div className="invalid-feedback">
-                          {formik.errors.worksheet_id}
-                        </div>
-                      )}
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-5 d-flex">
-                    <p className="view-label-text">Name</p>{" "}
-                    <span className="text-danger">*</span>
-                  </div>
-                  <div className="col-7">
-                    <input
-                      placeholder="Enter Text"
-                      type="text"
-                      className={`form-control form-control-sm ${
-                        formik.touched.name && formik.errors.name
-                          ? "is-invalid"
-                          : ""
-                      }`}
-                      {...formik.getFieldProps("name")}
-                      value={formik.values.name}
-                    />
-                    {formik.touched.name && formik.errors.name && (
-                      <div className="invalid-feedback">
-                        {formik.errors.name}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-5 d-flex">
-                    <p className="view-label-text">Price</p>{" "}
-                    <span className="text-danger">*</span>
-                  </div>
-                  <div className="col-7">
-                    <input
-                      placeholder="Enter Text"
-                      type="text"
-                      className={`form-control form-control-sm ${
-                        formik.touched.price && formik.errors.price
-                          ? "is-invalid"
-                          : ""
-                      }`}
-                      {...formik.getFieldProps("price")}
-                      value={formik.values.price}
-                    />
-                    {formik.touched.price && formik.errors.price && (
-                      <div className="invalid-feedback">
-                        {formik.errors.price}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-5 d-flex">
-                    <p className="view-label-text">Duration</p>{" "}
-                    <span className="text-danger">*</span>
-                  </div>
-                  <div className="col-7">
-                    <select
-                      className={`form-select form-select-sm ${
-                        formik.touched.duration && formik.errors.duration
-                          ? "is-invalid"
-                          : ""
-                      }`}
-                      {...formik.getFieldProps("duration")}
-                    >
-                      <option value="">Select Months</option>
-                      <option value="1">One Month</option>
-                      <option value="3">Three Months</option>
-                      <option value="6">Six Months</option>
-                      <option value="12">Twelve Months</option>
-                    </select>
-                    {formik.touched.duration && formik.errors.duration && (
-                      <div className="invalid-feedback">
-                        {formik.errors.duration}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="col-md-6 col-12">
-                <div className="row mb-4">
-                  <div className="col-5 d-flex">
-                    <p className="view-label-text">Description</p>
-                  </div>
-                  <div className="col-7">
-                    <input
-                      placeholder="Enter Text"
-                      type="text"
-                      className={`form-control form-control-sm ${
-                        formik.touched.description && formik.errors.description
-                          ? "is-invalid"
-                          : ""
-                      }`}
-                      {...formik.getFieldProps("description")}
-                      value={formik.values.description}
-                    />
-                    {formik.touched.description &&
-                      formik.errors.description && (
-                        <div className="invalid-feedback">
-                          {formik.errors.description}
-                        </div>
-                      )}
-                  </div>
-                </div>
-              </div>
-              <div className="col-12">
-                <div className="row mb-4">
-                  <div className="col-2">
-                    <p className="view-label-text">Details</p>
-                  </div>
-                  <div className="col-10">
-                    <ReactQuill
-                      theme="snow"
-                      value={formik.values.details}
-                      onChange={handleDetailsChange}
-                      modules={modules}
-                      formats={formats}
-                      className={`${
-                        formik.touched.details && formik.errors.details
-                          ? "is-invalid"
-                          : ""
-                      }`}
-                    />
-                    {formik.touched.details && formik.errors.details && (
-                      <div className="invalid-feedback">
-                        {formik.errors.details}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
+          <div className="d-flex justify-content-center align-items-center">
+            <div className="spinner-border" role="status">
+              <span className="visually-hidden">Loading...</span>
             </div>
           </div>
-        </div>
-          )}
+        ) : (
+          <div className="card" style={{ border: "1px solid #dbd9d0" }}>
+            <div className="d-flex justify-content-between px-5 my-2">
+              <p className="view-header">Subscription Info</p>
+            </div>
+            <div className="container-fluid px-4">
+              <div className="row py-4">
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text">Grade</p>{" "}
+                      <span className="text-danger">*</span>
+                    </div>
+                    <div className="col-7">
+                      <select
+                        className={`form-select form-select-sm ${
+                          formik.touched.grade_id && formik.errors.grade_id
+                            ? "is-invalid"
+                            : ""
+                        }`}
+                        value={formik.values.grade_id}
+                        onChange={(e) => {
+                          const selectedGradeId = e.target.value;
+                          formik.setFieldValue("grade_id", selectedGradeId);
+                        }}
+                      >
+                        <option value="">Select Grade ID</option>
+                        {grades.map((grade) => (
+                          <option key={grade.value} value={grade.value}>
+                            {grade.label}
+                          </option>
+                        ))}
+                      </select>
+                      {formik.touched.grade_id && formik.errors.grade_id && (
+                        <div className="invalid-feedback">
+                          {formik.errors.grade_id}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text">Worksheet</p>
+                    </div>
+                    <div className="col-7">
+                      <MultiSelect
+                        options={worksheets}
+                        value={selectedWorksheet}
+                        onChange={(selected) => {
+                          setSelectedWorksheet(selected);
+                          formik.setFieldValue(
+                            "worksheet_id",
+                            selected.map((option) => option.value)
+                          );
+                        }}
+                        labelledBy="Select Worksheet"
+                        className="form-multi-select form-multi-select-sm border-1 rounded-1"
+                      />
+                      {formik.touched.worksheet_id &&
+                        formik.errors.worksheet_id && (
+                          <div className="invalid-feedback">
+                            {formik.errors.worksheet_id}
+                          </div>
+                        )}
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text">Name</p>{" "}
+                      <span className="text-danger">*</span>
+                    </div>
+                    <div className="col-7">
+                      <input
+                        placeholder="Enter Text"
+                        type="text"
+                        className={`form-control form-control-sm ${
+                          formik.touched.name && formik.errors.name
+                            ? "is-invalid"
+                            : ""
+                        }`}
+                        {...formik.getFieldProps("name")}
+                        value={formik.values.name}
+                      />
+                      {formik.touched.name && formik.errors.name && (
+                        <div className="invalid-feedback">
+                          {formik.errors.name}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text">Price</p>{" "}
+                      <span className="text-danger">*</span>
+                    </div>
+                    <div className="col-7">
+                      <input
+                        placeholder="Enter Text"
+                        type="text"
+                        className={`form-control form-control-sm ${
+                          formik.touched.price && formik.errors.price
+                            ? "is-invalid"
+                            : ""
+                        }`}
+                        {...formik.getFieldProps("price")}
+                        value={formik.values.price}
+                      />
+                      {formik.touched.price && formik.errors.price && (
+                        <div className="invalid-feedback">
+                          {formik.errors.price}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text">Duration</p>{" "}
+                      <span className="text-danger">*</span>
+                    </div>
+                    <div className="col-7">
+                      <select
+                        className={`form-select form-select-sm ${
+                          formik.touched.duration && formik.errors.duration
+                            ? "is-invalid"
+                            : ""
+                        }`}
+                        {...formik.getFieldProps("duration")}
+                      >
+                        <option value="">Select Months</option>
+                        <option value="1">One Month</option>
+                        <option value="3">Three Months</option>
+                        <option value="6">Six Months</option>
+                        <option value="12">Twelve Months</option>
+                      </select>
+                      {formik.touched.duration && formik.errors.duration && (
+                        <div className="invalid-feedback">
+                          {formik.errors.duration}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-5 d-flex">
+                      <p className="view-label-text">Description</p>
+                    </div>
+                    <div className="col-7">
+                      <input
+                        placeholder="Enter Text"
+                        type="text"
+                        className={`form-control form-control-sm ${
+                          formik.touched.description &&
+                          formik.errors.description
+                            ? "is-invalid"
+                            : ""
+                        }`}
+                        {...formik.getFieldProps("description")}
+                        value={formik.values.description}
+                      />
+                      {formik.touched.description &&
+                        formik.errors.description && (
+                          <div className="invalid-feedback">
+                            {formik.errors.description}
+                          </div>
+                        )}
+                    </div>
+                  </div>
+                </div>
+                <div className="col-12">
+                  <div className="row mb-4">
+                    <div className="col-2">
+                      <p className="view-label-text">Details</p>
+                    </div>
+                    <div className="col-10">
+                      <ReactQuill
+                        theme="snow"
+                        value={formik.values.details}
+                        onChange={handleDetailsChange}
+                        modules={modules}
+                        formats={formats}
+                        className={`${
+                          formik.touched.details && formik.errors.details
+                            ? "is-invalid"
+                            : ""
+                        }`}
+                      />
+                      {formik.touched.details && formik.errors.details && (
+                        <div className="invalid-feedback">
+                          {formik.errors.details}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </form>
     </div>
   );

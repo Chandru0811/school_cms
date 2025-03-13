@@ -250,7 +250,7 @@ function HomeworkView() {
               <>
                 <button
                   type="button"
-                  className="btn btn-sm add-btn"
+                  className="btn btn-sm edit-btn"
                   onClick={() => navigate(`/homework/edit/${id}`)}
                 >
                   <TbEdit style={{ color: "#C0C0C0", fontSize: "16px" }} />
@@ -431,7 +431,7 @@ function HomeworkView() {
                     path={`homework/delete/${id}`}
                     onDeleteSuccess={() => {
                       setDeleteModalOpen(false);
-                      navigate("/student");
+                      navigate("/homework");
                     }}
                     onClose={() => setDeleteModalOpen(false)}
                   />

@@ -377,7 +377,7 @@ function Student() {
 
             {deleteModalOpen && selectedId && (
               <DeleteChange
-                path={`employee/delete/${selectedId}`}
+                path={`student/delete/${selectedId}`}
                 onDeleteSuccess={() => {
                   getData();
                   setDeleteModalOpen(false);

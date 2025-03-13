@@ -188,9 +188,7 @@ function RewardEdit() {
               type="button"
               className="btn view-delete-btn"
               onClick={() => {
-                formik.resetForm();
-                formik.setErrors({});
-                formik.setTouched({}, false);
+                getData();
               }}
             >
               <GoTrash className="trash-icon" /> &nbsp;&nbsp; Discard Changes
