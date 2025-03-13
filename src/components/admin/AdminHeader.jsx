@@ -136,6 +136,7 @@ function AdminHeader({ handleLogout }) {
         if (response.status === 200) {
           toast.success(response.data.message);
           fetchData();
+          handleCancel();
         }
       } catch (error) {
         toast.error("Error updating avatar", error?.response?.data?.error);
@@ -326,20 +327,19 @@ function AdminHeader({ handleLogout }) {
                               {profiledata.map((profile) => (
                                 <div
                                   key={profile.id}
-                                  className="col-3 text-center avatarImage"
+                                  className="col-2 text-center avatarImage"
                                   onClick={() => setSelectedAvatar(profile.id)}
                                 >
                                   <img
                                     src={`${ImageURL.replace(/\/$/, "")}/${profile.image.replace(/^\//, "")}`}
                                     alt={profile.name}
                                     style={{
-                                      width: "100px",
-                                      height: "100px",
+                                      width: "50px",
+                                      height: "50px",
                                       borderRadius: "8px",
                                       objectFit: "cover",
                                       cursor: "pointer",
                                       border: selectedAvatar === profile.id ? "1.5px solid #4F46E5" : "none",
-                                      borderRadius: "8px",
                                       padding: "5px",
 
                                     }}

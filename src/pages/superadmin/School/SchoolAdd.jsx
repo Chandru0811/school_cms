@@ -168,11 +168,10 @@ function SchoolAdd() {
                     <input
                       type="text"
                       placeholder="Enter Text"
-                      className={`form-control ${
-                        formik.touched.school_name && formik.errors.school_name
+                      className={`form-control ${formik.touched.school_name && formik.errors.school_name
                           ? "is-invalid"
                           : ""
-                      }`}
+                        }`}
                       {...formik.getFieldProps("school_name")}
                     />
                     {formik.touched.school_name &&
@@ -194,11 +193,10 @@ function SchoolAdd() {
                     <input
                       type="text"
                       placeholder="Enter Text"
-                      className={`form-control ${
-                        formik.touched.center_name && formik.errors.center_name
+                      className={`form-control ${formik.touched.center_name && formik.errors.center_name
                           ? "is-invalid"
                           : ""
-                      }`}
+                        }`}
                       {...formik.getFieldProps("center_name")}
                     />
                     {formik.touched.center_name &&
@@ -220,11 +218,10 @@ function SchoolAdd() {
                     <input
                       type="text"
                       placeholder="Enter Text"
-                      className={`form-control ${
-                        formik.touched.admin_name && formik.errors.admin_name
+                      className={`form-control ${formik.touched.admin_name && formik.errors.admin_name
                           ? "is-invalid"
                           : ""
-                      }`}
+                        }`}
                       {...formik.getFieldProps("admin_name")}
                     />
                     {formik.touched.admin_name && formik.errors.admin_name && (
@@ -288,11 +285,10 @@ function SchoolAdd() {
                     <input
                       type="text"
                       placeholder="Enter Text"
-                      className={`form-control ${
-                        formik.touched.email && formik.errors.email
+                      className={`form-control ${formik.touched.email && formik.errors.email
                           ? "is-invalid"
                           : ""
-                      }`}
+                        }`}
                       {...formik.getFieldProps("email")}
                     />
                     {formik.touched.email && formik.errors.email && (
@@ -319,11 +315,10 @@ function SchoolAdd() {
                           ""
                         );
                       }}
-                      className={`form-control ${
-                        formik.touched.mobile && formik.errors.mobile
+                      className={`form-control ${formik.touched.mobile && formik.errors.mobile
                           ? "is-invalid"
                           : ""
-                      }`}
+                        }`}
                       {...formik.getFieldProps("mobile")}
                     />
                     {formik.touched.mobile && formik.errors.mobile && (
@@ -348,11 +343,10 @@ function SchoolAdd() {
                       <input
                         type={showPassword ? "text" : "password"}
                         placeholder="Enter password"
-                        className={`form-control ${
-                          formik.touched.password && formik.errors.password
+                        className={`form-control ${formik.touched.password && formik.errors.password
                             ? "is-invalid"
                             : ""
-                        }`}
+                          }`}
                         style={{
                           borderRadius: "3px",
                           borderRight: "none",
@@ -393,12 +387,11 @@ function SchoolAdd() {
                       <input
                         type={showcPassword ? "text" : "password"}
                         placeholder="Enter password"
-                        className={`form-control ${
-                          formik.touched.password_confirmation &&
-                          formik.errors.password_confirmation
+                        className={`form-control ${formik.touched.password_confirmation &&
+                            formik.errors.password_confirmation
                             ? "is-invalid"
                             : ""
-                        }`}
+                          }`}
                         style={{
                           borderRadius: "3px",
                           borderRight: "none",
@@ -423,6 +416,31 @@ function SchoolAdd() {
                           </div>
                         )}
                     </div>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-6 col-12">
+                <div className="row mb-4">
+                  <div className="col-5 d-flex">
+                    <p className="view-label-text">Location</p>
+                    <span className="text-danger">*</span>
+                  </div>
+                  <div className="col-7">
+                    <input
+                      type="text"
+                      placeholder="Enter Text"
+                      className={`form-control ${formik.touched.location && formik.errors.location
+                          ? "is-invalid"
+                          : ""
+                        }`}
+                      {...formik.getFieldProps("location")}
+                    />
+                    {formik.touched.location &&
+                      formik.errors.location && (
+                        <div className="invalid-feedback">
+                          {formik.errors.location}
+                        </div>
+                      )}
                   </div>
                 </div>
               </div>

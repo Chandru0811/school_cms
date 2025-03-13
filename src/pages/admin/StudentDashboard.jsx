@@ -30,86 +30,124 @@ function AdminDashboard() {
   const challengeResults = data?.top_challenge_worksheets;
   const questionResults = data?.top_question_worksheets;
 
-  const [state, setState] = useState({
+  // const [state, setState] = useState({
 
-    series: [{
-      name: 'series1',
-      data: [31, 40, 28, 51, 42, 109, 100]
-    }],
+  //   series: [{
+  //     name: 'series1',
+  //     data: [31, 40, 28, 51, 42, 109, 100]
+  //   }],
+  //   options: {
+  //     chart: {
+  //       height: 350,
+  //       type: 'area'
+  //     },
+  //     colors: ['#4F46E5'],
+  //     dataLabels: {
+  //       enabled: false
+  //     },
+  //     stroke: {
+  //       curve: 'smooth',
+  //       width: 2,
+  //     },
+  //     xaxis: {
+  //       categories: ["October", "November", "December", "January", "February", "March"]
+  //     },
+  //   },
+  // });
+
+  // const [state1, setState1] = useState({
+  //   series: [40, 60, 50, 80, 60],
+  //   options: {
+  //     chart: {
+  //       type: 'donut',
+  //     },
+  //     colors: ["#2219b3", "#d4d2f9", "#7f79ec", "#4f46e5"],
+  //     labels: ["worksheet 1", "worksheet 2", "worksheet 3", "worksheet 4", "worksheet 5"],
+  //     dataLabels: {
+  //       enabled: false,
+  //     },
+  //     responsive: [{
+  //       breakpoint: 480,
+  //       options: {
+  //         chart: {
+  //           width: 200
+  //         },
+  //         legend: {
+  //           position: 'bottom'
+  //         }
+  //       }
+  //     }]
+  //   },
+  // });
+
+  const [state, setState] = useState({
     options: {
+      colors: ["#4F46E5"],
+      dataLabels: { enabled: false },
+      legend: { show: false },
       chart: {
-        height: 350,
-        type: 'area'
-      },
-      colors: ['#4F46E5'],
-      dataLabels: {
-        enabled: false
+        id: "basic-bar",
+        toolbar: {
+          show: true,
+          tools: false,
+        },
       },
       stroke: {
-        curve: 'smooth',
         width: 2,
       },
       xaxis: {
-        type: 'datetime',
-        categories: ["2018-09-19T00:00:00.000Z", "2018-09-19T01:30:00.000Z", "2018-09-19T02:30:00.000Z", "2018-09-19T03:30:00.000Z", "2018-09-19T04:30:00.000Z", "2018-09-19T05:30:00.000Z", "2018-09-19T06:30:00.000Z"]
-      },
-      tooltip: {
-        x: {
-          format: 'dd/MM/yy HH:mm'
-        },
+        categories: [],
       },
     },
+    series: [],
   });
 
   const [state1, setState1] = useState({
-    series: [100, 35],
+    series: [],
     options: {
       chart: {
-        width: 380,
-        type: "donut",
+        type: 'donut',
       },
-      colors: ["#d4d2f9", "#433bbe"],
-      labels: ["Balance", "Marks",],
+      colors: ["#2219b3", "#d4d2f9", "#7f79ec", "#4f46e5"],
+      labels: [],
       dataLabels: {
         enabled: false,
       },
-      responsive: [
-        {
-          breakpoint: 480,
-          options: {
-            chart: {
-              width: 200,
-            },
-            legend: {
-              show: true,
-            },
+      responsive: [{
+        breakpoint: 480,
+        options: {
+          chart: {
+            width: 200
           },
-        },
-      ],
-      legend: {
-        position: "right",
-        offsetY: 0,
-        height: 230,
-      },
+          legend: {
+            position: 'bottom'
+          }
+        }
+      }]
     },
   });
 
   const getData = async () => {
     try {
-      const response = await api.get("dashboard/student");
-      setData(response.data.data);
-      if (response.data.data.chart_data) {
-        // setState((prevState) => ({
-        //   ...prevState,
-        //   options: {
-        //     ...prevState.options,
-        //     xaxis: {
-        //       categories: response.data.data.chart_data.label,
-        //     },
-        //   },
-        //   series: response.data.data.chart_data.series,
-        // }));
-      }
+      const response = await api.get("students/dashboard");
+      const apiData = response.data.data;
+      setState({
+        series: apiData.chart_data.series,
+        options: {
+          ...state.options,
+          xaxis: {
+            categories: apiData.chart_data.label
+          }
+        }
+      });
+      setState1({
+        series: apiData.chart_data.series[0].data.map(Number),
+        options: {
+          ...state1.options,
+          labels: apiData.chart_data.label
+        }
+      });
+      setData(apiData);
     } catch (e) {
       if (e?.response?.status === 403) {
         toast.error("Don't have access to this page");
@@ -209,7 +247,7 @@ function AdminDashboard() {
               </div>
               <div className="col-md-7 col-12 py-3">
                 <p className="dash-font fw-12 fw-semibold">BADGES</p>
-                <p className="dash-font heading-color fw-bold">{data?.active_worksheets}</p>
+                <p className="dash-font heading-color fw-bold">{data?.active_worksheets || "--"}</p>
               </div>
             </div>
           </div>
@@ -452,7 +490,8 @@ function AdminDashboard() {
                   options={state.options}
                   series={state.series}
                   type="area"
-                  width={250}
+                  width="100%"
+                  height="250"
                 />
               </div>
             </div>
@@ -525,7 +564,7 @@ function AdminDashboard() {
                             className="rounded-circle dash-icon d-flex align-items-center justify-content-center"
                             style={{ width: "35px", height: "35px" }}
                           >
-                            {student.attended_worksheets}
+                            <p className="fw-semibold dash-font fw-14"> {student.attended_worksheets}</p>
                           </div>
                         </div>
                       </div>
@@ -594,7 +633,7 @@ function AdminDashboard() {
                             className="rounded-circle dash-icon d-flex align-items-center justify-content-center"
                             style={{ width: "35px", height: "35px" }}
                           >
-                            {student.attended_worksheets}
+                            <p className="fw-semibold dash-font fw-14"> {student.attended_worksheets}</p>
                           </div>
                         </div>
                       </div>

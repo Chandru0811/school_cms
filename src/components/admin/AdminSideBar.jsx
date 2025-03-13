@@ -26,7 +26,10 @@ function AdminSidebar() {
   // };
   const storedScreens = JSON.parse(localStorage.getItem("schoolCMS_Permissions") || "{}");
   const schoolCMS_role = localStorage.getItem("schoolCMS_role");
+  const schoolCMS_studentid = localStorage.getItem("schoolCMS_studentid");
   const schoolCMS_access = localStorage.getItem("schoolCMS_access");
+  console.log("access , studid::", schoolCMS_studentid, schoolCMS_access)
+  console.log("access , studid::",  schoolCMS_studentid === "null")
   const [leadMenuOpen] = useState(false);
 
   const [activeSubmenu] = useState(null);
@@ -71,9 +74,11 @@ function AdminSidebar() {
                 to={
                   schoolCMS_access === "Full Access"
                     ? "/dashboard"
-                    : schoolCMS_access === "Limited Access"
+                    : schoolCMS_access === "Limited Access" && schoolCMS_studentid === "null"
                       ? "/studentdash"
-                      : "/dashboard"
+                      : schoolCMS_access === "Limited Access"
+                        ? "/parentdash"
+                        : "/dashboard"
                 }
                 className={({ isActive }) => `sidebar-navlink ${isActive ? "active" : ""}`}
               >

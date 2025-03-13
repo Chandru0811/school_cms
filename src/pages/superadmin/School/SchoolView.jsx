@@ -352,12 +352,12 @@ function SchoolView() {
                       &nbsp;&nbsp;
                       <img
                         src={
-                          data.users[0].avatar &&
-                          typeof data.users[0].avatar === "string"
+                          data.users[0].avatar.image &&
+                          typeof data.users[0].avatar.image === "string"
                             ? `${ImageURL.replace(
                                 /\/$/,
                                 ""
-                              )}/${data.users[0].avatar.replace(/^\//, "")}`
+                              )}/${data.users[0].avatar.image.replace(/^\//, "")}`
                             : userImage
                         }
                         alt="Admin Avatar"

@@ -70,6 +70,7 @@ const Login = ({ loginAsAdmin, loginAsSuperAdmin }) => {
           localStorage.setItem("schoolCMS_role", data.data.user.role_id);
           localStorage.setItem("schoolCMS_mobile", data.data.user.mobile);
           localStorage.setItem("schoolCMS_access", data.data.user.role_access);
+          localStorage.setItem("schoolCMS_studentid", data.data.user.student_id);
 
           const roleId = data.data.user.role_id;
           const permissionsResponse = await api.get(`role_permission/${roleId}`);
@@ -82,17 +83,26 @@ const Login = ({ loginAsAdmin, loginAsSuperAdmin }) => {
           } else {
             toast.error("Failed to fetch permissions");
           }
+
           if (roleId === 1) {
             navigate("/dashboard");
             loginAsSuperAdmin();
           } else {
-            if (data.data.user.role_access === "Full Access") {
-              console.log("full", data.data.user.role_access)
+            const roleAccess = data.data.user.role_access;
+            const student_id = data.data.user.student_id;
+
+            if (roleAccess === "Full Access") {
+              console.log("full", roleAccess);
               navigate("/dashboard");
-            } else if (data.data.user.role_access === "Limited Access") {
-              console.log("studen", data.data.user.role_access)
+            } else if (roleAccess === "Limited Access" && student_id) {
+              console.log("parent", roleAccess, student_id);
+              navigate("/parentdash");
+            } else if (roleAccess === "Limited Access") {
+              console.log("student", roleAccess);
               navigate("/studentdash");
-            } loginAsAdmin();
+            }
+
+            loginAsAdmin();
           }
           toast.success(data.message);
           // else {
@@ -248,12 +258,12 @@ const Login = ({ loginAsAdmin, loginAsSuperAdmin }) => {
               className="w-100 mt-4 common-button"
               disabled={loadIndicator}
             >
-               {loadIndicator && (
-                  <span
-                    className="spinner-border spinner-border-sm button-spinner me-2 text-light"
-                    aria-hidden="true"
-                  ></span>
-                )}
+              {loadIndicator && (
+                <span
+                  className="spinner-border spinner-border-sm button-spinner me-2 text-light"
+                  aria-hidden="true"
+                ></span>
+              )}
               Login
             </Button>
 
