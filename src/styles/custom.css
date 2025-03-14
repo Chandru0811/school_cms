@@ -337,6 +337,16 @@
   border-color: #4f46e5;
   color: #eae9fc;
 }
+.view-answer {
+  color: #4f46e5;
+}
+.view-answer:hover {
+  cursor: pointer;
+  background-color: #4f46e5;
+  border-color: #4f46e5;
+  border-radius: 5px;
+  color: #fff;
+}
 
 /* Table Styling */
 .table-container {
@@ -510,7 +520,7 @@
   font-size: 13px !important;
   font-weight: 600 !important;
   gap: 8px;
-  padding: 10px 5px;
+  padding: 10px 15px;
   border-radius: 5px;
   transition: all 0.3s ease-in-out;
 }
@@ -549,7 +559,7 @@
 }
 
 .navbar::-webkit-scrollbar {
-  display: none;
+  display: none !important;
 }
 
 .navbar {
@@ -638,7 +648,7 @@
   font-size: 20px !important;
   font-weight: 600 !important;
 }
-.modal-header{
+.modal-header {
   padding-bottom: 10px !important;
 }
 
@@ -665,54 +675,82 @@
   box-shadow: none !important;
 }
 
-.spinner-border{
+.spinner-border {
   color: var(--client-primary-color) !important;
 }
-
 .worksheet-header {
   display: flex;
   align-items: center;
   width: 100%;
-  height: 70px;
-  background: white;
-  border-radius: 15px;
+  height: 94px;
+  background: #faf9fe;
+  border-top-left-radius: 15px;
+  border-bottom-right-radius: 15px;
   overflow: hidden;
   position: relative;
 }
 
-/* Left Section */
 .left-section {
   flex: 1;
-  padding-left: 20px;
+  padding: 35px 0 35px 20px;
+  position: relative;
+  background-color: #ffffff;
+  z-index: 1;
 }
-
+.left-section::before {
+  content: "";
+  position: absolute;
+  right: -70px;
+  top: 70px;
+  width: 125px;
+  height: 91px;
+  border-top-left-radius: 18px;
+  box-shadow: 20px -7px 6px #c3c0fd;
+  background: #ffffff;
+  transform: translateY(-50%) rotate(54deg);
+}
+.left-section::after {
+  content: "";
+  position: absolute;
+  left: 19px;
+  bottom: 0;
+  width: 32vw;
+  height: 1px;
+  /* / box-shadow: 22px -6px 5px #c3c0fd; / */
+  background: #f0f0f0;
+}
 .worksheet-title {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
   color: #4f3cc9;
+  position: relative;
+  z-index: 1;
 }
 .right-section {
-  padding: 40px;
+  top: 6px;
+  right: 13px;
+  padding: 25px;
   flex: 1.5;
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  background-color:#EAE9FC ;
+  background-color: #eae9fc;
   padding-right: 30px;
-  border-top-left-radius: 50px;
-  border-bottom-left-radius: 50px;
+  overflow: hidden;
+  border-top-right-radius: 15px;
+  /* border-top-right-radius: 50px;
+  border-bottom-right-radius: 50px; */
   position: relative;
 }
 
-/* First Circle (Using ::before) */
 .right-section::before {
   content: "";
   position: absolute;
-  right: 0px;
+  right: -11px;
   top: 50%;
   width: 17rem;
   height: 200px;
-  background:#4F46E51A;
+  background: #4f46e51a;
   border-radius: 70%;
   transform: translateY(-50%);
 }
@@ -724,9 +762,41 @@
   top: 50%;
   width: 120px;
   height: 90px;
-  background: #4F46E51A;
+  background: #4f46e51a;
   border-radius: 50%;
   transform: translateY(-50%);
+}
+.card-shw {
+  border-top-left-radius: 0;
+  box-shadow: rgb(195, 192, 253) 8px -1px 14px;
+}
+
+@media (max-width: 767px) {
+  .worksheet-header {
+    border-bottom-right-radius: 0px;
+  }
+  .start-btn {
+    font-size: 12px;
+    padding: 5px 0px 6px 8px;
+  }
+  .left-section::before {
+    top: 82px;
+  }
+  .right-section {
+    padding-right: 5px;
+  }
+  .right-section {
+    right: 0px;
+  }
+  .right-section::after {
+    right: 0px;
+  }
+  .right-section::before {
+    right: -126px;
+  }
+  .card-shw {
+    border-top-right-radius: 0px;
+  }
 }
 
 .start-btn {
@@ -740,7 +810,138 @@
   align-items: center;
   border: none;
 }
+.right-section::before,
+.right-section::after {
+  pointer-events: none;
+}
 
-.arrow-icon {
-  margin-left: 8px;
+.start-btn {
+  position: relative;
+  z-index: 10;
+}
+
+.view-scroll::-webkit-scrollbar {
+  width: 3px;
+}
+
+.view-scroll::-webkit-scrollbar-thumb {
+  background-color: #d4d2f9;
+  border-radius: 10px;
+}
+.activitycard {
+  border: none;
+}
+
+.activitycard:hover {
+  border: 1.5px solid #807aec;
+  height: 100%;
+  background: #d4d2f9;
+}
+
+.activitycard1 {
+  background-color: #fcfcfc;
+  color: #999999;
+}
+
+.activitycard:hover .activitycard1 {
+  background-color: #c7c4f7;
+  color: #807aec;
+}
+
+.rankcard {
+  position: absolute;
+}
+
+.confetti-bg {
+  position: relative;
+  min-width: 100%;
+  height: auto;
+}
+
+.leaderboard {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 20px;
+}
+
+.rank-card {
+  width: 100px;
+  text-align: center;
+  padding: 1rem 0px;
+  background: transparent;
+  position: relative;
+}
+
+.rank-1st {
+  position: relative;
+  /* height: 180px;
+  background: #e1d591; */
+  color: black;
+}
+
+/* .rank-2nd {
+  height: 160px;
+  background: #e6e6e6;
+}
+
+.rank-3rd {
+  height: 140px;
+  background: #ddb388;
+} */
+
+.rank-1st .rankimage {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 4px solid rgb(255, 255, 255);
+  object-fit: cover;
+  position: absolute;
+  top: -133px;
+  right: 20px;
+}
+
+.rank-2nd .rankimage {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 4px solid rgb(255, 255, 255);
+  object-fit: cover;
+  position: absolute;
+  top: -110px;
+  right: 12px;
+}
+
+.rank-3rd .rankimage {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  border: 4px solid rgb(255, 255, 255);
+  object-fit: cover;
+  position: absolute;
+  top: -100px;
+  right: 29px;
+}
+
+.rank-1st .rankname {
+  position: absolute;
+  top: -20px;
+  right: 27px;
+}
+
+.rank-2nd .rankname {
+  position: absolute;
+  top: -20px;
+  right: 20px;
+}
+
+.rank-3rd .rankname {
+  position: absolute;
+  top: -20px;
+  right: 37px;
+}
+
+.fw-10 {
+  font-size: 10px;
+  letter-spacing: 0.5px;
 }
