@@ -5,6 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import Modal from "react-bootstrap/Modal";
 import ImageURL from "../../config/ImageURL";
+import { FaArrowRight, FaClock, FaLightbulb } from "react-icons/fa";
 
 const DoAssessment = () => {
   const [data, setData] = useState({});
@@ -379,7 +380,7 @@ const DoAssessment = () => {
 
   return (
     <section>
-      <div className="container-fluid">
+      <div className="container">
         <div className="row" style={{ background: "white" }}>
           <div className="col-md-2 col-12"></div>
           <div
