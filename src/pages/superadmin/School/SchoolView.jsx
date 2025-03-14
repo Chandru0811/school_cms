@@ -165,9 +165,8 @@ function SchoolView() {
             </button>
             &nbsp;&nbsp;
             <button
-              className={`btn btn-sm ${
-                data.active === 1 ? "btn-danger" : "btn-success"
-              }`}
+              className={`btn btn-sm ${data.active === 1 ? "btn-danger" : "btn-success"
+                }`}
               onClick={handleStatusToggle}
             >
               {data.active === 1 ? "Deactivate" : "Activate"}
@@ -200,11 +199,10 @@ function SchoolView() {
                   <div className="input-group">
                     <input
                       type={showPassword ? "text" : "password"} // Toggle between text and password
-                      className={`form-control form-control-sm ${
-                        formik.touched.password && formik.errors.password
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                      className={`form-control form-control-sm ${formik.touched.password && formik.errors.password
+                        ? "is-invalid"
+                        : ""
+                        }`}
                       {...formik.getFieldProps("password")}
                     />
                     <button
@@ -230,12 +228,11 @@ function SchoolView() {
                   <div className="input-group">
                     <input
                       type={showConfirmPassword ? "text" : "password"} // Toggle between text and password
-                      className={`form-control form-control-sm ${
-                        formik.touched.password_confirmation &&
+                      className={`form-control form-control-sm ${formik.touched.password_confirmation &&
                         formik.errors.password_confirmation
-                          ? "is-invalid"
-                          : ""
-                      }`}
+                        ? "is-invalid"
+                        : ""
+                        }`}
                       {...formik.getFieldProps("password_confirmation")}
                     />
                     <button
@@ -352,12 +349,8 @@ function SchoolView() {
                       &nbsp;&nbsp;
                       <img
                         src={
-                          data.users[0].avatar.image &&
-                          typeof data.users[0].avatar.image === "string"
-                            ? `${ImageURL.replace(
-                                /\/$/,
-                                ""
-                              )}/${data.users[0].avatar.image.replace(/^\//, "")}`
+                          data.users[0].avatar?.image
+                            ? `${ImageURL.replace(/\/$/, "")}/${data.users[0].avatar.image.replace(/^\//, "")}`
                             : userImage
                         }
                         alt="Admin Avatar"
@@ -366,6 +359,7 @@ function SchoolView() {
                           height: "auto",
                           borderRadius: "5px",
                         }}
+                        onError={(e) => (e.target.src = userImage)}
                       />
                     </p>
                   </div>
