@@ -20,7 +20,7 @@ import userImage from "../../assets/images/user_profile.svg";
 import ImageURL from "../../config/ImageURL";
 import confettiImage from "../../assets/images/rankbackground.svg";
 
-function AdminDashboard() {
+function StudentDashboard() {
   const [data, setData] = useState();
   const [subjectData, setSubjectData] = useState();
   const [selectedSubject, setSelectedSubject] = useState("");
@@ -830,4 +830,4 @@ function AdminDashboard() {
   )
 }
 
-export default AdminDashboard
+export default StudentDashboard
