@@ -34,10 +34,10 @@ function ChallengesEdit() {
       .string()
       .max(255, "*Difficult level must not exceed 255 characters")
       .required("*Select a difficult level"),
-    title: yup
+    uestion: yup
       .string()
-      .max(255, "*Title must not exceed 255 characters")
-      .required("*Title is required"),
+      .max(255, "*Question must not exceed 255 characters")
+      .required("*Question is required"),
     time_limit: yup
       .string()
       .matches(/^\d+$/, "*Time limit must be a number")
@@ -55,7 +55,7 @@ function ChallengesEdit() {
       subject_id: "",
       topic_id: "",
       difficult_level: "",
-      title: "",
+      question: "",
       description: "",
       time_limit: "",
       ques_type: [],
@@ -87,7 +87,7 @@ function ChallengesEdit() {
       formData.append("subject_id", values.subject_id);
       formData.append("topic_id", values.topic_id);
       formData.append("difficult_level", values.difficult_level);
-      formData.append("title", values.title);
+      formData.append("question", values.question);
       formData.append("description", values.description);
       formData.append("time_limit", Number(values.time_limit));
       formData.append("hint", values.hint);
@@ -179,7 +179,7 @@ function ChallengesEdit() {
         subject_id: challenge.subject_id,
         topic_id: challenge.topic_id,
         difficult_level: challenge.difficult_level,
-        title: challenge.title,
+        question: challenge.question,
         description: challenge.description,
         ques_type: parsedQuesType,
         options: initialMultiChoices,
@@ -444,11 +444,10 @@ function ChallengesEdit() {
                           }
                         }}
                         labelledBy="Select Center"
-                        className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${
-                          formik.touched.center_id && formik.errors.center_id
+                        className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${formik.touched.center_id && formik.errors.center_id
                             ? "is-invalid"
                             : ""
-                        }`}
+                          }`}
                       />
                       {formik.touched.center_id && formik.errors.center_id && (
                         <div className="invalid-feedback">
@@ -466,11 +465,10 @@ function ChallengesEdit() {
                     </div>
                     <div className="col-7">
                       <select
-                        className={`form-select form-select-sm ${
-                          formik.touched.grade_id && formik.errors.grade_id
+                        className={`form-select form-select-sm ${formik.touched.grade_id && formik.errors.grade_id
                             ? "is-invalid"
                             : ""
-                        }`}
+                          }`}
                         value={formik.values.grade_id}
                         onChange={(e) =>
                           formik.setFieldValue("grade_id", e.target.value)
@@ -499,11 +497,10 @@ function ChallengesEdit() {
                     </div>
                     <div className="col-7">
                       <select
-                        className={`form-select form-select-sm ${
-                          formik.touched.subject_id && formik.errors.subject_id
+                        className={`form-select form-select-sm ${formik.touched.subject_id && formik.errors.subject_id
                             ? "is-invalid"
                             : ""
-                        }`}
+                          }`}
                         value={formik.values.subject_id}
                         onChange={(e) =>
                           formik.setFieldValue("subject_id", e.target.value)
@@ -533,11 +530,10 @@ function ChallengesEdit() {
                     </div>
                     <div className="col-7">
                       <select
-                        className={`form-select form-select-sm ${
-                          formik.touched.topic_id && formik.errors.topic_id
+                        className={`form-select form-select-sm ${formik.touched.topic_id && formik.errors.topic_id
                             ? "is-invalid"
                             : ""
-                        }`}
+                          }`}
                         {...formik.getFieldProps("topic_id")}
                       >
                         <option value="">Select Topic</option>
@@ -625,16 +621,15 @@ function ChallengesEdit() {
                       <input
                         placeholder="Enter Text"
                         type="text"
-                        className={`form-control form-control-sm ${
-                          formik.touched.title && formik.errors.title
+                        className={`form-control form-control-sm ${formik.touched.question && formik.errors.question
                             ? "is-invalid"
                             : ""
-                        }`}
-                        {...formik.getFieldProps("title")}
+                          }`}
+                        {...formik.getFieldProps("question")}
                       ></input>
-                      {formik.touched.title && formik.errors.title && (
+                      {formik.touched.question && formik.errors.question && (
                         <div className="invalid-feedback">
-                          {formik.errors.title}
+                          {formik.errors.question}
                         </div>
                       )}
                     </div>
@@ -648,12 +643,11 @@ function ChallengesEdit() {
                     <div className="col-7">
                       <textarea
                         rows={5}
-                        className={`form-control ${
-                          formik.touched.description &&
-                          formik.errors.description
+                        className={`form-control ${formik.touched.description &&
+                            formik.errors.description
                             ? "is-invalid"
                             : ""
-                        }`}
+                          }`}
                         {...formik.getFieldProps("description")}
                         maxLength={825}
                       />
@@ -670,11 +664,10 @@ function ChallengesEdit() {
                       <input
                         placeholder="Enter Text"
                         type="text"
-                        className={`form-control form-control-sm ${
-                          formik.touched.time_limit && formik.errors.time_limit
+                        className={`form-control form-control-sm ${formik.touched.time_limit && formik.errors.time_limit
                             ? "is-invalid"
                             : ""
-                        }`}
+                          }`}
                         {...formik.getFieldProps("time_limit")}
                         onInput={(e) =>
                           (e.target.value = e.target.value.replace(/\D/g, ""))
@@ -735,12 +728,11 @@ function ChallengesEdit() {
                       <input
                         type="text"
                         placeholder="Your Question & Answer"
-                        className={`form-control form-control-sm ${
-                          formik.touched.answer?.[0]?.fillable &&
-                          formik.errors.answer?.[0]?.fillable
+                        className={`form-control form-control-sm ${formik.touched.answer?.[0]?.fillable &&
+                            formik.errors.answer?.[0]?.fillable
                             ? "is-invalid"
                             : ""
-                        }`}
+                          }`}
                         name="answer"
                         value={formik.values.answer[0]?.fillable || ""}
                         onChange={(e) => {
@@ -866,13 +858,12 @@ function ChallengesEdit() {
                           <div className="input-group mb-2">
                             <input
                               type="text"
-                              className={`form-control form-control-sm ${
-                                formik.errors.options &&
-                                formik.touched.options &&
-                                formik.errors.options[index]?.value
+                              className={`form-control form-control-sm ${formik.errors.options &&
+                                  formik.touched.options &&
+                                  formik.errors.options[index]?.value
                                   ? "is-invalid"
                                   : ""
-                              }`}
+                                }`}
                               name={`options[${index}].value`}
                               value={multiChoice.value}
                               onChange={(e) => {
@@ -886,12 +877,12 @@ function ChallengesEdit() {
                                   updatedAnswers = updatedAnswers.map((ans) =>
                                     ans.multichoice === multiChoice.value
                                       ? {
-                                          ...ans,
-                                          multichoice: e.target.value.replace(
-                                            /,/g,
-                                            ""
-                                          ),
-                                        }
+                                        ...ans,
+                                        multichoice: e.target.value.replace(
+                                          /,/g,
+                                          ""
+                                        ),
+                                      }
                                       : ans
                                   );
                                 }
@@ -958,12 +949,11 @@ function ChallengesEdit() {
                       <label className="form-label">Short Answer</label>
                       <textarea
                         rows={3}
-                        className={`form-control ${
-                          formik.touched.answer?.[0]?.short_answer &&
-                          formik.errors.answer?.[0]?.short_answer
+                        className={`form-control ${formik.touched.answer?.[0]?.short_answer &&
+                            formik.errors.answer?.[0]?.short_answer
                             ? "is-invalid"
                             : ""
-                        }`}
+                          }`}
                         name="answer"
                         value={formik.values.answer[0]?.short_answer || ""}
                         onChange={(e) => {
@@ -989,12 +979,11 @@ function ChallengesEdit() {
                       <label className="form-label">Answer Upload</label>
                       <input
                         type="file"
-                        className={`form-control form-control-sm ${
-                          formik.touched.answer_upload &&
-                          formik.errors.answer_upload
+                        className={`form-control form-control-sm ${formik.touched.answer_upload &&
+                            formik.errors.answer_upload
                             ? "is-invalid"
                             : ""
-                        }`}
+                          }`}
                         name="answer_upload"
                         accept="image/*"
                         onChange={(event) => {

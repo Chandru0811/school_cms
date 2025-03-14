@@ -207,7 +207,7 @@ function ChallengesView() {
                   </div>
                   <div className="col-6">
                     <p className="view-value">
-                       {data.challenge?.title}
+                       {data.challenge?.question}
                     </p>
                   </div>
                 </div>

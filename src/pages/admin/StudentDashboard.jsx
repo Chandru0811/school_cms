@@ -581,9 +581,9 @@ function StudentDashboard() {
                 <p className="text-muted px-3" style={{ fontSize: "12px" }}>
                   Lorem ipsum dolor sit amet, consectetur adipis.
                 </p>
-
-                {/* Display the student with `its_me: true` */}
-                {/* {leaderboardData?.map((student, index) => {
+                <>
+                  {/* Display the student with `its_me: true` */}
+                  {/* {leaderboardData?.map((student, index) => {
                   if (student.its_me) {
                     return (
                       <div
@@ -652,7 +652,7 @@ function StudentDashboard() {
                   }
                 })} */}
 
-                {/* {leaderboardData
+                  {/* {leaderboardData
                   ?.filter((student) => ["1st", "2nd", "3rd"].includes(student.rank)) // Show only top 3
                   .map((student, index) => (
                     <div
@@ -723,7 +723,7 @@ function StudentDashboard() {
                       </div>
                     </div>
                   ))} */}
-
+                </>
                 <div className="leaderboard p-3">
                   <img src={confettiImage} alt="confetti" />
                   <div className="rankcard d-flex justify-content-between">

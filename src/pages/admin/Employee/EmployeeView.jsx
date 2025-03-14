@@ -315,8 +315,8 @@ function EmployeeView() {
               <div className="col-md-2 col-12 my-2">
                 <img
                   src={
-                    data?.avatar
-                      ? `${ImageURL.replace(/\/$/, "")}/${data.avatar.replace(
+                    data?.avatar.image
+                      ? `${ImageURL.replace(/\/$/, "")}/${data.avatar.image.replace(
                           /^\//,
                           ""
                         )}`
