@@ -528,7 +528,11 @@ function WorkSheetView() {
                         <p className="view-label-text">Subject</p>
                       </div>
                       <div className="col-8">
-                        <p className="view-value">Neet</p>
+                        <p className="view-value">
+                          {data?.worksheet?.subject_names
+                            ?.map((subject) => subject.subject)
+                            .join(", ")}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -550,7 +554,11 @@ function WorkSheetView() {
                         <p className="view-label-text">Type</p>
                       </div>
                       <div className="col-8">
-                        <p className="view-value">Multiple Choice Questions</p>
+                        <p className="view-value">
+                          {" "}
+                          {JSON.parse(data?.worksheet?.ques_type)?.[0]}{" "}
+                          {data?.worksheet?.type}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -560,7 +568,9 @@ function WorkSheetView() {
                         <p className="view-label-text">Creator</p>
                       </div>
                       <div className="col-8">
-                        <p className="view-value">{data?.worksheet?.created_by?.name}</p>
+                        <p className="view-value">
+                          {data?.worksheet?.created_by?.name}
+                        </p>
                       </div>
                     </div>
                   </div>
