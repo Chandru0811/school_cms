@@ -261,12 +261,12 @@ function StudentView() {
                   <div className="col-6">
                     <p className="view-value">
                       
-                      {data?.student?.avatar.image ? (
+                      {data?.student?.avatar?.image ? (
                         <img
                           src={`${ImageURL.replace(
                             /\/$/,
                             ""
-                          )}/${data.student.avatar.image.replace(/^\//, "")}`}
+                          )}/${data.student?.avatar?.image.replace(/^\//, "")}`}
                           alt="Avatar"
                           style={{
                             maxWidth: "50%",
@@ -394,7 +394,7 @@ function StudentView() {
                           src={`${ImageURL.replace(
                             /\/$/,
                             ""
-                          )}/${data.parent.avatar.image.replace(/^\//, "")}`}
+                          )}/${data.parent?.avatar?.image.replace(/^\//, "")}`}
                           alt="Avatar"
                           style={{
                             maxWidth: "50%",
