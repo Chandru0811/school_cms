@@ -241,7 +241,7 @@ function Worksheet() {
                   showGlobalFilter: true,
                   showColumnFilters: false,
                   columnVisibility: {
-                    id: !(
+                    actions: !(
                       storedScreens?.data?.[8]?.can_edit === 0 &&
                       storedScreens?.data?.[8]?.can_delete === 0
                     ),

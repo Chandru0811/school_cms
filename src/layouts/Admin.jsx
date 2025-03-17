@@ -67,6 +67,9 @@ import AvatarProfile from "../pages/admin/AvatarProfile/AvatarProfile";
 import AvatarProfileAdd from "../pages/admin/AvatarProfile/AvatarProfileAdd";
 import AvatarProfileEdit from "../pages/admin/AvatarProfile/AvatarProfileEdit";
 import AvatarProfileView from "../pages/admin/AvatarProfile/AvatarProfileView";
+// import TeacherDashboard from "../pages/admin/TeacherDashboard";
+import AnswerView from "../pages/admin/WorkSheet/AttemptView";
+import AttemptView from "../pages/admin/WorkSheet/AttemptView";
 
 function Admin({ handleLogout }) {
   return (
@@ -85,6 +88,7 @@ function Admin({ handleLogout }) {
                     <Route path="*" element={<AdminDashboard />} />
                     <Route path="/studentdash" element={<StudentDashboard />} />
                     <Route path="/parentdash" element={<ParentDashboard />} />
+                    {/* <Route path="/teacherdash" element={<TeacherDashboard />} /> */}
 
                     {/* Center  */}
                     <Route path="/centre" element={<Center />} />
@@ -163,6 +167,7 @@ function Admin({ handleLogout }) {
                     {/* Work Sheet  */}
                     <Route path="/worksheet" element={<WorkSheet />} />
                     <Route path="/worksheet/add" element={<WorkSheetAdd />} />
+                    <Route path="/attempt/view/:id" element={<AttemptView />} />
                     <Route
                       path="/worksheet/edit/:id"
                       element={<WorkSheetEdit />}

@@ -1,13 +1,23 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import WorkSheetAsign from "./WorkSheetAsign";
+import {
+  MaterialReactTable,
+  MRT_GlobalFilterTextField,
+  MRT_ShowHideColumnsButton,
+  MRT_ToggleFullScreenButton,
+} from "material-react-table";
 import { useEffect, useState } from "react";
 import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import { useMemo } from "react";
-import { MaterialReactTable } from "material-react-table";
-import { ThemeProvider, createTheme } from "@mui/material";
+import { ThemeProvider, Tooltip, createTheme } from "@mui/material";
+import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 import { GoTrash } from "react-icons/go";
-import { MdChevronRight, MdKeyboardArrowLeft } from "react-icons/md";
+import {
+  MdChevronRight,
+  MdKeyboardArrowLeft,
+  MdOutlineCloudDownload,
+} from "react-icons/md";
 import { TbEdit } from "react-icons/tb";
 import { FaArrowRight, FaExternalLinkAlt, FaRegClock } from "react-icons/fa";
 import icon from "../../../assets/images/Icon.svg";
@@ -15,6 +25,9 @@ import icon1 from "../../../assets/images/Icon (1).svg";
 import icon2 from "../../../assets/images/Icon (2).svg";
 import icon3 from "../../../assets/images/Icon (3).svg";
 import { RiContractLeftLine } from "react-icons/ri";
+import { LuPrinter } from "react-icons/lu";
+import { CiFilter } from "react-icons/ci";
+
 
 function WorkSheetView() {
   const [data, setData] = useState({});
@@ -29,6 +42,7 @@ function WorkSheetView() {
     localStorage.getItem("schoolCMS_Permissions") || "{}"
   );
 
+  const [activeTab, setActiveTab] = useState("tab1");
   const getData = async () => {
     try {
       setLoading(true);
@@ -49,40 +63,39 @@ function WorkSheetView() {
       MuiTableCell: {
         styleOverrides: {
           head: {
-            color: "#535454 !important",
-            backgroundColor: "#e6edf7 !important",
-            fontWeight: "400 !important",
-            fontSize: "13px !important",
-            textAlign: "center !important",
+            backgroundColor: "#EAE9FC",
+            fontWeight: "700",
+            fontSize: "14px",
+            color: "#4F46E5",
+            textAlign: "center",
+            textTransform: "capitalize",
+            border: "1px solid #E0E0E0",
+          },
+          root: {
+            "&:last-child": {
+              borderRight: "none",
+            },
+          },
+        },
+      },
+      MuiTableSortLabel: {
+        styleOverrides: {
+          root: {
+            color: "#4F46E5 !important", // Default color
+            "&:hover": {
+              color: "#3B3BBF !important", // Hover color
+            },
+            "&.Mui-active": {
+              color: "#2C2C9D !important", // Active (sorted) color
+            },
+            "& .MuiTableSortLabel-icon": {
+              color: "#4F46E5 !important", // Sort icon color
+            },
           },
         },
       },
     },
   });
-
-  // const columnsstudent = useMemo(
-  //   () => [
-  //     {
-  //       accessorKey: "sno",
-  //       header: "S.NO",
-  //       size: 40,
-  //       Cell: ({ row }) => row.index + 1,
-  //     },
-  //     {
-  //       accessorKey: "student_names",
-  //       header: "Student Name",
-  //     },
-  //     {
-  //       accessorKey: "grade_name",
-  //       header: "Grade",
-  //     },
-  //     {
-  //       accessorKey: "status",
-  //       header: "Status",
-  //     },
-  //   ],
-  //   [data]
-  // );
 
   const columns = useMemo(
     () => [
@@ -92,44 +105,9 @@ function WorkSheetView() {
         enableSorting: true,
         size: 40,
       },
-      {
-        accessorKey: "title",
-        header: "Type",
-        Cell: ({ row }) => {
-          return row.original.title || row.original.question || "N/A";
-        },
-      },
-      {
-        accessorKey: "questype",
-        header: "Quest Type",
-        Cell: ({ row }) => {
-          const quesIdWithType = JSON.parse(data.ques_id_with_type);
-          const questionTypeObj = quesIdWithType.find(
-            (q) => q.id === row.original.id
-          );
-          return questionTypeObj ? questionTypeObj.questype : "N/A";
-        },
-      },
-      {
-        accessorKey: "options",
-        header: "Options",
-        Cell: ({ row }) => {
-          const quesIdWithType = JSON.parse(data.ques_id_with_type);
-          const questionTypeObj = quesIdWithType.find(
-            (q) => q.id === row.original.id
-          );
-          if (!questionTypeObj) {
-            return "--";
-          }
-          if (questionTypeObj.questype.toLowerCase() === "closed") {
-            return "Yes/No";
-          }
-          if (questionTypeObj.questype.toLowerCase() === "multichoice") {
-            return row.original.options || "--";
-          }
-          return "--";
-        },
-      },
+      { accessorKey: "name", header: "Student Name" },
+      { accessorKey: "score", header: "Score" },
+      { accessorKey: "status", header: "Status" },
     ],
     [data]
   );
@@ -150,8 +128,8 @@ function WorkSheetView() {
       console.error("Status Update Error:", error);
     }
   };
-  const names = data.student_assigned?.map((student) => student.student_names);
-  console.log("names", names);
+  // const names = data.student_assigned?.map((student) => student.student_names);
+  // console.log("names", names);
   useEffect(() => {
     getData();
   }, [id]);
@@ -474,10 +452,10 @@ function WorkSheetView() {
                 </span>
               </span>
             </div>
-            <div
+            {/* <div
               className="card-header d-flex justify-content-between"
               style={{ marginBottom: "1px solid #F4F4F4" }}
-            ></div>
+            ></div> */}
             {/* <div className="my-2 d-flex align-items-center">
           {storedScreens?.data[1]?.can_delete === 1 && (
             <button
@@ -675,68 +653,376 @@ function WorkSheetView() {
             </div>
           </div>
           <div className="my-5">
-            <h6 className="fs-5 fw-semibold dash-font border-bottom heading-color pb-4 my-5">
-              Past Attempts
-            </h6>
-            <div
-              className="row g-4 overflow-y-auto view-scroll"
-              style={{ maxHeight: "350px" }}
-            >
-              {quizData.length > 0 ? (
-                quizData.map((quiz, index) => (
-                  <div key={index} className="col-md-6 col-xl-4 col-sm-6">
-                    <div className="card p-3 shadow-sm border-0 rounded-4">
-                      <div className="d-flex align-items-center mb-2 ms-1">
-                        <FaRegClock className="me-2" />
-                        <span>
-                          {new Date(quiz.created_at).toLocaleString("en-GB", {
-                            day: "2-digit",
-                            month: "short",
-                            year: "numeric",
-                            hour: "numeric",
-                            minute: "2-digit",
-                            hour12: true,
-                          })}
-                        </span>
-                      </div>
-                      <div className="row mb-4">
-                        {[
-                          { label: "TOTAL", value: quiz.total_questions },
-                          {
-                            label: "CORRECT",
-                            value: quiz.total_correct_answers,
-                          },
-                          {
-                            label: "SKIPPED",
-                            value: quiz.total_skipped_questions,
-                          },
-                          { label: "WRONG", value: quiz.total_wrong_answers },
-                        ].map((item, idx) => (
-                          <div key={idx} className="col-3">
-                            <p
-                              className="mb-1 text-muted fw-semibold"
-                              style={{ fontSize: "10px" }}
-                            >
-                              {item.label}
-                            </p>
-                            <h3 className="fw-bold">{item.value}</h3>
+            {schoolCMS_access === "Limited Access" &&
+            data?.worksheet?.active === 1 &&
+            id ? (
+              <>
+                <h6 className="fs-5 fw-semibold dash-font border-bottom heading-color pb-4 my-5">
+                  Past Attempts
+                </h6>
+                <div
+                  className="row g-4 overflow-y-auto view-scroll"
+                  style={{ maxHeight: "350px" }}
+                >
+                  {quizData.length > 0 ? (
+                    quizData.map((quiz, index) => (
+                      <div key={index} className="col-md-6 col-xl-4 col-sm-6">
+                        <div className="card p-3 shadow-sm border-0 rounded-4">
+                          <div className="d-flex align-items-center mb-2 ms-1">
+                            <FaRegClock className="me-2" />
+                            <span>
+                              {new Date(quiz.created_at).toLocaleString(
+                                "en-GB",
+                                {
+                                  day: "2-digit",
+                                  month: "short",
+                                  year: "numeric",
+                                  hour: "numeric",
+                                  minute: "2-digit",
+                                  hour12: true,
+                                }
+                              )}
+                            </span>
                           </div>
-                        ))}
+                          <div className="row mb-4">
+                            {[
+                              { label: "TOTAL", value: quiz.total_questions },
+                              {
+                                label: "CORRECT",
+                                value: quiz.total_correct_answers,
+                              },
+                              {
+                                label: "SKIPPED",
+                                value: quiz.total_skipped_questions,
+                              },
+                              {
+                                label: "WRONG",
+                                value: quiz.total_wrong_answers,
+                              },
+                            ].map((item, idx) => (
+                              <div key={idx} className="col-3">
+                                <p
+                                  className="mb-1 text-muted fw-semibold"
+                                  style={{ fontSize: "10px" }}
+                                >
+                                  {item.label}
+                                </p>
+                                <h3 className="fw-bold">{item.value}</h3>
+                              </div>
+                            ))}
+                          </div>
+                          <p className="border-bottom"></p>
+                          <div className="d-flex justify-content-around align-items-center py-1 view-answer mx-3 mt-2">
+                            <p>View Answers</p>
+                            <p>
+                              <FaExternalLinkAlt className="ms-2" />
+                            </p>
+                          </div>
+                        </div>
                       </div>
-                      <p className="border-bottom"></p>
-                      <div className="d-flex justify-content-around align-items-center py-1 view-answer mx-3 mt-2">
-                        <p>View Answers</p>
-                        <p>
-                          <FaExternalLinkAlt className="ms-2" />
-                        </p>
+                    ))
+                  ) : (
+                    <p className="text-center">No past attempts available</p>
+                  )}
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="d-flex bordercenter-bottom gap-5 my-5 pt-5 position-relative">
+                  <h6
+                    onClick={() => setActiveTab("tab1")}
+                    className={`fs-5 fw-semibold dash-font tab1 cursor heading-color ${
+                      activeTab === "tab1" ? "activeTab" : ""
+                    }`}
+                  >
+                    Queastions
+                  </h6>
+                  <h6
+                    onClick={() => setActiveTab("tab2")}
+                    className={`fs-5 fw-semibold dash-font tab2 cursor heading-color ${
+                      activeTab === "tab2" ? "activeTab" : ""
+                    }`}
+                  >
+                    Attempts
+                  </h6>
+                </div>
+                {activeTab === "tab1" ? (
+                  <>
+                    <div className="row m-0 ">
+                      <div className="col-md-8 col-xl-9 col-12 pe-md-2 ps-md-1 px-0 mt-3 mt-md-0 question-card view-scroll order-1 order-md-0">
+                        <div className="row m-0 card px-5 py-3 ">
+                          {data.worksheet.questions.map((question, index) => (
+                            <div id={question.id}
+                              className="col-12 p-3 bottom-border "
+                              key={index}
+                            >
+                              <small className="text-color fw-semibold">{`Question ${
+                                index + 1
+                              } of ${
+                                data?.worksheet?.questions?.length
+                              }`}</small>
+                              <p className="fs-5 mb-5 fw-semibold">
+                                {question.question}
+                              </p>
+                              <div className="row g-4">
+                                {JSON.parse(question.options).map(
+                                  (option, idx) => {
+                                    const correctAnswer = JSON.parse(
+                                      question.answer
+                                    ).multichoice;
+
+                                    return (
+                                      <label
+                                        key={idx}
+                                        className={`d-block mt-0 rounded quest-radio-label ${
+                                          option === correctAnswer
+                                            ? "checked"
+                                            : ""
+                                        }`}
+                                      >
+                                        <input
+                                          type="radio" disabled
+                                          name={`question-${question.id}`}
+                                          value={option}
+                                          className="form-check-input quest-radio-input"
+                                          checked={option === correctAnswer}
+                                          readOnly
+                                        />
+                                        {option}
+                                      </label>
+                                    );
+                                  }
+                                )}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="col-md-4 col-xl-3 col-12 ps-md-2 pe-md-1 px-0  order-0 order-md-1 ">
+                        <div className="row m-0 card px-2 py-3 h-100 question-card-2 ">
+                          <div className="col-12 d-flex flex-column justify-content-start align-items-center">
+                            <div className="d-flex flex-wrap justify-content-start align-items-center gap-xl-5 gap-3 bottom-border">
+                              <div className=" ">
+                                <img
+                                  src={icon2}
+                                  alt=""
+                                  className="ms-xl-2 py-3"
+                                  style={{
+                                    minWidth: "50px",
+                                    minHeight: "auto",
+                                  }}
+                                />
+                              </div>
+                              <div className="py-3">
+                                <p className="dash-font text-muted fw-semibold mb-0">
+                                  TIME TAKEN
+                                </p>
+                                <p
+                                  className="dash-font heading-color fw-bold"
+                                  // style={{ fontSize: "14px" }}
+                                >
+                                  15:00 Mins
+                                </p>
+                              </div>
+                            </div>
+                            <div className="d-flex mt-5 flex-wrap justify-content-start align-items-center gap-3">
+                              {data?.worksheet?.questions.map((question, index) => ( 
+                                <>
+                                <button type="button" className="question-btn">{index + 1}</button>
+                                </>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))
-              ) : (
-                <p className="text-center">No past attempts available</p>
-              )}
-            </div>
+                  </>
+                ) : (
+                  <>
+                    <ThemeProvider theme={theme}>
+                      <MaterialReactTable
+                        columns={columns}
+                        data={data.student_attempts}
+                        enablePagination={false}
+                        enableColumnActions={false}
+                        enableDensityToggle={false}
+                        enableColumnFilters={true}
+                        enableFullScreenToggle={true}
+                        renderDetailPanel={({ row }) => (
+                          <>
+                            <div
+                              className="row g-4 py-5 overflow-y-auto view-scroll"
+                              style={{ maxHeight: "350px" }}
+                            >
+                              {row.original.attempts?.map((attempt, index) => (
+                                <div
+                                  key={index}
+                                  className="col-md-6 col-xl-4 col-sm-6 my-1"
+                                >
+                                  <div className="card p-3 shadow-clg border-0 rounded-4">
+                                    <div className="d-flex align-items-center mb-2 ms-1">
+                                      <FaRegClock className="me-2" />
+                                      <span>
+                                        {new Date(
+                                          attempt.created_at
+                                        ).toLocaleString("en-GB", {
+                                          day: "2-digit",
+                                          month: "short",
+                                          year: "numeric",
+                                          hour: "numeric",
+                                          minute: "2-digit",
+                                          hour12: true,
+                                        })}
+                                      </span>
+                                    </div>
+                                    <div className="row mb-4">
+                                      {[
+                                        {
+                                          label: "TOTAL",
+                                          value: attempt.total_questions,
+                                        },
+                                        {
+                                          label: "CORRECT",
+                                          value: attempt.total_correct_answers,
+                                        },
+                                        {
+                                          label: "SKIPPED",
+                                          value:
+                                            attempt.total_skipped_questions,
+                                        },
+                                        {
+                                          label: "WRONG",
+                                          value: attempt.total_wrong_answers,
+                                        },
+                                      ].map((item, idx) => (
+                                        <div key={idx} className="col-3">
+                                          <p
+                                            className="mb-1 text-muted fw-semibold"
+                                            style={{ fontSize: "10px" }}
+                                          >
+                                            {item.label}
+                                          </p>
+                                          <h3 className="fw-bold">
+                                            {item.value}
+                                          </h3>
+                                        </div>
+                                      ))}
+                                    </div>
+                                    <p className="border-bottom"></p>
+                                    <Link to={`/attempt/view/${attempt.id}`}>
+                                    <div className="d-flex justify-content-between align-items-center py-1 px-2 view-answer mx-3 mt-2">
+                                      <p>View Answers</p>
+                                      <p>
+                                        <FaExternalLinkAlt className="ms-2" />
+                                      </p>
+                                    </div>
+                                    </Link>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </>
+                        )}
+                        muiTableHeadCellProps={{
+                          sx: {
+                            backgroundColor: "#fff",
+                            color: "#4F46E5 !important",
+                            fontSize: "13px",
+                            fontWeight: 500,
+                            fontFamily: "Urbanist",
+                            textAlign: "center",
+                          },
+                        }}
+                        // muiTableBodyRowProps={({ row }) => ({
+                        //   ...(storedScreens?.data?.[3]?.can_view === 1
+                        //     ? {
+                        //         onClick: () =>
+                        //           console.log("object"),
+                        //         style: { cursor: "pointer" },
+                        //       }
+                        //     : {}),
+                        //   sx: {
+                        //     cursor: "pointer",
+                        //     transition: "background-color 0.2s ease-in-out",
+                        //     "&:hover": { backgroundColor: "#EAE9FC" },
+                        //     "&.Mui-selected": { backgroundColor: "#EAE9FC !important" },
+                        //   },
+                        // })}
+                        renderTopToolbar={({ table }) => (
+                          <div
+                            style={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                              padding: "15px",
+                            }}
+                          >
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                              }}
+                            >
+                              <MRT_GlobalFilterTextField
+                                table={table}
+                                placeholder="Search..."
+                                className="custom-global-filter"
+                              />
+                            </div>
+                            <div style={{ display: "flex", gap: "10px" }}>
+                              <MRT_ToggleFullScreenButton
+                                table={table}
+                                style={{ color: "#4F46E5" }}
+                              />
+                              <Tooltip title="Download Data">
+                                <span>
+                                  <MdOutlineCloudDownload
+                                    size={20}
+                                    color="#4F46E5"
+                                    className="mt-3 m-2"
+                                    disabled={table.getRowModel().rows.length === 0}
+                                    onClick={() =>
+                                      handleExportRows(table.getRowModel().rows)
+                                    }
+                                  />
+                                </span>
+                              </Tooltip>
+                              <Tooltip title="Print">
+                                <span>
+                                  <LuPrinter
+                                    size={20}
+                                    color="#4F46E5"
+                                    className="mt-3 m-2"
+                                    onClick={() => window.print()}
+                                  />
+                                </span>
+                              </Tooltip>
+        
+                              <MRT_ShowHideColumnsButton
+                                table={table}
+                                style={{ color: "#4F46E5" }}
+                              />
+                              <Tooltip title="Toggle Filters">
+                                <span>
+                                  <CiFilter
+                                    size={20}
+                                    color="#4F46E5"
+                                    className="mt-3 m-2 cursor-pointer"
+                                    onClick={() => {
+                                      table.setShowColumnFilters((prev) => !prev);
+                                    }}
+                                  />
+                                </span>
+                              </Tooltip>
+                            </div>
+                          </div>
+                        )}
+                      />
+                    </ThemeProvider>
+                  </>
+                )}
+              </>
+            )}
           </div>
         </>
       )}
