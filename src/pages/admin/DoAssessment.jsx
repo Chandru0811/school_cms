@@ -646,22 +646,8 @@ const DoAssessment = () => {
         </div>
 
         <div className="col-md-3 col-12">
-          <div className="card question-card-2 h-100 p-3 d-flex flex-column justify-content-between">
+          <div className="card pagination-card h-100 p-3 d-flex flex-column justify-content-between">
             <div className="text-center mb-3">
-              {/* <div className=" ">
-                <img
-                  src={icon2}
-                  alt=""
-                  className="ms-2 py-3"
-                  style={{
-                    minWidth: "50px",
-                    minHeight: "auto",
-                  }}
-                />
-                <span className="dash-font ms-3 text-muted fw-12 fw-semibold">TIME LEFT</span>
-                <span className="text-primary fw-bold fw-14 dash-font">25:00 Mins</span>
-              </div> */}
-              {/* <div className="col-md-2 col-12 ps-md-0"> */}
               <div className="">
                 <div className="row">
                   <div className="col-md-5 col-12">
@@ -707,8 +693,11 @@ const DoAssessment = () => {
                 })}
               </div>
             </div>
-            <div className="text-center d-flex align-items-center justify-content-center">
-              {/* <span className=""style={{color:"#5D5D5D"}}>Click on the question number above to view that question.</span> */}
+            {/* <div className="text-center d-flex flex-column align-items-center justify-content-center">
+              <div className="dash-font fw-12 fw-semibold mb-3">
+                <span className="" style={{ color: "#5D5D5D" }}>Click on the question number
+                  sabove to view that question.</span>
+              </div>
               <button
                 className="dash-font fw-semibold fw-14 btn text-black"
                 style={{ borderColor: "#4f46e5", background: "#FFFFFFCC" }}
@@ -716,8 +705,7 @@ const DoAssessment = () => {
                 <HiOutlineLightBulb size={20} className="fw-bold me-2" />
                 <span className="mt-2">Request Hint (1)</span>
               </button>
-            </div>
-
+            </div> */}
           </div>
         </div>
 
