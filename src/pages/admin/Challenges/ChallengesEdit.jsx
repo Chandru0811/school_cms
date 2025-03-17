@@ -34,7 +34,7 @@ function ChallengesEdit() {
       .string()
       .max(255, "*Difficult level must not exceed 255 characters")
       .required("*Select a difficult level"),
-    uestion: yup
+    question: yup
       .string()
       .max(255, "*Question must not exceed 255 characters")
       .required("*Question is required"),

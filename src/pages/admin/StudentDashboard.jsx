@@ -725,7 +725,9 @@ function StudentDashboard() {
                   ))} */}
                 </>
                 <div className="leaderboard p-3">
-                  <img src={confettiImage} alt="confetti" />
+                  {leaderboardData?.length > 0 && (
+                    <img src={confettiImage} alt="confetti" />
+                  )}
                   <div className="rankcard d-flex justify-content-between">
                     {leaderboardData
                       ?.filter((student) => ["1st", "2nd", "3rd"].includes(student.rank))

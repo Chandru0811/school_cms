@@ -17,6 +17,7 @@
     "@mui/x-data-grid": "^7.27.2",
     "apexcharts": "^4.5.0",
     "axios": "^1.7.9",
+    "date-fns": "^4.1.0",
     "formik": "^2.4.6",
     "jspdf": "^3.0.0",
     "jspdf-autotable": "^5.0.2",

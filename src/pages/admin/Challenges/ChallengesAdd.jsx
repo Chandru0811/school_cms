@@ -147,7 +147,7 @@ function ChallengesAdd() {
         }
 
         rows.forEach((row, index) => {
-          formData.append(`challenges[${index}][question]`, row["Question"] || "");
+          formData.append(`challenges[${index}][question]`, row["Title"] || "");
           formData.append(
             `challenges[${index}][description]`,
             row["description"] || ""
