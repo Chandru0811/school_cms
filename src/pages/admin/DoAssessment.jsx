@@ -5,7 +5,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import Modal from "react-bootstrap/Modal";
 import ImageURL from "../../config/ImageURL";
-import { FaArrowRight, FaClock, FaLightbulb } from "react-icons/fa";
+import { FaArrowRight, FaBookmark, FaClock, FaLightbulb } from "react-icons/fa";
 import { HiOutlineLightBulb } from "react-icons/hi";
 import { MdKeyboardArrowLeft } from "react-icons/md";
 import { format } from "date-fns";
@@ -13,6 +13,7 @@ import { TbArrowForwardUpDouble } from "react-icons/tb";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { IoClose } from "react-icons/io5";
 import icon2 from "../../assets/images/Icon (2).svg";
+import { CiBookmark } from "react-icons/ci";
 
 const DoAssessment = () => {
   const [data, setData] = useState({});
@@ -116,13 +117,33 @@ const DoAssessment = () => {
 
         if (response.status === 200) {
           toast.success(response.data.message);
-          const { total_score } = data;
+          const { total_score, title } = data;
           const { score, rewards } = response.data.data.student_attempt;
-          const { total_questions, total_attended_questions } = response.data.data;
+          const { validate, best_score, total_questions, total_attended_questions, total_correct_questions,
+            total_wrong_questions, total_skipped_questions } = response.data.data;
+
+          const queryParams = new URLSearchParams({
+            id: assignedId,
+            score: score ?? 0,
+            rewards: rewards ?? "",
+            totalScore: total_score ?? "",
+            title: title ?? "",
+            total_questions: total_questions ?? "",
+            validate: validate ?? "",
+            best_score: best_score ?? "",
+            total_attended_questions: total_attended_questions ?? "",
+            total_correct_questions: total_correct_questions ?? "",
+            total_wrong_questions: total_wrong_questions ?? "",
+            total_skipped_questions: total_skipped_questions ?? "",
+          }).toString();
+
           if (score === null || score === 0) {
             navigate(`/successfull?id=${assignedId}`);
           } else {
-            navigate(`/successfull?score=${score}&rewards=${rewards}&id=${assignedId}&totalScore=${total_score}&total_questions=${total_questions}&total_attended_questions=${total_attended_questions}`);
+            // navigate(`/successfull?score=${score}&rewards=${rewards}&id=${assignedId}
+            //   &totalScore=${total_score}&total_questions=${total_questions}&total_attended_questions=
+            //   ${total_attended_questions}&total_correct_questions`);
+            navigate(`/successfull?${queryParams}`);
           }
         }
       } catch (e) {
@@ -496,6 +517,28 @@ const DoAssessment = () => {
     }
   };
 
+  const handleHold = () => {
+    const currentQuestionId = data.questions[currentQuestionIndex].id;
+
+    // Mark the current question as skipped
+    setAnswers((prevAnswers) => ({
+      ...prevAnswers,
+      [currentQuestionId]: { skipped: true }, // Mark as skipped
+    }));
+
+    // Move to the next question
+    if (currentQuestionIndex < data.questions.length - 1) {
+      setCurrentQuestionIndex((prev) => prev + 1);
+      const nextQuestion = data.questions[currentQuestionIndex + 1];
+      if (nextQuestion.time_limit) {
+        setTimeLeft(nextQuestion.time_limit - (timeSpentPerQuestion[nextQuestion.id] || 0));
+      } else {
+        setTimeLeft(null);
+      }
+      setHasInteracted(false); // Reset interaction state for the next question
+    }
+  };
+
   useEffect(() => {
     if (timeLeft !== null && timeLeft > 0) {
       const timer = setInterval(() => {
@@ -592,11 +635,11 @@ const DoAssessment = () => {
             </div>
             <div className="row mt-5">
               {/* Previous Button */}
-              <div className="col-4 d-flex align-items-center">
+              <div className="col-3 d-flex align-items-center">
                 {currentQuestionIndex !== 0 && (
                   <button
                     type="button"
-                    className="dash-font btn btn-sm btn-light d-flex align-items-center"
+                    className="dash-font btn btn-sm text-black btn-outline-secondary d-flex align-items-center"
                     onClick={handlePrevious}
                     disabled={currentQuestionIndex === 0}
                   >
@@ -607,14 +650,14 @@ const DoAssessment = () => {
               </div>
 
               {/* Skip Question Button */}
-              <div className="col-4 d-flex justify-content-center">
+              <div className="col-3 d-flex justify-content-center">
                 {currentQuestionIndex === data.questions.length - 1 ? (
                   <></>
                 ) : (
                   <>
                     <button
                       type="button"
-                      className="dash-font btn btn-sm d-flex align-items-center btn-secondary"
+                      className="dash-font btn btn-sm d-flex align-items-center text-black btn-outline-secondary"
                       onClick={handleSkip}
                     >
                       <TbArrowForwardUpDouble className="me-1" />
@@ -624,8 +667,25 @@ const DoAssessment = () => {
                 )}
               </div>
 
+              <div className="col-3 d-flex justify-content-center">
+                {currentQuestionIndex === data.questions.length - 1 ? (
+                  <></>
+                ) : (
+                  <>
+                    <button
+                      type="button"
+                      className="dash-font btn btn-sm d-flex align-items-center text-black btn-outline-secondary"
+                      onClick={handleHold}
+                    >
+                      <CiBookmark className="me-1" />
+                      Hold Question
+                    </button>
+                  </>
+                )}
+              </div>
+
               {/* Next/Submit Button */}
-              <div className="col-4 d-flex justify-content-end">
+              <div className="col-3 d-flex justify-content-end">
                 <button
                   type="button"
                   className={`dash-font btn btn-sm d-flex align-items-center add-btn`}
@@ -658,12 +718,12 @@ const DoAssessment = () => {
                     <p className="dash-font heading-color fw-bold">25:00 Mins</p>
                   </div>
                 </div>
-                {/* </div> */}
               </div>
-              <div className="d-flex flex-wrap justify-content-center mt-3">
+              {/* <div className="d-flex flex-wrap justify-content-center mt-3">
                 {Array.from({ length: questionCount }, (_, i) => {
                   const questionId = data.questions[i].id;
                   const isSkipped = answers[questionId]?.skipped;
+                  const isHold = answers[questionId]?.Hold;
                   const isAttended = answers[questionId] && !isSkipped;
 
                   return (
@@ -673,6 +733,8 @@ const DoAssessment = () => {
                         ? "activequestion"
                         : isSkipped
                           ? "skip-question"
+                        : isHold
+                          ? "hold-question"
                           : isAttended
                             ? "attended-question"
                             : ""
@@ -687,6 +749,46 @@ const DoAssessment = () => {
                         }
                       }}
                     >
+                      {i + 1}
+                    </button>
+                  );
+                })}
+              </div> */}
+
+              <div className="d-flex flex-wrap justify-content-center mt-3">
+                {Array.from({ length: questionCount }, (_, i) => {
+                  const questionId = data.questions[i].id;
+                  const isSkipped = answers[questionId]?.skipped;
+                  const isHold = answers[questionId]?.Hold;
+                  const isAttended = answers[questionId] && !isSkipped;
+
+                  return (
+                    <button
+                      key={i}
+                      className={`dash-font btn btn-sm m-1 question-button ${currentQuestionIndex === i
+                          ? "activequestion"
+                          : isSkipped
+                            ? "skip-question"
+                            : isHold
+                              ? "hold-question"
+                              : isAttended
+                                ? "attended-question"
+                                : ""
+                        }`}
+                      onClick={() => {
+                        setCurrentQuestionIndex(i);
+                        const selectedQuestion = data.questions[i];
+                        if (selectedQuestion.time_limit) {
+                          setTimeLeft(
+                            selectedQuestion.time_limit -
+                            (timeSpentPerQuestion[selectedQuestion.id] || 0)
+                          );
+                        } else {
+                          setTimeLeft(null);
+                        }
+                      }}
+                    >
+                      {isHold && <FaBookmark size={5} color="#FFDB43" className="ms-1" />}
                       {i + 1}
                     </button>
                   );
