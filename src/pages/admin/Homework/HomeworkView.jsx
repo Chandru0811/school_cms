@@ -154,7 +154,7 @@ function HomeworkView() {
   useEffect(() => {
     const handleScroll = () => {
       const questionElements = document.querySelectorAll(".quest-select");
-      console.log("activeId",questionElements)
+      console.log("activeId", questionElements);
       let activeId = null;
       for (const element of questionElements) {
         const rect = element.getBoundingClientRect();
@@ -163,15 +163,18 @@ function HomeworkView() {
           break;
         }
       }
-     
+
       setActiveQuestionId(activeId);
     };
-  
+
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-console.log("object",new Date().setHours(0, 0, 0, 0) <= new Date("2025-03-22").setHours(0, 0, 0, 0)
-)
+  console.log(
+    "object",
+    new Date().setHours(0, 0, 0, 0) <=
+      new Date("2025-03-22").setHours(0, 0, 0, 0)
+  );
   return (
     <div className="co18ainer-lg container-fluid px-1 px-md-5">
       {loading ? (
@@ -294,16 +297,19 @@ console.log("object",new Date().setHours(0, 0, 0, 0) <= new Date("2025-03-22").s
                 padding:
                   schoolCMS_access === "Limited Access" &&
                   data?.homework?.active === 1 &&
-                  id  && new Date().setHours(0, 0, 0, 0) <= new Date(data?.homework?.due_date).setHours(0, 0, 0, 0)
+                  id &&
+                  new Date().setHours(0, 0, 0, 0) <=
+                    new Date(data?.homework?.due_date).setHours(0, 0, 0, 0)
                     ? "25px"
                     : "40px",
               }}
             >
               {schoolCMS_access === "Limited Access" &&
                 data?.homework?.active === 1 &&
-                id && new Date().setHours(0, 0, 0, 0) <= new Date(data?.homework?.due_date).setHours(0, 0, 0, 0)
-                && (
-                  <Link to={`/doassessment?assignedId=${id}`}>
+                id &&
+                new Date().setHours(0, 0, 0, 0) <=
+                  new Date(data?.homework?.due_date).setHours(0, 0, 0, 0) && (
+                  <Link to={`/homedoassessment?assignedId=${id}`}>
                     <button className="start-btn" type="button">
                       Start Answering{" "}
                       <MdChevronRight size={20} style={{ paddingTop: "3px" }} />
@@ -390,7 +396,7 @@ console.log("object",new Date().setHours(0, 0, 0, 0) <= new Date("2025-03-22").s
                           className="dash-font heading-color fw-bold"
                           style={{ fontSize: "14px" }}
                         >
-                          {data?.homework?.total_score} Questions
+                          {data?.homework?.total_questions} Questions
                         </p>
                       </div>
                     </div>
@@ -413,7 +419,7 @@ console.log("object",new Date().setHours(0, 0, 0, 0) <= new Date("2025-03-22").s
                           className="dash-font heading-color fw-bold"
                           style={{ fontSize: "14px" }}
                         >
-                          {data?.homework?.target_score} Questions
+                          {data?.homework?.total_questions} Questions
                         </p>
                       </div>
                     </div>
@@ -436,7 +442,10 @@ console.log("object",new Date().setHours(0, 0, 0, 0) <= new Date("2025-03-22").s
                           className="dash-font heading-color fw-bold"
                           style={{ fontSize: "14px" }}
                         >
-                          {data.homework.due_date?.split("-").reverse().join("-")}
+                          {data.homework.due_date
+                            ?.split("-")
+                            .reverse()
+                            .join("-")}
                         </p>
                       </div>
                     </div>
@@ -477,7 +486,7 @@ console.log("object",new Date().setHours(0, 0, 0, 0) <= new Date("2025-03-22").s
                   Past Attempts
                 </h6>
                 <div
-                  className="row g-4 overflow-y-auto view-scroll"
+                  className="row g-4 overflow-y-auto view-scroll py-3"
                   style={{ maxHeight: "350px" }}
                 >
                   {quizData.length > 0 ? (
@@ -528,12 +537,17 @@ console.log("object",new Date().setHours(0, 0, 0, 0) <= new Date("2025-03-22").s
                             ))}
                           </div>
                           <p className="border-bottom"></p>
-                          <div className="d-flex justify-content-around align-items-center py-1 view-answer mx-3 mt-2">
-                            <p>View Answers</p>
-                            <p>
-                              <FaExternalLinkAlt className="ms-2" />
-                            </p>
-                          </div>
+                          <Link
+                            to={`/homework/attempt/view/${quiz.id}`}
+                            state={{ assessmentId: id ?? null }}
+                          >
+                            <div className="d-flex justify-content-around align-items-center py-1 view-answer mx-3 mt-2">
+                              <p>View Answers</p>
+                              <p>
+                                <FaExternalLinkAlt className="ms-2" />
+                              </p>
+                            </div>
+                          </Link>
                         </div>
                       </div>
                     ))
@@ -693,77 +707,90 @@ console.log("object",new Date().setHours(0, 0, 0, 0) <= new Date("2025-03-22").s
                         enableFullScreenToggle={true}
                         renderDetailPanel={({ row }) => (
                           <>
-                            <div
-                              className="row g-4 py-5 overflow-y-auto view-scroll"
-                              style={{ maxHeight: "350px" }}
-                            >
-                              {row.original.attempts?.map((attempt, index) => (
-                                <div
-                                  key={index}
-                                  className="col-md-6 col-xl-4 col-sm-6 my-1"
-                                >
-                                  <div className="card p-3 shadow-clg border-0 rounded-4">
-                                    <div className="d-flex align-items-center mb-2 ms-1">
-                                      <FaRegClock className="me-2" />
-                                      <span>
-                                        {new Date(
-                                          attempt.created_at
-                                        ).toLocaleString("en-GB", {
-                                          day: "2-digit",
-                                          month: "short",
-                                          year: "numeric",
-                                          hour: "numeric",
-                                          minute: "2-digit",
-                                          hour12: true,
-                                        })}
-                                      </span>
-                                    </div>
-                                    <div className="row mb-4">
-                                      {[
-                                        {
-                                          label: "TOTAL",
-                                          value: attempt.total_questions,
-                                        },
-                                        {
-                                          label: "CORRECT",
-                                          value: attempt.total_correct_answers,
-                                        },
-                                        {
-                                          label: "SKIPPED",
-                                          value:
-                                            attempt.total_skipped_questions,
-                                        },
-                                        {
-                                          label: "WRONG",
-                                          value: attempt.total_wrong_answers,
-                                        },
-                                      ].map((item, idx) => (
-                                        <div key={idx} className="col-3">
-                                          <p
-                                            className="mb-1 text-muted fw-semibold"
-                                            style={{ fontSize: "10px" }}
-                                          >
-                                            {item.label}
-                                          </p>
-                                          <h3 className="fw-bold">
-                                            {item.value}
-                                          </h3>
+                            {row.original.attempts.length > 0 ? (
+                              <div
+                                className="row g-4 py-5 overflow-y-auto view-scroll"
+                                style={{ maxHeight: "350px" }}
+                              >
+                                {row.original.attempts?.map(
+                                  (attempt, index) => (
+                                    <div
+                                      key={index}
+                                      className="col-md-6 col-xl-4 col-sm-6 my-1"
+                                    >
+                                      <div className="card p-3 shadow-clg border-0 rounded-4">
+                                        <div className="d-flex align-items-center mb-2 ms-1">
+                                          <FaRegClock className="me-2" />
+                                          <span>
+                                            {new Date(
+                                              attempt.created_at
+                                            ).toLocaleString("en-GB", {
+                                              day: "2-digit",
+                                              month: "short",
+                                              year: "numeric",
+                                              hour: "numeric",
+                                              minute: "2-digit",
+                                              hour12: true,
+                                            })}
+                                          </span>
                                         </div>
-                                      ))}
-                                    </div>
-                                    <p className="border-bottom"></p>
-                                    <Link to={`/attempt/view/${attempt.id}`}>
-                                      <div className="d-flex justify-content-between align-items-center py-1 px-2 view-answer mx-3 mt-2">
-                                        <p>View Answers</p>
-                                        <p>
-                                          <FaExternalLinkAlt className="ms-2" />
-                                        </p>
+                                        <div className="row mb-4">
+                                          {[
+                                            {
+                                              label: "TOTAL",
+                                              value: attempt.total_questions,
+                                            },
+                                            {
+                                              label: "CORRECT",
+                                              value:
+                                                attempt.total_correct_answers,
+                                            },
+                                            {
+                                              label: "SKIPPED",
+                                              value:
+                                                attempt.total_skipped_questions,
+                                            },
+                                            {
+                                              label: "WRONG",
+                                              value:
+                                                attempt.total_wrong_answers,
+                                            },
+                                          ].map((item, idx) => (
+                                            <div key={idx} className="col-3">
+                                              <p
+                                                className="mb-1 text-muted fw-semibold"
+                                                style={{ fontSize: "10px" }}
+                                              >
+                                                {item.label}
+                                              </p>
+                                              <h3 className="fw-bold">
+                                                {item.value}
+                                              </h3>
+                                            </div>
+                                          ))}
+                                        </div>
+                                        <p className="border-bottom"></p>
+                                        <Link
+                                          to={`/homework/attempt/view/${row.original.id}`}
+                                          state={{ assessmentId: id ?? null }}
+                                        >
+                                          <div className="d-flex justify-content-between align-items-center py-1 px-2 view-answer mx-3 mt-2">
+                                            <p>View Answers</p>
+                                            <p>
+                                              <FaExternalLinkAlt className="ms-2" />
+                                            </p>
+                                          </div>
+                                        </Link>
                                       </div>
-                                    </Link>
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
+                                    </div>
+                                  )
+                                )}
+                              </div>
+                            ) : (
+                              <p className="text-center">
+                                No past attempts available
+                              </p>
+                            )}
                           </>
                         )}
                         muiTableHeadCellProps={{

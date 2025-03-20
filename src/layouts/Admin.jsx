@@ -70,6 +70,7 @@ import AvatarProfileView from "../pages/admin/AvatarProfile/AvatarProfileView";
 // import TeacherDashboard from "../pages/admin/TeacherDashboard";
 import AnswerView from "../pages/admin/WorkSheet/AttemptView";
 import AttemptView from "../pages/admin/WorkSheet/AttemptView";
+import HomeAttemptView from "../pages/admin/Homework/HomeAttemptView";
 
 function Admin({ handleLogout }) {
   return (
@@ -190,6 +191,10 @@ function Admin({ handleLogout }) {
                     {/* Home Work  */}
                     <Route path="/homework" element={<Homework />} />
                     <Route path="/homework/add" element={<HomeworkAdd />} />
+                    <Route
+                      path="/homework/attempt/view/:id"
+                      element={<HomeAttemptView />}
+                    />
                     <Route
                       path="/homework/edit/:id"
                       element={<HomeworkEdit />}
