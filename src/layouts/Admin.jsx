@@ -167,7 +167,7 @@ function Admin({ handleLogout }) {
                     {/* Work Sheet  */}
                     <Route path="/worksheet" element={<WorkSheet />} />
                     <Route path="/worksheet/add" element={<WorkSheetAdd />} />
-                    <Route path="/attempt/view/:id" element={<AttemptView />} />
+                    <Route path="/worksheet/attempt/view/:id" element={<AttemptView />} />
                     <Route
                       path="/worksheet/edit/:id"
                       element={<WorkSheetEdit />}

@@ -28,7 +28,6 @@ import { RiContractLeftLine } from "react-icons/ri";
 import { LuPrinter } from "react-icons/lu";
 import { CiFilter } from "react-icons/ci";
 
-
 function WorkSheetView() {
   const [data, setData] = useState({});
   const { id } = useParams();
@@ -41,7 +40,7 @@ function WorkSheetView() {
   const storedScreens = JSON.parse(
     localStorage.getItem("schoolCMS_Permissions") || "{}"
   );
-
+  const [activeQuestionId, setActiveQuestionId] = useState(null);
   const [activeTab, setActiveTab] = useState("tab1");
   const getData = async () => {
     try {
@@ -139,6 +138,25 @@ function WorkSheetView() {
     setDeleteModalOpen(true);
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const questionElements = document.querySelectorAll(".quest-select");
+      // console.log("activeId",questionElements)
+      let activeId = null;
+      for (const element of questionElements) {
+        const rect = element.getBoundingClientRect();
+        if (rect.top >= 0 && rect.top <= window.innerHeight / 2) {
+          activeId = element.id;
+          break;
+        }
+      }
+
+      setActiveQuestionId(activeId);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   return (
     // <div className="container-fluid px-0 vh-100 mb-4">
     //   <div className="d-flex px-4 justify-content-between align-items-center  p-1 mb-4">
@@ -574,7 +592,7 @@ function WorkSheetView() {
                           className="dash-font heading-color fw-bold"
                           style={{ fontSize: "14px" }}
                         >
-                          {data?.worksheet?.total_score} Questions
+                          {data?.worksheet?.total_questions} Questions
                         </p>
                       </div>
                     </div>
@@ -597,7 +615,7 @@ function WorkSheetView() {
                           className="dash-font heading-color fw-bold"
                           style={{ fontSize: "14px" }}
                         >
-                          {data?.worksheet?.target_score} Questions
+                          {data?.worksheet?.target_questions} Questions
                         </p>
                       </div>
                     </div>
@@ -712,12 +730,14 @@ function WorkSheetView() {
                             ))}
                           </div>
                           <p className="border-bottom"></p>
-                          <div className="d-flex justify-content-around align-items-center py-1 view-answer mx-3 mt-2">
-                            <p>View Answers</p>
-                            <p>
-                              <FaExternalLinkAlt className="ms-2" />
-                            </p>
-                          </div>
+                          <Link to={`/attempt/view/${quiz.id}`}>
+                            <div className="d-flex justify-content-around align-items-center py-1 view-answer mx-3 mt-2">
+                              <p>View Answers</p>
+                              <p>
+                                <FaExternalLinkAlt className="ms-2" />
+                              </p>
+                            </div>
+                          </Link>
                         </div>
                       </div>
                     ))
@@ -749,11 +769,15 @@ function WorkSheetView() {
                 {activeTab === "tab1" ? (
                   <>
                     <div className="row m-0 ">
-                      <div className="col-md-8 col-xl-9 col-12 pe-md-2 ps-md-1 px-0 mt-3 mt-md-0 question-card view-scroll order-1 order-md-0">
-                        <div className="row m-0 card px-5 py-3 ">
+                      <div
+                        id={"question-card"}
+                        className="col-md-8 col-xl-9 col-12 pe-md-2 ps-md-1 px-0 mt-3 mt-md-0  order-1 order-md-0"
+                      >
+                        <div className="row m-0 card px-5 py-3 question-card view-scroll">
                           {data.worksheet.questions.map((question, index) => (
-                            <div id={question.id}
-                              className="col-12 p-3 bottom-border "
+                            <div
+                              id={question.id}
+                              className="col-12 p-3 bottom-border quest-select"
                               key={index}
                             >
                               <small className="text-color fw-semibold">{`Question ${
@@ -781,7 +805,8 @@ function WorkSheetView() {
                                         }`}
                                       >
                                         <input
-                                          type="radio" disabled
+                                          type="radio"
+                                          disabled
                                           name={`question-${question.id}`}
                                           value={option}
                                           className="form-check-input quest-radio-input"
@@ -826,11 +851,33 @@ function WorkSheetView() {
                               </div>
                             </div>
                             <div className="d-flex mt-5 flex-wrap justify-content-start align-items-center gap-3">
-                              {data?.worksheet?.questions.map((question, index) => ( 
-                                <>
-                                <button type="button" className="question-btn">{index + 1}</button>
-                                </>
-                              ))}
+                              {data?.worksheet?.questions.map(
+                                (question, index) => (
+                                  <>
+                                    <button
+                                      type="button"
+                                      className={`question-btn ${
+                                        activeQuestionId === question.id
+                                          ? "active"
+                                          : ""
+                                      }`}
+                                      onClick={() => {
+                                        const questionElement =
+                                          document.getElementById(question.id);
+                                        setActiveQuestionId(question.id);
+                                        if (questionElement) {
+                                          questionElement.scrollIntoView({
+                                            behavior: "smooth",
+                                            block: "start",
+                                          });
+                                        }
+                                      }}
+                                    >
+                                      {index + 1}
+                                    </button>
+                                  </>
+                                )
+                              )}
                             </div>
                           </div>
                         </div>
@@ -909,13 +956,15 @@ function WorkSheetView() {
                                       ))}
                                     </div>
                                     <p className="border-bottom"></p>
-                                    <Link to={`/attempt/view/${attempt.id}`}>
-                                    <div className="d-flex justify-content-between align-items-center py-1 px-2 view-answer mx-3 mt-2">
-                                      <p>View Answers</p>
-                                      <p>
-                                        <FaExternalLinkAlt className="ms-2" />
-                                      </p>
-                                    </div>
+                                    <Link
+                                      to={`/worksheet/attempt/view/${attempt.id}`}
+                                    >
+                                      <div className="d-flex justify-content-between align-items-center py-1 px-2 view-answer mx-3 mt-2">
+                                        <p>View Answers</p>
+                                        <p>
+                                          <FaExternalLinkAlt className="ms-2" />
+                                        </p>
+                                      </div>
                                     </Link>
                                   </div>
                                 </div>
@@ -980,7 +1029,9 @@ function WorkSheetView() {
                                     size={20}
                                     color="#4F46E5"
                                     className="mt-3 m-2"
-                                    disabled={table.getRowModel().rows.length === 0}
+                                    disabled={
+                                      table.getRowModel().rows.length === 0
+                                    }
                                     onClick={() =>
                                       handleExportRows(table.getRowModel().rows)
                                     }
@@ -997,7 +1048,7 @@ function WorkSheetView() {
                                   />
                                 </span>
                               </Tooltip>
-        
+
                               <MRT_ShowHideColumnsButton
                                 table={table}
                                 style={{ color: "#4F46E5" }}
@@ -1009,7 +1060,9 @@ function WorkSheetView() {
                                     color="#4F46E5"
                                     className="mt-3 m-2 cursor-pointer"
                                     onClick={() => {
-                                      table.setShowColumnFilters((prev) => !prev);
+                                      table.setShowColumnFilters(
+                                        (prev) => !prev
+                                      );
                                     }}
                                   />
                                 </span>
