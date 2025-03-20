@@ -134,28 +134,26 @@ function Successfull() {
                 </div>
                 <div className="row border-1 rounded-3 m-0">
                     <div className='col-md-6 col-12'>
-                        {best_score === true ? (
-                            <>
-                                <div className='d-flex justify-content-start align-items-start medalbg'>
-                                    <span className='mt-2'
-                                        style={{
-                                            backgroundColor: "#4F46E5",
-                                            color: "white",
-                                            borderRadius: "50%",
-                                            padding: "6px",
-                                        }}
-                                    >
-                                        <LiaMedalSolid size={30} />
-                                    </span>
-                                    <div className='ms-4 mt-2'>
-                                        <h4 className='dash-font' style={{ color: "#4F46E5" }}>New Personal Best</h4>
-                                        <p className='fw-semibold dash-font fw-14' style={{ color: "#333333" }}>{total_correct_questions} of {total_questions} Correct Answers</p>
-                                    </div>
+                        {best_score === "true" ? (
+                            <div className='d-flex justify-cxontent-start align-items-start medalbg'>
+                                <span className='mt-2'
+                                    style={{
+                                        backgroundColor: "#4F46E5",
+                                        color: "white",
+                                        borderRadius: "50%",
+                                        padding: "6px",
+                                    }}
+                                >
+                                    <LiaMedalSolid size={30} />
+                                </span>
+                                <div className='ms-4 mt-2'>
+                                    <h4 className='dash-font' style={{ color: "#4F46E5" }}>New Personal Best</h4>
+                                    <p className='fw-semibold dash-font fw-14' style={{ color: "#333333" }}>
+                                        {total_correct_questions} of {total_questions} Correct Answers
+                                    </p>
                                 </div>
-                            </>
-                        ) : (
-                            <></>
-                        )}
+                            </div>
+                        ) : null}
                         <div className='mt-5 p-3'>
                             <h2 className='fw-semibold dash-font'>Great effort!</h2>
                             <h4 className='fw-semibold dash-font fw-14'

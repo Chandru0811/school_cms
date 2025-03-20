@@ -11,9 +11,10 @@ import { MdKeyboardArrowLeft } from "react-icons/md";
 import { format } from "date-fns";
 import { TbArrowForwardUpDouble } from "react-icons/tb";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
-import { IoClose } from "react-icons/io5";
+import { IoClose, IoPauseCircleOutline, IoPlay } from "react-icons/io5";
 import icon2 from "../../assets/images/Icon (2).svg";
 import { CiBookmark } from "react-icons/ci";
+import { RxResume } from "react-icons/rx";
 
 const DoAssessment = () => {
   const [data, setData] = useState({});
@@ -29,9 +30,12 @@ const DoAssessment = () => {
   const [timeSpentPerQuestion, setTimeSpentPerQuestion] = useState({});
   const [timeUpQuestions, setTimeUpQuestions] = useState({});
   const [showModal, setShowModal] = useState(false);
+  const [showResume, setShowResume] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
   const [questionCount, setQuestionCount] = useState(0);
   const [hasInteracted, setHasInteracted] = useState(false);
+  const [overallTimeLeft, setOverallTimeLeft] = useState(data.time_limit * 60);
+  const [isPaused, setIsPaused] = useState(false);
 
   // Function to handle image click
   const handleImageClick = (imageUrl) => {
@@ -43,6 +47,17 @@ const DoAssessment = () => {
   const handleCloseModal = () => {
     setShowModal(false);
   };
+  const handlePauseClick = () => {
+    setIsPaused(true);  // Pause the timer
+    setShowResume(true);
+  };
+
+  // Function to resume the timer
+  const handlePauseClose = () => {
+    setIsPaused(false); // Resume the timer
+    setShowResume(false);
+  };
+
   const validateAnswers = () => {
     if (!data.questions) return false;
 
@@ -178,6 +193,9 @@ const DoAssessment = () => {
           setTimeLeft(null);
         }
       }
+      if (response.data.data.time_limit) {
+        setOverallTimeLeft(response.data.data.time_limit);
+      }
     } catch (e) {
       const errorMessage =
         e?.response?.data?.error || "Error Fetching Data. Please try again.";
@@ -194,16 +212,20 @@ const DoAssessment = () => {
           <div>
             <input
               type="text"
-              className="form-control form-control-sm"
+              className="form-control form-control-sm mb-5"
               placeholder="Your answer"
               value={answers[id]?.fillable || ""}
               onChange={(e) =>
                 setAnswers({
                   ...answers,
-                  [id]: { ...answers[id], fillable: e.target.value, skipped: false },
+                  [id]: { ...answers[id], fillable: e.target.value, skipped: false, hold: false },
                 })
               }
               disabled={isDisabled}
+              style={{
+                border: "1px solid #4F46E5",
+                borderRadius: "5px",
+              }}
             />
             {currentQuestion.hint && (
               <div
@@ -232,14 +254,14 @@ const DoAssessment = () => {
             <label className="me-3">
               <input
                 type="radio"
-                className="form-check-input me-1"
+                className="form-check-input me-1 mb-5"
                 name={`closed-${id}`}
                 value="yes"
                 checked={answers[id]?.closed === "yes"}
                 onChange={(e) =>
                   setAnswers({
                     ...answers,
-                    [id]: { ...answers[id], closed: e.target.value, skipped: false },
+                    [id]: { ...answers[id], closed: e.target.value, skipped: false, hold: false },
                   })
                 }
                 disabled={isDisabled}
@@ -256,7 +278,7 @@ const DoAssessment = () => {
                 onChange={(e) =>
                   setAnswers({
                     ...answers,
-                    [id]: { ...answers[id], closed: e.target.value, skipped: false },
+                    [id]: { ...answers[id], closed: e.target.value, skipped: false, hold: false },
                   })
                 }
                 disabled={isDisabled}
@@ -317,7 +339,7 @@ const DoAssessment = () => {
                     // Update answers state and remove skipped flag
                     setAnswers({
                       ...answers,
-                      [id]: { multichoice: updatedOptions, skipped: false },
+                      [id]: { multichoice: updatedOptions, skipped: false, hold: false },
                     });
 
                     setHasInteracted(true); // Mark the question as interacted with
@@ -372,15 +394,19 @@ const DoAssessment = () => {
             <textarea
               placeholder="For answer"
               rows={4}
-              className="form-control form-control-sm"
+              className="form-control form-control-sm mb-5"
               value={answers[id]?.short_answer || ""}
               onChange={(e) =>
                 setAnswers({
                   ...answers,
-                  [id]: { ...answers[id], short_answer: e.target.value, skipped: false },
+                  [id]: { ...answers[id], short_answer: e.target.value, skipped: false, hold: false },
                 })
               }
               disabled={isDisabled}
+              style={{
+                border: "1px solid #4F46E5",
+                borderRadius: "5px",
+              }}
             />
             {currentQuestion.hint && (
               <div
@@ -419,15 +445,19 @@ const DoAssessment = () => {
             )}
             <input
               type="file"
-              className="form-control form-control-sm mt-2"
+              className="form-control form-control-sm mt-2 mb-5"
               accept="image/*"
               onChange={(e) =>
                 setAnswers({
                   ...answers,
-                  [id]: { ...answers[id], upload: e.target.files[0], skipped: false },
+                  [id]: { ...answers[id], upload: e.target.files[0], skipped: false, hold: false },
                 })
               }
               disabled={isDisabled}
+              style={{
+                border: "1px solid #4F46E5",
+                borderRadius: "5px",
+              }}
             />
             {currentQuestion.hint && (
               <div
@@ -452,6 +482,44 @@ const DoAssessment = () => {
 
       default:
         return null;
+    }
+  };
+
+  const handleSubmit = async () => {
+    const heldQuestions = Object.keys(answers).filter(
+      (key) => answers[key]?.hold === true
+    );
+  
+    if (heldQuestions.length > 0) {
+      const firstHeldQuestionId = heldQuestions[0];
+      const firstHeldQuestionIndex = data.questions.findIndex(
+        (q) => q.id === firstHeldQuestionId
+      );
+  
+      if (firstHeldQuestionIndex !== -1) {
+        setCurrentQuestionIndex(firstHeldQuestionIndex);
+        toast.error("Please address held questions before submitting.");
+        return; // Prevent submission
+      }
+    }
+  
+    // If no questions are held, proceed with submission
+    try {
+      await formik.handleSubmit();
+  
+      // Calculate skipped and held questions count
+      const skippedQuestions = Object.keys(answers).filter(
+        (key) => answers[key]?.skipped === true
+      ).length;
+  
+      const heldQuestionsCount = heldQuestions.length;
+  
+      // Show toast message with skipped and held questions count
+      toast.info(
+        `You have skipped ${skippedQuestions} question(s) and held ${heldQuestionsCount} question(s).`
+      );
+    } catch (error) {
+      toast.error(error);
     }
   };
 
@@ -520,10 +588,10 @@ const DoAssessment = () => {
   const handleHold = () => {
     const currentQuestionId = data.questions[currentQuestionIndex].id;
 
-    // Mark the current question as skipped
+    // Mark the current question as held
     setAnswers((prevAnswers) => ({
       ...prevAnswers,
-      [currentQuestionId]: { skipped: true }, // Mark as skipped
+      [currentQuestionId]: { hold: true },
     }));
 
     // Move to the next question
@@ -537,8 +605,8 @@ const DoAssessment = () => {
       }
       setHasInteracted(false); // Reset interaction state for the next question
     }
+    console.log("hold question::", currentQuestionId)
   };
-
   useEffect(() => {
     if (timeLeft !== null && timeLeft > 0) {
       const timer = setInterval(() => {
@@ -556,6 +624,38 @@ const DoAssessment = () => {
       }));
     }
   }, [timeLeft, currentQuestionIndex]);
+
+  useEffect(() => {
+    if (overallTimeLeft > 0 && !isPaused) {  // Only run when NOT paused
+      const timer = setInterval(() => {
+        setOverallTimeLeft((prev) => prev - 1);
+      }, 1000);
+
+      return () => clearInterval(timer);
+    } else if (overallTimeLeft === 0) {
+      // Check if any questions are held before submitting
+      const heldQuestions = Object.keys(answers).filter(
+        (key) => answers[key]?.hold === true
+      );
+
+      if (heldQuestions.length > 0) {
+        // Navigate to the first held question
+        const firstHeldQuestionId = heldQuestions[0];
+        const firstHeldQuestionIndex = data.questions.findIndex(
+          (q) => q.id === firstHeldQuestionId
+        );
+
+        if (firstHeldQuestionIndex !== -1) {
+          setCurrentQuestionIndex(firstHeldQuestionIndex);
+          toast.error("Time's up! Please address held questions.");
+        }
+      } else {
+        // If no questions are held, submit the assessment
+        formik.handleSubmit();
+      }
+      console.log("heldQuestions::", heldQuestions);
+    }
+  }, [overallTimeLeft, isPaused]);
 
   useEffect(() => {
     getData();
@@ -598,14 +698,23 @@ const DoAssessment = () => {
             </span>
           </span>
         </div>
-        <div className="">
-          <Link to={`/worksheet/view/${assignedId}`}>
-            <button type="button" className="dash-font btn btn-sm quit-btn">
-              <IoClose size={15} />&nbsp;
-              Quit
-            </button>
-          </Link>
+        <div className="d-flex align-items-center">
+          <button type="button" className="dash-font btn btn-sm add-btn"
+            onClick={() => handlePauseClick()}>
+            <IoPauseCircleOutline size={15} />&nbsp;
+            Pause
+          </button>
           &nbsp;&nbsp;
+          &nbsp;&nbsp;
+          <div className="">
+            <Link to={`/worksheet/view/${assignedId}`}>
+              <button type="button" className="dash-font btn btn-sm quit-btn">
+                <IoClose size={15} />&nbsp;
+                Quit
+              </button>
+            </Link>
+            &nbsp;&nbsp;
+          </div>
         </div>
       </div>
       <div className="row m-0">
@@ -635,7 +744,7 @@ const DoAssessment = () => {
             </div>
             <div className="row mt-5">
               {/* Previous Button */}
-              <div className="col-3 d-flex align-items-center">
+              <div className="col-md-3 col-6 mb-2 d-flex align-items-center">
                 {currentQuestionIndex !== 0 && (
                   <button
                     type="button"
@@ -650,7 +759,7 @@ const DoAssessment = () => {
               </div>
 
               {/* Skip Question Button */}
-              <div className="col-3 d-flex justify-content-center">
+              <div className="col-md-3 col-6 mb-2 d-flex justify-content-center">
                 {currentQuestionIndex === data.questions.length - 1 ? (
                   <></>
                 ) : (
@@ -667,7 +776,7 @@ const DoAssessment = () => {
                 )}
               </div>
 
-              <div className="col-3 d-flex justify-content-center">
+              <div className="col-md-3 col-6 mb-2 d-flex justify-content-center">
                 {currentQuestionIndex === data.questions.length - 1 ? (
                   <></>
                 ) : (
@@ -685,12 +794,12 @@ const DoAssessment = () => {
               </div>
 
               {/* Next/Submit Button */}
-              <div className="col-3 d-flex justify-content-end">
+              <div className="col-md-3 col-6 mb-2 d-flex justify-content-end">
                 <button
                   type="button"
                   className={`dash-font btn btn-sm d-flex align-items-center add-btn`}
                   onClick={() =>
-                    currentQuestionIndex === data.questions.length - 1 ? formik.handleSubmit() : handleNext()
+                    currentQuestionIndex === data.questions.length - 1 ? handleSubmit() : handleNext()
                   }
                   disabled={loadIndicator}
                 >
@@ -707,23 +816,29 @@ const DoAssessment = () => {
 
         <div className="col-md-3 col-12">
           <div className="card pagination-card h-100 p-3 d-flex flex-column justify-content-between">
-            <div className="text-center mb-3">
-              <div className="">
-                <div className="row">
-                  <div className="col-md-5 col-12">
-                    <img src={icon2} alt="" className="py-3 img-fluid ms-2 " />
+            <div className="text-center mb-5">
+              {data.time_limit !== null ?
+                (<>
+                  <div className="row">
+                    <div className="col-md-5 col-12">
+                      <img src={icon2} alt="" className="py-3 img-fluid ms-2 " />
+                    </div>
+                    <div className="col-md-7 col-12 py-3 text-end">
+                      <p className="dash-font fw-12 fw-semibold">TIME LEFT</p>
+                      {/* <p className="dash-font heading-color fw-bold">{data.time_limit} Mins</p> */}
+                      <p className="dash-font heading-color fw-bold">
+                        {Math.floor(overallTimeLeft / 60)}:{overallTimeLeft % 60 < 10 ? `0${overallTimeLeft % 60}` : overallTimeLeft % 60} Mins
+                      </p>
+                    </div>
                   </div>
-                  <div className="col-md-7 col-12 py-3 text-end">
-                    <p className="dash-font fw-12 fw-semibold">TIME LEFT</p>
-                    <p className="dash-font heading-color fw-bold">25:00 Mins</p>
-                  </div>
-                </div>
-              </div>
-              {/* <div className="d-flex flex-wrap justify-content-center mt-3">
+                </>) : null
+              }
+
+              <div className="d-flex flex-wrap justify-content-start mt-4">
                 {Array.from({ length: questionCount }, (_, i) => {
                   const questionId = data.questions[i].id;
                   const isSkipped = answers[questionId]?.skipped;
-                  const isHold = answers[questionId]?.Hold;
+                  const isHold = answers[questionId]?.hold;
                   const isAttended = answers[questionId] && !isSkipped;
 
                   return (
@@ -733,47 +848,11 @@ const DoAssessment = () => {
                         ? "activequestion"
                         : isSkipped
                           ? "skip-question"
-                        : isHold
-                          ? "hold-question"
-                          : isAttended
-                            ? "attended-question"
-                            : ""
-                        }`}
-                      onClick={() => {
-                        setCurrentQuestionIndex(i);
-                        const selectedQuestion = data.questions[i];
-                        if (selectedQuestion.time_limit) {
-                          setTimeLeft(selectedQuestion.time_limit - (timeSpentPerQuestion[selectedQuestion.id] || 0));
-                        } else {
-                          setTimeLeft(null);
-                        }
-                      }}
-                    >
-                      {i + 1}
-                    </button>
-                  );
-                })}
-              </div> */}
-
-              <div className="d-flex flex-wrap justify-content-center mt-3">
-                {Array.from({ length: questionCount }, (_, i) => {
-                  const questionId = data.questions[i].id;
-                  const isSkipped = answers[questionId]?.skipped;
-                  const isHold = answers[questionId]?.Hold;
-                  const isAttended = answers[questionId] && !isSkipped;
-
-                  return (
-                    <button
-                      key={i}
-                      className={`dash-font btn btn-sm m-1 question-button ${currentQuestionIndex === i
-                          ? "activequestion"
-                          : isSkipped
-                            ? "skip-question"
-                            : isHold
-                              ? "hold-question"
-                              : isAttended
-                                ? "attended-question"
-                                : ""
+                          : isHold
+                            ? "hold-question"
+                            : isAttended
+                              ? "attended-question"
+                              : ""
                         }`}
                       onClick={() => {
                         setCurrentQuestionIndex(i);
@@ -788,7 +867,8 @@ const DoAssessment = () => {
                         }
                       }}
                     >
-                      {isHold && <FaBookmark size={5} color="#FFDB43" className="ms-1" />}
+                      {isHold && <FaBookmark size={10} color="#FFDB43" className="bookmark-icon" />}
+                      {/* <FaBookmark size={10} color="#FFDB43" className="bookmark-icon" /> */}
                       {i + 1}
                     </button>
                   );
@@ -830,6 +910,35 @@ const DoAssessment = () => {
             alt="Full Size"
             style={{ width: "100%" }}
           />
+        </Modal.Body>
+      </Modal>
+
+      {/* Resume Model */}
+      <Modal
+        show={showResume}
+        onHide={handlePauseClose}
+        centered
+        size="md"
+        backdrop="static" // Prevent closing on outside click
+        className="blurred-modal"
+      >
+        <Modal.Header>
+          <Modal.Title>Resume Question</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p className="dash-font fw-bold">
+            The question was paused. Do you want to resume the worksheet?
+          </p>
+          <div className="d-flex justify-content-end align-items-end">
+            <button
+              type="button"
+              className="dash-font btn btn-sm add-btn me-3"
+              onClick={handlePauseClose}
+            >
+              <IoPlay size={15} />&nbsp;
+              Resume
+            </button>
+          </div>
         </Modal.Body>
       </Modal>
     </div>
