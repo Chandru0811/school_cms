@@ -94,6 +94,7 @@ function WorkSheetEdit() {
     initialValues: {
       type: "",
       title: "",
+      time_limit: "",
       center_id: [],
       grade_id: [],
       subject_id: [],
@@ -728,11 +729,10 @@ function WorkSheetEdit() {
                         type="radio"
                         name="type"
                         value="challenge"
-                        className={`form-check-input ${
-                          formik.touched.type && formik.errors.type
+                        className={`form-check-input ${formik.touched.type && formik.errors.type
                             ? "is-invalid"
                             : ""
-                        }`}
+                          }`}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         checked={formik.values.type === "challenge"}
@@ -745,11 +745,11 @@ function WorkSheetEdit() {
                   <div className="row mb-4">
                     <div className="col-5 d-flex">
                       {formik.values.type === "challenge" ? (
-                        <label className="form-label">
+                        <label className="view-label-text">
                           Challenge Title<span className="text-danger">*</span>
                         </label>
                       ) : formik.values.type === "question" ? (
-                        <label className="form-label">
+                        <label className="view-label-text">
                           Q/A Title<span className="text-danger">*</span>
                         </label>
                       ) : null}
@@ -757,11 +757,10 @@ function WorkSheetEdit() {
                     <div className="col-7">
                       <input
                         placeholder="Enter Text"
-                        className={`form-control form-control-sm ${
-                          formik.touched.title && formik.errors.title
+                        className={`form-control form-control-sm ${formik.touched.title && formik.errors.title
                             ? "is-invalid"
                             : ""
-                        }`}
+                          }`}
                         {...formik.getFieldProps("title")}
                       />
                       {formik.touched.title && formik.errors.title && (
@@ -772,6 +771,32 @@ function WorkSheetEdit() {
                     </div>
                   </div>
                 </div>
+                {formik.values.type === "challenge" ? (
+                  <div className="col-md-6 col-12">
+                    <div className="row mb-4">
+                      <div className="col-5 d-flex">
+                        <label className="view-label-text">
+                          Time Limit
+                        </label>
+                      </div>
+                      <div className="col-7">
+                        <input
+                          placeholder="Enter Text"
+                          className={`form-control form-control-sm ${formik.touched.time_limit && formik.errors.time_limit
+                            ? "is-invalid"
+                            : ""
+                            }`}
+                          {...formik.getFieldProps("time_limit")}
+                        />
+                        {formik.touched.time_limit && formik.errors.time_limit && (
+                          <div className="invalid-feedback">
+                            {formik.errors.time_limit}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                ) : null}
                 <div className="col-md-6 col-12">
                   <div className="row mb-4">
                     <div className="col-5 d-flex">
@@ -801,11 +826,10 @@ function WorkSheetEdit() {
                           }
                         }}
                         labelledBy="Select Service"
-                        className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${
-                          formik.touched.center_id && formik.errors.center_id
+                        className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${formik.touched.center_id && formik.errors.center_id
                             ? "is-invalid"
                             : ""
-                        }`}
+                          }`}
                       />
                       {formik.touched.center_id && formik.errors.center_id && (
                         <div className="invalid-feedback">
@@ -841,11 +865,10 @@ function WorkSheetEdit() {
                           }
                         }}
                         labelledBy="Select Service"
-                        className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${
-                          formik.touched.grade_id && formik.errors.grade_id
+                        className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${formik.touched.grade_id && formik.errors.grade_id
                             ? "is-invalid"
                             : ""
-                        }`}
+                          }`}
                       />
 
                       {formik.touched.grade_id && formik.errors.grade_id && (
@@ -909,11 +932,11 @@ function WorkSheetEdit() {
                   <div className="row mb-4">
                     <div className="col-5 d-flex">
                       {formik.values.type === "challenge" ? (
-                        <label className="form-label">
+                        <label className="view-label-text">
                           Challenge Type<span className="text-danger">*</span>
                         </label>
                       ) : formik.values.type === "question" ? (
-                        <label className="form-label">
+                        <label className="view-label-text">
                           Q/A Type<span className="text-danger">*</span>
                         </label>
                       ) : null}
@@ -930,11 +953,10 @@ function WorkSheetEdit() {
                           );
                         }}
                         labelledBy="Select Service"
-                        className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${
-                          formik.touched.ques_type && formik.errors.ques_type
+                        className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${formik.touched.ques_type && formik.errors.ques_type
                             ? "is-invalid"
                             : ""
-                        }`}
+                          }`}
                       />
                       {formik.touched.ques_type && formik.errors.ques_type && (
                         <div className="invalid-feedback">
@@ -952,12 +974,11 @@ function WorkSheetEdit() {
                     </div>
                     <div className="col-7">
                       <select
-                        className={`form-select form-select-sm ${
-                          formik.touched.difficult_level &&
-                          formik.errors.difficult_level
+                        className={`form-select form-select-sm ${formik.touched.difficult_level &&
+                            formik.errors.difficult_level
                             ? "is-invalid"
                             : ""
-                        }`}
+                          }`}
                         {...formik.getFieldProps("difficult_level")}
                       >
                         <option value=""></option>
@@ -985,12 +1006,11 @@ function WorkSheetEdit() {
                       <input
                         placeholder="Enter Text"
                         type="text"
-                        className={`form-control form-control-sm ${
-                          formik.touched.total_score &&
-                          formik.errors.total_score
+                        className={`form-control form-control-sm ${formik.touched.total_score &&
+                            formik.errors.total_score
                             ? "is-invalid"
                             : ""
-                        }`}
+                          }`}
                         {...formik.getFieldProps("total_score")}
                       />
                       {formik.touched.total_score &&
@@ -1012,12 +1032,11 @@ function WorkSheetEdit() {
                       <input
                         placeholder="Enter Text"
                         type="text"
-                        className={`form-control form-control-sm ${
-                          formik.touched.target_score &&
-                          formik.errors.target_score
+                        className={`form-control form-control-sm ${formik.touched.target_score &&
+                            formik.errors.target_score
                             ? "is-invalid"
                             : ""
-                        }`}
+                          }`}
                         {...formik.getFieldProps("target_score")}
                       />
                       {formik.touched.target_score &&
@@ -1039,11 +1058,10 @@ function WorkSheetEdit() {
                       <input
                         placeholder="Enter Text"
                         type="text"
-                        className={`form-control form-control-sm ${
-                          formik.touched.reward && formik.errors.reward
+                        className={`form-control form-control-sm ${formik.touched.reward && formik.errors.reward
                             ? "is-invalid"
                             : ""
-                        }`}
+                          }`}
                         {...formik.getFieldProps("reward")}
                       />
                       {formik.touched.reward && formik.errors.reward && (
