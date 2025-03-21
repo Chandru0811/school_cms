@@ -11,7 +11,7 @@ import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import { useMemo } from "react";
 import { ThemeProvider, Tooltip, createTheme } from "@mui/material";
-import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
+import { Assessment, KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 import { GoTrash } from "react-icons/go";
 import {
   MdChevronRight,
@@ -526,7 +526,7 @@ function WorkSheetView() {
                       <div className="col-8">
                         <p className="view-value">
                           {data?.worksheet?.subject_names
-                            ?.map((subject) => subject.subject)
+                            ?.map((subject) => subject)
                             .join(", ")}
                         </p>
                       </div>
@@ -679,7 +679,7 @@ function WorkSheetView() {
                   Past Attempts
                 </h6>
                 <div
-                  className="row g-4 overflow-y-auto view-scroll"
+                  className="row g-4 overflow-y-auto view-scroll py-3"
                   style={{ maxHeight: "350px" }}
                 >
                   {quizData.length > 0 ? (
@@ -730,7 +730,7 @@ function WorkSheetView() {
                             ))}
                           </div>
                           <p className="border-bottom"></p>
-                          <Link to={`/attempt/view/${quiz.id}`}>
+                          <Link to={`/worksheet/attempt/view/${quiz.id}`} state={{ assessmentId: id ?? null }}>
                             <div className="d-flex justify-content-around align-items-center py-1 view-answer mx-3 mt-2">
                               <p>View Answers</p>
                               <p>
@@ -840,7 +840,7 @@ function WorkSheetView() {
                               </div>
                               <div className="py-3">
                                 <p className="dash-font text-muted fw-semibold mb-0">
-                                  TIME TAKEN
+                                  TIME
                                 </p>
                                 <p
                                   className="dash-font heading-color fw-bold"
@@ -897,6 +897,7 @@ function WorkSheetView() {
                         enableFullScreenToggle={true}
                         renderDetailPanel={({ row }) => (
                           <>
+                          {row.original.attempts.length > 0 ? (
                             <div
                               className="row g-4 py-5 overflow-y-auto view-scroll"
                               style={{ maxHeight: "350px" }}
@@ -970,6 +971,9 @@ function WorkSheetView() {
                                 </div>
                               ))}
                             </div>
+                            ) : (
+                              <p className="text-center">No past attempts available</p>
+                            )}
                           </>
                         )}
                         muiTableHeadCellProps={{
