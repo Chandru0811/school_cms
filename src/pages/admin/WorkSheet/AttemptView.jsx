@@ -1,4 +1,4 @@
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   MdChevronRight,
   MdKeyboardArrowLeft,
@@ -13,6 +13,9 @@ import { TiTick } from "react-icons/ti";
 import { IoMdClose } from "react-icons/io";
 
 const AttemptView = () => {
+  const location = useLocation();
+  const assessmentId = location.state?.assessmentId;
+  console.log("object",assessmentId)
   const [data, setData] = useState([]);
   const navigate = useNavigate();
   const { id } = useParams();
@@ -277,9 +280,11 @@ const AttemptView = () => {
                             and Planets:Jupiter.
                           </small>
                         </div>
+                        <Link to={`/doassessment?assignedId=${assessmentId}`}>
                         <button type="button" className="rty-btn w-100 mt-4">
                           <img src={retry} alt=".." /> Retry
                         </button>
+                        </Link>
                       </div>
                     )}
                 </div>

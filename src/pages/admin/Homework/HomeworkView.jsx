@@ -771,7 +771,7 @@ function HomeworkView() {
                                         </div>
                                         <p className="border-bottom"></p>
                                         <Link
-                                          to={`/homework/attempt/view/${row.original.id}`}
+                                          to={`/homework/attempt/view/${attempt.id}`}
                                           state={{ assessmentId: id ?? null }}
                                         >
                                           <div className="d-flex justify-content-between align-items-center py-1 px-2 view-answer mx-3 mt-2">

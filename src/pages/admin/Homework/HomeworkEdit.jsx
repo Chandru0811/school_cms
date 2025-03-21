@@ -357,7 +357,7 @@ function HomeworkEdit() {
     try {
       const response = await api.get(`homework/${id}`);
       if (response.status === 200) {
-        const apiData = response.data.data;
+        const apiData = response.data.data.homework;
 
         const filteredData = Object.keys(formik.initialValues).reduce(
           (acc, key) => {

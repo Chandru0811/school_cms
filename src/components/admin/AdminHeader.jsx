@@ -158,7 +158,7 @@ function AdminHeader({ handleLogout }) {
       <div className="container-fluid">
         <div className="mb-npx">
           <div className="row align-items-center m-0">
-            <div className="col-sm-6 col-12 mb-4 mb-sm-0 admin-settings"></div>
+            <div className="col-sm-6 col-12 mb-md-4 admin-settings"></div>
             <div className="col-sm-6 col-12 text-sm-end">
               <div className="mx-n1 position-relative" ref={dropdownRef}>
                 <span className="me-5">
