@@ -628,7 +628,7 @@ function WorkSheetAdd() {
                   </div>
                 </div>
               </div>
-              {formik.values.type === "challenge" ? (
+              {formik.values.type === "question" ? (
                 <div className="col-md-6 col-12">
                   <div className="row mb-4">
                     <div className="col-5 d-flex">
@@ -638,7 +638,9 @@ function WorkSheetAdd() {
                     </div>
                     <div className="col-7">
                       <input
-                        placeholder="Enter Text"
+                        type="time"
+                        // step="1"
+                        placeholder="Enter Time"
                         className={`form-control form-control-sm ${formik.touched.time_limit && formik.errors.time_limit
                           ? "is-invalid"
                           : ""
@@ -646,9 +648,7 @@ function WorkSheetAdd() {
                         {...formik.getFieldProps("time_limit")}
                       />
                       {formik.touched.time_limit && formik.errors.time_limit && (
-                        <div className="invalid-feedback">
-                          {formik.errors.time_limit}
-                        </div>
+                        <div className="invalid-feedback">{formik.errors.time_limit}</div>
                       )}
                     </div>
                   </div>
@@ -856,7 +856,7 @@ function WorkSheetAdd() {
               <div className="col-md-6 col-12">
                 <div className="row mb-4">
                   <div className="col-5 d-flex">
-                    <p className="view-label-text">Total Scoree</p>{" "}
+                    <p className="view-label-text">Total Score</p>{" "}
                     <span className="text-danger">*</span>
                   </div>
                   <div className="col-7">
@@ -868,6 +868,9 @@ function WorkSheetAdd() {
                         : ""
                         }`}
                       {...formik.getFieldProps("total_score")}
+                      onInput={(e) =>
+                        (e.target.value = e.target.value.replace(/\D/g, ""))
+                      }
                     />
                     {formik.touched.total_score &&
                       formik.errors.total_score && (
@@ -894,6 +897,9 @@ function WorkSheetAdd() {
                         : ""
                         }`}
                       {...formik.getFieldProps("target_score")}
+                      onInput={(e) =>
+                        (e.target.value = e.target.value.replace(/\D/g, ""))
+                      }
                     />
                     {formik.touched.target_score &&
                       formik.errors.target_score && (
@@ -919,6 +925,9 @@ function WorkSheetAdd() {
                         : ""
                         }`}
                       {...formik.getFieldProps("reward")}
+                      onInput={(e) =>
+                        (e.target.value = e.target.value.replace(/\D/g, ""))
+                      }
                     />
                     {formik.touched.reward && formik.errors.reward && (
                       <div className="invalid-feedback">

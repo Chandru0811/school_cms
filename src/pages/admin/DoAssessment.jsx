@@ -5,16 +5,14 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import Modal from "react-bootstrap/Modal";
 import ImageURL from "../../config/ImageURL";
-import { FaArrowRight, FaBookmark, FaClock, FaLightbulb } from "react-icons/fa";
+import { FaBookmark } from "react-icons/fa";
 import { HiOutlineLightBulb } from "react-icons/hi";
-import { MdKeyboardArrowLeft } from "react-icons/md";
 import { format } from "date-fns";
 import { TbArrowForwardUpDouble } from "react-icons/tb";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { IoClose, IoPauseCircleOutline, IoPlay } from "react-icons/io5";
 import icon2 from "../../assets/images/Icon (2).svg";
 import { CiBookmark } from "react-icons/ci";
-import { RxResume } from "react-icons/rx";
 
 const DoAssessment = () => {
   const [data, setData] = useState({});
@@ -36,26 +34,52 @@ const DoAssessment = () => {
   const [hasInteracted, setHasInteracted] = useState(false);
   const [overallTimeLeft, setOverallTimeLeft] = useState(data.time_limit * 60);
   const [isPaused, setIsPaused] = useState(false);
+  const [startTime, setStartTime] = useState(null);
+  const [timeTakenDisplay, setTimeTakenDisplay] = useState("00:00:00");
 
   // Function to handle image click
   const handleImageClick = (imageUrl) => {
     setSelectedImage(imageUrl);
     setShowModal(true);
   };
-
   // Function to close the modal
   const handleCloseModal = () => {
     setShowModal(false);
   };
+
   const handlePauseClick = () => {
     setIsPaused(true);  // Pause the timer
     setShowResume(true);
   };
-
   // Function to resume the timer
   const handlePauseClose = () => {
     setIsPaused(false); // Resume the timer
     setShowResume(false);
+  };
+
+  const parseTimeLimit = (timeLimit) => {
+    const [hours, minutes, seconds] = timeLimit.split(":").map(Number);
+    return hours * 3600 + minutes * 60 + seconds;
+  };
+  const formatTime = (seconds) => {
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = seconds % 60;
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+  };
+
+  const calculateTimeTaken = () => {
+    if (!startTime) return "00:00:00";
+
+    const endTime = Date.now(); // Current time when submission happens
+    const timeTakenInSeconds = Math.floor((endTime - startTime) / 1000); // Convert to seconds
+
+    // Format the time taken into HH:MM:SS
+    const hours = Math.floor(timeTakenInSeconds / 3600);
+    const minutes = Math.floor((timeTakenInSeconds % 3600) / 60);
+    const seconds = timeTakenInSeconds % 60;
+
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
   };
 
   const validateAnswers = () => {
@@ -70,6 +94,9 @@ const DoAssessment = () => {
     }
     return true;
   };
+  // Calculate total time taken
+  const timeTaken = calculateTimeTaken();
+  console.log("taken::", timeTaken);
 
   const formik = useFormik({
     initialValues: {
@@ -87,6 +114,8 @@ const DoAssessment = () => {
       console.log("values", values);
       const formData = new FormData();
       formData.append("assessment_id", assignedId);
+
+      formData.append("time_taken", timeTaken);
 
       // Sort the answers by question ID
       const sortedAnswers = Object.keys(answers)
@@ -193,8 +222,12 @@ const DoAssessment = () => {
           setTimeLeft(null);
         }
       }
+      // if (response.data.data.time_limit) {
+      //   setOverallTimeLeft(response.data.data.time_limit);
+      // }
       if (response.data.data.time_limit) {
-        setOverallTimeLeft(response.data.data.time_limit);
+        const totalSeconds = parseTimeLimit(response.data.data.time_limit);
+        setOverallTimeLeft(totalSeconds);
       }
     } catch (e) {
       const errorMessage =
@@ -489,38 +522,32 @@ const DoAssessment = () => {
     const heldQuestions = Object.keys(answers).filter(
       (key) => answers[key]?.hold === true
     );
-  
-    if (heldQuestions.length > 0) {
-      const firstHeldQuestionId = heldQuestions[0];
-      const firstHeldQuestionIndex = data.questions.findIndex(
-        (q) => q.id === firstHeldQuestionId
-      );
-  
-      if (firstHeldQuestionIndex !== -1) {
-        setCurrentQuestionIndex(firstHeldQuestionIndex);
-        toast.error("Please address held questions before submitting.");
-        return; // Prevent submission
-      }
-    }
-  
-    // If no questions are held, proceed with submission
-    try {
-      await formik.handleSubmit();
-  
-      // Calculate skipped and held questions count
-      const skippedQuestions = Object.keys(answers).filter(
-        (key) => answers[key]?.skipped === true
-      ).length;
-  
-      const heldQuestionsCount = heldQuestions.length;
-  
-      // Show toast message with skipped and held questions count
-      toast.info(
-        `You have skipped ${skippedQuestions} question(s) and held ${heldQuestionsCount} question(s).`
-      );
-    } catch (error) {
-      toast.error(error);
-    }
+
+    // if (heldQuestions.length > 0) {
+    //   const firstHeldQuestionId = heldQuestions[0];
+    //   const firstHeldQuestionIndex = data.questions.findIndex(
+    //     (q) => q.id === firstHeldQuestionId
+    //   );
+
+    //   if (firstHeldQuestionIndex !== -1) {
+    //     setCurrentQuestionIndex(firstHeldQuestionIndex);
+    //     toast.error("Please address held questions before submitting.");
+    //     return; // Prevent submission
+    //   }
+    // }
+
+    // Calculate skipped and held questions count
+    const skippedQuestions = Object.keys(answers).filter(
+      (key) => answers[key]?.skipped === true
+    ).length;
+
+    const heldQuestionsCount = heldQuestions.length;
+
+    // Show toast message with skipped and held questions count
+    toast(
+      `You have skipped ${skippedQuestions} question(s) and hold ${heldQuestionsCount} question(s).`, { icon: "⚠️" }
+    );
+    await formik.handleSubmit();
   };
 
   const handleNext = () => {
@@ -607,6 +634,26 @@ const DoAssessment = () => {
     }
     console.log("hold question::", currentQuestionId)
   };
+
+  useEffect(() => {
+    if (startTime) {
+      const interval = setInterval(() => {
+        const currentTime = Date.now();
+        const timeTakenInSeconds = Math.floor((currentTime - startTime) / 1000);
+
+        const hours = Math.floor(timeTakenInSeconds / 3600);
+        const minutes = Math.floor((timeTakenInSeconds % 3600) / 60);
+        const seconds = timeTakenInSeconds % 60;
+
+        setTimeTakenDisplay(
+          `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`
+        );
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [startTime]);
+
   useEffect(() => {
     if (timeLeft !== null && timeLeft > 0) {
       const timer = setInterval(() => {
@@ -626,40 +673,42 @@ const DoAssessment = () => {
   }, [timeLeft, currentQuestionIndex]);
 
   useEffect(() => {
-    if (overallTimeLeft > 0 && !isPaused) {  // Only run when NOT paused
+    if (overallTimeLeft > 0 && !isPaused) {
       const timer = setInterval(() => {
         setOverallTimeLeft((prev) => prev - 1);
       }, 1000);
 
       return () => clearInterval(timer);
     } else if (overallTimeLeft === 0) {
-      // Check if any questions are held before submitting
+      // Notify the user about skipped and held questions
+      const skippedQuestions = Object.keys(answers).filter(
+        (key) => answers[key]?.skipped === true
+      ).length;
       const heldQuestions = Object.keys(answers).filter(
         (key) => answers[key]?.hold === true
-      );
+      ).length;
 
-      if (heldQuestions.length > 0) {
-        // Navigate to the first held question
-        const firstHeldQuestionId = heldQuestions[0];
-        const firstHeldQuestionIndex = data.questions.findIndex(
-          (q) => q.id === firstHeldQuestionId
+      if (skippedQuestions > 0 || heldQuestions > 0) {
+        toast(
+          `You have skipped ${skippedQuestions} question(s) and held ${heldQuestions} question(s).`,
+          { icon: "⚠️" }
         );
-
-        if (firstHeldQuestionIndex !== -1) {
-          setCurrentQuestionIndex(firstHeldQuestionIndex);
-          toast.error("Time's up! Please address held questions.");
-        }
-      } else {
-        // If no questions are held, submit the assessment
-        formik.handleSubmit();
       }
-      console.log("heldQuestions::", heldQuestions);
+
+      // Submit the assessment
+      formik.handleSubmit();
     }
   }, [overallTimeLeft, isPaused]);
 
   useEffect(() => {
     getData();
   }, [assignedId]);
+
+  useEffect(() => {
+    if (data.time_limit) {
+      setStartTime(Date.now());
+    }
+  }, [data]);
 
   if (!data?.questions || !data?.ques_id_with_type) return null;
 
@@ -827,8 +876,13 @@ const DoAssessment = () => {
                       <p className="dash-font fw-12 fw-semibold">TIME LEFT</p>
                       {/* <p className="dash-font heading-color fw-bold">{data.time_limit} Mins</p> */}
                       <p className="dash-font heading-color fw-bold">
-                        {Math.floor(overallTimeLeft / 60)}:{overallTimeLeft % 60 < 10 ? `0${overallTimeLeft % 60}` : overallTimeLeft % 60} Mins
+                        {/* {Math.floor(overallTimeLeft / 60)}:{overallTimeLeft % 60 < 10 ? `0${overallTimeLeft % 60}` : overallTimeLeft % 60} */}
+                        {formatTime(overallTimeLeft)}
                       </p>
+                      {/* <p className="dash-font fw-12 fw-semibold">TIME TAKEN</p>
+                      <p className="dash-font heading-color fw-bold">
+                        {timeTakenDisplay}
+                      </p> */}
                     </div>
                   </div>
                 </>) : null

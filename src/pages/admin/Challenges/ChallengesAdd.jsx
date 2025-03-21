@@ -787,7 +787,7 @@ function ChallengesAdd() {
                     <div className="row mb-4">
                       <div className="col-5 d-flex">
                         <p className="view-label-text">
-                          Challenge Descriptione
+                          Challenge Description
                         </p>
                       </div>
                       <div className="col-7">

@@ -49,6 +49,7 @@ function QuestionEdit() {
       topic_id: "",
       difficult_level: "",
       question: "",
+      description: "",
       upload: null,
       ques_type: [],
       answer: [],
@@ -80,6 +81,7 @@ function QuestionEdit() {
       formData.append("topic_id", values.topic_id);
       formData.append("difficult_level", values.difficult_level);
       formData.append("question", values.question);
+      formData.append("description", values.description);
       formData.append("hint", values.hint ? values.hint : "");
 
       let multichoiceAdded = false;
@@ -320,6 +322,7 @@ function QuestionEdit() {
         topic_id: question.topic_id,
         difficult_level: question.difficult_level,
         question: question.question,
+        description: question.description,
         upload: question.upload,
         ques_type: parsedQuesType,
         options: initialMultiChoices,
@@ -583,11 +586,10 @@ function QuestionEdit() {
                           }
                         }}
                         labelledBy="Select Center"
-                        className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${
-                          formik.touched.center_id && formik.errors.center_id
-                            ? "is-invalid"
-                            : ""
-                        }`}
+                        className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${formik.touched.center_id && formik.errors.center_id
+                          ? "is-invalid"
+                          : ""
+                          }`}
                       />
                       {formik.touched.center_id && formik.errors.center_id && (
                         <div className="invalid-feedback">
@@ -605,11 +607,10 @@ function QuestionEdit() {
                     </div>
                     <div className="col-7">
                       <select
-                        className={`form-select form-select-sm ${
-                          formik.touched.grade_id && formik.errors.grade_id
-                            ? "is-invalid"
-                            : ""
-                        }`}
+                        className={`form-select form-select-sm ${formik.touched.grade_id && formik.errors.grade_id
+                          ? "is-invalid"
+                          : ""
+                          }`}
                         value={formik.values.grade_id}
                         onChange={(e) =>
                           formik.setFieldValue("grade_id", e.target.value)
@@ -638,11 +639,10 @@ function QuestionEdit() {
                     </div>
                     <div className="col-7">
                       <select
-                        className={`form-select form-select-sm ${
-                          formik.touched.subject_id && formik.errors.subject_id
-                            ? "is-invalid"
-                            : ""
-                        }`}
+                        className={`form-select form-select-sm ${formik.touched.subject_id && formik.errors.subject_id
+                          ? "is-invalid"
+                          : ""
+                          }`}
                         value={formik.values.subject_id}
                         onChange={(e) =>
                           formik.setFieldValue("subject_id", e.target.value)
@@ -672,11 +672,10 @@ function QuestionEdit() {
                     </div>
                     <div className="col-7">
                       <select
-                        className={`form-select form-select-sm ${
-                          formik.touched.topic_id && formik.errors.topic_id
-                            ? "is-invalid"
-                            : ""
-                        }`}
+                        className={`form-select form-select-sm ${formik.touched.topic_id && formik.errors.topic_id
+                          ? "is-invalid"
+                          : ""
+                          }`}
                         {...formik.getFieldProps("topic_id")}
                       >
                         <option value="">Select Topic</option>
@@ -761,11 +760,10 @@ function QuestionEdit() {
                       <input
                         type="text"
                         placeholder="Enter Text"
-                        className={`form-control form-control-sm ${
-                          formik.touched.question && formik.errors.question
-                            ? "is-invalid"
-                            : ""
-                        }`}
+                        className={`form-control form-control-sm ${formik.touched.question && formik.errors.question
+                          ? "is-invalid"
+                          : ""
+                          }`}
                         {...formik.getFieldProps("question")}
                       ></input>
                       {formik.touched.question && formik.errors.question && (
@@ -779,17 +777,35 @@ function QuestionEdit() {
                 <div className="col-md-6 col-12">
                   <div className="row mb-4">
                     <div className="col-5 d-flex">
+                      <p className="view-label-text">Question Descriptione</p>
+                    </div>
+                    <div className="col-7">
+                      <textarea
+                        rows={5}
+                        className={`form-control ${formik.touched.description &&
+                          formik.errors.description
+                          ? "is-invalid"
+                          : ""
+                          }`}
+                        {...formik.getFieldProps("description")}
+                        maxLength={825}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className="col-md-6 col-12">
+                  <div className="row mb-4">
+                    <div className="col-5 d-flex">
                       <p className="view-label-text">Upload File</p>
                     </div>
                     <div className="col-7">
                       <input
                         type="file"
                         accept="image/*"
-                        className={`form-control form-control-sm ${
-                          formik.touched.upload && formik.errors.upload
-                            ? "is-invalid"
-                            : ""
-                        }`}
+                        className={`form-control form-control-sm ${formik.touched.upload && formik.errors.upload
+                          ? "is-invalid"
+                          : ""
+                          }`}
                         onChange={(event) => {
                           formik.setFieldValue(
                             "upload",
@@ -850,12 +866,11 @@ function QuestionEdit() {
                       <input
                         type="text"
                         placeholder="Your Question & Answer"
-                        className={`form-control form-control-sm ${
-                          formik.touched.answer?.[0]?.fillable &&
+                        className={`form-control form-control-sm ${formik.touched.answer?.[0]?.fillable &&
                           formik.errors.answer?.[0]?.fillable
-                            ? "is-invalid"
-                            : ""
-                        }`}
+                          ? "is-invalid"
+                          : ""
+                          }`}
                         name="answer"
                         value={formik.values.answer[0]?.fillable || ""}
                         onChange={(e) => {
@@ -981,13 +996,12 @@ function QuestionEdit() {
                           <div className="input-group mb-2">
                             <input
                               type="text"
-                              className={`form-control form-control-sm ${
-                                formik.errors.options &&
+                              className={`form-control form-control-sm ${formik.errors.options &&
                                 formik.touched.options &&
                                 formik.errors.options[index]?.value
-                                  ? "is-invalid"
-                                  : ""
-                              }`}
+                                ? "is-invalid"
+                                : ""
+                                }`}
                               name={`options[${index}].value`}
                               value={multiChoice.value}
                               onChange={(e) => {
@@ -1001,12 +1015,12 @@ function QuestionEdit() {
                                   updatedAnswers = updatedAnswers.map((ans) =>
                                     ans.multichoice === multiChoice.value
                                       ? {
-                                          ...ans,
-                                          multichoice: e.target.value.replace(
-                                            /,/g,
-                                            ""
-                                          ),
-                                        }
+                                        ...ans,
+                                        multichoice: e.target.value.replace(
+                                          /,/g,
+                                          ""
+                                        ),
+                                      }
                                       : ans
                                   );
                                 }
@@ -1073,12 +1087,11 @@ function QuestionEdit() {
                       <label className="form-label">Short Answer</label>
                       <textarea
                         rows={3}
-                        className={`form-control ${
-                          formik.touched.answer?.[0]?.short_answer &&
+                        className={`form-control ${formik.touched.answer?.[0]?.short_answer &&
                           formik.errors.answer?.[0]?.short_answer
-                            ? "is-invalid"
-                            : ""
-                        }`}
+                          ? "is-invalid"
+                          : ""
+                          }`}
                         name="answer"
                         value={formik.values.answer[0]?.short_answer || ""}
                         onChange={(e) => {
@@ -1104,12 +1117,11 @@ function QuestionEdit() {
                       <label className="form-label">Answer Upload</label>
                       <input
                         type="file"
-                        className={`form-control form-control-sm ${
-                          formik.touched.answer_upload &&
+                        className={`form-control form-control-sm ${formik.touched.answer_upload &&
                           formik.errors.answer_upload
-                            ? "is-invalid"
-                            : ""
-                        }`}
+                          ? "is-invalid"
+                          : ""
+                          }`}
                         name="answer_upload"
                         accept="image/*"
                         onChange={(event) => {

@@ -28,10 +28,16 @@ function Successfull() {
     const total_questions = queryParams.get("total_questions");
     const title = queryParams.get("title");
     const id = queryParams.get("id");
+    const totalScore = queryParams.get("totalScore");
+    const score = queryParams.get("score");
     console.log("title", title);
+    console.log("rewardss::", rewards);
+
+    const percentage = (score / totalScore) * 100;
+    console.log("percetage::", percentage||"");
 
     const [state, setState] = useState({
-        series: [85],
+        series: [percentage],
         options: {
             chart: {
                 type: 'radialBar',

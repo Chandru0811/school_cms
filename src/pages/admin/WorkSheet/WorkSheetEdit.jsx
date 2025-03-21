@@ -366,7 +366,7 @@ function WorkSheetEdit() {
     try {
       const response = await api.get(`worksheet/${id}`);
       if (response.status === 200) {
-        const apiData = response.data.data;
+        const apiData = response.data.data.worksheet;
 
         const filteredData = Object.keys(formik.initialValues).reduce(
           (acc, key) => {
@@ -730,8 +730,8 @@ function WorkSheetEdit() {
                         name="type"
                         value="challenge"
                         className={`form-check-input ${formik.touched.type && formik.errors.type
-                            ? "is-invalid"
-                            : ""
+                          ? "is-invalid"
+                          : ""
                           }`}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
@@ -758,8 +758,8 @@ function WorkSheetEdit() {
                       <input
                         placeholder="Enter Text"
                         className={`form-control form-control-sm ${formik.touched.title && formik.errors.title
-                            ? "is-invalid"
-                            : ""
+                          ? "is-invalid"
+                          : ""
                           }`}
                         {...formik.getFieldProps("title")}
                       />
@@ -771,7 +771,7 @@ function WorkSheetEdit() {
                     </div>
                   </div>
                 </div>
-                {formik.values.type === "challenge" ? (
+                {formik.values.type === "question" ? (
                   <div className="col-md-6 col-12">
                     <div className="row mb-4">
                       <div className="col-5 d-flex">
@@ -781,7 +781,9 @@ function WorkSheetEdit() {
                       </div>
                       <div className="col-7">
                         <input
-                          placeholder="Enter Text"
+                          type="time"
+                          // step="1"
+                          placeholder="Enter Time"
                           className={`form-control form-control-sm ${formik.touched.time_limit && formik.errors.time_limit
                             ? "is-invalid"
                             : ""
@@ -789,9 +791,7 @@ function WorkSheetEdit() {
                           {...formik.getFieldProps("time_limit")}
                         />
                         {formik.touched.time_limit && formik.errors.time_limit && (
-                          <div className="invalid-feedback">
-                            {formik.errors.time_limit}
-                          </div>
+                          <div className="invalid-feedback">{formik.errors.time_limit}</div>
                         )}
                       </div>
                     </div>
@@ -827,8 +827,8 @@ function WorkSheetEdit() {
                         }}
                         labelledBy="Select Service"
                         className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${formik.touched.center_id && formik.errors.center_id
-                            ? "is-invalid"
-                            : ""
+                          ? "is-invalid"
+                          : ""
                           }`}
                       />
                       {formik.touched.center_id && formik.errors.center_id && (
@@ -866,8 +866,8 @@ function WorkSheetEdit() {
                         }}
                         labelledBy="Select Service"
                         className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${formik.touched.grade_id && formik.errors.grade_id
-                            ? "is-invalid"
-                            : ""
+                          ? "is-invalid"
+                          : ""
                           }`}
                       />
 
@@ -954,8 +954,8 @@ function WorkSheetEdit() {
                         }}
                         labelledBy="Select Service"
                         className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${formik.touched.ques_type && formik.errors.ques_type
-                            ? "is-invalid"
-                            : ""
+                          ? "is-invalid"
+                          : ""
                           }`}
                       />
                       {formik.touched.ques_type && formik.errors.ques_type && (
@@ -975,9 +975,9 @@ function WorkSheetEdit() {
                     <div className="col-7">
                       <select
                         className={`form-select form-select-sm ${formik.touched.difficult_level &&
-                            formik.errors.difficult_level
-                            ? "is-invalid"
-                            : ""
+                          formik.errors.difficult_level
+                          ? "is-invalid"
+                          : ""
                           }`}
                         {...formik.getFieldProps("difficult_level")}
                       >
@@ -999,7 +999,7 @@ function WorkSheetEdit() {
                 <div className="col-md-6 col-12">
                   <div className="row mb-4">
                     <div className="col-5 d-flex">
-                      <p className="view-label-text">Total Scoree</p>{" "}
+                      <p className="view-label-text">Total Score</p>{" "}
                       <span className="text-danger">*</span>
                     </div>
                     <div className="col-7">
@@ -1007,11 +1007,14 @@ function WorkSheetEdit() {
                         placeholder="Enter Text"
                         type="text"
                         className={`form-control form-control-sm ${formik.touched.total_score &&
-                            formik.errors.total_score
-                            ? "is-invalid"
-                            : ""
+                          formik.errors.total_score
+                          ? "is-invalid"
+                          : ""
                           }`}
                         {...formik.getFieldProps("total_score")}
+                        onInput={(e) =>
+                          (e.target.value = e.target.value.replace(/\D/g, ""))
+                        }
                       />
                       {formik.touched.total_score &&
                         formik.errors.total_score && (
@@ -1033,11 +1036,14 @@ function WorkSheetEdit() {
                         placeholder="Enter Text"
                         type="text"
                         className={`form-control form-control-sm ${formik.touched.target_score &&
-                            formik.errors.target_score
-                            ? "is-invalid"
-                            : ""
+                          formik.errors.target_score
+                          ? "is-invalid"
+                          : ""
                           }`}
                         {...formik.getFieldProps("target_score")}
+                        onInput={(e) =>
+                          (e.target.value = e.target.value.replace(/\D/g, ""))
+                        }
                       />
                       {formik.touched.target_score &&
                         formik.errors.target_score && (
@@ -1059,10 +1065,13 @@ function WorkSheetEdit() {
                         placeholder="Enter Text"
                         type="text"
                         className={`form-control form-control-sm ${formik.touched.reward && formik.errors.reward
-                            ? "is-invalid"
-                            : ""
+                          ? "is-invalid"
+                          : ""
                           }`}
                         {...formik.getFieldProps("reward")}
+                        onInput={(e) =>
+                          (e.target.value = e.target.value.replace(/\D/g, ""))
+                        }
                       />
                       {formik.touched.reward && formik.errors.reward && (
                         <div className="invalid-feedback">
