@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { FaPlus } from "react-icons/fa";
 import { Button, Modal } from "react-bootstrap";
+import { MdKeyboardArrowLeft } from "react-icons/md";
+import { FiSave } from "react-icons/fi";
 
 function AddTopic({ id, onSuccess }) {
   const navigate = useNavigate();
@@ -103,7 +105,7 @@ function AddTopic({ id, onSuccess }) {
       >
         <FaPlus fontSize={12} className="" />
       </button>
-    <Modal show={show} onHide={handleClose} size="lg" centered>
+      <Modal show={show} onHide={handleClose} size="md">
         <form
           onSubmit={formik.handleSubmit}
           onKeyDown={(e) => {
@@ -112,15 +114,19 @@ function AddTopic({ id, onSuccess }) {
             }
           }}
         >
-          <Modal.Header>
-            <Modal.Title>Topic Add</Modal.Title>
-            <div className="d-flex gap-3">
-              <Button
-                className="btn btn-secondary btn-sm py-0"
+          <Modal.Header closeButton className="justify-content-start gap-2">
+            <div>
+              <button
+                type="button "
+                className="btn btn-sm add-btn"
                 onClick={handleClose}
               >
-                Close
-              </Button>
+                <MdKeyboardArrowLeft size={20} />
+              </button>
+              &nbsp;&nbsp;
+            </div>
+            <Modal.Title>Topic Add</Modal.Title>
+            <div className="d-flex gap-3 ms-auto">
               <Button
                 className="btn add-btn button-spinner"
                 type="submit"
@@ -133,7 +139,7 @@ function AddTopic({ id, onSuccess }) {
                     aria-hidden="true"
                   ></span>
                 )}
-                <small>Submit</small>
+                <FiSave className="trash-icon" />
               </Button>
             </div>
           </Modal.Header>
@@ -144,7 +150,7 @@ function AddTopic({ id, onSuccess }) {
               </div>
             ) : (
               <div className="row">
-                <div className="col-md-6 col-12 mb-3">
+                <div className="col-12 mb-3">
                   <label className="form-label">
                     Topic Name<span className="text-danger">*</span>
                   </label>
@@ -164,7 +170,7 @@ function AddTopic({ id, onSuccess }) {
                   )}
                 </div>
 
-                <div className="col-md-6 col-12 mb-3">
+                <div className="col-12 mb-3">
                   <label className="form-label">Description</label>
                   <textarea
                     className={`form-control ${

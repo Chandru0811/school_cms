@@ -8,6 +8,8 @@ import { MultiSelect } from "react-multi-select-component";
 import api from "../../../config/URL";
 import { FaPlus } from "react-icons/fa";
 import { Button, Modal, ModalBody } from "react-bootstrap";
+import { MdKeyboardArrowLeft } from "react-icons/md";
+import { FiSave } from "react-icons/fi";
 
 function TopicAdd({ onSuccess }) {
   const [show, setShow] = useState(false);
@@ -119,7 +121,7 @@ function TopicAdd({ onSuccess }) {
       >
         <FaPlus fontSize={12} className="me-1" /> Add Subject
       </button>
-    <Modal show={show} onHide={handleClose} size="lg" centered>
+    <Modal show={show} onHide={handleClose} size="md">
         <form
           onSubmit={formik.handleSubmit}
           onKeyDown={(e) => {
@@ -128,15 +130,20 @@ function TopicAdd({ onSuccess }) {
             }
           }}
         >
-          <Modal.Header>
-            <Modal.Title>Subject Add</Modal.Title>
-            <div className="d-flex gap-3">
-              <Button
-                className="btn btn-secondary btn-sm py-0"
+          <Modal.Header closeButton className="justify-content-start gap-2">
+          <div>
+              <button
+                type="button "
+                className="btn btn-sm add-btn"
                 onClick={handleClose}
               >
-                Close
-              </Button>
+                <MdKeyboardArrowLeft size={20} />
+              </button>
+              &nbsp;&nbsp;
+            </div>
+            <Modal.Title>Subject Add</Modal.Title>
+            <div className="d-flex gap-3 ms-auto">
+              
               <Button
                 className="btn add-btn button-spinner"
                 type="submit"
@@ -149,19 +156,19 @@ function TopicAdd({ onSuccess }) {
                     aria-hidden="true"
                   ></span>
                 )}
-                <small> Submit</small>
+                <FiSave className="trash-icon" />
               </Button>
             </div>
           </Modal.Header>
           <ModalBody>
             <div className="row">
-              <div className="col-md-6 col-12">
+              <div className="col-12">
                 <div className="row mb-4">
-                  <div className="col-5 d-flex">
+                  <div className="col-12 d-flex">
                     <p className="view-label-text">Centre Name</p>{" "}
                     <span className="text-danger">*</span>
                   </div>
-                  <div className="col-7">
+                  <div className="col-12">
                     <MultiSelect
                       options={centerList}
                       value={selectedCenter}
@@ -173,7 +180,7 @@ function TopicAdd({ onSuccess }) {
                         );
                       }}
                       labelledBy="Select Center"
-                      className={`form-multi-select form-multi-select-sm border-1 rounded-1 mb-5${
+                      className={`form-multi-select border-1 rounded-1 ${
                         formik.touched.center_id && formik.errors.center_id
                           ? "is-invalid"
                           : ""
@@ -187,15 +194,15 @@ function TopicAdd({ onSuccess }) {
                   </div>
                 </div>
               </div>
-              <div className="col-md-6 col-12">
+              <div className="col-12">
                 <div className="row mb-4">
-                  <div className="col-5 d-flex">
+                  <div className="col-12 d-flex">
                     <p className="view-label-text">Grade</p>{" "}
                     <span className="text-danger">*</span>
                   </div>
-                  <div className="col-7">
+                  <div className="col-12">
                     <select
-                      className={`form-select form-select-sm ${
+                      className={`form-select  ${
                         formik.touched.grade_id && formik.errors.grade_id
                           ? "is-invalid"
                           : ""
@@ -220,18 +227,18 @@ function TopicAdd({ onSuccess }) {
                   </div>
                 </div>
               </div>
-              <div className="col-md-6 col-12">
+              <div className="col-12">
                 <div className="row mb-4">
-                  <div className="col-5 d-flex">
+                  <div className="col-12 d-flex">
                     <p className="view-label-text">Name</p>{" "}
                     <span className="text-danger">*</span>
                   </div>
-                  <div className="col-7">
+                  <div className="col-12">
                     <input
                       placeholder="Enter Text"
                       type="text"
                       onKeyDown={(e) => e.stopPropagation()}
-                      className={`form-control form-control-sm ${
+                      className={`form-control  ${
                         formik.touched.name && formik.errors.name
                           ? "is-invalid"
                           : ""
@@ -246,12 +253,12 @@ function TopicAdd({ onSuccess }) {
                   </div>
                 </div>
               </div>
-              <div className="col-md-6 col-12">
+              <div className="col-12">
                 <div className="row mb-4">
-                  <div className="col-5 d-flex">
+                  <div className="col-12 d-flex">
                     <p className="view-label-text">Description</p>
                   </div>
-                  <div className="col-7">
+                  <div className="col-12">
                     <textarea
                       placeholder="Enter Text"
                       className={`form-control ${

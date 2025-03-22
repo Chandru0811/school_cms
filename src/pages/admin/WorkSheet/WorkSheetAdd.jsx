@@ -508,7 +508,7 @@ function WorkSheetAdd() {
     getTopicsList();
   }, [formik.values.subject_id]);
   return (
-    <div className="container p-3">
+    <div className="container p-3 common-fonts">
       <form
         onSubmit={formik.handleSubmit}
         onKeyDown={(e) => {
@@ -517,7 +517,7 @@ function WorkSheetAdd() {
           }
         }}
       >
-        <div className="d-flex justify-content-between align-items-center  p-1 mb-4">
+        <div className="d-flex justify-content-between align-items-center flex-wrap p-2 my-lg-2">
           <div className="d-flex align-items-center">
             <div>
               <Link to="/worksheet">
@@ -535,14 +535,14 @@ function WorkSheetAdd() {
           <div className="my-2 d-flex align-items-center justify-content-between gap-5">
             <button
               type="button"
-              className="btn view-delete-btn"
+              className="btn discard-btn"
               onClick={() => {
                 formik.resetForm();
                 formik.setErrors({});
                 formik.setTouched({}, false);
               }}
             >
-              <GoTrash className="trash-icon" /> &nbsp;&nbsp; Discard Changes
+              <GoTrash className="trash-icon" />
             </button>
             <button
               type="submit"
@@ -559,13 +559,13 @@ function WorkSheetAdd() {
             </button>
           </div>
         </div>
-        <div className="card" style={{ border: "1px solid #dbd9d0" }}>
-          <div className="d-flex justify-content-between px-5 my-2">
+        <div className="card px-md-4 pt-4 pb-md-3" style={{ border: "1px solid #dbd9d0" }}>
+          <div className="d-flex justify-content-between px-4 my-2">
             <p className="view-header">Worksheet Info</p>
           </div>
           <div className="container-fluid px-4">
             <div className="row py-4">
-              <div className="col-md-6 col-12 mb-3">
+              <div className="col-md-6 col-12 mb-3 pe-xl-5">
                 <div className="d-flex gap-3">
                   <div className="form-check">
                     <input
@@ -598,9 +598,9 @@ function WorkSheetAdd() {
                   </div>
                 </div>
               </div>
-              <div className="col-md-6 col-12">
+              <div className="col-md-6 col-12 ps-xl-5">
                 <div className="row mb-4">
-                  <div className="col-5 d-flex">
+                  <div className="col-xl-5 col-12 d-flex">
                     {formik.values.type === "challenge" ? (
                       <label className="view-label-text">
                         Challenge Title<span className="text-danger">*</span>
@@ -611,10 +611,10 @@ function WorkSheetAdd() {
                       </label>
                     ) : null}
                   </div>
-                  <div className="col-7">
+                  <div className="col-xl-7 col-12">
                     <input
                       placeholder="Enter Text"
-                      className={`form-control form-control-sm ${formik.touched.title && formik.errors.title
+                      className={`form-control  ${formik.touched.title && formik.errors.title
                         ? "is-invalid"
                         : ""
                         }`}
@@ -629,19 +629,19 @@ function WorkSheetAdd() {
                 </div>
               </div>
               {formik.values.type === "question" ? (
-                <div className="col-md-6 col-12">
+                <div className="col-md-6 col-12 pe-xl-5">
                   <div className="row mb-4">
-                    <div className="col-5 d-flex">
+                    <div className="col-xl-5 col-12 d-flex">
                       <label className="view-label-text">
                         Time Limit
                       </label>
                     </div>
-                    <div className="col-7">
+                    <div className="col-xl-7 col-12">
                       <input
                         type="time"
                         // step="1"
                         placeholder="Enter Time"
-                        className={`form-control form-control-sm ${formik.touched.time_limit && formik.errors.time_limit
+                        className={`form-control  ${formik.touched.time_limit && formik.errors.time_limit
                           ? "is-invalid"
                           : ""
                           }`}
@@ -654,13 +654,13 @@ function WorkSheetAdd() {
                   </div>
                 </div>
               ) : null}
-              <div className="col-md-6 col-12">
+              <div className="col-md-6 col-12 ps-xl-5">
                 <div className="row mb-4">
-                  <div className="col-5 d-flex">
+                  <div className="col-xl-5 col-12 d-flex">
                     <p className="view-label-text">Centre</p>{" "}
                     <span className="text-danger">*</span>
                   </div>
-                  <div className="col-7">
+                  <div className="col-xl-7 col-12">
                     <MultiSelect
                       options={centerList}
                       value={selectedCenter}
@@ -683,7 +683,7 @@ function WorkSheetAdd() {
                         }
                       }}
                       labelledBy="Select Service"
-                      className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${formik.touched.center_id && formik.errors.center_id
+                      className={`form-multi-select border-1 rounded-1 ${formik.touched.center_id && formik.errors.center_id
                         ? "is-invalid"
                         : ""
                         }`}
@@ -696,13 +696,13 @@ function WorkSheetAdd() {
                   </div>
                 </div>
               </div>
-              <div className="col-md-6 col-12">
+              <div className="col-md-6 col-12 pe-xl-5">
                 <div className="row mb-4">
-                  <div className="col-5 d-flex">
+                  <div className="col-xl-5 col-12 d-flex">
                     <p className="view-label-text">Grade</p>{" "}
                     <span className="text-danger">*</span>
                   </div>
-                  <div className="col-7">
+                  <div className="col-xl-7 col-12">
                     <MultiSelect
                       options={grades}
                       value={selectedGrades}
@@ -722,7 +722,7 @@ function WorkSheetAdd() {
                         }
                       }}
                       labelledBy="Select Service"
-                      className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${formik.touched.grade_id && formik.errors.grade_id
+                      className={`form-multi-select border-1 rounded-1 ${formik.touched.grade_id && formik.errors.grade_id
                         ? "is-invalid"
                         : ""
                         }`}
@@ -736,12 +736,12 @@ function WorkSheetAdd() {
                   </div>
                 </div>
               </div>
-              <div className="col-md-6 col-12">
+              <div className="col-md-6 col-12 ps-xl-5">
                 <div className="row mb-4">
-                  <div className="col-5 d-flex">
+                  <div className="col-xl-5 col-12 d-flex">
                     <p className="view-label-text">Subject</p>
                   </div>
-                  <div className="col-7">
+                  <div className="col-xl-7 col-12">
                     <MultiSelect
                       options={subjects}
                       value={selectedSubjects}
@@ -758,17 +758,17 @@ function WorkSheetAdd() {
                         }
                       }}
                       labelledBy="Select Service"
-                      className="form-multi-select form-multi-select-sm border-1 rounded-1"
+                      className="form-multi-select border-1 rounded-1"
                     />
                   </div>
                 </div>
               </div>
-              <div className="col-md-6 col-12">
+              <div className="col-md-6 col-12 pe-xl-5">
                 <div className="row mb-4">
-                  <div className="col-5 d-flex">
+                  <div className="col-xl-5 col-12 d-flex">
                     <p className="view-label-text">Topic</p>
                   </div>
-                  <div className="col-7">
+                  <div className="col-xl-7 col-12">
                     <MultiSelect
                       options={topics}
                       value={selectedTopics}
@@ -780,14 +780,14 @@ function WorkSheetAdd() {
                         );
                       }}
                       labelledBy="Select Topic"
-                      className="form-multi-select form-multi-select-sm border-1 rounded-1"
+                      className="form-multi-select border-1 rounded-1"
                     />
                   </div>
                 </div>
               </div>
-              <div className="col-md-6 col-12">
+              <div className="col-md-6 col-12 ps-xl-5">
                 <div className="row mb-4">
-                  <div className="col-5 d-flex">
+                  <div className="col-xl-5 col-12 d-flex">
                     {formik.values.type === "challenge" ? (
                       <label className="view-label-text">
                         Challenge Type<span className="text-danger">*</span>
@@ -798,7 +798,7 @@ function WorkSheetAdd() {
                       </label>
                     ) : null}
                   </div>
-                  <div className="col-7">
+                  <div className="col-xl-7 col-12">
                     <MultiSelect
                       options={questionOption}
                       value={selectedQuestion}
@@ -810,7 +810,7 @@ function WorkSheetAdd() {
                         );
                       }}
                       labelledBy="Select Service"
-                      className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${formik.touched.ques_type && formik.errors.ques_type
+                      className={`form-multi-select border-1 rounded-1 ${formik.touched.ques_type && formik.errors.ques_type
                         ? "is-invalid"
                         : ""
                         }`}
@@ -823,15 +823,15 @@ function WorkSheetAdd() {
                   </div>
                 </div>
               </div>
-              <div className="col-md-6 col-12">
+              <div className="col-md-6 col-12 pe-xl-5">
                 <div className="row mb-4">
-                  <div className="col-5 d-flex">
+                  <div className="col-xl-5 col-12 d-flex">
                     <p className="view-label-text">Difficulty Type</p>{" "}
                     <span className="text-danger">*</span>
                   </div>
-                  <div className="col-7">
+                  <div className="col-xl-7 col-12">
                     <select
-                      className={`form-select form-select-sm ${formik.touched.difficult_level &&
+                      className={`form-select ${formik.touched.difficult_level &&
                         formik.errors.difficult_level
                         ? "is-invalid"
                         : ""
@@ -853,17 +853,17 @@ function WorkSheetAdd() {
                   </div>
                 </div>
               </div>
-              <div className="col-md-6 col-12">
+              <div className="col-md-6 col-12 ps-xl-5">
                 <div className="row mb-4">
-                  <div className="col-5 d-flex">
+                  <div className="col-xl-5 col-12 d-flex">
                     <p className="view-label-text">Total Score</p>{" "}
                     <span className="text-danger">*</span>
                   </div>
-                  <div className="col-7">
+                  <div className="col-xl-7 col-12">
                     <input
                       placeholder="Enter Text"
                       type="text"
-                      className={`form-control form-control-sm ${formik.touched.total_score && formik.errors.total_score
+                      className={`form-control  ${formik.touched.total_score && formik.errors.total_score
                         ? "is-invalid"
                         : ""
                         }`}
@@ -881,17 +881,17 @@ function WorkSheetAdd() {
                   </div>
                 </div>
               </div>
-              <div className="col-md-6 col-12">
+              <div className="col-md-6 col-12 pe-xl-5">
                 <div className="row mb-4">
-                  <div className="col-5 d-flex">
+                  <div className="col-xl-5 col-12 d-flex">
                     <p className="view-label-text">Target Score</p>{" "}
                     <span className="text-danger">*</span>
                   </div>
-                  <div className="col-7">
+                  <div className="col-xl-7 col-12">
                     <input
                       placeholder="Enter Text"
                       type="text"
-                      className={`form-control form-control-sm ${formik.touched.target_score &&
+                      className={`form-control  ${formik.touched.target_score &&
                         formik.errors.target_score
                         ? "is-invalid"
                         : ""
@@ -910,17 +910,17 @@ function WorkSheetAdd() {
                   </div>
                 </div>
               </div>
-              <div className="col-md-6 col-12">
+              <div className="col-md-6 col-12 ps-xl-5">
                 <div className="row mb-4">
-                  <div className="col-5 d-flex">
+                  <div className="col-xl-5 col-12 d-flex">
                     <p className="view-label-text">Reward</p>{" "}
                     <span className="text-danger">*</span>
                   </div>
-                  <div className="col-7">
+                  <div className="col-xl-7 col-12">
                     <input
                       placeholder="Enter Text"
                       type="text"
-                      className={`form-control form-control-sm ${formik.touched.reward && formik.errors.reward
+                      className={`form-control  ${formik.touched.reward && formik.errors.reward
                         ? "is-invalid"
                         : ""
                         }`}

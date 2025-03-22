@@ -484,7 +484,7 @@ function QuestionAdd() {
   // };
 
   return (
-    <div className="container p-3">
+    <div className="container p-3 common-fonts">
       <form
         onSubmit={formik.handleSubmit}
         onKeyDown={(e) => {
@@ -493,7 +493,7 @@ function QuestionAdd() {
           }
         }}
       >
-        <div className="d-flex justify-content-between align-items-center  p-1 mb-4">
+        <div className="d-flex justify-content-between align-items-center flex-wrap p-2 my-lg-2">
           <div className="d-flex align-items-center">
             <div>
               <Link to="/question">
@@ -511,14 +511,14 @@ function QuestionAdd() {
           <div className="my-2 d-flex align-items-center justify-content-between gap-5">
             <button
               type="button"
-              className="btn view-delete-btn"
+              className="btn discard-btn"
               onClick={() => {
                 formik.resetForm();
                 formik.setErrors({});
                 formik.setTouched({}, false);
               }}
             >
-              <GoTrash className="trash-icon" /> &nbsp;&nbsp; Discard Changes
+              <GoTrash className="trash-icon" />
             </button>
             <button
               type="submit"
@@ -535,19 +535,19 @@ function QuestionAdd() {
             </button>
           </div>
         </div>
-        <div className="card" style={{ border: "1px solid #dbd9d0" }}>
-          <div className="d-flex justify-content-between px-5 my-2">
+        <div className="card px-md-4 pt-4 pb-md-3" style={{ border: "1px solid #dbd9d0" }}>
+          <div className="d-flex justify-content-between px-4 my-2">
             <p className="view-header">Question Info</p>
           </div>
           <div className="container-fluid px-4">
-            <div className="row">
-              <div className="col-md-6 col-12">
+            <div className="row py-4">
+              <div className="col-md-6 col-12 pe-xl-5">
                 <div className="row mb-4">
-                  <div className="col-5 d-flex">
+                  <div className="col-xl-5 col-12 d-flex">
                     <p className="view-label-text">Centre Name</p>{" "}
                     <span className="text-danger">*</span>
                   </div>
-                  <div className="col-7">
+                  <div className="col-xl-7 col-12">
                     <MultiSelect
                       options={centerList}
                       value={selectedCenter}
@@ -565,7 +565,7 @@ function QuestionAdd() {
                         }
                       }}
                       labelledBy="Select Center"
-                      className={`form-multi-select form-multi-select-sm border-1 rounded-1 ${formik.touched.center_id && formik.errors.center_id
+                      className={`form-multi-select  border-1 rounded-1 ${formik.touched.center_id && formik.errors.center_id
                         ? "is-invalid"
                         : ""
                         }`}
@@ -578,15 +578,15 @@ function QuestionAdd() {
                   </div>
                 </div>
               </div>
-              <div className="col-md-6 col-12">
+              <div className="col-md-6 col-12 ps-xl-5">
                 <div className="row mb-4">
-                  <div className="col-5 d-flex">
+                  <div className="col-xl-5 col-12 d-flex">
                     <p className="view-label-text">Grade</p>{" "}
                     <span className="text-danger">*</span>
                   </div>
-                  <div className="col-7">
+                  <div className="col-xl-7 col-12">
                     <select
-                      className={`form-select form-select-sm ${formik.touched.grade_id && formik.errors.grade_id
+                      className={`form-select  ${formik.touched.grade_id && formik.errors.grade_id
                         ? "is-invalid"
                         : ""
                         }`}
@@ -610,15 +610,15 @@ function QuestionAdd() {
                   </div>
                 </div>
               </div>
-              <div className="col-md-6 col-12">
+              <div className="col-md-6 col-12 pe-xl-5">
                 <div className="row mb-4">
-                  <div className="col-5 d-flex">
+                  <div className="col-xl-5 col-12 d-flex">
                     <p className="view-label-text">Subject</p>{" "}
                     <span className="text-danger">*</span>
                   </div>
-                  <div className="col-7">
+                  <div className="col-xl-7 col-12">
                     <select
-                      className={`form-select form-select-sm ${formik.touched.subject_id && formik.errors.subject_id
+                      className={`form-select  ${formik.touched.subject_id && formik.errors.subject_id
                         ? "is-invalid"
                         : ""
                         }`}
@@ -642,15 +642,15 @@ function QuestionAdd() {
                   </div>
                 </div>
               </div>
-              <div className="col-md-6 col-12">
+              <div className="col-md-6 col-12 ps-xl-5">
                 <div className="row mb-4">
-                  <div className="col-5 d-flex">
+                  <div className="col-xl-5 col-12 d-flex">
                     <p className="view-label-text">Topic</p>{" "}
                     <span className="text-danger">*</span>
                   </div>
-                  <div className="col-7">
+                  <div className="col-xl-7 col-12">
                     <select
-                      className={`form-select form-select-sm ${formik.touched.topic_id && formik.errors.topic_id
+                      className={`form-select  ${formik.touched.topic_id && formik.errors.topic_id
                         ? "is-invalid"
                         : ""
                         }`}
@@ -671,14 +671,14 @@ function QuestionAdd() {
                   </div>
                 </div>
               </div>
-              <div className="col-md-6 col-12">
+              <div className="col-md-6 col-12 pe-xl-5">
                 <div className="row mb-4">
-                  <div className="col-5 d-flex">
+                  <div className="col-xl-5 col-12 d-flex">
                     <p className="view-label-text"> Question Upload Type</p>
                   </div>
-                  <div className="col-7">
+                  <div className="col-xl-7 col-12">
                     <select
-                      className={`form-select form-select-sm ${formik.touched.uploadType && formik.errors.uploadType
+                      className={`form-select  ${formik.touched.uploadType && formik.errors.uploadType
                         ? "is-invalid"
                         : ""
                         }`}
@@ -700,13 +700,13 @@ function QuestionAdd() {
               </div>
               {formik.values.uploadType === "manual" ? (
                 <>
-                  <div className="col-md-6 col-12">
+                  <div className="col-md-6 col-12 ps-xl-5">
                     <div className="row mb-4">
-                      <div className="col-5 d-flex">
+                      <div className="col-xl-5 col-12 d-flex">
                         <p className="view-label-text"> Difficult Level</p>{" "}
                         <span className="text-danger">*</span>
                       </div>
-                      <div className="col-7">
+                      <div className="col-xl-7 col-12">
                         <div className="d-flex gap-3">
                           <div className="form-check">
                             <input
@@ -759,17 +759,17 @@ function QuestionAdd() {
                       </div>
                     </div>
                   </div>
-                  <div className="col-md-6 col-12">
+                  <div className="col-md-6 col-12 pe-xl-5">
                     <div className="row mb-4">
-                      <div className="col-5 d-flex">
+                      <div className="col-xl-5 col-12 d-flex">
                         <p className="view-label-text"> Question</p>{" "}
                         <span className="text-danger">*</span>
                       </div>
-                      <div className="col-7">
+                      <div className="col-xl-7 col-12">
                         <input
                           type="text"
                           placeholder="Enter Text"
-                          className={`form-control form-control-sm ${formik.touched.question && formik.errors.question
+                          className={`form-control  ${formik.touched.question && formik.errors.question
                             ? "is-invalid"
                             : ""
                             }`}
@@ -783,14 +783,14 @@ function QuestionAdd() {
                       </div>
                     </div>
                   </div>
-                  <div className="col-md-6 col-12">
+                  <div className="col-md-6 col-12 ps-xl-5">
                     <div className="row mb-4">
-                      <div className="col-5 d-flex">
-                        <p className="view-label-text">
+                      <div className="col-xl-5 col-12 d-flex">
+                        <p className="view-label-text-2">
                           Question Description
                         </p>
                       </div>
-                      <div className="col-7">
+                      <div className="col-xl-7 col-12">
                         <textarea
                           rows={5}
                           className={`form-control ${formik.touched.description &&
@@ -804,16 +804,16 @@ function QuestionAdd() {
                       </div>
                     </div>
                   </div>
-                  <div className="col-md-6 col-12">
+                  <div className="col-md-6 col-12 pe-xl-5">
                     <div className="row mb-4">
-                      <div className="col-5 d-flex">
+                      <div className="col-xl-5 col-12 d-flex">
                         <p className="view-label-text">Upload File</p>
                       </div>
-                      <div className="col-7">
+                      <div className="col-xl-7 col-12">
                         <input
                           type="file"
                           accept="image/*"
-                          className={`form-control form-control-sm ${formik.touched.upload && formik.errors.upload
+                          className={`form-control  ${formik.touched.upload && formik.errors.upload
                             ? "is-invalid"
                             : ""
                             }`}
@@ -832,13 +832,13 @@ function QuestionAdd() {
                       </div>
                     </div>
                   </div>
-                  <div className="col-md-6 col-12">
+                  <div className="col-md-6 col-12 ps-xl-5">
                     <div className="row mb-4">
-                      <div className="col-5 d-flex">
+                      <div className="col-xl-5 col-12 d-flex">
                         <p className="view-label-text">Question Type</p>{" "}
                         <span className="text-danger">*</span>
                       </div>
-                      <div className="col-7">
+                      <div className="col-xl-7 col-12">
                         {[
                           { id: "fillable", label: "Fillable" },
                           { id: "closed", label: "Closed" },
@@ -873,7 +873,7 @@ function QuestionAdd() {
                       </div>
                     </div>
                   </div>
-                  <div className="col-md-6 col-12 mb-3">
+                  <div className="col-md-6 col-12 mb-3 pe-xl-5">
                     {/* Conditional Fields Based on Selected Checkboxes */}
                     {formik.values.ques_type.includes("fillable") && (
                       <div className="mt-2">
@@ -881,7 +881,7 @@ function QuestionAdd() {
                         <input
                           type="text"
                           placeholder="Your Question & Answer"
-                          className={`form-control form-control-sm ${formik.touched.answer?.[0]?.fillable &&
+                          className={`form-control  ${formik.touched.answer?.[0]?.fillable &&
                             formik.errors.answer?.[0]?.fillable
                             ? "is-invalid"
                             : ""
@@ -1021,7 +1021,7 @@ function QuestionAdd() {
                             <div className="input-group mb-2">
                               <input
                                 type="text"
-                                className={`form-control form-control-sm ${formik.errors.options &&
+                                className={`form-control  ${formik.errors.options &&
                                   formik.touched.options &&
                                   formik.errors.options[index]?.value
                                   ? "is-invalid"
@@ -1122,7 +1122,7 @@ function QuestionAdd() {
                         <label className="form-label">Short Answer</label>
                         <textarea
                           rows={3}
-                          className={`form-control form-control-sm ${formik.touched.answer?.[0]?.short_answer &&
+                          className={`form-control  ${formik.touched.answer?.[0]?.short_answer &&
                             formik.errors.answer?.[0]?.short_answer
                             ? "is-invalid"
                             : ""
@@ -1152,7 +1152,7 @@ function QuestionAdd() {
                         <label className="form-label">Answer Upload</label>
                         <input
                           type="file"
-                          className={`form-control form-control-sm ${formik.touched.answer_upload &&
+                          className={`form-control  ${formik.touched.answer_upload &&
                             formik.errors.answer_upload
                             ? "is-invalid"
                             : ""
@@ -1175,16 +1175,16 @@ function QuestionAdd() {
                       </div>
                     )}
                   </div>
-                  <div className="col-md-6 col-12">
+                  <div className="col-md-6 col-12 ps-xl-5">
                     <div className="row mb-4">
-                      <div className="col-5 d-flex">
+                      <div className="col-xl-5 col-12 d-flex">
                         <p className="view-label-text">Hint</p>
                       </div>
-                      <div className="col-7">
+                      <div className="col-xl-7 col-12">
                         <input
                           placeholder="Enter Text"
                           type="text"
-                          className="form-control form-control-sm"
+                          className="form-control "
                           {...formik.getFieldProps("hint")}
                         ></input>
                       </div>
@@ -1329,7 +1329,7 @@ function QuestionAdd() {
                 <span className="text-danger">*</span>
                 <input
                   type="text"
-                  className={`form-control form-control-sm ${formik.touched.question && formik.errors.question
+                  className={`form-control  ${formik.touched.question && formik.errors.question
                     ? "is-invalid"
                     : ""
                     }`}
@@ -1346,7 +1346,7 @@ function QuestionAdd() {
                 <input
                   type="file"
                   accept="image/*"
-                  className={`form-control form-control-sm ${formik.touched.upload && formik.errors.upload
+                  className={`form-control  ${formik.touched.upload && formik.errors.upload
                     ? "is-invalid"
                     : ""
                     }`}
@@ -1399,7 +1399,7 @@ function QuestionAdd() {
                     <input
                       type="text"
                       placeholder="Your Question & Answer"
-                      className={`form-control form-control-sm ${formik.touched.answer?.[0]?.fillable && formik.errors.answer?.[0]?.fillable
+                      className={`form-control  ${formik.touched.answer?.[0]?.fillable && formik.errors.answer?.[0]?.fillable
                         ? "is-invalid"
                         : ""
                         }`}
@@ -1507,7 +1507,7 @@ function QuestionAdd() {
                         <div className="input-group mb-2">
                           <input
                             type="text"
-                            className={`form-control form-control-sm ${formik.errors.options &&
+                            className={`form-control  ${formik.errors.options &&
                               formik.touched.options &&
                               formik.errors.options[index]?.value
                               ? "is-invalid"
@@ -1578,7 +1578,7 @@ function QuestionAdd() {
                     <label className="form-label">Short Answer</label>
                     <textarea
                       rows={3}
-                      className={`form-control form-control-sm ${formik.touched.answer?.[0]?.short_answer && formik.errors.answer?.[0]?.short_answer
+                      className={`form-control  ${formik.touched.answer?.[0]?.short_answer && formik.errors.answer?.[0]?.short_answer
                         ? "is-invalid"
                         : ""
                         }`}
@@ -1599,7 +1599,7 @@ function QuestionAdd() {
                     <label className="form-label">Answer Upload</label>
                     <input
                       type="file"
-                      className={`form-control form-control-sm ${formik.touched.answer_upload &&
+                      className={`form-control  ${formik.touched.answer_upload &&
                         formik.errors.answer_upload
                         ? "is-invalid"
                         : ""
@@ -1623,7 +1623,7 @@ function QuestionAdd() {
                 <label className="form-label">Hint</label>
                 <input
                   type="text"
-                  className="form-control form-control-sm"
+                  className="form-control "
                   {...formik.getFieldProps("hint")}
                 ></input>
               </div> */}

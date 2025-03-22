@@ -260,7 +260,7 @@ function SubscriptionEdit() {
   // }, [formik.values.grade_id]);
 
   return (
-    <div className="container-fluid px-0">
+    <div className="container-fluid px-0 common-fonts">
       <form
         onSubmit={formik.handleSubmit}
         onKeyDown={(e) => {
@@ -269,7 +269,7 @@ function SubscriptionEdit() {
           }
         }}
       >
-        <div className="d-flex justify-content-between align-items-center  p-1 mb-4">
+        <div className="d-flex justify-content-between align-items-center flex-wrap p-2 my-2">
           <div className="d-flex align-items-center">
             <div>
               <Link to="/subscription">
@@ -287,12 +287,12 @@ function SubscriptionEdit() {
           <div className="my-2 d-flex align-items-center justify-content-between gap-5">
             <button
               type="button"
-              className="btn view-delete-btn"
+              className="btn discard-btn"
               onClick={() => {
                 getData();
               }}
             >
-              <GoTrash className="trash-icon" /> &nbsp;&nbsp; Discard Changes
+              <GoTrash className="trash-icon" />
             </button>
             <button
               type="submit"
@@ -316,21 +316,21 @@ function SubscriptionEdit() {
             </div>
           </div>
         ) : (
-          <div className="card" style={{ border: "1px solid #dbd9d0" }}>
+          <div className="card px-md-4 pt-4 pb-md-3" style={{ border: "1px solid #dbd9d0" }}>
             <div className="d-flex justify-content-between px-5 my-2">
               <p className="view-header">Subscription Info</p>
             </div>
             <div className="container-fluid px-4">
-              <div className="row py-4">
-                <div className="col-md-6 col-12">
+              <div className="row py-4 px-md-2">
+                <div className="col-md-6 col-12 pe-md-5">
                   <div className="row mb-4">
-                    <div className="col-5 d-flex">
+                    <div className="col-md-5 col-12 d-flex">
                       <p className="view-label-text">Grade</p>{" "}
                       <span className="text-danger">*</span>
                     </div>
-                    <div className="col-7">
+                    <div className="col-md-7 col-12">
                       <select
-                        className={`form-select form-select-sm ${
+                        className={`form-select   ${
                           formik.touched.grade_id && formik.errors.grade_id
                             ? "is-invalid"
                             : ""
@@ -356,12 +356,12 @@ function SubscriptionEdit() {
                     </div>
                   </div>
                 </div>
-                <div className="col-md-6 col-12">
+                <div className="col-md-6 col-12 ps-md-5">
                   <div className="row mb-4">
-                    <div className="col-5 d-flex">
+                    <div className="col-md-5 col-12 d-flex">
                       <p className="view-label-text">Worksheet</p>
                     </div>
-                    <div className="col-7">
+                    <div className="col-md-7 col-12">
                       <MultiSelect
                         options={worksheets}
                         value={selectedWorksheet}
@@ -373,7 +373,7 @@ function SubscriptionEdit() {
                           );
                         }}
                         labelledBy="Select Worksheet"
-                        className="form-multi-select form-multi-select-sm border-1 rounded-1"
+                        className="form-multi-select border-1 rounded-1"
                       />
                       {formik.touched.worksheet_id &&
                         formik.errors.worksheet_id && (
@@ -384,17 +384,17 @@ function SubscriptionEdit() {
                     </div>
                   </div>
                 </div>
-                <div className="col-md-6 col-12">
+                <div className="col-md-6 col-12 pe-md-5">
                   <div className="row mb-4">
-                    <div className="col-5 d-flex">
+                    <div className="col-md-5 col-12 d-flex">
                       <p className="view-label-text">Name</p>{" "}
                       <span className="text-danger">*</span>
                     </div>
-                    <div className="col-7">
+                    <div className="col-md-7 col-12">
                       <input
                         placeholder="Enter Text"
                         type="text"
-                        className={`form-control form-control-sm ${
+                        className={`form-control  ${
                           formik.touched.name && formik.errors.name
                             ? "is-invalid"
                             : ""
@@ -410,17 +410,17 @@ function SubscriptionEdit() {
                     </div>
                   </div>
                 </div>
-                <div className="col-md-6 col-12">
+                <div className="col-md-6 col-12 ps-md-5">
                   <div className="row mb-4">
-                    <div className="col-5 d-flex">
+                    <div className="col-md-5 col-12 d-flex">
                       <p className="view-label-text">Price</p>{" "}
                       <span className="text-danger">*</span>
                     </div>
-                    <div className="col-7">
+                    <div className="col-md-7 col-12">
                       <input
                         placeholder="Enter Text"
                         type="text"
-                        className={`form-control form-control-sm ${
+                        className={`form-control  ${
                           formik.touched.price && formik.errors.price
                             ? "is-invalid"
                             : ""
@@ -436,15 +436,15 @@ function SubscriptionEdit() {
                     </div>
                   </div>
                 </div>
-                <div className="col-md-6 col-12">
+                <div className="col-md-6 col-12 pe-md-5">
                   <div className="row mb-4">
-                    <div className="col-5 d-flex">
+                    <div className="col-md-5 col-12 d-flex">
                       <p className="view-label-text">Duration</p>{" "}
                       <span className="text-danger">*</span>
                     </div>
-                    <div className="col-7">
+                    <div className="col-md-7 col-12">
                       <select
-                        className={`form-select form-select-sm ${
+                        className={`form-select   ${
                           formik.touched.duration && formik.errors.duration
                             ? "is-invalid"
                             : ""
@@ -465,16 +465,16 @@ function SubscriptionEdit() {
                     </div>
                   </div>
                 </div>
-                <div className="col-md-6 col-12">
+                <div className="col-md-6 col-12 ps-md-5">
                   <div className="row mb-4">
-                    <div className="col-5 d-flex">
+                    <div className="col-md-5 col-12 d-flex">
                       <p className="view-label-text">Description</p>
                     </div>
-                    <div className="col-7">
+                    <div className="col-md-7 col-12">
                       <input
                         placeholder="Enter Text"
                         type="text"
-                        className={`form-control form-control-sm ${
+                        className={`form-control  ${
                           formik.touched.description &&
                           formik.errors.description
                             ? "is-invalid"
@@ -492,12 +492,12 @@ function SubscriptionEdit() {
                     </div>
                   </div>
                 </div>
-                <div className="col-12">
+                <div className="col-12 mt-md-5">
                   <div className="row mb-4">
-                    <div className="col-2">
-                      <p className="view-label-text">Details</p>
+                    <div className="col-md-2 col-12">
+                      <p className="view-label-text-2">Details</p>
                     </div>
-                    <div className="col-10">
+                    <div className="col-md-10 col-12">
                       <ReactQuill
                         theme="snow"
                         value={formik.values.details}

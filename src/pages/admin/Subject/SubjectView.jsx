@@ -279,10 +279,10 @@ function SubjectView() {
               </div>
               <div className="d-flex justify-content-end me-2">
                 {storedScreens?.data[5]?.can_create === 1 && (
-                  <TopicAdd
+                  <TopicEdit
                     show={showAddTopic}
                     setShow={setShowAddTopic}
-                    id={id}
+                    id={selectedId}
                     onSuccess={getData}
                   />
                 )}

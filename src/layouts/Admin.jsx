@@ -83,7 +83,7 @@ function Admin({ handleLogout }) {
             <div className="flex-grow-1 h-screen overflow-y-auto">
               <AdminHeader handleLogout={handleLogout} />
               <main className="pt-2 admin-bg-image">
-                <div style={{ minHeight: "80vh" }} className="px-2">
+                <div style={{ minHeight: "86vh" }} className="px-2">
                   <Routes>
                     <Route path="/" element={<AdminDashboard />} />
                     <Route path="*" element={<AdminDashboard />} />
