@@ -6,6 +6,8 @@ import toast from "react-hot-toast";
 import api from "../../../config/URL";
 import { TbEdit } from "react-icons/tb";
 import { Button, Modal } from "react-bootstrap";
+import { MdKeyboardArrowLeft } from "react-icons/md";
+import { FiSave } from "react-icons/fi";
 
 function CenterEdit({ id, onSuccess }) {
   const [loadIndicator, setLoadIndicator] = useState(false);
@@ -180,16 +182,20 @@ function CenterEdit({ id, onSuccess }) {
         <TbEdit style={{ color: "#4F46E5", fontSize: "16px" }} />
       </span>
 
-      <Modal show={open} onHide={handleClose} size="lg" centered>
-        <Modal.Header>
-          <Modal.Title>Edit Centre</Modal.Title>
-          <div className="d-flex gap-3">
-            <Button
-              className="btn btn-secondary btn-sm py-0"
+      <Modal show={open} onHide={handleClose} size="md">
+        <Modal.Header closeButton className="justify-content-start gap-2">
+          <div>
+            <button
+              type="button "
+              className="btn btn-sm add-btn"
               onClick={handleClose}
             >
-              Close
-            </Button>
+              <MdKeyboardArrowLeft size={20} />
+            </button>
+            &nbsp;&nbsp;
+          </div>
+          <Modal.Title>Edit Centre</Modal.Title>
+          <div className="d-flex gap-3 ms-auto">
             <Button
               className="btn add-btn button-spinner"
               type="submit"
@@ -202,76 +208,68 @@ function CenterEdit({ id, onSuccess }) {
                   aria-hidden="true"
                 ></span>
               )}
-              <small> Update</small>
+              <FiSave className="trash-icon" />
             </Button>
           </div>
         </Modal.Header>
-        <Modal.Body>
-          <form onSubmit={formik.handleSubmit}>
-            {loading ? (
-              <div className="d-flex justify-content-center align-items-center">
-                <div className="spinner-border" role="status">
-                  <span className="visually-hidden">Loading...</span>
-                </div>
+        <Modal.Body className="d-flex justify-content-center align-items-center">
+          {loading ? (
+            <div className="d-flex justify-content-center align-items-center">
+              <div className="spinner-border" role="status">
+                <span className="visually-hidden">Loading...</span>
               </div>
-            ) : (
+            </div>
+          ) : (
+            <form onSubmit={formik.handleSubmit}>
               <div className="container">
                 <div className="row">
-                  <div className="col-md-6 col-12">
-                    <div className="row mb-4">
-                      <div className="col-5 d-flex">
-                        <p className="view-label-text">Name</p>
-                        <span className="text-danger">*</span>
+                  <div className="col-12 mb-4 px-0">
+                    <label className="form-label mb-0" htmlFor="name">
+                      Name
+                      <span className="text-danger">*</span>
+                    </label>
+                    <input
+                      placeholder="Enter Text"
+                      aria-label="Default select example"
+                      className={`form-control ${
+                        formik.touched.name && formik.errors.name
+                          ? "is-invalid"
+                          : ""
+                      }`}
+                      {...formik.getFieldProps("name")}
+                    />
+                    {formik.touched.name && formik.errors.name && (
+                      <div className="invalid-feedback">
+                        {formik.errors.name}
                       </div>
-                      <div className="col-7">
-                        <input
-                          placeholder="Enter Text"
-                          aria-label="Default select example"
-                          className={`form-control ${
-                            formik.touched.name && formik.errors.name
-                              ? "is-invalid"
-                              : ""
-                          }`}
-                          {...formik.getFieldProps("name")}
-                        />
-                        {formik.touched.name && formik.errors.name && (
-                          <div className="invalid-feedback">
-                            {formik.errors.name}
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                    )}
                   </div>
-                  <div className="col-md-6 col-12">
-                    <div className="row mb-4">
-                      <div className="col-4 d-flex">
-                        <p className="view-label-text">Location</p>{" "}
-                        <span className="text-danger">*</span>
+                  <div className="col-12 mb-4 px-0">
+                    <label className="form-label mb-0" htmlFor="location">
+                      Location
+                      <span className="text-danger">*</span>
+                    </label>
+                    <textarea
+                      rows={5}
+                      placeholder="Enter Text"
+                      className={`form-control ${
+                        formik.touched.location && formik.errors.location
+                          ? "is-invalid"
+                          : ""
+                      }`}
+                      {...formik.getFieldProps("location")}
+                      maxLength={825}
+                    />
+                    {formik.touched.location && formik.errors.location && (
+                      <div className="invalid-feedback">
+                        {formik.errors.location}
                       </div>
-                      <div className="col-8">
-                        <textarea
-                          rows={5}
-                          placeholder="Enter Text"
-                          className={`form-control ${
-                            formik.touched.location && formik.errors.location
-                              ? "is-invalid"
-                              : ""
-                          }`}
-                          {...formik.getFieldProps("location")}
-                          maxLength={825}
-                        />
-                        {formik.touched.location && formik.errors.location && (
-                          <div className="invalid-feedback">
-                            {formik.errors.location}
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                    )}
                   </div>
                 </div>
               </div>
-            )}{" "}
-          </form>
+            </form>
+          )}
         </Modal.Body>
       </Modal>
     </>

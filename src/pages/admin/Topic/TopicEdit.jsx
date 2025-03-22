@@ -7,6 +7,8 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { TbEdit } from "react-icons/tb";
 import { Button, Modal } from "react-bootstrap";
+import { MdKeyboardArrowLeft } from "react-icons/md";
+import { FiSave } from "react-icons/fi";
 
 function TopicEdit({ id, onSuccess }) {
   const [loadIndicator, setLoadIndicator] = useState(false);
@@ -165,9 +167,11 @@ function TopicEdit({ id, onSuccess }) {
   };
 
   useEffect(() => {
-    getTopicData();
+    if (show) {
+      getTopicData();
+    }
     getCenterList();
-  }, [id]);
+  }, [id, show]);
 
   useEffect(() => {
     if (selectedCenter.length > 0) {
@@ -207,7 +211,7 @@ function TopicEdit({ id, onSuccess }) {
       >
         <TbEdit style={{ color: "#4F46E5", fontSize: "16px" }} />
       </span>
-    <Modal show={show} onHide={handleClose} size="lg" centered>
+      <Modal show={show} onHide={handleClose} size="md">
         <form
           onSubmit={formik.handleSubmit}
           onKeyDown={(e) => {
@@ -216,15 +220,19 @@ function TopicEdit({ id, onSuccess }) {
             }
           }}
         >
-          <Modal.Header>
-            <Modal.Title>Topic Edit</Modal.Title>
-            <div className="d-flex gap-3">
-              <Button
-                className="btn btn-secondary btn-sm py-0"
+          <Modal.Header closeButton className="justify-content-start gap-2">
+            <div>
+              <button
+                type="button "
+                className="btn btn-sm add-btn"
                 onClick={handleClose}
               >
-                Close
-              </Button>
+                <MdKeyboardArrowLeft size={20} />
+              </button>
+              &nbsp;&nbsp;
+            </div>
+            <Modal.Title>Topic Edit</Modal.Title>
+            <div className="d-flex gap-3 ms-auto">
               <Button
                 className="btn add-btn "
                 type="submit"
@@ -237,7 +245,7 @@ function TopicEdit({ id, onSuccess }) {
                     aria-hidden="true"
                   ></span>
                 )}
-                <small>Update</small>
+                <FiSave className="trash-icon" />
               </Button>
             </div>
           </Modal.Header>
@@ -250,27 +258,27 @@ function TopicEdit({ id, onSuccess }) {
               </div>
             ) : (
               <div className="row">
-                <div className="col-md-6 col-12 mb-3">
+                <div className="col-12 mb-3">
                   <label className="form-label">
                     Topic Name<span className="text-danger">*</span>
                   </label>
                   <input
                     type="text"
                     className={`form-control form-control-sm ${
-                      formik.touched.topic_name && formik.errors.topic_name
+                      formik.touched.name && formik.errors.name
                         ? "is-invalid"
                         : ""
                     }`}
-                    {...formik.getFieldProps("topic_name")}
+                    {...formik.getFieldProps("name")}
                   />
-                  {formik.touched.topic_name && formik.errors.topic_name && (
+                  {formik.touched.name && formik.errors.name && (
                     <div className="invalid-feedback">
-                      {formik.errors.topic_name}
+                      {formik.errors.name}
                     </div>
                   )}
                 </div>
 
-                <div className="col-md-6 col-12 mb-3">
+                <div className="col-12 mb-3">
                   <label className="form-label">Description</label>
                   <textarea
                     className={`form-control ${

@@ -8,6 +8,8 @@ import toast from "react-hot-toast";
 import PropTypes from "prop-types";
 import { FaPlus } from "react-icons/fa";
 import { Button, Modal } from "react-bootstrap";
+import { FiSave } from "react-icons/fi";
+import { MdKeyboardArrowLeft } from "react-icons/md";
 
 function GradeAdd({ onSuccess }) {
   const [selectedCenter, setSelectedCenter] = useState([]);
@@ -116,7 +118,7 @@ function GradeAdd({ onSuccess }) {
         <FaPlus fontSize={12} className="me-1" /> Add Grade
       </button>
 
-    <Modal show={show} onHide={handleClose} size="lg" centered>
+      <Modal show={show} onHide={handleClose} size="md">
         <form
           onSubmit={formik.handleSubmit}
           onKeyDown={(e) => {
@@ -125,15 +127,19 @@ function GradeAdd({ onSuccess }) {
             }
           }}
         >
-          <Modal.Header>
-            <Modal.Title>Grade Add</Modal.Title>
-            <div className="d-flex gap-3">
-              <Button
-                className="btn btn-secondary btn-sm py-0"
+          <Modal.Header closeButton className="justify-content-start gap-2">
+            <div>
+              <button
+                type="button "
+                className="btn btn-sm add-btn"
                 onClick={handleClose}
               >
-                Close
-              </Button>
+                <MdKeyboardArrowLeft size={20} />
+              </button>
+              &nbsp;&nbsp;
+            </div>
+            <Modal.Title>Grade Add</Modal.Title>
+            <div className="d-flex gap-3 ms-auto">
               <Button
                 className="btn add-btn button-spinner"
                 type="submit"
@@ -146,20 +152,20 @@ function GradeAdd({ onSuccess }) {
                     aria-hidden="true"
                   ></span>
                 )}
-                <small>Submit</small>
+                <FiSave className="trash-icon" />
               </Button>
             </div>
           </Modal.Header>
 
           <Modal.Body>
             <div className="row">
-              <div className="col-md-6 col-12">
+              <div className="col-12">
                 <div className="row mb-4">
-                  <div className="col-5 d-flex">
+                  <div className="col-12 d-flex">
                     <p className="view-label-text">Centre Name</p>{" "}
                     <span className="text-danger">*</span>
                   </div>
-                  <div className="col-7">
+                  <div className=" col-12">
                     <MultiSelect
                       options={centerList}
                       value={selectedCenter}
@@ -185,18 +191,18 @@ function GradeAdd({ onSuccess }) {
                   </div>
                 </div>
               </div>
-              <div className="col-md-6 col-12">
+              <div className="col-12">
                 <div className="row mb-4">
-                  <div className="col-5 d-flex">
+                  <div className="col-12 d-flex">
                     <p className="view-label-text">Name</p>{" "}
                     <span className="text-danger">*</span>
                   </div>
-                  <div className="col-7">
+                  <div className=" col-12">
                     <input
                       type="text"
-                      placeholder="Enter Text"
+                      placeholder="Enter Name"
                       onKeyDown={(e) => e.stopPropagation()}
-                      className={`form-control form-control-sm ${
+                      className={`form-control  ${
                         formik.touched.name && formik.errors.name
                           ? "is-invalid"
                           : ""
@@ -213,13 +219,13 @@ function GradeAdd({ onSuccess }) {
               </div>
               <div className="col-12">
                 <div className="row mb-4">
-                  <div className="col-2">
-                    <p className="view-label-text">Description</p>
+                  <div className="col-12">
+                    <p className="view-label-text mb-1">Description</p>
                   </div>
-                  <div className="col-10">
+                  <div className=" col-12">
                     <textarea
                       placeholder="Enter Text"
-                      className={`form-control form-control-sm ${
+                      className={`form-control  ${
                         formik.touched.description && formik.errors.description
                           ? "is-invalid"
                           : ""

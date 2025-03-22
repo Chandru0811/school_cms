@@ -7,6 +7,8 @@ import api from "../../../config/URL";
 import toast from "react-hot-toast";
 import { TbEdit } from "react-icons/tb";
 import { Button, Modal } from "react-bootstrap";
+import { FiSave } from "react-icons/fi";
+import { MdKeyboardArrowLeft } from "react-icons/md";
 
 function GradeEdit({ id, onSuccess }) {
   const [loadIndicator, setLoadIndicator] = useState(false);
@@ -119,7 +121,7 @@ function GradeEdit({ id, onSuccess }) {
         <TbEdit style={{ color: "#4F46E5", fontSize: "16px" }} />
       </button>
 
-      <Modal show={open} onHide={handleClose} size="lg" centered>
+      <Modal show={open} onHide={handleClose} size="md">
         <form
           onSubmit={formik.handleSubmit}
           onKeyDown={(e) => {
@@ -128,15 +130,19 @@ function GradeEdit({ id, onSuccess }) {
             }
           }}
         >
-          <Modal.Header>
-            <Modal.Title>Grade Edit</Modal.Title>
-            <div className="d-flex gap-3">
-              <Button
-                className="btn btn-secondary btn-sm py-0"
+          <Modal.Header closeButton className="justify-content-start gap-2">
+            <div>
+              <button
+                type="button "
+                className="btn btn-sm add-btn"
                 onClick={handleClose}
               >
-                Close
-              </Button>
+                <MdKeyboardArrowLeft size={20} />
+              </button>
+              &nbsp;&nbsp;
+            </div>
+            <Modal.Title>Grade Edit</Modal.Title>
+            <div className="d-flex gap-3 ms-auto">
               <Button
                 className="btn add-btn button-spinner"
                 type="submit"
@@ -149,7 +155,7 @@ function GradeEdit({ id, onSuccess }) {
                     aria-hidden="true"
                   ></span>
                 )}
-                <small>Update</small>
+                <FiSave className="trash-icon" />
               </Button>
             </div>
           </Modal.Header>
@@ -163,13 +169,13 @@ function GradeEdit({ id, onSuccess }) {
               </div>
             ) : (
               <div className="row">
-                <div className="col-md-6 col-12">
+                <div className="col-12">
                   <div className="row mb-4">
-                    <div className="col-5 d-flex">
+                    <div className="col-12 d-flex">
                       <p className="view-label-text">Centre Name</p>{" "}
                       <span className="text-danger">*</span>
                     </div>
-                    <div className="col-7">
+                    <div className=" col-12">
                       <MultiSelect
                         options={centerList}
                         value={selectedCenter}
@@ -195,18 +201,18 @@ function GradeEdit({ id, onSuccess }) {
                     </div>
                   </div>
                 </div>
-                <div className="col-md-6 col-12">
+                <div className="col-12">
                   <div className="row mb-4">
-                    <div className="col-5 d-flex">
+                    <div className="col-12 d-flex">
                       <p className="view-label-text">Name</p>{" "}
                       <span className="text-danger">*</span>
                     </div>
-                    <div className="col-7">
+                    <div className=" col-12">
                       <input
                         type="text"
-                        placeholder="Enter Text"
+                        placeholder="Enter Name"
                         onKeyDown={(e) => e.stopPropagation()}
-                        className={`form-control form-control-sm ${
+                        className={`form-control  ${
                           formik.touched.name && formik.errors.name
                             ? "is-invalid"
                             : ""
@@ -223,13 +229,13 @@ function GradeEdit({ id, onSuccess }) {
                 </div>
                 <div className="col-12">
                   <div className="row mb-4">
-                    <div className="col-2">
-                      <p className="view-label-text">Description</p>
+                    <div className="col-12">
+                      <p className="view-label-text mb-1">Description</p>
                     </div>
-                    <div className="col-10">
+                    <div className=" col-12">
                       <textarea
                         placeholder="Enter Text"
-                        className={`form-control form-control-sm ${
+                        className={`form-control  ${
                           formik.touched.description &&
                           formik.errors.description
                             ? "is-invalid"

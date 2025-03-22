@@ -156,7 +156,7 @@ function EmployeeEdit() {
   }, [id]);
 
   return (
-    <div className="container p-3">
+    <div className="container p-3 common-fonts">
       <form
         onSubmit={formik.handleSubmit}
         onKeyDown={(e) => {
@@ -166,7 +166,7 @@ function EmployeeEdit() {
         }}
       >
         {" "}
-        <div className="d-flex justify-content-between align-items-center  p-1 mb-4">
+        <div className="d-flex justify-content-between align-items-center flex-wrap p-2 my-2">
           <div className="d-flex align-items-center">
             <div>
               <Link to="/employee">
@@ -184,12 +184,12 @@ function EmployeeEdit() {
           <div className="my-2 d-flex align-items-center justify-content-between gap-5">
             <button
               type="button"
-              className="btn view-delete-btn"
+              className="btn discard-btn"
               onClick={() => {
                 getEmployeeData();
               }}
             >
-              <GoTrash className="trash-icon" /> &nbsp;&nbsp; Discard Changes
+              <GoTrash className="trash-icon" />
             </button>
             <button
               type="submit"
@@ -206,7 +206,7 @@ function EmployeeEdit() {
             </button>
           </div>
         </div>
-        <div className="card" style={{ border: "1px solid #dbd9d0" }}>
+        <div className="card px-md-4 pt-4 pb-md-3" style={{ border: "1px solid #dbd9d0" }}>
           <div className="d-flex justify-content-between px-5 my-2">
             <p className="view-header">Employee Info</p>
           </div>
@@ -221,14 +221,14 @@ function EmployeeEdit() {
             </div>
           ) : (
             <div className="container-fluid px-4">
-              <div className="row">
-                <div className="col-md-6 col-12">
+              <div className="row  py-5">
+                <div className="col-md-6 col-12 pe-xl-5">
                   <div className="row mb-4">
-                    <div className="col-5 d-flex">
+                    <div className="col-xl-5 col-12 d-flex">
                       <p className="view-label-text">Centre</p>{" "}
                       <span className="text-danger">*</span>
                     </div>
-                    <div className="col-7">
+                    <div className="col-xl-7 col-12">
                       <MultiSelect
                         options={centerList}
                         value={selectedCenter}
@@ -254,15 +254,15 @@ function EmployeeEdit() {
                     </div>
                   </div>
                 </div>
-                <div className="col-md-6 col-12">
+                <div className="col-md-6 col-12 ps-xl-5">
                   <div className="row mb-4">
-                    <div className="col-5 d-flex">
+                    <div className="col-xl-5 col-12 d-flex">
                       <p className="view-label-text">Role</p>{" "}
                       <span className="text-danger">*</span>
                     </div>
-                    <div className="col-7">
+                    <div className="col-xl-7 col-12">
                       <select
-                        className={`form-select form-select-sm ${
+                        className={`form-select ${
                           formik.touched.role_id && formik.errors.role_id
                             ? "is-invalid"
                             : ""
@@ -288,18 +288,18 @@ function EmployeeEdit() {
                     </div>
                   </div>
                 </div>
-                <div className="col-md-6 col-12">
+                <div className="col-md-6 col-12 pe-xl-5">
                   <div className="row mb-4">
-                    <div className="col-5 d-flex">
+                    <div className="col-xl-5 col-12 d-flex">
                       <p className="view-label-text"> Employee Name</p>{" "}
                       <span className="text-danger">*</span>
                     </div>
-                    <div className="col-7">
+                    <div className="col-xl-7 col-12">
                       <input
                         placeholder="Enter Text"
                         type="text"
                         onKeyDown={(e) => e.stopPropagation()}
-                        className={`form-control form-control-sm ${
+                        className={`form-control ${
                           formik.touched.name && formik.errors.name
                             ? "is-invalid"
                             : ""
@@ -314,18 +314,18 @@ function EmployeeEdit() {
                     </div>
                   </div>
                 </div>
-                <div className="col-md-6 col-12">
+                <div className="col-md-6 col-12 ps-xl-5">
                   <div className="row mb-4">
-                    <div className="col-5 d-flex">
+                    <div className="col-xl-5 col-12 d-flex">
                       <p className="view-label-text">Employee Email</p>{" "}
                       <span className="text-danger">*</span>
                     </div>
-                    <div className="col-7">
+                    <div className="col-xl-7 col-12">
                       <input
                         placeholder="Enter Text"
                         type="email"
                         onKeyDown={(e) => e.stopPropagation()}
-                        className={`form-control form-control-sm ${
+                        className={`form-control ${
                           formik.touched.email && formik.errors.email
                             ? "is-invalid"
                             : ""
@@ -340,18 +340,18 @@ function EmployeeEdit() {
                     </div>
                   </div>
                 </div>
-                <div className="col-md-6 col-12">
+                <div className="col-md-6 col-12 pe-xl-5">
                   <div className="row mb-4">
-                    <div className="col-5 d-flex">
+                    <div className="col-xl-5 col-12 d-flex">
                       <p className="view-label-text"> Employee Mobile</p>{" "}
                       <span className="text-danger">*</span>
                     </div>
-                    <div className="col-7">
+                    <div className="col-xl-7 col-12">
                       <input
                         placeholder="Enter Text"
                         type="text"
                         onKeyDown={(e) => e.stopPropagation()}
-                        className={`form-control form-control-sm ${
+                        className={`form-control ${
                           formik.touched.mobile && formik.errors.mobile
                             ? "is-invalid"
                             : ""
@@ -366,14 +366,14 @@ function EmployeeEdit() {
                     </div>
                   </div>
                 </div>
-                <div className="col-md-6 col-12">
+                <div className="col-md-6 col-12 ps-xl-5">
                   <div className="row mb-4">
                     <div className="col-5">
                       <label className="form-label view-label-text">
                         Gender <span className="text-danger">*</span>
                       </label>
                     </div>
-                    <div className="col-7 d-flex gap-3">
+                    <div className="col-xl-7 col-12 d-flex gap-3">
                       <div className="form-check">
                         <input
                           type="radio"
@@ -385,7 +385,7 @@ function EmployeeEdit() {
                           onChange={formik.handleChange}
                         />
                         <label
-                          className="form-check-label view-label-text"
+                          className="form-check-label view-label-text ms-2 mt-1"
                           htmlFor="male"
                         >
                           Male
@@ -402,7 +402,7 @@ function EmployeeEdit() {
                           onChange={formik.handleChange}
                         />
                         <label
-                          className="form-check-label view-label-text"
+                          className="form-check-label view-label-text ms-2 mt-1"
                           htmlFor="female"
                         >
                           Female

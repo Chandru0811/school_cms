@@ -7,6 +7,8 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import PropTypes from "prop-types";
 import { FaPlus } from "react-icons/fa";
+import { FiSave } from "react-icons/fi";
+import { MdKeyboardArrowLeft } from "react-icons/md";
 
 function CenterAdd({ onSuccess }) {
   const navigate = useNavigate();
@@ -84,13 +86,19 @@ function CenterAdd({ onSuccess }) {
         </button>
       </div>
 
-      <Modal show={show} onHide={handleClose} size="lg" centered>
-        <Modal.Header>
+      <Modal show={show} onHide={handleClose} size="md">
+        <Modal.Header closeButton className="justify-content-start gap-2">
+          <div>
+            <button type="button " className="btn btn-sm add-btn" onClick={handleClose}>
+              <MdKeyboardArrowLeft size={20} />
+            </button>
+            &nbsp;&nbsp;
+          </div>
           <Modal.Title>Centre Add</Modal.Title>
-          <div className="d-flex gap-3">
-            <Button className="btn btn-secondary btn-sm py-0" onClick={handleClose}>
+          <div className="d-flex gap-3 ms-auto">
+            {/* <Button className="btn btn-secondary btn-sm " onClick={handleClose}>
               Close
-            </Button>
+            </Button> */}
             <Button
               className="btn add-btn"
               type="submit"
@@ -103,7 +111,7 @@ function CenterAdd({ onSuccess }) {
                   aria-hidden="true"
                 ></span>
               )}
-             <small> Submit</small>
+              <FiSave className="trash-icon" />
             </Button>
           </div>
         </Modal.Header>
@@ -111,56 +119,46 @@ function CenterAdd({ onSuccess }) {
           <form onSubmit={formik.handleSubmit}>
             <div className="container">
               <div className="row">
-                <div className="col-md-6 col-12">
-                  <div className="row mb-4">
-                    <div className="col-5 d-flex">
-                      <p className="view-label-text">Name</p>
-                      <span className="text-danger">*</span>
-                    </div>
-                    <div className="col-7">
-                      <input
-                        placeholder="Enter Text"
-                        aria-label="Default select example"
-                        className={`form-control ${
-                          formik.touched.name && formik.errors.name
-                            ? "is-invalid"
-                            : ""
-                        }`}
-                        {...formik.getFieldProps("name")}
-                      />
-                      {formik.touched.name && formik.errors.name && (
-                        <div className="invalid-feedback">
-                          {formik.errors.name}
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                <div className="col-12 mb-4 px-0">
+                  <label className="form-label mb-0" htmlFor="name">
+                    Name
+                    <span className="text-danger">*</span>
+                  </label>
+                  <input
+                    placeholder="Enter Text"
+                    aria-label="Default select example"
+                    className={`form-control ${
+                      formik.touched.name && formik.errors.name
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("name")}
+                  />
+                  {formik.touched.name && formik.errors.name && (
+                    <div className="invalid-feedback">{formik.errors.name}</div>
+                  )}
                 </div>
-                <div className="col-md-6 col-12">
-                  <div className="row mb-4">
-                    <div className="col-4 d-flex">
-                      <p className="view-label-text">Location</p>{" "}
-                      <span className="text-danger">*</span>
+                <div className="col-12 mb-4 px-0">
+                  <label className="form-label mb-0" htmlFor="location">
+                    Location
+                    <span className="text-danger">*</span>
+                  </label>
+                  <textarea
+                    rows={5}
+                    placeholder="Enter Text"
+                    className={`form-control ${
+                      formik.touched.location && formik.errors.location
+                        ? "is-invalid"
+                        : ""
+                    }`}
+                    {...formik.getFieldProps("location")}
+                    maxLength={825}
+                  />
+                  {formik.touched.location && formik.errors.location && (
+                    <div className="invalid-feedback">
+                      {formik.errors.location}
                     </div>
-                    <div className="col-8">
-                      <textarea
-                        rows={5}
-                        placeholder="Enter Text"
-                        className={`form-control ${
-                          formik.touched.location && formik.errors.location
-                            ? "is-invalid"
-                            : ""
-                        }`}
-                        {...formik.getFieldProps("location")}
-                        maxLength={825}
-                      />
-                      {formik.touched.location && formik.errors.location && (
-                        <div className="invalid-feedback">
-                          {formik.errors.location}
-                        </div>
-                      )}
-                    </div>
-                  </div>
+                  )}
                 </div>
               </div>
             </div>
