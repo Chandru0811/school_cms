@@ -17,7 +17,7 @@ import DeleteChange from "../../../components/common/DeleteChange";
 import toast from "react-hot-toast";
 import api from "../../../config/URL";
 import { FaPlus } from "react-icons/fa";
-import { TbEdit } from "react-icons/tb";
+import { TbArrowDown, TbSearch, TbArrowsSort, TbEdit } from "react-icons/tb";
 import { GoTrash } from "react-icons/go";
 import userImage from "../../../assets/images/user_profile.svg";
 import ImageURL from "../../../config/ImageURL";
@@ -65,6 +65,35 @@ function Employee() {
   useEffect(() => {
     getData();
   }, []);
+  useEffect(() => {
+    const tableInput = document.getElementsByClassName("css-12tjcea-MuiInputBase-input-MuiOutlinedInput-input")[0]; // Access the first element
+    const inputCloseBtn = document.getElementsByClassName("css-elo8k2-MuiInputAdornment-root")[0]; // Access the first element
+
+    console.log("tableInput", tableInput);
+    console.log("inputCloseBtn", inputCloseBtn);
+
+    const handleInputChange = () => {
+      if (tableInput && inputCloseBtn) {
+        if (tableInput.value.length > 0) {
+          inputCloseBtn.style.display = "block"; // Show the close button
+        } else {
+          inputCloseBtn.style.display = "none"; // Hide the close button
+        }
+      }
+    };
+
+    // Add an event listener to the input field
+    if (tableInput) {
+      tableInput.addEventListener("input", handleInputChange);
+    }
+
+    // Cleanup the event listener on unmount
+    return () => {
+      if (tableInput) {
+        tableInput.removeEventListener("input", handleInputChange);
+      }
+    };
+  }, [document.getElementsByClassName("css-12tjcea-MuiInputBase-input-MuiOutlinedInput-input")[0]]); // Empty dependency array ensures this runs only once on mount
 
   const columns = useMemo(
     () => [
@@ -77,6 +106,37 @@ function Employee() {
         Cell: ({ cell }) => (
           <span className="table-cell-center">{cell.getValue()}</span>
         ),
+      },
+      {
+        accessorKey: "name",
+        header: "Employee Name",
+        Cell: ({ row }) => {
+          const imageUrl = row.original.avatar?.image
+            ? `${ImageURL.replace(
+              /\/$/,
+              ""
+            )}/${row.original.avatar.image.replace(/^\//, "")}`
+            : userImage;
+          return (
+            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+              <img
+                src={imageUrl}
+                alt={row.original.name}
+                onError={(e) => {
+                  console.error("Image failed to load:", imageUrl);
+                  e.target.src = userImage;
+                }}
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                }}
+              />
+              <span>{row.original.name}</span>
+            </div>
+          );
+        },
       },
       {
         accessorKey: "actions",
@@ -108,37 +168,6 @@ function Employee() {
             )}
           </div>
         ),
-      },
-      {
-        accessorKey: "name",
-        header: "Employee Name",
-        Cell: ({ row }) => {
-          const imageUrl = row.original.avatar?.image
-            ? `${ImageURL.replace(
-                /\/$/,
-                ""
-              )}/${row.original.avatar.image.replace(/^\//, "")}`
-            : userImage;
-          return (
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <img
-                src={imageUrl}
-                alt={row.original.name}
-                onError={(e) => {
-                  console.error("Image failed to load:", imageUrl);
-                  e.target.src = userImage;
-                }}
-                style={{
-                  width: "40px",
-                  height: "40px",
-                  borderRadius: "50%",
-                  objectFit: "cover",
-                }}
-              />
-              <span>{row.original.name}</span>
-            </div>
-          );
-        },
       },
       {
         accessorKey: "role.name",
@@ -242,26 +271,36 @@ function Employee() {
       </div>
 
       <div className="table-container my-2">
-      {loading ? (
-            <div
-              className="d-flex justify-content-center align-items-center"
-              style={{ height: "500px" }}
-            >
-              <div className="spinner-border" role="status">
-                <span className="visually-hidden">Loading...</span>
-              </div>
+        {loading ? (
+          <div
+            className="d-flex justify-content-center align-items-center"
+            style={{ height: "500px" }}
+          >
+            <div className="spinner-border" role="status">
+              <span className="visually-hidden">Loading...</span>
             </div>
-          ) : (
+          </div>
+        ) : (
           <ThemeProvider theme={theme}>
             <MaterialReactTable
               columns={columns}
               data={data}
+              // icons={{
+              //   ArrowDownwardIcon: (props) => <TbArrowsSort {...props} size={20} color="#4F46E5" />,
+              //   SortIcon: (props) => <TbEdit {...props} size={20} color="#4F46E5" />,
+              // }}
+              displayColumnDefOptions={{
+                'mrt-row-actions': {
+                  size: 80,
+                  grow: false,
+                },
+              }}
               enableColumnActions={false}
               enableDensityToggle={false}
               enableColumnFilters={true}
               enableFullScreenToggle={true}
-                 initialState={{
-                  pagination: { pageSize: 50, pageIndex: 0 },
+              initialState={{
+                pagination: { pageSize: 50, pageIndex: 0 },
                 showGlobalFilter: true,
                 showColumnFilters: false,
                 columnVisibility: {
@@ -319,47 +358,99 @@ function Employee() {
                     />
                   </div>
                   <div style={{ display: "flex", gap: "10px" }}>
+                    {/* Full Screen Button */}
                     <MRT_ToggleFullScreenButton
                       table={table}
-                      style={{ color: "#4F46E5" }}
+                      sx={{
+                        backgroundColor: "#FCFCFC",
+                        borderRadius: "5px",
+                        color: "#4F46E5",
+                        padding: "6px",
+                      }}
                     />
+
+                    {/* Download Data Button */}
                     <Tooltip title="Download Data">
-                      <span>
+                      <span
+                        style={{
+                          backgroundColor: "#FCFCFC",
+                          borderRadius: "5px",
+                          padding: "6px",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          cursor: "pointer",
+                          transition: "background-color 0.2s ease",
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#F0F0F0")}
+                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#FCFCFC")}
+                      >
                         <MdOutlineCloudDownload
                           size={20}
                           color="#4F46E5"
-                          className="mt-3 m-2"
                           disabled={table.getRowModel().rows.length === 0}
-                          onClick={() =>
-                            handleExportRows(table.getRowModel().rows)
-                          }
+                          onClick={() => handleExportRows(table.getRowModel().rows)}
                         />
                       </span>
                     </Tooltip>
-                    <Tooltip title="Print" >
-                      <span>
+
+                    {/* Print Button */}
+                    <Tooltip title="Print">
+                      <span
+                        style={{
+                          backgroundColor: "#FCFCFC",
+                          borderRadius: "5px",
+                          padding: "6px",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          cursor: "pointer",
+                          transition: "background-color 0.2s ease",
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#F0F0F0")}
+                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#FCFCFC")}
+                      >
                         <LuPrinter
                           size={20}
                           color="#4F46E5"
-                          className="mt-3 m-2"
                           onClick={() => window.print()}
                         />
                       </span>
                     </Tooltip>
 
+                    {/* Show/Hide Columns Button */}
                     <MRT_ShowHideColumnsButton
                       table={table}
-                      style={{ color: "#4F46E5" }}
+                      sx={{
+                        backgroundColor: "#FCFCFC",
+                        borderRadius: "5px",
+                        color: "#4F46E5",
+                        padding: "6px",
+                      }}
                     />
+
+                    {/* Toggle Filters Button */}
                     <Tooltip title="Toggle Filters">
-                      <span>
+                      <span
+                        style={{
+                          backgroundColor: "#FCFCFC",
+                          borderRadius: "5px",
+                          padding: "6px",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          cursor: "pointer",
+                          transition: "background-color 0.2s ease",
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#F0F0F0")}
+                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#FCFCFC")}
+                        onClick={() => {
+                          table.setShowColumnFilters((prev) => !prev);
+                        }}
+                      >
                         <CiFilter
                           size={20}
                           color="#4F46E5"
-                          className="mt-3 m-2 cursor-pointer"
-                          onClick={() => {
-                            table.setShowColumnFilters((prev) => !prev);
-                          }}
                         />
                       </span>
                     </Tooltip>

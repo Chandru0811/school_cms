@@ -23,6 +23,7 @@ function Successfull() {
     const total_correct_questions = queryParams.get("total_correct_questions");
     const total_wrong_questions = queryParams.get("total_wrong_questions");
     const total_skipped_questions = queryParams.get("total_skipped_questions");
+    const time_taken = queryParams.get("time_taken") || "00:00";
     const rewards = queryParams.get("rewards");
     const best_score = queryParams.get("best_score");
     const total_questions = queryParams.get("total_questions");
@@ -34,7 +35,24 @@ function Successfull() {
     console.log("rewardss::", rewards);
 
     const percentage = (score / totalScore) * 100;
-    console.log("percetage::", percentage||"");
+    console.log("percetage::", percentage || "");
+
+    const formatTimeTaken = (time_taken) => {
+        if (!time_taken) return "00H:00M:00S";
+        // Split the time_taken string into parts
+        const parts = time_taken.split(':');
+        // If the time_taken is in HH:MM:SS format
+        if (parts.length === 3) {
+            const [hours, minutes, seconds] = parts;
+            return `${hours}H:${minutes}M:${seconds}S`;
+        }
+        // If the time_taken is in MM:SS format
+        else if (parts.length === 2) {
+            const [minutes, seconds] = parts;
+            return `${minutes}M:${seconds}S`;
+        }
+        return time_taken;
+    };
 
     const [state, setState] = useState({
         series: [percentage],
@@ -73,7 +91,12 @@ function Successfull() {
                         margin: 0,
                         stroke: '#d1f2e1', // 1px solid border
                         dropShadow: {
-                            enabled: false // Remove hover effect
+                            enabled: true, // Enable drop shadow
+                            color: '#d2f1e1', // Shadow color
+                            top: 0, // Vertical offset of the shadow
+                            left: 0, // Horizontal offset of the shadow
+                            blur: 3, // Blur radius of the shadow
+                            opacity: 1 // Opacity of the shadow
                         }
                     },
                     dataLabels: {
@@ -102,7 +125,7 @@ function Successfull() {
             stroke: {
                 lineCap: 'round'
             },
-            labels: ['24M:20S'],
+            labels: [formatTimeTaken(time_taken)],
             states: {
                 hover: {
                     filter: {

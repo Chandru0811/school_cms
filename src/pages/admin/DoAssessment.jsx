@@ -28,14 +28,16 @@ const DoAssessment = () => {
   const [timeSpentPerQuestion, setTimeSpentPerQuestion] = useState({});
   const [timeUpQuestions, setTimeUpQuestions] = useState({});
   const [showModal, setShowModal] = useState(false);
-  const [showResume, setShowResume] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
   const [questionCount, setQuestionCount] = useState(0);
   const [hasInteracted, setHasInteracted] = useState(false);
   const [overallTimeLeft, setOverallTimeLeft] = useState(data.time_limit * 60);
-  const [isPaused, setIsPaused] = useState(false);
   const [startTime, setStartTime] = useState(null);
   const [timeTakenDisplay, setTimeTakenDisplay] = useState("00:00:00");
+  const [isPaused, setIsPaused] = useState(false);
+  const [showResume, setShowResume] = useState(false);
+  const [pausedTime, setPausedTime] = useState(0); // Total time paused in milliseconds
+  const [pauseStartTime, setPauseStartTime] = useState(null);
 
   // Function to handle image click
   const handleImageClick = (imageUrl) => {
@@ -47,13 +49,37 @@ const DoAssessment = () => {
     setShowModal(false);
   };
 
+  // const handlePauseClick = () => {
+  //   setIsPaused(true);  // Pause the timer
+  //   setShowResume(true);
+  // };
+  // // Function to resume the timer
+  // const handlePauseClose = () => {
+  //   setIsPaused(false); // Resume the timer
+  //   setShowResume(false);
+  // };
+
   const handlePauseClick = () => {
-    setIsPaused(true);  // Pause the timer
+    setIsPaused(true); // Pause the timer
+    setPauseStartTime(Date.now()); // Record the time when pause was clicked
     setShowResume(true);
+
+    // Log the time when paused
+    console.log("Timer paused at:", new Date().toLocaleTimeString());
   };
-  // Function to resume the timer
+
   const handlePauseClose = () => {
+    if (pauseStartTime) {
+      const pauseEndTime = Date.now();
+      const currentPauseDuration = pauseEndTime - pauseStartTime;
+      setPausedTime((prevPausedTime) => prevPausedTime + currentPauseDuration); // Add to total paused time
+
+      // Log the time when resumed
+      console.log("Timer resumed at:", new Date().toLocaleTimeString());
+      console.log("Paused for (ms):", currentPauseDuration);
+    }
     setIsPaused(false); // Resume the timer
+    setPauseStartTime(null); // Reset pause start time
     setShowResume(false);
   };
 
@@ -68,11 +94,28 @@ const DoAssessment = () => {
     return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
   };
 
+  // const calculateTimeTaken = () => {
+  //   if (!startTime) return "00:00:00";
+
+  //   const endTime = Date.now(); // Current time when submission happens
+  //   const timeTakenInSeconds = Math.floor((endTime - startTime) / 1000); // Convert to seconds
+
+  //   // Format the time taken into HH:MM:SS
+  //   const hours = Math.floor(timeTakenInSeconds / 3600);
+  //   const minutes = Math.floor((timeTakenInSeconds % 3600) / 60);
+  //   const seconds = timeTakenInSeconds % 60;
+
+  //   return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+  // };
+
   const calculateTimeTaken = () => {
     if (!startTime) return "00:00:00";
 
     const endTime = Date.now(); // Current time when submission happens
-    const timeTakenInSeconds = Math.floor((endTime - startTime) / 1000); // Convert to seconds
+    const elapsedTime = endTime - startTime; // Total elapsed time in milliseconds
+    const activeTime = elapsedTime - pausedTime; // Subtract paused time
+
+    const timeTakenInSeconds = Math.floor(activeTime / 1000); // Convert to seconds
 
     // Format the time taken into HH:MM:SS
     const hours = Math.floor(timeTakenInSeconds / 3600);
@@ -162,7 +205,7 @@ const DoAssessment = () => {
         if (response.status === 200) {
           toast.success(response.data.message);
           const { total_score, title } = data;
-          const { score, rewards } = response.data.data.student_attempt;
+          const { score, rewards, time_taken } = response.data.data.student_attempt;
           const { validate, best_score, total_questions, total_attended_questions, total_correct_questions,
             total_wrong_questions, total_skipped_questions } = response.data.data;
 
@@ -179,6 +222,7 @@ const DoAssessment = () => {
             total_correct_questions: total_correct_questions ?? "",
             total_wrong_questions: total_wrong_questions ?? "",
             total_skipped_questions: total_skipped_questions ?? "",
+            time_taken: time_taken ?? "",
           }).toString();
 
           if (score === null || score === 0) {
@@ -690,7 +734,7 @@ const DoAssessment = () => {
 
       if (skippedQuestions > 0 || heldQuestions > 0) {
         toast(
-          `You have skipped ${skippedQuestions} question(s) and held ${heldQuestions} question(s).`,
+          `You have skipped ${skippedQuestions} question(s) and hold ${heldQuestions} question(s).`,
           { icon: "⚠️" }
         );
       }

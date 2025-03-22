@@ -55,6 +55,7 @@ function Center() {
           <span style={{ textAlign: "center" }}>{cell.getValue()}</span>
         ),
       },
+      { accessorKey: "name", header: "Name" },
       {
         accessorKey: "actions",
         header: "Actions",
@@ -86,7 +87,6 @@ function Center() {
         ),
       },
       // { accessorKey: "school_id", header: "School ID" },
-      { accessorKey: "name", header: "Name" },
       {
         accessorKey: "location",
         header: "Location",
@@ -267,51 +267,103 @@ function Center() {
                       />
                     </div>
                     <div style={{ display: "flex", gap: "10px" }}>
-                      <MRT_ToggleFullScreenButton
-                        table={table}
-                        style={{ color: "#4F46E5" }}
-                      />
-                      <Tooltip title="Download Data">
-                        <span>
-                          <MdOutlineCloudDownload
-                            size={20}
-                            color="#4F46E5"
-                            className="mt-3 m-2"
-                            disabled={table.getRowModel().rows.length === 0}
-                            onClick={() =>
-                              handleExportRows(table.getRowModel().rows)
-                            }
-                          />
-                        </span>
-                      </Tooltip>
-                      <Tooltip title="Print">
-                        <span>
-                          <LuPrinter
-                            size={20}
-                            color="#4F46E5"
-                            className="mt-3 m-2"
-                            onClick={() => window.print()}
-                          />
-                        </span>
-                      </Tooltip>
+                    {/* Full Screen Button */}
+                    <MRT_ToggleFullScreenButton
+                      table={table}
+                      sx={{
+                        backgroundColor: "#FCFCFC",
+                        borderRadius: "5px",
+                        color: "#4F46E5",
+                        padding: "6px",
+                      }}
+                    />
 
-                      <MRT_ShowHideColumnsButton
-                        table={table}
-                        style={{ color: "#4F46E5" }}
-                      />
-                      <Tooltip title="Toggle Filters">
-                        <span>
-                          <CiFilter
-                            size={20}
-                            color="#4F46E5"
-                            className="mt-3 m-2 cursor-pointer"
-                            onClick={() => {
-                              table.setShowColumnFilters((prev) => !prev);
-                            }}
-                          />
-                        </span>
-                      </Tooltip>
-                    </div>
+                    {/* Download Data Button */}
+                    <Tooltip title="Download Data">
+                      <span
+                        style={{
+                          backgroundColor: "#FCFCFC",
+                          borderRadius: "5px",
+                          padding: "6px",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          cursor: "pointer",
+                          transition: "background-color 0.2s ease",
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#F0F0F0")}
+                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#FCFCFC")}
+                      >
+                        <MdOutlineCloudDownload
+                          size={20}
+                          color="#4F46E5"
+                          disabled={table.getRowModel().rows.length === 0}
+                          onClick={() => handleExportRows(table.getRowModel().rows)}
+                        />
+                      </span>
+                    </Tooltip>
+
+                    {/* Print Button */}
+                    <Tooltip title="Print">
+                      <span
+                        style={{
+                          backgroundColor: "#FCFCFC",
+                          borderRadius: "5px",
+                          padding: "6px",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          cursor: "pointer",
+                          transition: "background-color 0.2s ease",
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#F0F0F0")}
+                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#FCFCFC")}
+                      >
+                        <LuPrinter
+                          size={20}
+                          color="#4F46E5"
+                          onClick={() => window.print()}
+                        />
+                      </span>
+                    </Tooltip>
+
+                    {/* Show/Hide Columns Button */}
+                    <MRT_ShowHideColumnsButton
+                      table={table}
+                      sx={{
+                        backgroundColor: "#FCFCFC",
+                        borderRadius: "5px",
+                        color: "#4F46E5",
+                        padding: "6px",
+                      }}
+                    />
+
+                    {/* Toggle Filters Button */}
+                    <Tooltip title="Toggle Filters">
+                      <span
+                        style={{
+                          backgroundColor: "#FCFCFC",
+                          borderRadius: "5px",
+                          padding: "6px",
+                          display: "inline-flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          cursor: "pointer",
+                          transition: "background-color 0.2s ease",
+                        }}
+                        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = "#F0F0F0")}
+                        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = "#FCFCFC")}
+                        onClick={() => {
+                          table.setShowColumnFilters((prev) => !prev);
+                        }}
+                      >
+                        <CiFilter
+                          size={20}
+                          color="#4F46E5"
+                        />
+                      </span>
+                    </Tooltip>
+                  </div>
                   </div>
                 )}
               />

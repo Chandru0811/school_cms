@@ -1,20 +1,134 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200..800&family=Urbanist:wght@100..900&display=swap');
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  /* font-family: "Poppins", serif; */
+  font-family: "Urbanist";
+}
+
+/* / Font Family / */
+.font div {
+  font-family: "Urbanist";
+}
+
+.font-jagarta {
+  font-family: "Plus Jakarta Sans";
+}
+
+.rmsc .gray {
+  font-family: "Plus Jakarta Sans";
+}
+
+.common-fonts input::placeholder {
+  font-family: "Plus Jakarta Sans" !important;
+}
+
+.rmsc .dropdown-heading {
+  min-height: 46px !important;
+  padding: 0px 10px 0px 20px !important;
+}
+
+select::placeholder {
+  color: red !important;
+}
+
+.modal-content {
+  font-family: "Urbanist";
+  position: unset !important;
+  /* / min-height: 50vh; / */
+}
+
+/* /  Model Customise / */
+
+.modal-title {
+  color: #333333 !important;
+  font-size: 24px !important;
+  font-weight: 600 !important;
+}
+
+.modal-dialog {
+  position: unset !important;
+}
+
+.modal-header {
+  padding-bottom: 10px !important;
+  border-bottom: 1px solid #ffffff;
+  padding: 1.9rem 1.8rem 1.5rem 1.7rem;
+}
+
+.modal-content label,
+.modal-content p {
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.modal-content textarea,
+textarea {
+  resize: none;
+}
+
+.modal-content input::placeholder {
+  font-family: "Plus Jakarta Sans";
+}
+
+.btn-close {
+  color: #ffffff;
+  position: absolute;
+  opacity: 0.7;
+  top: 15px;
+  right: 15px;
+  background: transparent url("../assets/images/x_icon.svg") center / 1em auto no-repeat;
+}
+
+.btn-close:hover {
+  opacity: 1;
 }
 
 /* Common style Start */
 
 .css-10j3yc8-MuiFormLabel-root-MuiInputLabel-root {
-  font-family: "Urbanist", sans-serif !important;
-  font-size: 14px;
+  font-family: "Urbanist" !important;
+  font-size: 14px !important;
+}
+
+/* Hide the default sort icon */
+.css-x4d13y-MuiButtonBase-root-MuiTableSortLabel-root.Mui-active .MuiTableSortLabel-icon {
+  opacity: 0;
+  /* Hide the default icon */
+  display: none;
+}
+
+/* Add custom TbArrowsSort icon */
+.css-x4d13y-MuiButtonBase-root-MuiTableSortLabel-root.Mui-active::after {
+  content: url("../assets/images/Vector.svg");
+  /* Use the TbArrowsSort icon or a similar symbol */
+  font-size: 16px;
+  /* color: #4F46E5; */
+  margin-left: 4px;
+}
+
+.css-5lvf42-MuiSelect-select-MuiInputBase-input-MuiInput-input {
+  font-size: 14px !important;
+  padding: 9px 24px 5px 5px !important;
+}
+
+.css-18tnsrz-MuiTypography-root {
+  font-family: "Urbanist" !important;
+  font-size: 14px !important;
 }
 
 .css-110vr2a-MuiInputBase-input-MuiInput-input {
   font-family: "Urbanist", sans-serif !important;
   font-size: 14px;
+}
+
+.css-63ezxx-MuiBadge-root {
+  display: flex;
+  background-color: #FCFCFC;
+  border-radius: 5px;
+  justify-content: center;
+  padding: 2px 0px;
 }
 
 .MuiTableSortLabel-root {
@@ -143,7 +257,7 @@
   border-color: var(--client-primary-color);
 }
 
-.btn-check:focus + .btn-button,
+.btn-check:focus+.btn-button,
 .btn-button:focus {
   color: var(--client-text-color);
   background-color: var(--client-primary-color);
@@ -151,21 +265,21 @@
   box-shadow: 0 0 0 0.25rem var(--client-primary-color);
 }
 
-.btn-check:checked + .btn-button,
-.btn-check:active + .btn-button,
+.btn-check:checked+.btn-button,
+.btn-check:active+.btn-button,
 .btn-button:active,
 .btn-button.active,
-.show > .btn-button.dropdown-toggle {
+.show>.btn-button.dropdown-toggle {
   color: var(--client-text-color);
   background-color: var(--client-primary-color);
   border-color: var(--client-primary-color);
 }
 
-.btn-check:checked + .btn-button:focus,
-.btn-check:active + .btn-button:focus,
+.btn-check:checked+.btn-button:focus,
+.btn-check:active+.btn-button:focus,
 .btn-button:active:focus,
 .btn-button.active:focus,
-.show > .btn-button.dropdown-toggle:focus {
+.show>.btn-button.dropdown-toggle:focus {
   box-shadow: 0 0 0 0.25rem var(--client-button-check-color);
 }
 
@@ -176,11 +290,11 @@
   border-color: var(--client-button-disable-color);
 }
 
-.btn-button-check:checked + .btn-button,
+.btn-button-check:checked+.btn-button,
 .btn-button.active,
 .btn-button.show,
 .btn-button:first-child:active,
-:not(.btn-button-check) + .btn-button:active {
+:not(.btn-button-check)+.btn-button:active {
   background-color: var(--client-primary-color);
   border-color: var(--client-primary-color);
   color: var(--client-text-color);
@@ -271,8 +385,7 @@
   width: 50px;
   aspect-ratio: 1;
   border-radius: 50%;
-  background: radial-gradient(farthest-side, #1555ff 94%, #0000) top/8px 8px
-      no-repeat,
+  background: radial-gradient(farthest-side, #1555ff 94%, #0000) top/8px 8px no-repeat,
     conic-gradient(#0000 30%, #1555ff);
   -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 8px), #000 0);
   animation: l13 1s infinite linear;
@@ -322,19 +435,24 @@
 
 .table-heading {
   font-size: 24px;
+  font-weight: 500 !important;
   color: #333333;
 }
+
 @media (max-width: 767px) {
   .table-heading {
     font-size: calc(0.9rem + 0.9vw) !important;
   }
+
   .table-subheading {
     font-size: calc(0.7rem + 0.6vw) !important;
   }
+
   .add-btn {
     padding: 6px 12px;
   }
 }
+
 .table-subheading {
   color: #999999;
   font-size: 18px;
@@ -443,12 +561,6 @@
   background-color: #fafafa !important;
 }
 
-.table-heading {
-  font-size: 24px;
-  font-weight: 500 !important;
-  color: #333333;
-}
-
 .table-subheading {
   color: #999999;
   font-size: 18px;
@@ -478,6 +590,24 @@
   background-color: #eae9fc !important;
 }
 
+.MuiTableRow-rootcss-101feee:hover {
+  background-color: #eae9fc !important;
+}
+
+/* .MuiTableCell-root.MuiTableCell-head.MuiTableCell-alignLeft {
+  border-top: 1px solid #f8f7fe;
+  border-bottom: 1px solid #f8f7fe;
+  border-left: none;
+} */
+.MuiTableHead-root .MuiTableCell-root {
+  padding: 9px 20px !important;
+  color: #4f46e5 !important;
+  border: 1.8px solid #f8f7fe !important;
+  border-left: none !important;
+  border-top: 1.8px solid #f8f7fe !important;
+  border-bottom: 1.8px solid #f8f7fe !important;
+}
+
 .view-delete-btn {
   background-color: #fce9eb;
   padding: 6px 12px;
@@ -502,9 +632,21 @@
 }
 
 .view-label-text {
-  color: #5d5d5d;
-  font-size: 15px !important;
-  font-weight: 400 !important;
+  color: #16192c;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+}
+
+.view-label-text-2 {
+  color: #16192c;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+}
+
+div:has(> .view-label-text) {
+  display: flex;
+  justify-content: start;
+  align-items: center;
 }
 
 .view-value {
@@ -657,20 +799,12 @@
 .custom-global-filter .MuiOutlinedInput-root {
   margin: 5px 0px !important;
   border-radius: 8px;
+  max-width: 13rem;
+  max-height: 35px;
 }
 
 .custom-global-filter .MuiOutlinedInput-root fieldset {
   border-color: #4f46e5;
-}
-
-.modal-title {
-  color: #4f46e5 !important;
-  font-size: 20px !important;
-  font-weight: 600 !important;
-}
-
-.modal-header {
-  padding-bottom: 10px !important;
 }
 
 .custom-global-filter .MuiOutlinedInput-root:hover fieldset {
@@ -683,6 +817,7 @@
 
 .custom-global-filter .MuiSvgIcon-root {
   color: #a0a0a0;
+  font-size: 16px;
 }
 
 .MuiTableHead-root .MuiTableCell-root {
@@ -1011,6 +1146,7 @@
   background-color: #fff8d9;
   border-color: #ffdb43;
 }
+
 .hold-question {
   background-color: #fff8d9;
   border-color: #ffdb43;
@@ -1094,7 +1230,13 @@
 }
 
 .MuiPaper-root {
-  border-radius: 0 !important;
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+  border: 1px solid #f4f4f4;
+}
+
+.css-1ambpiq-MuiInputBase-root-MuiOutlinedInput-root {
+  padding-right: 8px !important;
 }
 
 td.MuiTableCell-root.MuiTableCell-body.MuiTableCell-sizeMedium.np-0.css-1dc80h3-MuiTableCell-root {
@@ -1234,12 +1376,14 @@ td.MuiTableCell-root.MuiTableCell-body.MuiTableCell-sizeMedium.np-0.css-1dc80h3-
   background-color: #fff8d9;
   border: 2px solid #fff8d9;
 }
+
 .answer-view-btn:active,
 .answer-view-btn.active,
 .answer-view-btn:focus-visible {
   border: 2px solid #4f46e5;
   outline: none;
 }
+
 .answer-view-btn.active::before {
   content: "";
   position: absolute;
@@ -1250,6 +1394,7 @@ td.MuiTableCell-root.MuiTableCell-body.MuiTableCell-sizeMedium.np-0.css-1dc80h3-
   background-color: #4f46e5;
   border-radius: 5px;
 }
+
 .ans-radio-label {
   display: flex;
   align-items: center;
@@ -1288,6 +1433,7 @@ td.MuiTableCell-root.MuiTableCell-body.MuiTableCell-sizeMedium.np-0.css-1dc80h3-
   background-color: #1fc16b !important;
   border-color: #1fc16b !important;
 }
+
 .ans-radio-label .form-check-input:checked.wrong {
   background-color: #dc3545 !important;
   border-color: #dc3545 !important;
@@ -1335,30 +1481,37 @@ td.MuiTableCell-root.MuiTableCell-body.MuiTableCell-sizeMedium.np-0.css-1dc80h3-
   background-repeat: no-repeat;
   background-position: center -239%;
 }
+
 .correct-card {
   border: 2px solid #84ebb4;
   border-radius: 5px;
   background-color: #f3fdf7;
 }
+
 .skipped-card {
   border: 2px solid #ffdb43;
   border-radius: 5px;
   background-color: #fffbec;
 }
+
 .wrong-card {
   border: 2px solid #fb3748;
   border-radius: 5px;
   background-color: #ffebed;
 }
+
 .skipped-card .warrning-badge {
   color: #ffdb43;
 }
+
 .correct-card .success-badge {
   color: #84ebb4;
 }
+
 .wrong-card .danger-badge {
   color: #fb3748;
 }
+
 .medalbg {
   background-image: url("../assets/images/medalbg.svg");
   background-size: contain;
@@ -1370,6 +1523,7 @@ td.MuiTableCell-root.MuiTableCell-body.MuiTableCell-sizeMedium.np-0.css-1dc80h3-
   top: 10px;
   padding: 20px;
 }
+
 .success-btn {
   border: 1.5px solid #4f46e5;
   color: #4f46e5;
@@ -1381,6 +1535,7 @@ td.MuiTableCell-root.MuiTableCell-body.MuiTableCell-sizeMedium.np-0.css-1dc80h3-
   gap: 8px;
   cursor: pointer;
 }
+
 @media (max-width: 767px) {
   .success-btn {
     padding: 10px 8px;
@@ -1388,10 +1543,12 @@ td.MuiTableCell-root.MuiTableCell-body.MuiTableCell-sizeMedium.np-0.css-1dc80h3-
     font-size: calc(0.7rem + 0.6vw);
   }
 }
+
 .success-btn:hover {
   background-color: #4f46e5;
   color: #fff;
 }
+
 .success-btn:active,
 .success-btn:focus-visible {
   border: 1.5px solid #4f46e5;
@@ -1399,6 +1556,7 @@ td.MuiTableCell-root.MuiTableCell-body.MuiTableCell-sizeMedium.np-0.css-1dc80h3-
   color: #4f46e5;
   background-color: #fafafa;
 }
+
 .blurred-modal {
   backdrop-filter: blur(5px);
   background-color: rgba(0, 0, 0, 0.3);
@@ -1410,6 +1568,7 @@ td.MuiTableCell-root.MuiTableCell-body.MuiTableCell-sizeMedium.np-0.css-1dc80h3-
   background-color: #fafafa;
   border-radius: 5px;
 }
+
 .ques-desc-card span {
   color: #4f46e5;
   font-weight: 600;
